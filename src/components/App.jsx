@@ -13,12 +13,26 @@ export default function App() {
       title: "Consult accountant",
       description: "",
       dueDate: "",
-      list: "List 1",
+      list: "Personal",
       subtasks: [],
       isCompleted: true,
     },
   ]);
   const [currentTask, setCurrentTask] = useState(null);
+  const [lists, setLists] = useLocalStorageState("lists", [
+    {
+      id: Math.random(),
+      title: "Personal",
+      color: "#ff6b6b",
+      tasks: [],
+    },
+    {
+      id: Math.random(),
+      title: "Work",
+      color: "#66d9e8",
+      tasks: [],
+    },
+  ]);
 
   function handlerAddTask(title) {
     const newTask = {
@@ -58,10 +72,35 @@ export default function App() {
     );
     setTodayTasks(newTasks);
   }
+  function handleAddList(title, color) {
+    const newList = {
+      id: Math.random(),
+      title,
+      color,
+      tasks: [],
+    };
+    setLists((prev) => [...prev, newList]);
+  }
+  function handleAddTasksToList(listTitle, task) {
+
+    const newLists = lists.map(list => {
+      const tasks = list.tasks.filter(t => t.id !== task.id)
+      return { ...list, tasks }
+    }).map(list => {
+      return list.title === listTitle ? { ...list, tasks: [...list.tasks, task] } : list
+    })
+    setLists(newLists)
+  }
 
   return (
     <div className="flex h-full gap-2 bg-background-primary p-5">
-      <Menu isOpen={isMenuOpen} setIsOpen={setIsMenuOpen} />
+      <Menu
+        isOpen={isMenuOpen}
+        setIsOpen={setIsMenuOpen}
+        lists={lists}
+        onAddList={handleAddList}
+        todayTasksNumber={todayTasks.length}
+      />
       <Main>
         <BigTitle title="Today" count={todayTasks.length} />
         <Today
@@ -69,6 +108,8 @@ export default function App() {
           onAdd={handlerAddTask}
           onOpen={handleOpenTask}
           onComplete={handleCompleteTask}
+          lists={lists}
+
         />
       </Main>
       <TaskInfo
@@ -77,12 +118,42 @@ export default function App() {
         task={currentTask}
         onEdit={handleEditTask}
         onDelete={handleDeleteTask}
+        lists={lists}
+        onSelectList={handleAddTasksToList}
       />
     </div>
   );
 }
 
-function Menu({ isOpen, setIsOpen }) {
+function Menu({ isOpen, setIsOpen, todayTasksNumber, lists, onAddList }) {
+  const [isAddNewListOpen, setIsAddNewListOpen] = useState(false);
+  const addNewListContainer = useRef(null);
+  const addNewListToggler = useRef(null);
+  const [duplicatedList, setDuplicatedList] = useState({})
+
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (
+        addNewListContainer.current &&
+        !addNewListContainer.current.contains(e.target) &&
+        addNewListToggler.current &&
+        !addNewListToggler.current.contains(e.target)
+      ) {
+        setIsAddNewListOpen(false);
+      }
+    }
+    window.addEventListener("click", handleClickOutside);
+    return () => {
+      window.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+
+  function handleDuplicateLists(list) {
+    console.log(list)
+    setDuplicatedList(list)
+    setTimeout(() => setDuplicatedList({}), 3000)
+  }
+
   return (
     <aside
       className={
@@ -118,7 +189,7 @@ function Menu({ isOpen, setIsOpen }) {
               Tasks
             </h4>
             <ul className="space-y-1">
-              <li className="menu_task_element active group">
+              <li className="menu_element group">
                 <i className="fas fa-angles-right text-text-tertiary"></i>
                 <span className="text-sm text-text-secondary transition-[font-weight] duration-100 group-hover:font-bold">
                   Upcoming
@@ -129,18 +200,18 @@ function Menu({ isOpen, setIsOpen }) {
                   </span>
                 </div>
               </li>
-              <li className="menu_task_element group">
+              <li className="menu_element active group">
                 <i className="fas fa-list-check text-text-tertiary"></i>
                 <span className="text-sm text-text-secondary transition-[font-weight] duration-100 group-hover:font-bold">
                   Today
                 </span>
                 <div className="grid place-content-center rounded-sm bg-background-tertiary py-[1px] transition-colors duration-300  group-hover:bg-background-primary">
                   <span className="text-xs font-semibold text-text-secondary">
-                    5
+                    {todayTasksNumber}
                   </span>
                 </div>
               </li>
-              <li className="menu_task_element group">
+              <li className="menu_element group">
                 <i className="fas fa-note-sticky text-text-tertiary"></i>
                 <span className="text-sm text-text-secondary transition-[font-weight] duration-100 group-hover:font-bold">
                   Sticky Wall
@@ -152,47 +223,29 @@ function Menu({ isOpen, setIsOpen }) {
             <h4 className="mb-4 mt-5  font-medium text-text-secondary">
               Lists
             </h4>
-            <ul className="space-y-1">
-              <li className="menu_element ">
-                <div className="h-5 w-5 rounded-md bg-[#ff6b6b]"></div>
-                <span className="text-sm text-text-secondary transition-[font-weight] duration-100 ">
-                  Personal
-                </span>
-                <div className="grid place-content-center rounded-sm bg-background-tertiary py-[1px]">
-                  <span className="text-xs font-semibold text-text-secondary">
-                    3
-                  </span>
-                </div>
-              </li>
-              <li className="menu_element">
-                <div className="h-5 w-5 rounded-md bg-[#66d9e8]"></div>
-                <span className="text-sm text-text-secondary transition-[font-weight] duration-100 ">
-                  Work
-                </span>
-                <div className="grid place-content-center rounded-sm bg-background-tertiary py-[1px]">
-                  <span className="text-xs font-semibold text-text-secondary">
-                    6
-                  </span>
-                </div>
-              </li>
-              <li className="menu_element">
-                <div className="h-5 w-5 rounded-md bg-[#ffd43b]"></div>
-                <span className="text-sm text-text-secondary transition-[font-weight] duration-100 ">
-                  List 1
-                </span>
-                <div className="grid place-content-center rounded-sm bg-background-tertiary py-[1px]">
-                  <span className="text-xs font-semibold text-text-secondary">
-                    6
-                  </span>
-                </div>
-              </li>
-              <li className="grid cursor-pointer grid-cols-[35px_auto] px-3 py-2">
-                <i className="fas fa-plus text-text-tertiary"></i>
-                <span className="text-sm text-text-secondary transition-[font-weight] duration-100 ">
-                  Add New List
-                </span>
-              </li>
+            <ul className="max-h-[300px] space-y-1 overflow-auto">
+              {lists.map((list) => (
+                <List
+                  key={list.id}
+                  title={list.title}
+                  color={list.color}
+                  tasksNumber={list.tasks.length}
+                  alreadyExists={list.title?.toLowerCase() === duplicatedList.title?.toLowerCase()}
+                />
+              ))}
             </ul>
+            <button
+              className="flex items-center cursor-pointer text-sm text-text-secondary my-4"
+              ref={addNewListToggler}
+              onClick={() => setIsAddNewListOpen(!isAddNewListOpen)}
+            >
+              <i className="fas  fa-plus text-text-tertiary w-10"></i>
+              Add New List
+            </button>
+            {isAddNewListOpen && (
+              <AddNewList reference={addNewListContainer} isOpen={isAddNewListOpen} onAdd={onAddList} lists={lists} onDuplicate={handleDuplicateLists}
+              />
+            )}
           </div>
           <div className="mb-16">
             <h4 className="mb-4 mt-5 font-medium text-text-secondary">Tags</h4>
@@ -228,10 +281,10 @@ function Main({ children }) {
     </main>
   );
 }
-function TaskInfo({ isOpen, onClose, task, onEdit, onDelete }) {
+function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSelectList }) {
   const [taskTitle, setTaskTitle] = useState();
   const [taskDescription, setTaskDescription] = useState();
-  const [taskList, setTaskList] = useState();
+  const [taskList, setTaskList] = useState("none");
   const [taskDueDate, setTaskDueDate] = useState();
   const [taskSubtasks, setTaskSubtasks] = useState();
   const [isChanged, setIsChanged] = useState(false);
@@ -256,16 +309,16 @@ function TaskInfo({ isOpen, onClose, task, onEdit, onDelete }) {
   useEffect(() => {
     if (isOpen)
       task?.title !== taskTitle ||
-      task?.description !== taskDescription ||
-      task?.list !== taskList ||
-      task?.dueDate !== taskDueDate ||
-      task?.subtasks?.length !== taskSubtasks?.length ||
-      task?.subtasks.some((subtask, index) => {
-        return (
-          subtask.title !== taskSubtasks[index].title ||
-          subtask.isCompleted !== taskSubtasks[index].isCompleted
-        );
-      })
+        task?.description !== taskDescription ||
+        task?.list !== taskList ||
+        task?.dueDate !== taskDueDate ||
+        task?.subtasks?.length !== taskSubtasks?.length ||
+        task?.subtasks.some((subtask, index) => {
+          return (
+            subtask.title !== taskSubtasks[index].title ||
+            subtask.isCompleted !== taskSubtasks[index].isCompleted
+          );
+        })
         ? setIsChanged(true)
         : setIsChanged(false);
   }, [
@@ -297,6 +350,7 @@ function TaskInfo({ isOpen, onClose, task, onEdit, onDelete }) {
         subtasks: taskSubtasks,
       };
       onEdit(editedTask);
+      onSelectList(taskList, editedTask)
     }
   }
   function handleEditSubtask(id, title) {
@@ -349,8 +403,11 @@ function TaskInfo({ isOpen, onClose, task, onEdit, onDelete }) {
           </div>
           <div className="grid grid-cols-[1fr_3fr] items-center space-y-2">
             <label className="text-sm text-text-tertiary">List</label>
-            <select className="w-fit rounded-lg border border-background-tertiary  bg-transparent  p-2  text-sm text-text-secondary  focus:outline-none">
-              <option>Personal</option>
+            <select className="w-fit rounded-lg border border-background-tertiary  bg-transparent  p-2  text-sm text-text-secondary  focus:outline-none"
+              value={taskList} onChange={(e) => setTaskList(e.target.value)}
+            >
+              <option value="none"></option>
+              {lists.map(list => (<option key={list.id} value={list.title}>{list.title}</option>))}
             </select>
             <label className="text-sm text-text-tertiary">Due date</label>
             <input
@@ -415,7 +472,7 @@ function TaskInfo({ isOpen, onClose, task, onEdit, onDelete }) {
     </aside>
   );
 }
-export function Today({ todayTasks, onAdd, onOpen, onComplete }) {
+function Today({ todayTasks, onAdd, onOpen, onComplete, lists }) {
   return (
     <>
       <div>
@@ -434,6 +491,8 @@ export function Today({ todayTasks, onAdd, onOpen, onComplete }) {
               onOpen={() => onOpen(task)}
               isCompleted={task.isCompleted}
               onComplete={(isCompleted) => onComplete(task.id, isCompleted)}
+              lists={lists}
+
             />
           ))}
         </ul>
@@ -449,8 +508,12 @@ function Task({
   onOpen,
   isCompleted,
   onComplete,
+  lists
 }) {
   const [checked, setChecked] = useState(isCompleted);
+
+  const listColor = lists.find(l => l?.title === list)?.color
+
   useEffect(() => {
     onComplete(checked);
     // eslint-disable-next-line
@@ -493,9 +556,9 @@ function Task({
               </span>
             </div>
           )}
-          {list && (
+          {list && list !== "none" && (
             <div className="flex items-center gap-2">
-              <div className="h-4 w-4 rounded-sm bg-[#ff6b6b]"></div>
+              <span className="h-4 w-4 rounded-sm" style={{ backgroundColor: listColor }}></span>
               <span className="text-xs font-semibold text-text-secondary">
                 {list}
               </span>
@@ -560,6 +623,96 @@ function SubTask({ title, onEdit, onDelete, isCompleted, onComplete }) {
         <button onClick={onDelete}>
           <i className="fas fa-trash cursor-pointer text-xs text-text-tertiary"></i>
         </button>
+      </div>
+    </li>
+  );
+}
+function AddNewList({ reference, onAdd, isOpen, lists, onDuplicate }) {
+  const [value, setValue] = useState("");
+  const [color, setColor] = useState("#ff6b6b")
+  const inputEl = useRef(null)
+  const colorsDiv = useRef(null)
+  const untitledTasksNumber = useRef(0)
+
+  useEffect(() => {
+    inputEl.current.focus()
+    function handleClick(e) {
+      if (isOpen && e.target.tagName === "SPAN") {
+        const color = e.target.classList[4].split("[")[1].slice(0, 7)
+        setColor(color)
+      }
+    }
+    document.addEventListener("click", handleClick)
+    return () => document.removeEventListener("click", handleClick)
+  }, [isOpen])
+  useEffect(() => {
+    function handleKeyDown(e) {
+      e.key === "Enter" && isOpen && e.target.tagName !== "INPUT" && handleAdd()
+    }
+    window.addEventListener("keydown", handleKeyDown)
+    return () =>
+      window.removeEventListener("keydown", handleKeyDown)
+    // eslint-disable-next-line
+  }, [value, color, isOpen])
+
+  function handleAdd() {
+    const untitledNumber = value || untitledTasksNumber.current++
+    const title = value ? value : `Untitled ${untitledNumber > 0 ? untitledNumber : ""}`
+    onDuplicate(lists.find(list => list.title?.toLowerCase() === title?.toLowerCase()) || {})
+    if (lists.find(list => list.title?.toLowerCase() === title?.toLowerCase())) return
+    onAdd(title, color);
+    setValue("");
+  }
+
+
+  return (
+    <div
+      className="rounded-lg  border-2 border-background-tertiary p-3"
+      ref={reference}
+    >
+      <div className="flex items-center gap-2 rounded-lg border border-background-tertiary px-2">
+        <span className="h-4 w-4 rounded-[3px]" style={{ backgroundColor: color }} ></span>
+        <form className="flex-1" onSubmit={(e) => {
+          e.preventDefault();
+          handleAdd()
+        }}>
+          <input
+            type="text"
+            className="w-full rounded-lg bg-transparent p-2 text-sm text-text-secondary placeholder:text-text-tertiary focus:outline-none"
+            placeholder="List Name"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            ref={inputEl}
+          />
+        </form>
+      </div>
+      <div className="mt-3 flex items-center justify-between gap-2" ref={colorsDiv}>
+        <span className="h-4 w-4 cursor-pointer rounded-[3px] bg-[#ff6b6b]"></span>
+        <span className="h-4 w-4 cursor-pointer rounded-[3px] bg-[#da77f2]"></span>
+        <span className="h-4 w-4 cursor-pointer rounded-[3px] bg-[#9775fa]"></span>
+        <span className="h-4 w-4 cursor-pointer rounded-[3px] bg-[#5c7cfa]"></span>
+        <span className="h-4 w-4 cursor-pointer rounded-[3px] bg-[#66d9e8]"></span>
+        <span className="h-4 w-4 cursor-pointer rounded-[3px] bg-[#8ce99a]"></span>
+        <span className="h-4 w-4 cursor-pointer rounded-[3px] bg-[#ffd43b]"></span>
+        <span className="h-4 w-4 cursor-pointer rounded-[3px] bg-[#ff922b]"></span>
+      </div>
+    </div>
+  );
+}
+function List({ title, color, tasksNumber, alreadyExists }) {
+  return (
+    <li className={"menu_element group " + (alreadyExists ? "bg-red-400" : "")}>
+      <div
+        className="h-4 w-4 rounded-[3px]"
+        style={{ backgroundColor: color }}
+      ></div>
+      <span className={"text-sm transition-[color_font-weight] duration-100 group-hover:font-bold " + (alreadyExists ? "text-white" : "text-text-secondary")}>
+        {title}
+      </span>
+      <div className="grid place-content-center rounded-sm transition-colors duration-300 group-hover:bg-background-primary bg-background-tertiary py-[1px]">
+        <span className="text-xs font-semibold text-text-secondary">
+          {tasksNumber}
+        </span>
       </div>
     </li>
   );

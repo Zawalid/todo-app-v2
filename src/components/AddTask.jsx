@@ -1,25 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
 export function AddTask({ onAdd }) {
   const [value, setValue] = useState("");
-  const inputEl = useRef(null);
 
-  useEffect(() => {
-    function handleKeyDown(e) {
-      if (e.target.tagName !== "TEXTAREA" &&
-        e.target.tagName !== "INPUT" &&
-        e.target.tagName !== "P" &&
-        e.key === "Enter") {
-        e.preventDefault();
-        inputEl.current.focus();
-      }
-    }
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, []);
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!value) return;
@@ -34,7 +18,7 @@ export function AddTask({ onAdd }) {
         placeholder="Add New Task"
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        ref={inputEl} />
+      />
     </form>
   );
 }

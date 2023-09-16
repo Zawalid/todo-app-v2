@@ -1,31 +1,34 @@
 .menu_element {
-  @apply grid cursor-pointer  grid-cols-[35px_auto_35px] items-center rounded-lg px-3 py-2;
+  @apply grid cursor-pointer grid-cols-[30px_auto_35px] items-center rounded-lg px-3 py-2 transition-colors duration-500 hover:bg-background-tertiary;
 }
-.menu_task_element {
-  @apply menu_element transition-colors duration-300 hover:bg-background-tertiary;
-}
-.menu_task_element.active {
+.menu_element.active {
   @apply bg-background-tertiary;
 }
-.menu_task_element.active span {
+
+.menu_element.active span {
   @apply font-bold;
 }
-.menu_task_element.active div {
+
+.menu_element.active :last-child {
   @apply bg-background-primary;
 }
+
 .menu_tag_element {
-  @apply cursor-pointer  rounded-md px-3 py-2 text-xs font-semibold text-text-secondary;
+  @apply cursor-pointer rounded-md px-3 py-2 text-xs font-semibold text-text-secondary;
 }
+
 aside::-webkit-scrollbar {
   display: none;
 }
+
 input[type="checkbox"] {
-  @apply mt-1   shrink-0 cursor-pointer appearance-none rounded-[4px] border border-[#dddddd]
-  checked:border-0 checked:bg-text-tertiary focus:outline-none;
+  @apply mt-1 shrink-0 cursor-pointer appearance-none rounded-[4px] border border-[#dddddd] checked:border-0 checked:bg-text-tertiary focus:outline-none;
 }
+
 input[type="checkbox"].task {
   @apply h-5 w-5;
 }
+
 input[type="checkbox"].subtask {
   @apply h-4 w-4;
 }

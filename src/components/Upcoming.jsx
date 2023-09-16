@@ -1,11 +1,11 @@
-import { Today } from "./App";
+// import { Today } from "./App";
 
 function Upcoming() {
   return (
     <div className="flex flex-wrap gap-5">
       <div className="w-full rounded-lg  border border-background-tertiary p-4">
         <SmallTitle title="Today" />
-        <Today />
+        
       </div>
       <div className="min-w-[340px] flex-1 rounded-lg border border-background-tertiary p-4">
         <SmallTitle title="Tomorrow" />
