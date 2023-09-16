@@ -1,4 +1,4 @@
-import { SmallTitle, Today } from "./App";
+import { Today } from "./App";
 
 function Upcoming() {
   return (
@@ -26,7 +26,8 @@ function Tomorrow() {
         <input
           type="text"
           className="w-full rounded-lg bg-transparent  p-2  text-sm text-text-tertiary placeholder:text-text-tertiary focus:outline-none"
-          placeholder="Add New Task" />
+          placeholder="Add New Task"
+        />
       </div>
       <ul className="mt-3 space-y-2">
         <li className="flex items-center justify-between gap-3 border-b border-background-tertiary px-5 pb-2">
@@ -61,7 +62,8 @@ function ThisWeek() {
         <input
           type="text"
           className="w-full rounded-lg bg-transparent  p-2  text-sm text-text-tertiary placeholder:text-text-tertiary focus:outline-none"
-          placeholder="Add New Task" />
+          placeholder="Add New Task"
+        />
       </div>
       <ul className="mt-3 space-y-2">
         <li className="flex items-center justify-between gap-3 border-b border-background-tertiary px-5 pb-2">
@@ -117,4 +119,19 @@ function ThisWeek() {
       </ul>
     </div>
   );
+}
+export function BigTitle({ title, count }) {
+  return (
+    <div className="mb-10 flex items-center gap-8">
+      <h1 className="text-4xl font-bold text-text-primary">{title}</h1>
+      {count && (
+        <span className="rounded-lg border border-background-tertiary px-3 py-2 text-3xl font-semibold">
+          {count}
+        </span>
+      )}
+    </div>
+  );
+}
+export function SmallTitle({ title }) {
+  return <h1 className="mb-3 text-2xl font-bold text-text-primary">{title}</h1>;
 }

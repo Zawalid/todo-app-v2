@@ -20,6 +20,12 @@ aside::-webkit-scrollbar {
   display: none;
 }
 input[type="checkbox"] {
-  @apply   mt-1 h-4 w-4 shrink-0 appearance-none rounded-[4px] border border-[#dddddd]
+  @apply mt-1   shrink-0 cursor-pointer appearance-none rounded-[4px] border border-[#dddddd]
   checked:border-0 checked:bg-text-tertiary focus:outline-none;
+}
+input[type="checkbox"].task {
+  @apply h-5 w-5;
+}
+input[type="checkbox"].subtask {
+  @apply h-4 w-4;
 }

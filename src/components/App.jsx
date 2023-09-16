@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "../App.css";
 import { AddTask } from "./AddTask";
 import { useLocalStorageState } from "../useLocalStorageState";
+import { BigTitle } from "./Upcoming";
 
 export default function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(true);
@@ -9,43 +10,12 @@ export default function App() {
   const [todayTasks, setTodayTasks] = useLocalStorageState("todayTasks", [
     {
       id: Math.random(),
-      title: "Research content ideas",
-      description: "",
-      dueDate: "",
-      subtasksNumber: 0,
-      list: "",
-    },
-    {
-      id: Math.random(),
-      title: "Create a database of guest authors",
-      description: "",
-      dueDate: "",
-      subtasksNumber: 0,
-      list: "",
-    },
-    {
-      id: Math.random(),
-      title: "Renew driver's license",
-      description: "",
-      dueDate: "2023-09-13",
-      subtasksNumber: 1,
-      list: "Personal",
-    },
-    {
-      id: Math.random(),
       title: "Consult accountant",
       description: "",
       dueDate: "",
       list: "List 1",
-      subtasksNumber: 3,
-    },
-    {
-      id: Math.random(),
-      title: "Print business cards",
-      description: "",
-      dueDate: "",
-      subtasksNumber: 0,
-      list: "",
+      subtasks: [],
+      isCompleted: true,
     },
   ]);
   const [currentTask, setCurrentTask] = useState(null);
@@ -56,8 +26,9 @@ export default function App() {
       title,
       description: "",
       dueDate: "",
-      subtasksNumber: 0,
       list: "",
+      subtasks: [],
+      isCompleted: false,
     };
     setTodayTasks((prev) => [...prev, newTask]);
   }
@@ -81,6 +52,12 @@ export default function App() {
     });
     setIsTaskInfoOpen(false);
   }
+  function handleCompleteTask(id, isCompleted) {
+    const newTasks = todayTasks.map((task) =>
+      task.id === id ? { ...task, isCompleted } : task,
+    );
+    setTodayTasks(newTasks);
+  }
 
   return (
     <div className="flex h-full gap-2 bg-background-primary p-5">
@@ -91,6 +68,7 @@ export default function App() {
           todayTasks={todayTasks}
           onAdd={handlerAddTask}
           onOpen={handleOpenTask}
+          onComplete={handleCompleteTask}
         />
       </Main>
       <TaskInfo
@@ -114,7 +92,7 @@ function Menu({ isOpen, setIsOpen }) {
           : "w-0 items-center bg-background-primary  ")
       }
     >
-      {!isOpen && (
+      {isOpen || (
         <button onClick={() => setIsOpen(true)}>
           <i className="fa-solid fa-bars cursor-pointer text-text-secondary"></i>
         </button>
@@ -251,34 +229,92 @@ function Main({ children }) {
   );
 }
 function TaskInfo({ isOpen, onClose, task, onEdit, onDelete }) {
-  const [taskTitle, setTaskTitle] = useState(task?.title);
-  const [taskDescription, setTaskDescription] = useState(task?.description);
-  const [taskList, setTaskList] = useState(task?.list);
-  const [taskDueDate, setTaskDueDate] = useState(task?.dueDate);
+  const [taskTitle, setTaskTitle] = useState();
+  const [taskDescription, setTaskDescription] = useState();
+  const [taskList, setTaskList] = useState();
+  const [taskDueDate, setTaskDueDate] = useState();
+  const [taskSubtasks, setTaskSubtasks] = useState();
   const [isChanged, setIsChanged] = useState(false);
 
   const today = new Date().toISOString().split("T")[0];
 
   useEffect(() => {
-    setTaskTitle(task?.title);
-    setTaskDescription(task?.description);
-    setTaskList(task?.list);
-    setTaskDueDate(task?.dueDate);
-  }, [task]);
-
+    if (isOpen) {
+      setTaskTitle(task?.title);
+      setTaskDescription(task?.description);
+      setTaskList(task?.list);
+      setTaskDueDate(task?.dueDate);
+      setTaskSubtasks(task?.subtasks);
+    } else {
+      setTaskTitle("");
+      setTaskDescription("");
+      setTaskList("");
+      setTaskDueDate("");
+      setTaskSubtasks([]);
+    }
+  }, [task, isOpen]);
   useEffect(() => {
-    if (
+    if (isOpen)
       task?.title !== taskTitle ||
       task?.description !== taskDescription ||
       task?.list !== taskList ||
-      task?.dueDate !== taskDueDate
-    ) {
-      setIsChanged(true);
-    } else {
-      setIsChanged(false);
-    }
-  }, [taskTitle, taskDescription, taskList, taskDueDate, task]);
+      task?.dueDate !== taskDueDate ||
+      task?.subtasks?.length !== taskSubtasks?.length ||
+      task?.subtasks.some((subtask, index) => {
+        return (
+          subtask.title !== taskSubtasks[index].title ||
+          subtask.isCompleted !== taskSubtasks[index].isCompleted
+        );
+      })
+        ? setIsChanged(true)
+        : setIsChanged(false);
+  }, [
+    isOpen,
+    task,
+    taskTitle,
+    taskDescription,
+    taskList,
+    taskDueDate,
+    taskSubtasks,
+  ]);
 
+  function handleAddSubTask(title) {
+    const newSubtask = {
+      id: Math.random(),
+      title,
+      isCompleted: false,
+    };
+    setTaskSubtasks((prev) => [...prev, newSubtask]);
+  }
+  function handleSaveChanges() {
+    if (isChanged) {
+      const editedTask = {
+        ...task,
+        title: taskTitle,
+        description: taskDescription,
+        list: taskList,
+        dueDate: taskDueDate,
+        subtasks: taskSubtasks,
+      };
+      onEdit(editedTask);
+    }
+  }
+  function handleEditSubtask(id, title) {
+    const newSubtasks = taskSubtasks
+      .map((subtask) => (subtask.id === id ? { ...subtask, title } : subtask))
+      .filter((subtask) => subtask.title !== "");
+    setTaskSubtasks(newSubtasks);
+  }
+  function handleDeleteSubtask(id) {
+    const newSubtasks = taskSubtasks.filter((subtask) => subtask.id !== id);
+    setTaskSubtasks(newSubtasks);
+  }
+  function handleCompleteSubTask(id, isCompleted) {
+    const newSubtasks = taskSubtasks.map((subtask) =>
+      subtask.id === id ? { ...subtask, isCompleted } : subtask,
+    );
+    setTaskSubtasks(newSubtasks);
+  }
   return (
     <aside
       className={
@@ -299,32 +335,32 @@ function TaskInfo({ isOpen, onClose, task, onEdit, onDelete }) {
           <div className="my-5">
             <input
               type="text"
-              className="w-full rounded-lg border border-background-tertiary  bg-transparent  p-2  text-sm text-text-tertiary placeholder:text-text-tertiary focus:outline-none"
+              className="w-full rounded-lg border border-background-tertiary  bg-transparent  p-2  text-sm text-text-secondary placeholder:text-text-tertiary focus:outline-none"
               placeholder="Task Title"
               value={taskTitle || ""}
               onChange={(e) => setTaskTitle(e.target.value)}
             />
             <textarea
-              className="mt-2 h-32 w-full resize-none  rounded-lg  border  border-background-tertiary bg-transparent p-2 text-sm text-text-tertiary placeholder:text-text-tertiary focus:outline-none"
+              className="mt-2 h-32 w-full resize-none  rounded-lg  border  border-background-tertiary bg-transparent p-2 text-sm text-text-secondary placeholder:text-text-tertiary focus:outline-none"
               placeholder="Description"
               value={taskDescription || ""}
               onChange={(e) => setTaskDescription(e.target.value)}
             ></textarea>
           </div>
           <div className="grid grid-cols-[1fr_3fr] items-center space-y-2">
-            <label className="text-sm text-text-secondary">List</label>
-            <select className="w-fit rounded-lg border border-background-tertiary  bg-transparent  p-2  text-sm text-text-tertiary placeholder:text-text-tertiary focus:outline-none">
+            <label className="text-sm text-text-tertiary">List</label>
+            <select className="w-fit rounded-lg border border-background-tertiary  bg-transparent  p-2  text-sm text-text-secondary  focus:outline-none">
               <option>Personal</option>
             </select>
-            <label className="text-sm text-text-secondary">Due date</label>
+            <label className="text-sm text-text-tertiary">Due date</label>
             <input
               type="date"
-              className="w-fit rounded-lg border border-background-tertiary  bg-transparent  p-2  text-sm text-text-tertiary placeholder:text-text-tertiary focus:outline-none"
+              className="w-fit rounded-lg border border-background-tertiary  bg-transparent  p-2  text-sm text-text-secondary  focus:outline-none"
               min={today}
               value={taskDueDate || ""}
               onChange={(e) => setTaskDueDate(e.target.value)}
             />
-            <label className="text-sm text-text-secondary">Tags</label>
+            <label className="text-sm text-text-tertiary">Tags</label>
             <ul className="flex flex-wrap gap-2">
               <li className="menu_tag_element bg-[#d1eaed]">Tag 1</li>
               <li className="menu_tag_element bg-background-tertiary">
@@ -338,22 +374,21 @@ function TaskInfo({ isOpen, onClose, task, onEdit, onDelete }) {
             </h2>
             <div className="flex items-center gap-3 border-b border-background-tertiary px-3 py-1">
               <i className="fa-solid fa-plus text-xl text-text-tertiary"></i>
-              <input
-                type="text"
-                className="w-full rounded-lg bg-transparent  p-2  text-sm text-text-tertiary placeholder:text-text-tertiary focus:outline-none"
-                placeholder="Add New Task"
-              />
+              <AddTask onAdd={handleAddSubTask} />
             </div>
             <ul className="mt-3 space-y-2 px-3">
-              <li className="flex items-center gap-3">
-                <div className="relative">
-                  <input type="checkbox" id="some_id" className=" peer " />
-                  <i className="fas fa-check pointer-events-none  absolute left-[2px]  top-[2px] hidden h-4 w-4 text-sm text-white peer-checked:block"></i>
-                </div>
-                <span className=" text-sm font-medium text-text-secondary">
-                  Subtask
-                </span>
-              </li>
+              {taskSubtasks?.map((subtask) => (
+                <SubTask
+                  key={subtask.id}
+                  title={subtask.title}
+                  onDelete={() => handleDeleteSubtask(subtask.id)}
+                  onEdit={(title) => handleEditSubtask(subtask.id, title)}
+                  isCompleted={subtask.isCompleted}
+                  onComplete={(isCompleted) =>
+                    handleCompleteSubTask(subtask.id, isCompleted)
+                  }
+                />
+              ))}
             </ul>
           </div>
           <div className="mt-auto flex gap-3">
@@ -370,18 +405,7 @@ function TaskInfo({ isOpen, onClose, task, onEdit, onDelete }) {
                   ? "cursor-pointer bg-indigo-400 text-background-secondary "
                   : "cursor-not-allowed bg-background-tertiary text-text-tertiary")
               }
-              onClick={() => {
-                if (isChanged) {
-                  const editedTask = {
-                    ...task,
-                    title: taskTitle,
-                    description: taskDescription,
-                    list: taskList,
-                    dueDate: taskDueDate,
-                  };
-                  onEdit(editedTask);
-                }
-              }}
+              onClick={handleSaveChanges}
             >
               Save Changes
             </button>
@@ -391,22 +415,7 @@ function TaskInfo({ isOpen, onClose, task, onEdit, onDelete }) {
     </aside>
   );
 }
-function BigTitle({ title, count }) {
-  return (
-    <div className="mb-10 flex items-center gap-8">
-      <h1 className="text-4xl font-bold text-text-primary">{title}</h1>
-      {count && (
-        <span className="rounded-lg border border-background-tertiary px-3 py-2 text-3xl font-semibold">
-          {count}
-        </span>
-      )}
-    </div>
-  );
-}
-export function SmallTitle({ title }) {
-  return <h1 className="mb-3 text-2xl font-bold text-text-primary">{title}</h1>;
-}
-export function Today({ todayTasks, onAdd, onOpen }) {
+export function Today({ todayTasks, onAdd, onOpen, onComplete }) {
   return (
     <>
       <div>
@@ -420,9 +429,11 @@ export function Today({ todayTasks, onAdd, onOpen }) {
               key={task.id}
               title={task.title}
               dueDate={task.dueDate}
-              subtasksNumber={task.subtasksNumber}
+              subtasksNumber={task.subtasks.length}
               list={task.list}
               onOpen={() => onOpen(task)}
+              isCompleted={task.isCompleted}
+              onComplete={(isCompleted) => onComplete(task.id, isCompleted)}
             />
           ))}
         </ul>
@@ -430,13 +441,36 @@ export function Today({ todayTasks, onAdd, onOpen }) {
     </>
   );
 }
+function Task({
+  title,
+  dueDate,
+  subtasksNumber,
+  list,
+  onOpen,
+  isCompleted,
+  onComplete,
+}) {
+  const [checked, setChecked] = useState(isCompleted);
+  useEffect(() => {
+    onComplete(checked);
+    // eslint-disable-next-line
+  }, [checked]);
 
-function Task({ title, dueDate, subtasksNumber, list, onOpen }) {
   return (
-    <li className="flex items-center justify-between  gap-3 border-b border-background-tertiary px-5 pb-2">
+    <li
+      className={
+        "flex items-center justify-between  gap-3 rounded-lg border-b  border-background-tertiary px-5 py-2 transition-colors duration-500 " +
+        (checked ? "bg-background-secondary" : "")
+      }
+    >
       <div className="relative">
-        <input type="checkbox" id="some_id" className=" peer " />
-        <i className="fas fa-check pointer-events-none  absolute left-[2px]  top-[2px] hidden h-4 w-4 text-sm text-white peer-checked:block"></i>
+        <input
+          type="checkbox"
+          className="task peer"
+          checked={checked}
+          onChange={() => setChecked(!checked)}
+        />
+        <i className="fas fa-check pointer-events-none  absolute left-1  top-1 hidden h-4 w-4 text-sm text-white peer-checked:block"></i>
       </div>
       <div className="flex-1">
         <span className="text-sm font-medium text-text-secondary">{title}</span>
@@ -472,6 +506,61 @@ function Task({ title, dueDate, subtasksNumber, list, onOpen }) {
       <button onClick={onOpen}>
         <i className="fa-solid fa-chevron-right cursor-pointer text-text-tertiary"></i>
       </button>
+    </li>
+  );
+}
+function SubTask({ title, onEdit, onDelete, isCompleted, onComplete }) {
+  const [checked, setChecked] = useState(isCompleted);
+  const subTaskEl = useRef(null);
+
+  useEffect(() => {
+    onComplete(checked);
+    // eslint-disable-next-line
+  }, [checked]);
+
+  function editSubTask() {
+    function saveTitle() {
+      subTaskEl.current.setAttribute("contenteditable", false);
+      onEdit(subTaskEl.current.innerText);
+    }
+    subTaskEl.current.setAttribute("contenteditable", true);
+    subTaskEl.current.focus();
+    subTaskEl.current.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        saveTitle();
+      }
+    });
+    subTaskEl.current.addEventListener("blur", () => saveTitle());
+  }
+  return (
+    <li className="flex items-center gap-3">
+      <div className="relative">
+        <input
+          type="checkbox"
+          className="subtask peer"
+          checked={checked}
+          onChange={() => setChecked(!checked)}
+        />
+        <i className="fas fa-check pointer-events-none  absolute left-[2px]  top-[2px] hidden h-4 w-4 text-sm text-white peer-checked:block"></i>
+      </div>
+      <p
+        className={
+          "border-1 flex-1 text-sm font-medium text-text-secondary  focus:border-background-tertiary focus:outline-none " +
+          (checked ? "line-through" : "")
+        }
+        ref={subTaskEl}
+      >
+        {title}
+      </p>
+      <div className="flex items-center gap-2">
+        <button onClick={editSubTask}>
+          <i className="fas fa-pen cursor-pointer text-xs text-text-tertiary"></i>
+        </button>
+        <button onClick={onDelete}>
+          <i className="fas fa-trash cursor-pointer text-xs text-text-tertiary"></i>
+        </button>
+      </div>
     </li>
   );
 }
