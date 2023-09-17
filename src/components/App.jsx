@@ -84,24 +84,30 @@ export default function App() {
     };
     setLists((prev) => [...prev, newList]);
   }
-  function handleAddTasksToList(listTitle, task) {
+  function handleAddTasksToList(listId, task) {
     const newLists = lists
       .map((list) => {
         const tasks = list.tasks.filter((t) => t.id !== task.id);
         return { ...list, tasks };
       })
       .map((list) => {
-        return list.title === listTitle ? { ...list, tasks: [...list.tasks, task] } : list;
+        return list.id === +listId ? { ...list, tasks: [...list.tasks, task] } : list;
       });
     setLists(newLists);
   }
-  function handleRenameList(id, title) {
-    const newLists = lists.map((list) => (list.id === id ? { ...list, title } : list));
+  function handleUpdateList(id, property, value) {
+    const newLists = lists.map((list) => (list.id === id ? { ...list, [property]: value } : list));
     setLists(newLists);
+  }
+  function handleRenameList(id, title) {
+    handleUpdateList(id, 'title', title);
   }
   function handleDeleteList(id) {
     const newLists = lists.filter((list) => list.id !== id);
     setLists(newLists);
+  }
+  function handleChangeListColor(id, color) {
+    handleUpdateList(id, 'color', color);
   }
 
   return (
@@ -114,6 +120,7 @@ export default function App() {
         todayTasksNumber={todayTasks.length}
         onRenameList={handleRenameList}
         onDeleteList={handleDeleteList}
+        onChangeListColor={handleChangeListColor}
       />
       <Main>
         <BigTitle title='Today' count={todayTasks.length} />
@@ -146,11 +153,12 @@ function Menu({
   onAddList,
   onRenameList,
   onDeleteList,
+  onChangeListColor,
 }) {
   return (
     <aside
       className={
-        'flex flex-col overflow-y-auto rounded-xl  p-4  transition-[width]  duration-500   ' +
+        'flex flex-col overflow-y-auto rounded-l-xl  p-4  transition-[width]  duration-500   ' +
         (isOpen
           ? 'w-[22%] items-stretch bg-background-secondary '
           : 'w-0 items-center bg-background-primary  ')
@@ -183,6 +191,7 @@ function Menu({
             onAddList={onAddList}
             onRenameList={onRenameList}
             onDeleteList={onDeleteList}
+            onChangeListColor={onChangeListColor}
           />
           <div className='mb-16'>
             <h4 className='mb-4 mt-5 font-medium text-text-secondary'>Tags</h4>
@@ -299,7 +308,7 @@ function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSelectList
   return (
     <aside
       className={
-        'ml-auto flex flex-col overflow-y-auto rounded-xl transition-[width] duration-500 ' +
+        'ml-auto flex flex-col overflow-y-auto rounded-l-xl transition-[width] duration-500 ' +
         (isOpen
           ? 'w-[30%] items-stretch bg-background-secondary  p-4'
           : 'w-0 items-center bg-background-primary p-0')
@@ -331,11 +340,11 @@ function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSelectList
           <div className='grid grid-cols-[1fr_3fr] items-center space-y-2'>
             <label className='text-sm text-text-tertiary'>List</label>
             <select
-              className='w-fit rounded-lg border border-background-tertiary  bg-transparent  p-2  text-sm text-text-secondary  focus:outline-none'
+              className='w-fit min-w-[100px] rounded-lg border border-background-tertiary  bg-transparent  p-2  text-sm text-text-secondary  focus:outline-none'
               value={taskListId}
               onChange={(e) => setTaskListId(e.target.value)}
             >
-              <option value='none'></option>
+              <option value='none'>None</option>
               {lists.map((list) => (
                 <option key={list.id} value={list.id}>
                   {list.title}
@@ -506,7 +515,7 @@ function Task({ title, dueDate, subtasksNumber, listId, onOpen, isCompleted, onC
               <span className='text-xs font-semibold text-text-secondary'>Subtasks</span>
             </div>
           )}
-          {listId && listId !== 'none' && (
+          {listName && listId !== 'none' && (
             <div className='flex items-center gap-2'>
               <span className='h-4 w-4 rounded-sm' style={{ backgroundColor: listColor }}></span>
               <span className='text-xs font-semibold text-text-secondary'>{listName}</span>
@@ -576,7 +585,7 @@ function SubTask({ title, onEdit, onDelete, isCompleted, onComplete }) {
   );
 }
 
-function Lists({ lists, onAddList, onRenameList, onDeleteList }) {
+function Lists({ lists, onAddList, onRenameList, onDeleteList, onChangeListColor }) {
   const [isAddNewListOpen, setIsAddNewListOpen] = useState(false);
   const addNewListContainer = useRef(null);
   const addNewListToggler = useRef(null);
@@ -600,7 +609,6 @@ function Lists({ lists, onAddList, onRenameList, onDeleteList }) {
   }, []);
 
   function handleDuplicateLists(list) {
-    console.log(list);
     setDuplicatedList(list);
     setTimeout(() => setDuplicatedList({}), 3000);
   }
@@ -618,6 +626,7 @@ function Lists({ lists, onAddList, onRenameList, onDeleteList }) {
             alreadyExists={list.title?.toLowerCase() === duplicatedList.title?.toLowerCase()}
             onRename={(title) => onRenameList(list.id, title)}
             onDelete={() => onDeleteList(list.id)}
+            onChangeColor={(color) => onChangeListColor(list.id, color)}
           />
         ))}
       </ul>
@@ -641,10 +650,11 @@ function Lists({ lists, onAddList, onRenameList, onDeleteList }) {
     </div>
   );
 }
-function List({ title, color, tasksNumber, alreadyExists, onRename, onDelete }) {
+function List({ title, color, tasksNumber, alreadyExists, onRename, onDelete, onChangeColor }) {
   const [isListActionsOpen, setIsListActionsOpen] = useState(false);
   const listActions = useRef(null);
   const listTitle = useRef(null);
+  const [listColor, setListColor] = useState(color);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -660,13 +670,22 @@ function List({ title, color, tasksNumber, alreadyExists, onRename, onDelete }) 
   function closeListActions() {
     setIsListActionsOpen(false);
   }
+  function changeColor(color) {
+    setListColor(color);
+    onChangeColor(color);
+  }
   return (
     <li
       className={
         'menu_element group grid-cols-[30px_auto_35px_20px]' + (alreadyExists ? 'bg-red-400' : '')
       }
     >
-      <div className='h-4 w-4 rounded-[3px]' style={{ backgroundColor: color }}></div>
+      <div
+        className='h-4 w-4 rounded-[3px]'
+        style={{
+          backgroundColor: listColor,
+        }}
+      ></div>
       <span
         className={
           'first-line: text-sm outline-none transition-[color_font-weight] duration-100 group-hover:font-bold' +
@@ -676,14 +695,14 @@ function List({ title, color, tasksNumber, alreadyExists, onRename, onDelete }) 
       >
         {title}
       </span>
-      <div className='ml-1 grid place-content-center rounded-sm bg-background-tertiary py-[1px] transition-colors duration-300 group-hover:bg-background-primary'>
+      <div className='mx-1 grid place-content-center rounded-sm bg-background-tertiary py-[1px] transition-colors duration-300 group-hover:bg-background-primary'>
         <span className='text-xs font-semibold text-text-secondary'>{tasksNumber}</span>
       </div>
-      <div className='cursor-pinter relative text-end'>
-        <i
-          className='fas fa-ellipsis-vertical text-text-tertiary'
-          onClick={() => setIsListActionsOpen(true)}
-        ></i>
+      <button
+        className='cursor-pinter relative rounded-md text-center transition-colors duration-300 hover:bg-background-primary'
+        onClick={() => setIsListActionsOpen(true)}
+      >
+        <i className='fas fa-ellipsis-vertical text-text-tertiary'></i>
         <ListAction
           isOpen={isListActionsOpen}
           reference={listActions}
@@ -691,12 +710,30 @@ function List({ title, color, tasksNumber, alreadyExists, onRename, onDelete }) 
           onRename={(title) => onRename(title)}
           onDelete={onDelete}
           onClose={closeListActions}
+          onChangeColor={changeColor}
         />
-      </div>
+      </button>
     </li>
   );
 }
-function ListAction({ isOpen, reference, listTitle, onRename, onDelete, onClose }) {
+function ListAction({ isOpen, reference, listTitle, onRename, onDelete, onClose, onChangeColor }) {
+  const [isColorsOpen, setIsColorsOpen] = useState(false);
+  const colorsDiv = useRef(null);
+
+  useEffect(() => {
+    isOpen || setIsColorsOpen(false);
+  }, [isOpen]);
+  useEffect(() => {
+    function handleClick(e) {
+      if (isOpen && e.target.tagName === 'SPAN') {
+        const color = e.target.dataset.color;
+        onChangeColor(color);
+      }
+    }
+    document.addEventListener('click', handleClick);
+    return () => document.removeEventListener('click', handleClick);
+  }, [isOpen]);
+
   function handleRename() {
     function saveTitle() {
       listTitle.current.setAttribute('contenteditable', false);
@@ -713,29 +750,49 @@ function ListAction({ isOpen, reference, listTitle, onRename, onDelete, onClose 
     });
     listTitle.current.addEventListener('blur', () => saveTitle());
   }
-
+  function handleChangeColor() {
+    setIsColorsOpen(!isColorsOpen);
+  }
   return (
     <ul
       className={
-        'absolute right-0 top-full  z-10  w-max space-y-3 rounded-lg bg-background-primary p-3 shadow-md ' +
+        'absolute right-0 top-full z-10  w-36 rounded-lg bg-background-primary p-3 shadow-md ' +
         (isOpen ? 'block' : 'hidden')
       }
       ref={reference}
     >
       <li
-        className='grid cursor-pointer grid-cols-[15px_1fr] items-center gap-2 text-start text-text-secondary transition-colors duration-300 hover:text-text-tertiary'
+        className='grid cursor-pointer grid-cols-[15px_1fr] items-center gap-2 text-start text-sm text-text-secondary transition-colors duration-300 hover:text-text-tertiary'
         onClick={handleRename}
       >
         <i className='fa-solid fa-pen '></i>
         <p>Rename List</p>
       </li>
       <li
-        className='grid cursor-pointer grid-cols-[15px_1fr] items-center gap-2 text-start text-text-secondary transition-colors duration-300 hover:text-text-tertiary'
+        className='my-3 grid cursor-pointer grid-cols-[15px_1fr] items-center gap-2 text-start text-sm text-text-secondary transition-colors duration-300 hover:text-text-tertiary'
         onClick={onDelete}
       >
         <i className='fa-solid fa-trash '></i>
         <p>Delete List</p>
       </li>
+      {isColorsOpen || (
+        <li
+          className='grid cursor-pointer grid-cols-[15px_1fr] items-center gap-2 text-start text-sm text-text-secondary transition-colors duration-300 hover:text-text-tertiary'
+          onClick={handleChangeColor}
+        >
+          <i className='fa-solid fa-palette'></i>
+          <p>Change Color</p>
+        </li>
+      )}
+      <div
+        className={
+          'flex flex-wrap items-center gap-2  overflow-hidden transition-[height] duration-300 ' +
+          (isColorsOpen ? 'h-10' : 'h-0')
+        }
+        ref={colorsDiv}
+      >
+        <Colors />
+      </div>
     </ul>
   );
 }
@@ -750,7 +807,7 @@ function AddNewList({ reference, onAdd, isOpen, lists, onDuplicate }) {
     inputEl.current.focus();
     function handleClick(e) {
       if (isOpen && e.target.tagName === 'SPAN') {
-        const color = e.target.classList[4].split('[')[1].slice(0, 7);
+        const color = e.target.dataset.color;
         setColor(color);
       }
     }
@@ -797,15 +854,46 @@ function AddNewList({ reference, onAdd, isOpen, lists, onDuplicate }) {
         </form>
       </div>
       <div className='mt-3 flex items-center justify-between gap-2' ref={colorsDiv}>
-        <span className='h-4 w-4 cursor-pointer rounded-[3px] bg-custom-1'></span>
-        <span className='h-4 w-4 cursor-pointer rounded-[3px] bg-custom-2'></span>
-        <span className='h-4 w-4 cursor-pointer rounded-[3px] bg-custom-3'></span>
-        <span className='h-4 w-4 cursor-pointer rounded-[3px] bg-custom-4'></span>
-        <span className='h-4 w-4 cursor-pointer rounded-[3px] bg-custom-5'></span>
-        <span className='h-4 w-4 cursor-pointer rounded-[3px] bg-custom-6'></span>
-        <span className='h-4 w-4 cursor-pointer rounded-[3px] bg-custom-7'></span>
-        <span className='h-4 w-4 cursor-pointer rounded-[3px] bg-custom-8'></span>
+        <Colors />
       </div>
     </div>
+  );
+}
+function Colors() {
+  return (
+    <>
+      <span
+        className='h-4 w-4 cursor-pointer rounded-[3px] bg-custom-1'
+        data-color='#ff6b6b'
+      ></span>
+      <span
+        className='h-4 w-4 cursor-pointer rounded-[3px] bg-custom-2'
+        data-color='#da77f2'
+      ></span>
+      <span
+        className='h-4 w-4 cursor-pointer rounded-[3px] bg-custom-3'
+        data-color='#9775fa'
+      ></span>
+      <span
+        className='h-4 w-4 cursor-pointer rounded-[3px] bg-custom-4'
+        data-color='#5c7cfa'
+      ></span>
+      <span
+        className='h-4 w-4 cursor-pointer rounded-[3px] bg-custom-5'
+        data-color='#66d9e8'
+      ></span>
+      <span
+        className='h-4 w-4 cursor-pointer rounded-[3px] bg-custom-6'
+        data-color='#8ce99a'
+      ></span>
+      <span
+        className='h-4 w-4 cursor-pointer rounded-[3px] bg-custom-7'
+        data-color='#ffd43b'
+      ></span>
+      <span
+        className='h-4 w-4 cursor-pointer rounded-[3px] bg-custom-8'
+        data-color='#ff922b'
+      ></span>
+    </>
   );
 }

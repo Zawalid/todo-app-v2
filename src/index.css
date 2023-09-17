@@ -14,8 +14,8 @@ body {
   height: 100%;
 }
 ::-webkit-scrollbar {
-  width: 2px;
-  height: 2px;
+  width: 3px;
+  height: 3px;
 }
 ::-webkit-scrollbar-thumb{
   @apply bg-text-tertiary rounded-lg
