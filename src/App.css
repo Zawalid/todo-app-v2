@@ -14,21 +14,21 @@
 }
 
 .menu_tag_element {
-  @apply cursor-pointer rounded-md px-3 py-2 text-xs font-semibold text-text-secondary;
+  @apply cursor-pointer rounded-md px-3 py-2 text-xs font-semibold;
 }
 
 aside::-webkit-scrollbar-track {
-  @apply bg-background-secondary 
+  @apply bg-background-secondary;
 }
 
-input[type="checkbox"] {
+input[type='checkbox'] {
   @apply mt-1 shrink-0 cursor-pointer appearance-none rounded-[4px] border border-[#dddddd] checked:border-0 checked:bg-text-tertiary focus:outline-none;
 }
 
-input[type="checkbox"].task {
+input[type='checkbox'].task {
   @apply h-5 w-5;
 }
 
-input[type="checkbox"].subtask {
+input[type='checkbox'].subtask {
   @apply h-4 w-4;
 }

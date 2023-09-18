@@ -35,6 +35,14 @@ export default function App() {
       number: 0,
     },
   ]);
+  const [tags, setTags] = useLocalStorageState('tags', [
+    {
+      id: Math.random(),
+      title: 'Tag 1',
+      bgColor: '#d1eaed',
+      textColor: '#444',
+    },
+  ]);
 
   function handlerAddTask(title) {
     const newTask = {
@@ -133,7 +141,19 @@ export default function App() {
     setLists((prev) => [...prev, duplicatedList]);
     setTodayTasks((prev) => [...prev, ...newListTasks]);
   }
-
+  function handleAddTag(title, bgColor, textColor) {
+    const newTag = {
+      id: Math.random(),
+      title,
+      bgColor,
+      textColor,
+    };
+    setTags((prev) => [...prev, newTag]);
+  }
+  function handleDeleteTag(id) {
+    const newTags = tags.filter((tag) => tag.id !== id);
+    setTags(newTags);
+  }
   return (
     <div className='flex h-full gap-2 bg-background-primary p-5'>
       <Menu
@@ -146,6 +166,9 @@ export default function App() {
         onDeleteList={handleDeleteList}
         onChangeListColor={handleChangeListColor}
         onDuplicateList={handleDuplicateLists}
+        tags={tags}
+        onAddTag={handleAddTag}
+        onDeleteTag={handleDeleteTag}
       />
       <Main>
         <BigTitle title='Today' count={todayTasks.length} />
@@ -180,6 +203,9 @@ function Menu({
   onDeleteList,
   onChangeListColor,
   onDuplicateList,
+  tags,
+  onAddTag,
+  onDeleteTag,
 }) {
   return (
     <aside
@@ -220,14 +246,7 @@ function Menu({
             onChangeListColor={onChangeListColor}
             onDuplicateList={onDuplicateList}
           />
-          <div className='mb-16'>
-            <h4 className='mb-4 mt-5 font-medium text-text-secondary'>Tags</h4>
-            <ul className='flex flex-wrap gap-2'>
-              <li className='menu_tag_element bg-[#d1eaed]'>Tag 1</li>
-              <li className='menu_tag_element bg-[#ffdada]'>Tag 2</li>
-              <li className='menu_tag_element bg-background-tertiary'>+ Add Tag</li>
-            </ul>
-          </div>
+          <Tags tags={tags} onAddTag={onAddTag} onDeleteTag={onDeleteTag} />
           <div className='mt-auto'>
             <ul className='space-y-3'>
               <li className='grid cursor-pointer grid-cols-[25px_auto] items-center'>
@@ -676,7 +695,6 @@ function Lists({
           reference={addNewListContainer}
           isOpen={isAddNewListOpen}
           onAdd={onAddList}
-          lists={lists}
           untitledTasksNumber={untitledTasksNumber}
         />
       )}
@@ -821,7 +839,7 @@ function ListAction({
       <div
         className={
           'flex flex-wrap items-center gap-2  overflow-hidden transition-[height] duration-300 ' +
-          (isColorsOpen ? 'h-10' : 'h-0')
+          (isColorsOpen ? 'h-16' : 'h-0')
         }
         ref={colorsDiv}
       >
@@ -907,7 +925,7 @@ function AddNewList({ reference, onAdd, isOpen, untitledTasksNumber }) {
           />
         </form>
       </div>
-      <div className='mt-3 flex items-center justify-between gap-2' ref={colorsDiv}>
+      <div className='mt-3 flex flex-wrap items-center justify-start gap-2' ref={colorsDiv}>
         <Colors />
       </div>
     </div>
@@ -930,7 +948,7 @@ function Colors() {
       ></span>
       <span
         className='h-4 w-4 cursor-pointer rounded-[3px] bg-custom-4'
-        data-color='#5c7cfa'
+        data-color='#64c37e'
       ></span>
       <span
         className='h-4 w-4 cursor-pointer rounded-[3px] bg-custom-5'
@@ -948,6 +966,186 @@ function Colors() {
         className='h-4 w-4 cursor-pointer rounded-[3px] bg-custom-8'
         data-color='#ff922b'
       ></span>
+      <span
+        className='bg-custom-9 h-4 w-4 cursor-pointer rounded-[3px]'
+        data-color='#ffb6b9'
+      ></span>
+      <span
+        className='bg-custom-10 h-4 w-4 cursor-pointer rounded-[3px]'
+        data-color='#d9a7f3'
+      ></span>
+      <span
+        className='bg-custom-11 h-4 w-4 cursor-pointer rounded-[3px]'
+        data-color='#b0a1f5'
+      ></span>
+      <span
+        className='bg-custom-12 h-4 w-4 cursor-pointer rounded-[3px]'
+        data-color='#75e0a3'
+      ></span>
+      <span
+        className='bg-custom-13 h-4 w-4 cursor-pointer rounded-[3px]'
+        data-color='#7ed1d9'
+      ></span>
+      <span
+        className='bg-custom-14 h-4 w-4 cursor-pointer rounded-[3px]'
+        data-color='#a7f0b2'
+      ></span>
+      <span
+        className='bg-custom-15 h-4 w-4 cursor-pointer rounded-[3px]'
+        data-color='#ffda77'
+      ></span>
+      <span
+        className='bg-custom-16 h-4 w-4 cursor-pointer rounded-[3px]'
+        data-color='#ffc77f'
+      ></span>
+      <span
+        className='bg-custom-17 h-4 w-4 cursor-pointer rounded-[3px]'
+        data-color='#c8ff2d'
+      ></span>
+      <span
+        className='bg-custom-18 h-4 w-4 cursor-pointer rounded-[3px]'
+        data-color='#605050'
+      ></span>
     </>
+  );
+}
+
+function Tags({ tags, onAddTag, onDeleteTag }) {
+  const [isAddNewTagOpen, setIsAddNewTagOpen] = useState(false);
+  const addNewTagContainer = useRef(null);
+  const addNewTagToggler = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (
+        addNewTagContainer.current &&
+        !addNewTagContainer.current.contains(e.target) &&
+        addNewTagToggler.current &&
+        !addNewTagToggler.current.contains(e.target)
+      ) {
+        setIsAddNewTagOpen(false);
+      }
+    }
+    window.addEventListener('click', handleClickOutside);
+    return () => {
+      window.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
+
+  return (
+    <div className='mb-16'>
+      <h4 className='mb-4 mt-5 font-medium text-text-secondary'>Tags</h4>
+      <ul className='flex flex-wrap gap-2'>
+        {tags.map((tag) => (
+          <Tag
+            key={tag.id}
+            title={tag.title}
+            bgColor={tag.bgColor}
+            textColor={tag.textColor}
+            onDeleteTag={() => onDeleteTag(tag.id)}
+          />
+        ))}
+        <li
+          className='menu_tag_element bg-background-tertiary  text-text-secondary'
+          onClick={() => setIsAddNewTagOpen(!isAddNewTagOpen)}
+          ref={addNewTagToggler}
+        >
+          + Add Tag
+        </li>
+        {isAddNewTagOpen && (
+          <AddNewTag reference={addNewTagContainer} isOpen={isAddNewTagOpen} onAdd={onAddTag} />
+        )}
+      </ul>
+    </div>
+  );
+}
+function Tag({ title, bgColor, textColor, onDeleteTag }) {
+  return (
+    <li
+      className='menu_tag_element relative'
+      style={{ backgroundColor: bgColor, color: textColor }}
+    >
+      <button
+        className='absolute -right-1 -top-1 grid h-3 w-3 cursor-pointer place-content-center rounded-full bg-red-600'
+        onClick={onDeleteTag}
+      >
+        <i className='fas fa-xmark  text-[10px] text-white'></i>
+      </button>
+      {title}
+    </li>
+  );
+}
+function AddNewTag({ reference, isOpen, onAdd }) {
+  const [value, setValue] = useState('');
+  const [bgColor, setBgColor] = useState('#66d9e8');
+  const [textColor, setTextColor] = useState('#444444');
+  const inputEl = useRef(null);
+  const bgColorsDiv = useRef(null);
+  const textColorsDiv = useRef(null);
+
+  useEffect(() => {
+    inputEl.current.focus();
+    function handleClick(e) {
+      if (isOpen && bgColorsDiv.current && bgColorsDiv.current.contains(e.target)) {
+        const color = e.target.dataset.color;
+        setBgColor(color);
+      }
+      if (isOpen && textColorsDiv.current && textColorsDiv.current.contains(e.target)) {
+        const color = e.target.dataset.color;
+        setTextColor(color);
+      }
+    }
+    document.addEventListener('click', handleClick);
+    return () => document.removeEventListener('click', handleClick);
+  }, [isOpen]);
+  useEffect(() => {
+    function handleKeyDown(e) {
+      e.key === 'Enter' && isOpen && e.target.tagName !== 'INPUT' && handleAdd();
+    }
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+    // eslint-disable-next-line
+  }, [value, bgColor, isOpen]);
+
+  function handleAdd() {
+    if (!value) return;
+    onAdd(value, bgColor, textColor);
+    setValue('');
+  }
+  return (
+    <div className='mt-5 rounded-lg border-2 border-background-tertiary p-3' ref={reference}>
+      <div className='flex items-center gap-2 '>
+        <div className='flex flex-col gap-1' ref={textColorsDiv}>
+          <span
+            className='h-4 w-4 cursor-pointer rounded-full bg-text-secondary'
+            data-color='#444'
+          ></span>
+          <span
+            className='h-4 w-4 cursor-pointer rounded-full bg-background-primary'
+            data-color='#fff'
+          ></span>
+        </div>
+        <form
+          className='flex-1'
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleAdd();
+          }}
+        >
+          <input
+            type='text'
+            className='w-full rounded-lg p-2 text-sm  placeholder:text-white focus:outline-none'
+            placeholder='Tag Name'
+            style={{ backgroundColor: bgColor, color: textColor }}
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            ref={inputEl}
+          />
+        </form>
+      </div>
+      <div className='mt-3 flex flex-wrap items-center justify-start gap-2' ref={bgColorsDiv}>
+        <Colors />
+      </div>
+    </div>
   );
 }
