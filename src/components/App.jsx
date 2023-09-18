@@ -25,12 +25,14 @@ export default function App() {
       title: 'Personal',
       color: '#ff6b6b',
       tasks: [],
+      number: 0,
     },
     {
       id: Math.random(),
       title: 'Work',
       color: '#66d9e8',
       tasks: [],
+      number: 0,
     },
   ]);
 
@@ -81,6 +83,7 @@ export default function App() {
       title,
       color,
       tasks: [],
+      number: 0,
     };
     setLists((prev) => [...prev, newList]);
   }
@@ -109,6 +112,27 @@ export default function App() {
   function handleChangeListColor(id, color) {
     handleUpdateList(id, 'color', color);
   }
+  function handleDuplicateLists(id) {
+    const listToDuplicate = lists.find((list) => list.id === id);
+    listToDuplicate.number++;
+    const newListId = Math.random();
+    const newListTasks = listToDuplicate.tasks.map((task) => {
+      return {
+        ...task,
+        id: Math.random(),
+        listId: newListId,
+      };
+    });
+    const duplicatedList = {
+      ...listToDuplicate,
+      id: newListId,
+      title: `${listToDuplicate.title}   (${listToDuplicate.number})`,
+      tasks: newListTasks,
+      number: 0,
+    };
+    setLists((prev) => [...prev, duplicatedList]);
+    setTodayTasks((prev) => [...prev, ...newListTasks]);
+  }
 
   return (
     <div className='flex h-full gap-2 bg-background-primary p-5'>
@@ -121,6 +145,7 @@ export default function App() {
         onRenameList={handleRenameList}
         onDeleteList={handleDeleteList}
         onChangeListColor={handleChangeListColor}
+        onDuplicateList={handleDuplicateLists}
       />
       <Main>
         <BigTitle title='Today' count={todayTasks.length} />
@@ -154,6 +179,7 @@ function Menu({
   onRenameList,
   onDeleteList,
   onChangeListColor,
+  onDuplicateList,
 }) {
   return (
     <aside
@@ -192,6 +218,7 @@ function Menu({
             onRenameList={onRenameList}
             onDeleteList={onDeleteList}
             onChangeListColor={onChangeListColor}
+            onDuplicateList={onDuplicateList}
           />
           <div className='mb-16'>
             <h4 className='mb-4 mt-5 font-medium text-text-secondary'>Tags</h4>
@@ -472,10 +499,7 @@ function MenuTasks({ todayTasksNumber }) {
 function Task({ title, dueDate, subtasksNumber, listId, onOpen, isCompleted, onComplete, lists }) {
   const [checked, setChecked] = useState(isCompleted);
   const listName = useMemo(() => lists.find((l) => l?.id === +listId)?.title, [listId, lists]);
-  const listColor = useMemo(
-    () => lists.find((l) => l?.title === listName)?.color,
-    [listName, lists],
-  );
+  const listColor = useMemo(() => lists.find((l) => l?.id === +listId)?.color, [listId, lists]);
 
   useEffect(() => {
     onComplete(checked);
@@ -500,28 +524,35 @@ function Task({ title, dueDate, subtasksNumber, listId, onOpen, isCompleted, onC
       </div>
       <div className='flex-1'>
         <span className='text-sm font-medium text-text-secondary'>{title}</span>
-        <div className='mt-2 flex flex-wrap items-center gap-5'>
-          {dueDate && (
-            <div className='flex items-center gap-2'>
-              <i className='fas fa-calendar-alt text-text-tertiary'></i>
-              <span className='text-xs font-semibold text-text-secondary'>{dueDate}</span>
+        {dueDate ||
+          subtasksNumber > 0 ||
+          (listName && listId !== 'none' && (
+            <div className='mt-2 flex flex-wrap items-center gap-5'>
+              {dueDate && (
+                <div className='flex items-center gap-2'>
+                  <i className='fas fa-calendar-alt text-text-tertiary'></i>
+                  <span className='text-xs font-semibold text-text-secondary'>{dueDate}</span>
+                </div>
+              )}
+              {subtasksNumber > 0 && (
+                <div className='flex items-center gap-2'>
+                  <span className='rounded-sm bg-background-tertiary px-3 py-[1px] text-xs font-semibold text-text-secondary'>
+                    {subtasksNumber}
+                  </span>
+                  <span className='text-xs font-semibold text-text-secondary'>Subtasks</span>
+                </div>
+              )}
+              {listName && listId !== 'none' && (
+                <div className='flex items-center gap-2'>
+                  <span
+                    className='h-4 w-4 rounded-sm'
+                    style={{ backgroundColor: listColor }}
+                  ></span>
+                  <span className='text-xs font-semibold text-text-secondary'>{listName}</span>
+                </div>
+              )}
             </div>
-          )}
-          {subtasksNumber > 0 && (
-            <div className='flex items-center gap-2'>
-              <span className='rounded-sm bg-background-tertiary px-3 py-[1px] text-xs font-semibold text-text-secondary'>
-                {subtasksNumber}
-              </span>
-              <span className='text-xs font-semibold text-text-secondary'>Subtasks</span>
-            </div>
-          )}
-          {listName && listId !== 'none' && (
-            <div className='flex items-center gap-2'>
-              <span className='h-4 w-4 rounded-sm' style={{ backgroundColor: listColor }}></span>
-              <span className='text-xs font-semibold text-text-secondary'>{listName}</span>
-            </div>
-          )}
-        </div>
+          ))}
       </div>
       <button onClick={onOpen}>
         <i className='fa-solid fa-chevron-right cursor-pointer text-text-tertiary'></i>
@@ -585,11 +616,18 @@ function SubTask({ title, onEdit, onDelete, isCompleted, onComplete }) {
   );
 }
 
-function Lists({ lists, onAddList, onRenameList, onDeleteList, onChangeListColor }) {
+function Lists({
+  lists,
+  onAddList,
+  onRenameList,
+  onDeleteList,
+  onChangeListColor,
+  onDuplicateList,
+}) {
   const [isAddNewListOpen, setIsAddNewListOpen] = useState(false);
   const addNewListContainer = useRef(null);
   const addNewListToggler = useRef(null);
-  const [duplicatedList, setDuplicatedList] = useState({});
+  const untitledTasksNumber = useRef(0);
 
   useEffect(() => {
     function handleClickOutside(e) {
@@ -608,25 +646,20 @@ function Lists({ lists, onAddList, onRenameList, onDeleteList, onChangeListColor
     };
   }, []);
 
-  function handleDuplicateLists(list) {
-    setDuplicatedList(list);
-    setTimeout(() => setDuplicatedList({}), 3000);
-  }
-
   return (
     <div className='border-y border-background-tertiary pb-5'>
       <h4 className='mb-4 mt-5  font-medium text-text-secondary'>Lists</h4>
-      <ul className='max-h-[300px] space-y-1 '>
+      <ul className=' space-y-1 '>
         {lists.map((list) => (
           <List
             key={list.id}
             title={list.title}
             color={list.color}
             tasksNumber={list.tasks.length}
-            alreadyExists={list.title?.toLowerCase() === duplicatedList.title?.toLowerCase()}
             onRename={(title) => onRenameList(list.id, title)}
             onDelete={() => onDeleteList(list.id)}
             onChangeColor={(color) => onChangeListColor(list.id, color)}
+            onDuplicateList={() => onDuplicateList(list.id)}
           />
         ))}
       </ul>
@@ -644,22 +677,26 @@ function Lists({ lists, onAddList, onRenameList, onDeleteList, onChangeListColor
           isOpen={isAddNewListOpen}
           onAdd={onAddList}
           lists={lists}
-          onDuplicate={handleDuplicateLists}
+          untitledTasksNumber={untitledTasksNumber}
         />
       )}
     </div>
   );
 }
-function List({ title, color, tasksNumber, alreadyExists, onRename, onDelete, onChangeColor }) {
+function List({ title, color, tasksNumber, onRename, onDelete, onChangeColor, onDuplicateList }) {
   const [isListActionsOpen, setIsListActionsOpen] = useState(false);
-  const listActions = useRef(null);
-  const listTitle = useRef(null);
+  const [isRenameInputOpen, setIsRenameInputOpen] = useState(false);
   const [listColor, setListColor] = useState(color);
+  const listActions = useRef(null);
+  const newListTitle = useRef(null);
 
   useEffect(() => {
     function handleClickOutside(event) {
       if (listActions.current && !listActions.current.contains(event.target)) {
         setIsListActionsOpen(false);
+      }
+      if (newListTitle.current && !newListTitle.current.contains(event.target)) {
+        setIsRenameInputOpen(false);
       }
     }
     document.addEventListener('mousedown', handleClickOutside);
@@ -667,32 +704,24 @@ function List({ title, color, tasksNumber, alreadyExists, onRename, onDelete, on
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [listActions]);
-  function closeListActions() {
-    setIsListActionsOpen(false);
-  }
+
   function changeColor(color) {
     setListColor(color);
     onChangeColor(color);
   }
+  function openRenameInput() {
+    setIsRenameInputOpen(true);
+    setTimeout(() => newListTitle.current.focus(), 50);
+  }
   return (
-    <li
-      className={
-        'menu_element group grid-cols-[30px_auto_35px_20px]' + (alreadyExists ? 'bg-red-400' : '')
-      }
-    >
+    <li className='menu_element group relative grid-cols-[30px_auto_35px_20px] '>
       <div
         className='h-4 w-4 rounded-[3px]'
         style={{
           backgroundColor: listColor,
         }}
       ></div>
-      <span
-        className={
-          'first-line: text-sm outline-none transition-[color_font-weight] duration-100 group-hover:font-bold' +
-          (alreadyExists ? 'text-white' : 'text-text-secondary')
-        }
-        ref={listTitle}
-      >
+      <span className='first-line: text-sm text-text-secondary outline-none transition-[color_font-weight] duration-100 group-hover:font-bold'>
         {title}
       </span>
       <div className='mx-1 grid place-content-center rounded-sm bg-background-tertiary py-[1px] transition-colors duration-300 group-hover:bg-background-primary'>
@@ -706,17 +735,41 @@ function List({ title, color, tasksNumber, alreadyExists, onRename, onDelete, on
         <ListAction
           isOpen={isListActionsOpen}
           reference={listActions}
-          listTitle={listTitle}
           onRename={(title) => onRename(title)}
           onDelete={onDelete}
-          onClose={closeListActions}
+          onClose={() => setIsListActionsOpen(false)}
           onChangeColor={changeColor}
+          onOpenRenameInput={openRenameInput}
+          onDuplicateList={onDuplicateList}
         />
       </button>
+
+      <input
+        type='text'
+        className={
+          'absolute  left-0 top-full z-10 w-full rounded-lg border-none bg-background-primary px-3 py-2 text-sm shadow-[-4px_4px_1px_#EBEBEB] focus:outline-none ' +
+          (isRenameInputOpen ? 'block' : 'hidden')
+        }
+        defaultValue={title}
+        ref={newListTitle}
+        onBlur={(e) => {
+          onRename(e.target.value);
+          setIsRenameInputOpen(false);
+        }}
+        onKeyDown={(e) => e.key === 'Enter' && e.target.blur()}
+      />
     </li>
   );
 }
-function ListAction({ isOpen, reference, listTitle, onRename, onDelete, onClose, onChangeColor }) {
+function ListAction({
+  isOpen,
+  reference,
+  onDelete,
+  onClose,
+  onChangeColor,
+  onOpenRenameInput,
+  onDuplicateList,
+}) {
   const [isColorsOpen, setIsColorsOpen] = useState(false);
   const colorsDiv = useRef(null);
 
@@ -734,46 +787,27 @@ function ListAction({ isOpen, reference, listTitle, onRename, onDelete, onClose,
     return () => document.removeEventListener('click', handleClick);
   }, [isOpen]);
 
-  function handleRename() {
-    function saveTitle() {
-      listTitle.current.setAttribute('contenteditable', false);
-      onRename(listTitle.current.innerText);
-    }
-    listTitle.current.setAttribute('contenteditable', true);
-    listTitle.current.focus();
-    onClose();
-    listTitle.current.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        saveTitle();
-      }
-    });
-    listTitle.current.addEventListener('blur', () => saveTitle());
-  }
   function handleChangeColor() {
     setIsColorsOpen(!isColorsOpen);
   }
+
   return (
     <ul
       className={
-        'absolute right-0 top-full z-10  w-36 rounded-lg bg-background-primary p-3 shadow-md ' +
+        'absolute right-0 top-full z-10 w-44 rounded-lg bg-background-primary p-3 shadow-md ' +
         (isOpen ? 'block' : 'hidden')
       }
       ref={reference}
     >
       <li
-        className='grid cursor-pointer grid-cols-[15px_1fr] items-center gap-2 text-start text-sm text-text-secondary transition-colors duration-300 hover:text-text-tertiary'
-        onClick={handleRename}
+        className='mb-3 grid cursor-pointer grid-cols-[15px_1fr] items-center gap-2 text-start text-sm text-text-secondary transition-colors duration-300 hover:text-text-tertiary'
+        onClick={() => {
+          onOpenRenameInput();
+          setTimeout(() => onClose(), 50);
+        }}
       >
         <i className='fa-solid fa-pen '></i>
         <p>Rename List</p>
-      </li>
-      <li
-        className='my-3 grid cursor-pointer grid-cols-[15px_1fr] items-center gap-2 text-start text-sm text-text-secondary transition-colors duration-300 hover:text-text-tertiary'
-        onClick={onDelete}
-      >
-        <i className='fa-solid fa-trash '></i>
-        <p>Delete List</p>
       </li>
       {isColorsOpen || (
         <li
@@ -793,16 +827,38 @@ function ListAction({ isOpen, reference, listTitle, onRename, onDelete, onClose,
       >
         <Colors />
       </div>
+      <li
+        className='my-3 grid cursor-pointer grid-cols-[15px_1fr] items-center gap-2 text-start text-sm text-text-secondary transition-colors duration-300 hover:text-text-tertiary'
+        onClick={() => {
+          onDuplicateList();
+          setTimeout(() => onClose(), 50);
+        }}
+      >
+        <i className='fa-solid fa-copy '></i>
+        <p>Duplicate List</p>
+      </li>
+      <li
+        className='grid cursor-pointer grid-cols-[15px_1fr] items-center gap-2 text-start text-sm text-text-secondary transition-colors duration-300 hover:text-text-tertiary'
+        onClick={onDelete}
+      >
+        <i className='fa-solid fa-trash '></i>
+        <p>Delete List</p>
+      </li>
+      {
+        // Todo : Add the (Add to favorites) feature
+      }
+      {/* <li className='mt-3 grid cursor-pointer grid-cols-[15px_1fr] items-center gap-2 text-start text-sm text-text-secondary transition-colors duration-300 hover:text-text-tertiary'>
+        <i className='fa-solid fa-heart '></i>
+        <p>Add To Favorites</p>
+      </li> */}
     </ul>
   );
 }
-function AddNewList({ reference, onAdd, isOpen, lists, onDuplicate }) {
+function AddNewList({ reference, onAdd, isOpen, untitledTasksNumber }) {
   const [value, setValue] = useState('');
   const [color, setColor] = useState('#ff6b6b');
   const inputEl = useRef(null);
   const colorsDiv = useRef(null);
-  const untitledTasksNumber = useRef(0);
-
   useEffect(() => {
     inputEl.current.focus();
     function handleClick(e) {
@@ -825,9 +881,7 @@ function AddNewList({ reference, onAdd, isOpen, lists, onDuplicate }) {
 
   function handleAdd() {
     const untitledNumber = value || untitledTasksNumber.current++;
-    const title = value ? value : `Untitled ${untitledNumber > 0 ? untitledNumber : ''}`;
-    onDuplicate(lists.find((list) => list.title?.toLowerCase() === title?.toLowerCase()) || {});
-    if (lists.find((list) => list.title?.toLowerCase() === title?.toLowerCase())) return;
+    const title = value ? value : `Untitled ${untitledNumber > 0 ? `(${untitledNumber})` : ''}`;
     onAdd(title, color);
     setValue('');
   }
