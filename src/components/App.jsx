@@ -3,6 +3,7 @@ import '../App.css';
 import { AddTask } from './AddTask';
 import { useLocalStorageState } from '../useLocalStorageState';
 import { BigTitle } from './Upcoming';
+import { StickyWall } from './Main/Sticky Wall/StickyWall';
 
 export default function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(true);
@@ -44,19 +45,21 @@ export default function App() {
       textColor: '#444',
     },
   ]);
+  const [activeTab, setActiveTab] = useState('today');
 
-  function handlerAddTask(title) {
+  function handlerAddTask(title, listId) {
     const newTask = {
       id: Math.random(),
       title,
       description: '',
       dueDate: '',
-      listId: '',
+      listId: listId || 'none',
       subtasks: [],
       isCompleted: false,
       tagsIds: [],
     };
     setTodayTasks((prev) => [...prev, newTask]);
+    if (listId) handleAddTasksToList(listId, newTask);
   }
   function handleOpenTask(task) {
     setCurrentTask(task);
@@ -171,18 +174,17 @@ export default function App() {
         tags={tags}
         onAddTag={handleAddTag}
         onDeleteTag={handleDeleteTag}
+        onChangeTab={(tab) => setActiveTab(tab)}
       />
-      <Main>
-        <BigTitle title='Today' count={todayTasks.length} />
-        <Today
-          todayTasks={todayTasks}
-          onAdd={handlerAddTask}
-          onOpen={handleOpenTask}
-          onComplete={handleCompleteTask}
-          lists={lists}
-          tags={tags}
-        />
-      </Main>
+      <Main
+        todayTasks={todayTasks}
+        onAdd={handlerAddTask}
+        onOpen={handleOpenTask}
+        onComplete={handleCompleteTask}
+        lists={lists}
+        tags={tags}
+        activeTab={activeTab}
+      />
       <TaskInfo
         isOpen={isTaskInfoOpen}
         onClose={() => setIsTaskInfoOpen(false)}
@@ -197,6 +199,7 @@ export default function App() {
   );
 }
 
+// ------------------------------ Menu ------------------------------
 function Menu({
   isOpen,
   setIsOpen,
@@ -210,18 +213,19 @@ function Menu({
   tags,
   onAddTag,
   onDeleteTag,
+  onChangeTab,
 }) {
   const menu = useRef(null);
 
   useEffect(() => {
     function handleClick(e) {
       if (menu.current && e.target.closest('.menu_element')) {
-        console.log(e.target.closest('.menu_element'));
-        console.log(e.target);
         menu.current
           .querySelectorAll('.menu_element')
           .forEach((el) => el.classList.remove('active'));
-        e.target.closest('.menu_element').classList.add('active');
+        const currentTab = e.target.closest('.menu_element');
+        currentTab.classList.add('active');
+        onChangeTab(currentTab.dataset.tab);
       }
     }
     document.addEventListener('click', handleClick);
@@ -263,7 +267,7 @@ function Menu({
             />
           </div>
           <MenuTasks todayTasksNumber={todayTasksNumber} />
-          <Lists
+          <MenuLists
             lists={lists}
             onAddList={onAddList}
             onRenameList={onRenameList}
@@ -271,7 +275,7 @@ function Menu({
             onChangeListColor={onChangeListColor}
             onDuplicateList={onDuplicateList}
           />
-          <Tags tags={tags} onAddTag={onAddTag} onDeleteTag={onDeleteTag} />
+          <MenuTags tags={tags} onAddTag={onAddTag} onDeleteTag={onDeleteTag} />
           <div className='mt-auto'>
             <ul className='space-y-3'>
               <li className='grid cursor-pointer grid-cols-[25px_auto] items-center'>
@@ -289,13 +293,58 @@ function Menu({
     </aside>
   );
 }
-function Main({ children }) {
+// ------------------------------ Main ------------------------------
+function Main({ todayTasks, onAdd, onOpen, onComplete, lists, tags, activeTab }) {
+  const listId = useMemo(() => {
+    const id = Number.isFinite(+activeTab) && +activeTab;
+    return id;
+  }, [activeTab]);
+  const listName = useMemo(() => {
+    return listId && lists.find((list) => list.id === listId)?.title;
+  }, [lists, listId]);
+
+  const title =
+    activeTab === 'today'
+      ? "Today's Tasks"
+      : activeTab === 'upcoming'
+      ? 'Upcoming Tasks'
+      : listName
+      ? listName
+      : 'Sticky Wall';
+
+  const count = useMemo(() => {
+    if (activeTab === 'today' || activeTab === 'upcoming') return todayTasks.length;
+    if (listId) return lists.find((list) => list.id === +activeTab)?.tasks.length;
+    return 0;
+  }, [activeTab, todayTasks, listId, lists]);
+
+  const condition = (task) => {
+    if (listId) return +task.listId === +listId;
+    return true;
+  };
+
   return (
     <main className='flex flex-1 flex-col overflow-y-auto rounded-xl bg-background-primary px-5 '>
-      {children}
+      <BigTitle title={title} count={count} />
+      {activeTab === 'stickyWall' ? (
+        <StickyWall />
+      ) : (
+        <DisplayedContent
+          todayTasks={todayTasks}
+          onAdd={(title) => {
+            onAdd(title, listId);
+          }}
+          onOpen={onOpen}
+          onComplete={onComplete}
+          lists={lists}
+          tags={tags}
+          condition={condition}
+        />
+      )}
     </main>
   );
 }
+// ------------------------------ TaskInfo ------------------------------
 function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSelectList, tags }) {
   const [taskTitle, setTaskTitle] = useState();
   const [taskDescription, setTaskDescription] = useState();
@@ -574,15 +623,9 @@ function TagsDropDown({ tags, reference }) {
     </div>
   );
 }
-function Today({
-  todayTasks,
-  onAdd,
-  onOpen,
-  onComplete,
-  lists,
-  tags,
 
-}) {
+// ------------------------------ DisplayedContent ------------------------------
+function DisplayedContent({ todayTasks, onAdd, onOpen, onComplete, lists, tags, condition }) {
   return (
     <>
       <div>
@@ -592,6 +635,7 @@ function Today({
         </div>
         <ul className='mt-3 space-y-2'>
           {todayTasks
+            .filter((task) => condition(task))
             .map((task) => (
               <Task
                 key={task.id}
@@ -612,22 +656,22 @@ function Today({
     </>
   );
 }
-
+// ------------------------------ Tasks ------------------------------
 function MenuTasks({ todayTasksNumber }) {
   return (
     <div className='pb-5'>
       <h4 className='mb-4 mt-5  font-medium text-text-secondary'>Tasks</h4>
       <ul className='space-y-1'>
-        <li className='menu_element group'>
+        <li className='menu_element group' data-tab='upcoming'>
           <i className='fas fa-angles-right text-text-tertiary'></i>
           <span className='text-sm text-text-secondary transition-[font-weight] duration-100 group-hover:font-bold'>
             Upcoming
           </span>
           <div className='grid place-content-center rounded-sm bg-background-tertiary py-[1px] transition-colors duration-300  group-hover:bg-background-primary'>
-            <span className='text-xs font-semibold text-text-secondary'>12</span>
+            <span className='text-xs font-semibold text-text-secondary'>{todayTasksNumber}</span>
           </div>
         </li>
-        <li className='menu_element active group'>
+        <li className='menu_element active group' data-tab='today'>
           <i className='fas fa-list-check text-text-tertiary'></i>
           <span className='text-sm text-text-secondary transition-[font-weight] duration-100 group-hover:font-bold'>
             Today
@@ -636,7 +680,7 @@ function MenuTasks({ todayTasksNumber }) {
             <span className='text-xs font-semibold text-text-secondary'>{todayTasksNumber}</span>
           </div>
         </li>
-        <li className='menu_element group'>
+        <li className='menu_element group' data-tab='stickyWall'>
           <i className='fas fa-note-sticky text-text-tertiary'></i>
           <span className='text-sm text-text-secondary transition-[font-weight] duration-100 group-hover:font-bold'>
             Sticky Wall
@@ -791,8 +835,8 @@ function SubTask({ title, onEdit, onDelete, isCompleted, onComplete }) {
     </li>
   );
 }
-
-function Lists({
+// ------------------------------ Lists ------------------------------
+function MenuLists({
   lists,
   onAddList,
   onRenameList,
@@ -836,6 +880,7 @@ function Lists({
             onDelete={() => onDeleteList(list.id)}
             onChangeColor={(color) => onChangeListColor(list.id, color)}
             onDuplicateList={() => onDuplicateList(list.id)}
+            id={list.id}
           />
         ))}
       </ul>
@@ -858,7 +903,16 @@ function Lists({
     </div>
   );
 }
-function List({ title, color, tasksNumber, onRename, onDelete, onChangeColor, onDuplicateList }) {
+function List({
+  title,
+  color,
+  tasksNumber,
+  onRename,
+  onDelete,
+  onChangeColor,
+  onDuplicateList,
+  id,
+}) {
   const [isListActionsOpen, setIsListActionsOpen] = useState(false);
   const [isRenameInputOpen, setIsRenameInputOpen] = useState(false);
   const [listColor, setListColor] = useState(color);
@@ -889,7 +943,7 @@ function List({ title, color, tasksNumber, onRename, onDelete, onChangeColor, on
     setTimeout(() => newListTitle.current.focus(), 50);
   }
   return (
-    <li className='menu_element group relative grid-cols-[30px_auto_35px_20px] '>
+    <li className='menu_element group relative grid-cols-[30px_auto_35px_20px] ' data-tab={id}>
       <div
         className='h-4 w-4 rounded-[3px]'
         style={{
@@ -1168,7 +1222,8 @@ function Colors() {
   );
 }
 
-function Tags({ tags, onAddTag, onDeleteTag }) {
+// ------------------------------ Tags ------------------------------
+function MenuTags({ tags, onAddTag, onDeleteTag }) {
   const [isAddNewTagOpen, setIsAddNewTagOpen] = useState(false);
   const addNewTagContainer = useRef(null);
   const addNewTagToggler = useRef(null);
