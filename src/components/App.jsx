@@ -16,6 +16,7 @@ export default function App() {
       listId: 'none',
       subtasks: [],
       isCompleted: true,
+      tagsIds: [],
     },
   ]);
   const [currentTask, setCurrentTask] = useState(null);
@@ -53,6 +54,7 @@ export default function App() {
       listId: '',
       subtasks: [],
       isCompleted: false,
+      tagsIds: [],
     };
     setTodayTasks((prev) => [...prev, newTask]);
   }
@@ -178,6 +180,7 @@ export default function App() {
           onOpen={handleOpenTask}
           onComplete={handleCompleteTask}
           lists={lists}
+          tags={tags}
         />
       </Main>
       <TaskInfo
@@ -188,6 +191,7 @@ export default function App() {
         onDelete={handleDeleteTask}
         lists={lists}
         onSelectList={handleAddTasksToList}
+        tags={tags}
       />
     </div>
   );
@@ -207,6 +211,26 @@ function Menu({
   onAddTag,
   onDeleteTag,
 }) {
+  const menu = useRef(null);
+
+  useEffect(() => {
+    function handleClick(e) {
+      if (menu.current && e.target.closest('.menu_element')) {
+        console.log(e.target.closest('.menu_element'));
+        console.log(e.target);
+        menu.current
+          .querySelectorAll('.menu_element')
+          .forEach((el) => el.classList.remove('active'));
+        e.target.closest('.menu_element').classList.add('active');
+      }
+    }
+    document.addEventListener('click', handleClick);
+
+    return () => {
+      document.removeEventListener('click', handleClick);
+    };
+  }, [menu]);
+
   return (
     <aside
       className={
@@ -215,6 +239,7 @@ function Menu({
           ? 'w-[22%] items-stretch bg-background-secondary '
           : 'w-0 items-center bg-background-primary  ')
       }
+      ref={menu}
     >
       {isOpen || (
         <button onClick={() => setIsOpen(true)}>
@@ -271,13 +296,17 @@ function Main({ children }) {
     </main>
   );
 }
-function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSelectList }) {
+function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSelectList, tags }) {
   const [taskTitle, setTaskTitle] = useState();
   const [taskDescription, setTaskDescription] = useState();
   const [taskListId, setTaskListId] = useState('none');
   const [taskDueDate, setTaskDueDate] = useState();
   const [taskSubtasks, setTaskSubtasks] = useState();
+  const [taskTagsIds, setTaskTagsIds] = useState();
+  const [isSelectTagOpen, setIsSelectTagOpen] = useState(false);
   const [isChanged, setIsChanged] = useState(false);
+  const tagsDropDown = useRef(null);
+  const tagsDropDownToggler = useRef(null);
 
   const today = new Date().toISOString().split('T')[0];
 
@@ -288,12 +317,14 @@ function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSelectList
       setTaskListId(task?.listId);
       setTaskDueDate(task?.dueDate);
       setTaskSubtasks(task?.subtasks);
+      setTaskTagsIds(task?.tagsIds);
     } else {
       setTaskTitle('');
       setTaskDescription('');
       setTaskListId('');
       setTaskDueDate('');
       setTaskSubtasks([]);
+      setTaskTagsIds([]);
     }
   }, [task, isOpen]);
   useEffect(() => {
@@ -308,10 +339,41 @@ function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSelectList
           subtask.title !== taskSubtasks[index].title ||
           subtask.isCompleted !== taskSubtasks[index].isCompleted
         );
-      })
+      }) ||
+      task?.tagsIds?.length !== taskTagsIds?.length ||
+      task?.tagsIds.some((tagId, index) => tagId !== taskTagsIds[index])
         ? setIsChanged(true)
         : setIsChanged(false);
-  }, [isOpen, task, taskTitle, taskDescription, taskListId, taskDueDate, taskSubtasks]);
+  }, [
+    isOpen,
+    task,
+    taskTitle,
+    taskDescription,
+    taskListId,
+    taskDueDate,
+    taskSubtasks,
+    taskTagsIds,
+  ]);
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (
+        tagsDropDown.current &&
+        !tagsDropDown.current.contains(event.target) &&
+        tagsDropDownToggler.current &&
+        !tagsDropDownToggler.current.contains(event.target)
+      ) {
+        setIsSelectTagOpen(false);
+      }
+      if (tagsDropDown.current && tagsDropDown.current.contains(event.target)) {
+        const id = event.target.dataset.id;
+        id && handleAddTagToTask(id);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [tagsDropDown]);
 
   function handleAddSubTask(title) {
     const newSubtask = {
@@ -330,6 +392,7 @@ function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSelectList
         listId: taskListId,
         dueDate: taskDueDate,
         subtasks: taskSubtasks,
+        tagsIds: taskTagsIds,
       };
       onEdit(editedTask);
       onSelectList(taskListId, editedTask);
@@ -351,6 +414,15 @@ function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSelectList
     );
     setTaskSubtasks(newSubtasks);
   }
+  function handleAddTagToTask(tagId) {
+    setTaskTagsIds((prev) => {
+      return prev.includes(+tagId) ? prev : [...prev, +tagId];
+    });
+  }
+  function handleDeleteTagFromTask(tagId) {
+    setTaskTagsIds((prev) => prev.filter((id) => id !== tagId));
+  }
+  // Todo : Separate this component to smaller components
   return (
     <aside
       className={
@@ -407,8 +479,30 @@ function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSelectList
             />
             <label className='text-sm text-text-tertiary'>Tags</label>
             <ul className='flex flex-wrap gap-2'>
-              <li className='menu_tag_element bg-[#d1eaed]'>Tag 1</li>
-              <li className='menu_tag_element bg-background-tertiary'>+ Add Tag</li>
+              {taskTagsIds?.map((tagId) => {
+                const tag = tags.find((t) => t.id === +tagId);
+                if (tag)
+                  return (
+                    <Tag
+                      key={tag.id}
+                      title={tag.title}
+                      bgColor={tag.bgColor}
+                      textColor={tag.textColor}
+                      isMainTag={false}
+                      showDeleteButton={true}
+                      id={tag.id}
+                      onDeleteTag={() => handleDeleteTagFromTask(tag.id)}
+                    />
+                  );
+              })}
+              <li
+                className='menu_tag_element relative cursor-pointer bg-background-tertiary'
+                ref={tagsDropDownToggler}
+                onClick={() => setIsSelectTagOpen(true)}
+              >
+                + Add Tag
+                {isSelectTagOpen && <TagsDropDown tags={tags} reference={tagsDropDown} />}
+              </li>
             </ul>
           </div>
           <div className='my-7 min-h-[300px] flex-shrink-0 overflow-y-auto'>
@@ -454,7 +548,41 @@ function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSelectList
     </aside>
   );
 }
-function Today({ todayTasks, onAdd, onOpen, onComplete, lists }) {
+function TagsDropDown({ tags, reference }) {
+  return (
+    <div
+      className='absolute -left-full top-full mt-2 cursor-auto  rounded-lg border  border-background-tertiary bg-background-primary p-3'
+      ref={reference}
+    >
+      <ul className='flex h-auto w-[200px] flex-wrap gap-2  ' ref={reference}>
+        {tags.length > 0 &&
+          tags.map((tag) => (
+            <Tag
+              key={tag.id}
+              title={tag.title}
+              bgColor={tag.bgColor}
+              textColor={tag.textColor}
+              showDeleteButton={false}
+              id={tag.id}
+              customClassName={'cursor-pointer'}
+            />
+          ))}
+        {tags.length === 0 && (
+          <li className='flex-1 text-center text-sm text-text-tertiary'>No tags yet</li>
+        )}
+      </ul>
+    </div>
+  );
+}
+function Today({
+  todayTasks,
+  onAdd,
+  onOpen,
+  onComplete,
+  lists,
+  tags,
+
+}) {
   return (
     <>
       <div>
@@ -463,19 +591,22 @@ function Today({ todayTasks, onAdd, onOpen, onComplete, lists }) {
           <AddTask onAdd={onAdd} />
         </div>
         <ul className='mt-3 space-y-2'>
-          {todayTasks.map((task) => (
-            <Task
-              key={task.id}
-              title={task.title}
-              dueDate={task.dueDate}
-              subtasksNumber={task.subtasks.length}
-              listId={task.listId}
-              onOpen={() => onOpen(task)}
-              isCompleted={task.isCompleted}
-              onComplete={(isCompleted) => onComplete(task.id, isCompleted)}
-              lists={lists}
-            />
-          ))}
+          {todayTasks
+            .map((task) => (
+              <Task
+                key={task.id}
+                title={task.title}
+                dueDate={task.dueDate}
+                subtasksNumber={task.subtasks.length}
+                listId={task.listId}
+                onOpen={() => onOpen(task)}
+                isCompleted={task.isCompleted}
+                onComplete={(isCompleted) => onComplete(task.id, isCompleted)}
+                lists={lists}
+                tags={tags}
+                tagsIds={task.tagsIds}
+              />
+            ))}
         </ul>
       </div>
     </>
@@ -515,7 +646,18 @@ function MenuTasks({ todayTasksNumber }) {
     </div>
   );
 }
-function Task({ title, dueDate, subtasksNumber, listId, onOpen, isCompleted, onComplete, lists }) {
+function Task({
+  title,
+  dueDate,
+  subtasksNumber,
+  listId,
+  onOpen,
+  isCompleted,
+  onComplete,
+  lists,
+  tags,
+  tagsIds,
+}) {
   const [checked, setChecked] = useState(isCompleted);
   const listName = useMemo(() => lists.find((l) => l?.id === +listId)?.title, [listId, lists]);
   const listColor = useMemo(() => lists.find((l) => l?.id === +listId)?.color, [listId, lists]);
@@ -543,35 +685,50 @@ function Task({ title, dueDate, subtasksNumber, listId, onOpen, isCompleted, onC
       </div>
       <div className='flex-1'>
         <span className='text-sm font-medium text-text-secondary'>{title}</span>
-        {dueDate ||
-          subtasksNumber > 0 ||
-          (listName && listId !== 'none' && (
-            <div className='mt-2 flex flex-wrap items-center gap-5'>
-              {dueDate && (
-                <div className='flex items-center gap-2'>
-                  <i className='fas fa-calendar-alt text-text-tertiary'></i>
-                  <span className='text-xs font-semibold text-text-secondary'>{dueDate}</span>
-                </div>
-              )}
-              {subtasksNumber > 0 && (
-                <div className='flex items-center gap-2'>
-                  <span className='rounded-sm bg-background-tertiary px-3 py-[1px] text-xs font-semibold text-text-secondary'>
-                    {subtasksNumber}
-                  </span>
-                  <span className='text-xs font-semibold text-text-secondary'>Subtasks</span>
-                </div>
-              )}
-              {listName && listId !== 'none' && (
-                <div className='flex items-center gap-2'>
-                  <span
-                    className='h-4 w-4 rounded-sm'
-                    style={{ backgroundColor: listColor }}
-                  ></span>
-                  <span className='text-xs font-semibold text-text-secondary'>{listName}</span>
-                </div>
-              )}
-            </div>
-          ))}
+        {(listName || dueDate || subtasksNumber > 0 || tagsIds?.length > 0) && (
+          <div className='mt-2 flex flex-wrap items-center gap-5'>
+            {dueDate && (
+              <div className='flex items-center gap-2'>
+                <i className='fas fa-calendar-alt text-text-tertiary'></i>
+                <span className='text-xs font-semibold text-text-secondary'>{dueDate}</span>
+              </div>
+            )}
+            {subtasksNumber > 0 && (
+              <div className='flex items-center gap-2'>
+                <span className='rounded-sm bg-background-tertiary px-3 py-[1px] text-xs font-semibold text-text-secondary'>
+                  {subtasksNumber}
+                </span>
+                <span className='text-xs font-semibold text-text-secondary'>Subtasks</span>
+              </div>
+            )}
+            {listName && listId !== 'none' && (
+              <div className='flex items-center gap-2'>
+                <span className='h-4 w-4 rounded-sm' style={{ backgroundColor: listColor }}></span>
+                <span className='text-xs font-semibold text-text-secondary'>{listName}</span>
+              </div>
+            )}
+            {tagsIds?.length > 0 && (
+              <ul className='flex flex-wrap items-center gap-2'>
+                {tagsIds.map((tagId) => {
+                  const tag = tags.find((t) => t.id === +tagId);
+                  if (tag)
+                    return (
+                      <Tag
+                        key={tag.id}
+                        title={tag.title}
+                        bgColor={tag.bgColor}
+                        textColor={tag.textColor}
+                        isMainTag={false}
+                        showDeleteButton={false}
+                        id={tag.id}
+                        customClassName={'px-2 py-1 cursor-auto'}
+                      />
+                    );
+                })}
+              </ul>
+            )}
+          </div>
+        )}
       </div>
       <button onClick={onOpen}>
         <i className='fa-solid fa-chevron-right cursor-pointer text-text-tertiary'></i>
@@ -803,6 +960,7 @@ function ListAction({
     }
     document.addEventListener('click', handleClick);
     return () => document.removeEventListener('click', handleClick);
+    // eslint-disable-next-line
   }, [isOpen]);
 
   function handleChangeColor() {
@@ -935,75 +1093,75 @@ function Colors() {
   return (
     <>
       <span
-        className='h-4 w-4 cursor-pointer rounded-[3px] bg-custom-1'
+        className='h-4 w-4 cursor-pointer rounded-[3px] bg-custom-1 shadow-md'
         data-color='#ff6b6b'
       ></span>
       <span
-        className='h-4 w-4 cursor-pointer rounded-[3px] bg-custom-2'
+        className='h-4 w-4 cursor-pointer rounded-[3px] bg-custom-2 shadow-md'
         data-color='#da77f2'
       ></span>
       <span
-        className='h-4 w-4 cursor-pointer rounded-[3px] bg-custom-3'
+        className='h-4 w-4 cursor-pointer rounded-[3px] bg-custom-3 shadow-md'
         data-color='#9775fa'
       ></span>
       <span
-        className='h-4 w-4 cursor-pointer rounded-[3px] bg-custom-4'
+        className='h-4 w-4 cursor-pointer rounded-[3px] bg-custom-4 shadow-md'
         data-color='#64c37e'
       ></span>
       <span
-        className='h-4 w-4 cursor-pointer rounded-[3px] bg-custom-5'
+        className='h-4 w-4 cursor-pointer rounded-[3px] bg-custom-5 shadow-md'
         data-color='#66d9e8'
       ></span>
       <span
-        className='h-4 w-4 cursor-pointer rounded-[3px] bg-custom-6'
+        className='h-4 w-4 cursor-pointer rounded-[3px] bg-custom-6 shadow-md'
         data-color='#8ce99a'
       ></span>
       <span
-        className='h-4 w-4 cursor-pointer rounded-[3px] bg-custom-7'
+        className='h-4 w-4 cursor-pointer rounded-[3px] bg-custom-7 shadow-md'
         data-color='#ffd43b'
       ></span>
       <span
-        className='h-4 w-4 cursor-pointer rounded-[3px] bg-custom-8'
+        className='h-4 w-4 cursor-pointer rounded-[3px] bg-custom-8 shadow-md'
         data-color='#ff922b'
       ></span>
       <span
-        className='bg-custom-9 h-4 w-4 cursor-pointer rounded-[3px]'
+        className='bg-custom-9 h-4 w-4 cursor-pointer rounded-[3px] shadow-md'
         data-color='#ffb6b9'
       ></span>
       <span
-        className='bg-custom-10 h-4 w-4 cursor-pointer rounded-[3px]'
+        className='bg-custom-10 h-4 w-4 cursor-pointer rounded-[3px] shadow-md'
         data-color='#d9a7f3'
       ></span>
       <span
-        className='bg-custom-11 h-4 w-4 cursor-pointer rounded-[3px]'
+        className='bg-custom-11 h-4 w-4 cursor-pointer rounded-[3px] shadow-md'
         data-color='#b0a1f5'
       ></span>
       <span
-        className='bg-custom-12 h-4 w-4 cursor-pointer rounded-[3px]'
+        className='bg-custom-12 h-4 w-4 cursor-pointer rounded-[3px] shadow-md'
         data-color='#75e0a3'
       ></span>
       <span
-        className='bg-custom-13 h-4 w-4 cursor-pointer rounded-[3px]'
+        className='bg-custom-13 h-4 w-4 cursor-pointer rounded-[3px] shadow-md'
         data-color='#7ed1d9'
       ></span>
       <span
-        className='bg-custom-14 h-4 w-4 cursor-pointer rounded-[3px]'
+        className='bg-custom-14 h-4 w-4 cursor-pointer rounded-[3px] shadow-md'
         data-color='#a7f0b2'
       ></span>
       <span
-        className='bg-custom-15 h-4 w-4 cursor-pointer rounded-[3px]'
+        className='bg-custom-15 h-4 w-4 cursor-pointer rounded-[3px] shadow-md'
         data-color='#ffda77'
       ></span>
       <span
-        className='bg-custom-16 h-4 w-4 cursor-pointer rounded-[3px]'
+        className='bg-custom-16 h-4 w-4 cursor-pointer rounded-[3px] shadow-md'
         data-color='#ffc77f'
       ></span>
       <span
-        className='bg-custom-17 h-4 w-4 cursor-pointer rounded-[3px]'
+        className='bg-custom-17 h-4 w-4 cursor-pointer rounded-[3px] shadow-md'
         data-color='#c8ff2d'
       ></span>
       <span
-        className='bg-custom-18 h-4 w-4 cursor-pointer rounded-[3px]'
+        className='bg-custom-18 h-4 w-4 cursor-pointer rounded-[3px] shadow-md'
         data-color='#605050'
       ></span>
     </>
@@ -1043,10 +1201,11 @@ function Tags({ tags, onAddTag, onDeleteTag }) {
             bgColor={tag.bgColor}
             textColor={tag.textColor}
             onDeleteTag={() => onDeleteTag(tag.id)}
+            showDeleteButton={true}
           />
         ))}
         <li
-          className='menu_tag_element bg-background-tertiary  text-text-secondary'
+          className='menu_tag_element cursor-pointer bg-background-tertiary text-text-secondary'
           onClick={() => setIsAddNewTagOpen(!isAddNewTagOpen)}
           ref={addNewTagToggler}
         >
@@ -1059,26 +1218,29 @@ function Tags({ tags, onAddTag, onDeleteTag }) {
     </div>
   );
 }
-function Tag({ title, bgColor, textColor, onDeleteTag }) {
+function Tag({ title, bgColor, textColor, onDeleteTag, showDeleteButton, id, customClassName }) {
   return (
     <li
-      className='menu_tag_element relative'
+      className={'menu_tag_element relative ' + customClassName}
       style={{ backgroundColor: bgColor, color: textColor }}
+      data-id={id}
     >
-      <button
-        className='absolute -right-1 -top-1 grid h-3 w-3 cursor-pointer place-content-center rounded-full bg-red-600'
-        onClick={onDeleteTag}
-      >
-        <i className='fas fa-xmark  text-[10px] text-white'></i>
-      </button>
+      {showDeleteButton && (
+        <button
+          className='absolute -right-1 -top-1 grid h-3 w-3 cursor-pointer place-content-center rounded-full bg-red-600'
+          onClick={onDeleteTag}
+        >
+          <i className='fas fa-xmark  text-[10px] text-white'></i>
+        </button>
+      )}
       {title}
     </li>
   );
 }
 function AddNewTag({ reference, isOpen, onAdd }) {
   const [value, setValue] = useState('');
-  const [bgColor, setBgColor] = useState('#66d9e8');
-  const [textColor, setTextColor] = useState('#444444');
+  const [bgColor, setBgColor] = useState('#ff6b6b');
+  const [textColor, setTextColor] = useState('#ffffff');
   const inputEl = useRef(null);
   const bgColorsDiv = useRef(null);
   const textColorsDiv = useRef(null);
@@ -1117,11 +1279,11 @@ function AddNewTag({ reference, isOpen, onAdd }) {
       <div className='flex items-center gap-2 '>
         <div className='flex flex-col gap-1' ref={textColorsDiv}>
           <span
-            className='h-4 w-4 cursor-pointer rounded-full bg-text-secondary'
+            className='h-4 w-4 cursor-pointer rounded-full bg-text-secondary shadow-md'
             data-color='#444'
           ></span>
           <span
-            className='h-4 w-4 cursor-pointer rounded-full bg-background-primary'
+            className='h-4 w-4 cursor-pointer rounded-full bg-background-primary shadow-md'
             data-color='#fff'
           ></span>
         </div>
