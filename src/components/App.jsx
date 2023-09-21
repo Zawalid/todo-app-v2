@@ -45,7 +45,29 @@ export default function App() {
       textColor: '#444',
     },
   ]);
-  const [activeTab, setActiveTab] = useState('today');
+  const [stickyNotes, setStickyNotes] = useLocalStorageState('stickyNotes', [
+    {
+      id: Math.random(),
+      title: 'Social Media',
+      content: '- Plan social content - Build content calendar - Plan promotion and distribution',
+      bgColor: '#fdf2b3',
+      textColor: '#444',
+      characters: 80,
+      creationDate: new Date().toLocaleDateString(),
+    },
+    {
+      id: Math.random(),
+      title: 'Content Strategy',
+      content:
+        'Would need time to get insights (goals, personals, budget, audits), but after, it would be good to focus on assembling my team (start with SEO specialist, then perhaps an email marketer?). Also need to brainstorm on tooling.',
+      bgColor: '#d1eaed',
+      textColor: '#444',
+      characters: 280,
+      creationDate: new Date().toLocaleDateString(),
+    },
+  ]);
+
+  const [activeTab, setActiveTab] = useState('stickyWall');
 
   function handlerAddTask(title, listId) {
     const newTask = {
@@ -159,6 +181,22 @@ export default function App() {
     const newTags = tags.filter((tag) => tag.id !== id);
     setTags(newTags);
   }
+  function handleAddStickyNote(note) {
+    setStickyNotes((prev) => [...prev, note]);
+  }
+  function handleUpdateStickyNote(note) {
+    const newNotes = stickyNotes.map((n) => (n.id === note.id ? note : n));
+    setStickyNotes(newNotes);
+  }
+  function handleDeleteStickyNote(id) {
+    const newNotes = stickyNotes.filter((n) => n.id !== id);
+    setStickyNotes(newNotes);
+  }
+  function handleChangeTab(tab) {
+    setActiveTab(tab);
+    setIsTaskInfoOpen(false);
+  }
+
   return (
     <div className='flex h-full gap-2 bg-background-primary p-5'>
       <Menu
@@ -167,6 +205,7 @@ export default function App() {
         lists={lists}
         onAddList={handleAddList}
         todayTasksNumber={todayTasks.length}
+        stickyNotesNumber={stickyNotes.length}
         onRenameList={handleRenameList}
         onDeleteList={handleDeleteList}
         onChangeListColor={handleChangeListColor}
@@ -174,15 +213,19 @@ export default function App() {
         tags={tags}
         onAddTag={handleAddTag}
         onDeleteTag={handleDeleteTag}
-        onChangeTab={(tab) => setActiveTab(tab)}
+        onChangeTab={handleChangeTab}
       />
       <Main
         todayTasks={todayTasks}
-        onAdd={handlerAddTask}
+        onAddTask={handlerAddTask}
         onOpen={handleOpenTask}
         onComplete={handleCompleteTask}
         lists={lists}
         tags={tags}
+        stickyNotes={stickyNotes}
+        onAddNote={handleAddStickyNote}
+        onUpdateNote={handleUpdateStickyNote}
+        onDeleteNote={handleDeleteStickyNote}
         activeTab={activeTab}
       />
       <TaskInfo
@@ -198,5 +241,3 @@ export default function App() {
     </div>
   );
 }
-
-

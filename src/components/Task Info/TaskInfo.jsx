@@ -5,7 +5,6 @@ import { TaskDueDate } from './TaskDueDate';
 import { TaskTags } from './TaskTags';
 import { TaskSubTasks } from './TaskSubTasks';
 
-// ------------------------------ TaskInfo ------------------------------
 export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSelectList, tags }) {
   const [taskTitle, setTaskTitle] = useState();
   const [taskDescription, setTaskDescription] = useState();
@@ -130,7 +129,6 @@ export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSel
   function handleDeleteTagFromTask(tagId) {
     setTaskTagsIds((prev) => prev.filter((id) => id !== tagId));
   }
-  // Todo : Separate this component to smaller components
   return (
     <aside
       className={
@@ -191,7 +189,7 @@ export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSel
               className={
                 'flex-1 rounded-lg border border-background-tertiary py-2 text-center  text-sm font-semibold transition-colors duration-500 ' +
                 (isChanged
-                  ? 'cursor-pointer bg-indigo-400 text-background-secondary '
+                  ? 'cursor-pointer bg-indigo-500 text-background-secondary '
                   : 'cursor-not-allowed bg-background-tertiary text-text-tertiary')
               }
               onClick={handleSaveChanges}

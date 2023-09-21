@@ -5,7 +5,7 @@ import { MenuTasks } from './Menu Tasks/MenuTasks';
 
 // ------------------------------ Menu ------------------------------
 export function Menu({
-  isOpen, setIsOpen, todayTasksNumber, lists, onAddList, onRenameList, onDeleteList, onChangeListColor, onDuplicateList, tags, onAddTag, onDeleteTag, onChangeTab,
+  isOpen, setIsOpen, todayTasksNumber,stickyNotesNumber, lists, onAddList, onRenameList, onDeleteList, onChangeListColor, onDuplicateList, tags, onAddTag, onDeleteTag, onChangeTab,
 }) {
   const menu = useRef(null);
 
@@ -25,6 +25,7 @@ export function Menu({
     return () => {
       document.removeEventListener('click', handleClick);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [menu]);
 
   return (
@@ -55,7 +56,7 @@ export function Menu({
               className='w-full rounded-lg border border-background-tertiary  bg-transparent  py-1 pl-10  text-sm text-text-tertiary placeholder:text-text-tertiary focus:outline-none'
               placeholder='Search' />
           </div>
-          <MenuTasks todayTasksNumber={todayTasksNumber} />
+          <MenuTasks todayTasksNumber={todayTasksNumber} stickyNotesNumber={stickyNotesNumber} />
           <MenuLists
             lists={lists}
             onAddList={onAddList}

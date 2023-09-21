@@ -1,6 +1,6 @@
 // ------------------------------ Tasks ------------------------------
 
-export function MenuTasks({ todayTasksNumber }) {
+export function MenuTasks({ todayTasksNumber,stickyNotesNumber }) {
   return (
     <div className='pb-5'>
       <h4 className='mb-4 mt-5  font-medium text-text-secondary'>Tasks</h4>
@@ -28,6 +28,9 @@ export function MenuTasks({ todayTasksNumber }) {
           <span className='text-sm text-text-secondary transition-[font-weight] duration-100 group-hover:font-bold'>
             Sticky Wall
           </span>
+          <div className='grid place-content-center rounded-sm bg-background-tertiary py-[1px] transition-colors duration-300  group-hover:bg-background-primary'>
+            <span className='text-xs font-semibold text-text-secondary'>{stickyNotesNumber}</span>
+          </div>
         </li>
       </ul>
     </div>
