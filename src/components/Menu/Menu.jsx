@@ -5,7 +5,20 @@ import { MenuTasks } from './Menu Tasks/MenuTasks';
 
 // ------------------------------ Menu ------------------------------
 export function Menu({
-  isOpen, setIsOpen, todayTasksNumber,stickyNotesNumber, lists, onAddList, onRenameList, onDeleteList, onChangeListColor, onDuplicateList, tags, onAddTag, onDeleteTag, onChangeTab,
+  isOpen,
+  setIsOpen,
+  todayTasksNumber,
+  stickyNotesNumber,
+  lists,
+  onAddList,
+  onRenameList,
+  onDeleteList,
+  onChangeListColor,
+  onDuplicateList,
+  tags,
+  onAddTag,
+  onDeleteTag,
+  onChangeTab,
 }) {
   const menu = useRef(null);
 
@@ -30,10 +43,12 @@ export function Menu({
 
   return (
     <aside
-      className={'flex flex-col overflow-y-auto rounded-l-xl  p-4  transition-[width]  duration-500   ' +
+      className={
+        'flex flex-col overflow-y-auto rounded-l-xl  p-4  transition-[width]  duration-500   ' +
         (isOpen
           ? 'w-[22%] items-stretch bg-background-secondary '
-          : 'w-0 items-center bg-background-primary  ')}
+          : 'w-0 items-center bg-background-primary  ')
+      }
       ref={menu}
     >
       {isOpen || (
@@ -54,7 +69,8 @@ export function Menu({
             <input
               type='text'
               className='w-full rounded-lg border border-background-tertiary  bg-transparent  py-1 pl-10  text-sm text-text-tertiary placeholder:text-text-tertiary focus:outline-none'
-              placeholder='Search' />
+              placeholder='Search'
+            />
           </div>
           <MenuTasks todayTasksNumber={todayTasksNumber} stickyNotesNumber={stickyNotesNumber} />
           <MenuLists
@@ -63,7 +79,8 @@ export function Menu({
             onRenameList={onRenameList}
             onDeleteList={onDeleteList}
             onChangeListColor={onChangeListColor}
-            onDuplicateList={onDuplicateList} />
+            onDuplicateList={onDuplicateList}
+          />
           <MenuTags tags={tags} onAddTag={onAddTag} onDeleteTag={onDeleteTag} />
           <div className='mt-auto'>
             <ul className='space-y-3'>

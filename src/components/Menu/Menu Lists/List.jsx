@@ -2,7 +2,14 @@ import { useEffect, useRef, useState } from 'react';
 import { ListAction } from './ListAction';
 
 export function List({
-  title, color, tasksNumber, onRename, onDelete, onChangeColor, onDuplicateList, id,
+  title,
+  color,
+  tasksNumber,
+  onRename,
+  onDelete,
+  onChangeColor,
+  onDuplicateList,
+  id,
 }) {
   const [isListActionsOpen, setIsListActionsOpen] = useState(false);
   const [isRenameInputOpen, setIsRenameInputOpen] = useState(false);
@@ -49,7 +56,10 @@ export function List({
       </div>
       <button
         className='cursor-pinter relative rounded-md text-center transition-colors duration-300 hover:bg-background-primary'
-        onClick={() => setIsListActionsOpen(true)}
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsListActionsOpen(true);
+        }}
       >
         <i className='fas fa-ellipsis-vertical text-text-tertiary'></i>
         <ListAction
@@ -60,20 +70,24 @@ export function List({
           onClose={() => setIsListActionsOpen(false)}
           onChangeColor={changeColor}
           onOpenRenameInput={openRenameInput}
-          onDuplicateList={onDuplicateList} />
+          onDuplicateList={onDuplicateList}
+        />
       </button>
 
       <input
         type='text'
-        className={'absolute  left-0 top-full z-10 w-full rounded-lg border-none bg-background-primary px-3 py-2 text-sm shadow-[-4px_4px_1px_#EBEBEB] focus:outline-none ' +
-          (isRenameInputOpen ? 'block' : 'hidden')}
+        className={
+          'absolute  left-0 top-full z-10 w-full rounded-lg border-none bg-background-primary px-3 py-2 text-sm shadow-[-4px_4px_1px_#EBEBEB] focus:outline-none ' +
+          (isRenameInputOpen ? 'block' : 'hidden')
+        }
         defaultValue={title}
         ref={newListTitle}
         onBlur={(e) => {
           onRename(e.target.value);
           setIsRenameInputOpen(false);
         }}
-        onKeyDown={(e) => e.key === 'Enter' && e.target.blur()} />
+        onKeyDown={(e) => e.key === 'Enter' && e.target.blur()}
+      />
     </li>
   );
 }

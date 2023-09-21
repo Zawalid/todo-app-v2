@@ -52,7 +52,6 @@ export default function App() {
       content: '- Plan social content - Build content calendar - Plan promotion and distribution',
       bgColor: '#fdf2b3',
       textColor: '#444',
-      characters: 80,
       creationDate: new Date().toLocaleDateString(),
     },
     {
@@ -62,7 +61,6 @@ export default function App() {
         'Would need time to get insights (goals, personals, budget, audits), but after, it would be good to focus on assembling my team (start with SEO specialist, then perhaps an email marketer?). Also need to brainstorm on tooling.',
       bgColor: '#d1eaed',
       textColor: '#444',
-      characters: 280,
       creationDate: new Date().toLocaleDateString(),
     },
   ]);
