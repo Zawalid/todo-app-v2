@@ -46,7 +46,7 @@ export function Main({
   };
 
   return (
-    <main className='flex flex-1 flex-col overflow-y-auto rounded-xl bg-background-primary px-5 '>
+    <main className='flex flex-1 flex-col overflow-hidden rounded-xl bg-background-primary px-5 '>
       <BigTitle title={title} count={count} />
       {activeTab === 'stickyWall' ? (
         <StickyWall

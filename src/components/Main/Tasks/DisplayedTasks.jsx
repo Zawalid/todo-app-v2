@@ -19,7 +19,7 @@ export function DisplayedTasks({
           <AddTask onAdd={onAdd} />
         </div>
         {todayTasks.filter((task) => condition(task)).length > 0 && (
-          <ul className='mt-3 space-y-2'>
+          <ul className='mt-3 space-y-2 overflow-y-auto'>
             {todayTasks
               .filter((task) => condition(task))
               .map((task) => (

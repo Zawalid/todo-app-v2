@@ -1,3 +1,4 @@
+import CustomTippy from '../../CustomTippy';
 import { useColorPicker } from './useColorPicker';
 
 export function TextColorPicker({ onChange }) {
@@ -5,13 +6,19 @@ export function TextColorPicker({ onChange }) {
 
   return (
     <>
-      <i
-        className={'fas cursor-pointer ' + (isOpen ? 'fa-chevron-left' : 'fa-chevron-right')}
-        onClick={() => setIsOpen(!isOpen)}
-      ></i>
+      <CustomTippy content='Change text color'>
+        <button>
+          <i
+            className={'fas cursor-pointer ' + (isOpen ? 'fa-chevron-left' : 'fa-chevron-right')}
+            onClick={() => setIsOpen(!isOpen)}
+          ></i>
+        </button>
+      </CustomTippy>
       <div
-        className={' absolute flex h-full items-center justify-center gap-1 transition-[left] duration-500 ' +
-          (isOpen ? 'left-8' : '-left-10')}
+        className={
+          ' absolute flex h-full items-center justify-center gap-1 transition-[left] duration-500 ' +
+          (isOpen ? 'left-8' : '-left-10')
+        }
         ref={colorsDiv}
       >
         <span

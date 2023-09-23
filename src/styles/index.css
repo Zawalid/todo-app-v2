@@ -1,0 +1,26 @@
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+}
+body {
+  font-family: 'Lexend Deca', sans-serif;
+  height: 100vh;
+  overflow: hidden;
+}
+#root {
+  height: 100%;
+}
+::-webkit-scrollbar {
+  width: 3px;
+  height: 2px;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-text-tertiary;
+}
+::-webkit-scrollbar-track {
+  @apply bg-background-primary;
+}

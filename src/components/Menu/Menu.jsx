@@ -44,9 +44,9 @@ export function Menu({
   return (
     <aside
       className={
-        'flex flex-col overflow-y-auto rounded-l-xl  p-4  transition-[width]  duration-500   ' +
+        'flex flex-col  rounded-l-xl  p-4  transition-[width]  duration-500   ' +
         (isOpen
-          ? 'w-[22%] items-stretch bg-background-secondary '
+          ? 'w-[22%] items-stretch bg-background-secondary overflow-y-auto'
           : 'w-0 items-center bg-background-primary  ')
       }
       ref={menu}
@@ -82,7 +82,7 @@ export function Menu({
             onDuplicateList={onDuplicateList}
           />
           <MenuTags tags={tags} onAddTag={onAddTag} onDeleteTag={onDeleteTag} />
-          <div className='mt-auto'>
+          {/* <div className='mt-auto'>
             <ul className='space-y-3'>
               <li className='grid cursor-pointer grid-cols-[25px_auto] items-center'>
                 <i className='fa-solid fa-sliders text-text-tertiary'></i>
@@ -93,7 +93,7 @@ export function Menu({
                 <span className='text-text-secondary'>Log Out</span>
               </li>
             </ul>
-          </div>
+          </div> */}
         </>
       )}
     </aside>

@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import '../App.css';
 import { useLocalStorageState } from '../useLocalStorageState';
 import { TaskInfo } from './Task Info/TaskInfo';
 import { Menu } from './Menu/Menu';
 import { Main } from './Main/Main';
+import '../styles/App.css';
 
 export default function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(true);
@@ -50,6 +50,7 @@ export default function App() {
       id: Math.random(),
       title: 'Social Media',
       content: '- Plan social content - Build content calendar - Plan promotion and distribution',
+      description: 'Social Media',
       bgColor: '#fdf2b3',
       textColor: '#444',
       creationDate: new Date().toLocaleDateString(),
@@ -59,6 +60,7 @@ export default function App() {
       title: 'Content Strategy',
       content:
         'Would need time to get insights (goals, personals, budget, audits), but after, it would be good to focus on assembling my team (start with SEO specialist, then perhaps an email marketer?). Also need to brainstorm on tooling.',
+      description: 'Content Strategy',
       bgColor: '#d1eaed',
       textColor: '#444',
       creationDate: new Date().toLocaleDateString(),
