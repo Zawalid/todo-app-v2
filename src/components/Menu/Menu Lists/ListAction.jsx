@@ -27,7 +27,7 @@ export function ListAction({
 
   return (
     <ul
-      className={'absolute right-0 top-full z-10 w-44 rounded-lg bg-background-primary p-3 shadow-md ' +
+      className={'absolute right-1 top-full mt-2 z-10 w-44 rounded-lg bg-background-primary p-3 shadow-md ' +
         (isOpen ? 'block' : 'hidden')}
       ref={reference}
     >

@@ -1,6 +1,4 @@
-import CustomTippy from "../../CustomTippy";
-
-
+import CustomTippy from '../../CustomTippy';
 
 export function StickyNoteHeader({
   title,
@@ -13,18 +11,18 @@ export function StickyNoteHeader({
   isChanged,
 }) {
   return (
-    <div className='flex items-center justify-between border-b-2 border-background-tertiary  p-3'>
+    <div className='flex items-center justify-between border-b border-background-tertiary  p-3'>
       <div>
         <input
           type='text'
-          className='w-full bg-transparent text-xl  font-bold text-text-secondary placeholder:text-text-tertiary focus:outline-none'
+          className='w-full border-b bg-transparent  pb-2 text-xl font-bold text-text-secondary placeholder:text-text-tertiary focus:outline-none'
           placeholder='Title'
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
         <input
           type='text'
-          className='mt-2 w-full rounded-md border-b border-l bg-transparent p-1 text-sm font-medium text-text-tertiary placeholder:text-text-tertiary focus:outline-none'
+          className='mt-2 w-full  border-b bg-transparent p-1  text-sm font-medium text-text-tertiary placeholder:text-text-tertiary focus:outline-none'
           placeholder='Description'
           value={description}
           onChange={(e) => setDescription(e.target.value)}

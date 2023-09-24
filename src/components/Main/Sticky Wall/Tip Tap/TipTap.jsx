@@ -46,6 +46,8 @@ const extensions = [
   Superscript,
   Link.configure({
     validate: (href) => /^https?:\/\//.test(href),
+    autolink: false,
+
   }),
 ];
 

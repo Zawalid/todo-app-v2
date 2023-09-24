@@ -1,5 +1,7 @@
-import { AddLinkBox } from './AddLink';
 import CustomTippy from '../../CustomTippy';
+import { AddLink } from './AddLink';
+import { Highlighter } from './Highlighter';
+import { TextColor } from './TextColor';
 
 export const MenuBar = ({ editor }) => {
   if (!editor) return null;
@@ -52,15 +54,8 @@ export const MenuBar = ({ editor }) => {
             <i className='fa-solid fa-code'></i>
           </button>
         </CustomTippy>
-        <CustomTippy content='Highlight'>
-          <button
-            onClick={() => editor.chain().focus().toggleHighlight().run()}
-            disabled={!editor.can().chain().focus().toggleHighlight().run()}
-            className={editor.isActive('highlight') ? 'is-active' : 'not-active'}
-          >
-            <i className='fa-solid fa-highlighter'></i>
-          </button>
-        </CustomTippy>
+        <Highlighter editor={editor} />
+        <TextColor editor={editor} />
         <CustomTippy content='Superscript'>
           <button
             onClick={() => editor.chain().focus().toggleSuperscript().run()}
@@ -79,19 +74,14 @@ export const MenuBar = ({ editor }) => {
             <i className='fa-solid fa-subscript'></i>
           </button>
         </CustomTippy>
-        <CustomTippy
-          content={<AddLinkBox editor={editor} />}
-          theme="addLink"
-          trigger='click'
-          interactive={true}
-          arrow={false}
-          placement='bottom'
-        >
+        <AddLink editor={editor} />
+        <CustomTippy content='Unlink'>
           <button
-            disabled={!editor.can().chain().focus().toggleLink().run()}
+            onClick={() => editor.chain().focus().unsetLink().run()}
+            disabled={!editor.isActive('link')}
             className={editor.isActive('link') ? 'is-active' : 'not-active'}
           >
-            <i className='fa-solid fa-link'></i>
+            <i className='fa-solid fa-link-slash'></i>
           </button>
         </CustomTippy>
       </div>

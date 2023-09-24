@@ -1,4 +1,6 @@
 export function CustomBubbleMenu({ editor }) {
+  const highlightColor = document.documentElement.style.getPropertyValue('--highlight-color');
+  const textColor = document.documentElement.style.getPropertyValue('--text-color');
   return (
     <div className='flex items-center gap-2 '>
       <button
@@ -37,11 +39,18 @@ export function CustomBubbleMenu({ editor }) {
         <i className='fa-solid fa-code'></i>
       </button>
       <button
-        onClick={() => editor.chain().focus().toggleHighlight().run()}
+        onClick={() => editor.chain().focus().toggleHighlight({ color: highlightColor }).run()}
         disabled={!editor.can().chain().focus().toggleHighlight().run()}
         className={editor.isActive('highlight') ? 'is-active' : 'not-active'}
       >
         <i className='fa-solid fa-highlighter'></i>
+      </button>
+      <button
+        onClick={() => editor.chain().focus().setColor(textColor).run()}
+        disabled={!editor.can().chain().focus().setColor(textColor).run()}
+        className='not-active'
+      >
+        <i className='fa-solid fa-paintbrush'></i>
       </button>
       <button
         onClick={() => editor.chain().focus().toggleSuperscript().run()}
