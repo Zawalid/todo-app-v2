@@ -61,9 +61,9 @@ export function ColorPicker({ editor, children, cssProperty, color, setColor, ti
             <button className='relative mt-1 grid h-7 w-7 place-items-center rounded-full bg-background-secondary shadow-md'>
               <input
                 type='color'
-                onInput={handleColorChange}
-                value={editor.getAttributes(tiptapClass).color}
+                value={color}
                 className='absolute h-8 w-8 cursor-pointer opacity-0'
+                onChange={handleColorChange}
               />
               <i className='fa-solid fa-plus text-text-secondary'></i>
             </button>

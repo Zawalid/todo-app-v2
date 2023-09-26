@@ -19,13 +19,14 @@ export function StickyNoteEditor({ currentNote, stickyNotes, onBack, onAdd, onUp
 
   useEffect(() => {
     currentNote.title !== title ||
-    (currentNote.content !== content && !isElementEmpty(content)) ||
+    (currentNote.content !== content && exists) ||
+    (currentNote.content !== content && !exists && !isElementEmpty(content)) ||
     currentNote.description !== description ||
     currentNote.textColor !== textColor ||
     currentNote.bgColor !== bgColor
       ? setIsChanged(true)
       : setIsChanged(false);
-  }, [currentNote, title, content, description, textColor, bgColor]);
+  }, [currentNote, title, content, description, exists, textColor, bgColor]);
 
   function handleAddNote() {
     onAdd({

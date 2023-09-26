@@ -11,6 +11,7 @@ import CharacterCount from '@tiptap/extension-character-count';
 import ListItem from '@tiptap/extension-list-item';
 import TextStyle from '@tiptap/extension-text-style';
 import { BubbleMenu, EditorContent, useEditor } from '@tiptap/react';
+import { ColorHighlighter } from './ColorHighlighter';
 import StarterKit from '@tiptap/starter-kit';
 import { MenuBar } from './MenuBar';
 import { Footer } from './Footer';
@@ -47,8 +48,8 @@ const extensions = [
   Link.configure({
     validate: (href) => /^https?:\/\//.test(href),
     autolink: false,
-
   }),
+  ColorHighlighter,
 ];
 
 export default function TipTap({ onUpdateContent, content, creationDate }) {
