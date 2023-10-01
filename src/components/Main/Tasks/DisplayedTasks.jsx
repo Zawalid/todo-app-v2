@@ -14,7 +14,10 @@ export function DisplayedTasks({
   return (
     <>
       <div className='relative h-full'>
-        <AddTask onAdd={onAdd} />
+        <div className='flex flex-1 items-center gap-3 rounded-xl border border-background-tertiary px-5 py-1'>
+          <i className='fa-solid fa-plus text-xl text-text-tertiary'></i>
+          <AddTask onAdd={onAdd} />
+        </div>
         {todayTasks.filter((task) => condition(task)).length > 0 && (
           <ul className='mt-3 space-y-2 overflow-y-auto'>
             {todayTasks

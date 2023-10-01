@@ -1,6 +1,6 @@
 // ------------------------------ Tasks ------------------------------
 
-export function MenuTasks({ todayTasksNumber,stickyNotesNumber }) {
+export function MenuTasks({ todayTasksNumber,upcomingTasksNumber,stickyNotesNumber }) {
   return (
     <div className='pb-5'>
       <h4 className='mb-4 mt-5  font-medium text-text-secondary'>Tasks</h4>
@@ -11,7 +11,7 @@ export function MenuTasks({ todayTasksNumber,stickyNotesNumber }) {
             Upcoming
           </span>
           <div className='grid place-content-center rounded-sm bg-background-tertiary py-[1px] transition-colors duration-300  group-hover:bg-background-primary'>
-            <span className='text-xs font-semibold text-text-secondary'>{todayTasksNumber}</span>
+            <span className='text-xs font-semibold text-text-secondary'>{upcomingTasksNumber}</span>
           </div>
         </li>
         <li className='menu_element active group' data-tab='today'>

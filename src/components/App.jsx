@@ -137,7 +137,7 @@ export default function App() {
 
   const [activeTab, setActiveTab] = useState('upcoming');
 
-  function handlerAddTask(title, period,listId) {
+  function handlerAddTask(title, period, listId) {
     const newTask = {
       id: Math.random(),
       title,
@@ -279,6 +279,13 @@ export default function App() {
         lists={lists}
         onAddList={handleAddList}
         todayTasksNumber={tasks.get('today').length}
+        upcomingTasksNumber={
+          tasks.get('today').length +
+          tasks.get('tomorrow').length +
+          tasks.get('thisWeek').length +
+          tasks.get('thisMonth').length +
+          tasks.get('thisYear').length
+        }
         stickyNotesNumber={stickyNotes.length}
         onRenameList={handleRenameList}
         onDeleteList={handleDeleteList}

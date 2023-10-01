@@ -10,8 +10,7 @@ export function AddTask({ onAdd }) {
     setValue('');
   };
   return (
-    <div className='flex flex-1 items-center gap-3 rounded-xl border border-background-tertiary px-5 py-1'>
-      <i className='fa-solid fa-plus text-xl text-text-tertiary'></i>
+   
       <form className='w-full' onSubmit={handleSubmit}>
         <input
           type='text'
@@ -21,6 +20,5 @@ export function AddTask({ onAdd }) {
           onChange={(e) => setValue(e.target.value)}
         />
       </form>
-    </div>
   );
 }

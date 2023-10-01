@@ -8,6 +8,7 @@ export function Menu({
   isOpen,
   setIsOpen,
   todayTasksNumber,
+  upcomingTasksNumber,
   stickyNotesNumber,
   lists,
   onAddList,
@@ -72,7 +73,7 @@ export function Menu({
               placeholder='Search'
             />
           </div>
-          <MenuTasks todayTasksNumber={todayTasksNumber} stickyNotesNumber={stickyNotesNumber} />
+          <MenuTasks todayTasksNumber={todayTasksNumber} upcomingTasksNumber={upcomingTasksNumber} stickyNotesNumber={stickyNotesNumber} />
           <MenuLists
             lists={lists}
             onAddList={onAddList}

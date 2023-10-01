@@ -26,7 +26,7 @@ const periods = [
 ];
 export function Upcoming({ tasks, onAdd, onOpen, onComplete, lists, tags }) {
   return (
-    <div className='flex flex-wrap gap-5'>
+    <div className='flex flex-wrap gap-5 overflow-auto pr-2'>
       {periods.map((period) => (
         <PeriodTasks
           key={period.id}
@@ -46,13 +46,16 @@ export function Upcoming({ tasks, onAdd, onOpen, onComplete, lists, tags }) {
 
 function PeriodTasks({ title, period, tasks, onAdd, onOpen, onComplete, lists, tags }) {
   return (
-    <div className='w-full rounded-lg  border border-background-tertiary p-4'>
+    <div className='min-w-[400px] flex-1 rounded-lg  border border-background-tertiary p-4'>
       <SmallTitle title={title} />
-      <AddTask
-        onAdd={(title) => {
-          onAdd(title, period);
-        }}
-      />
+      <div className='flex flex-1 items-center gap-3 rounded-xl border border-background-tertiary px-5 py-1'>
+        <i className='fa-solid fa-plus text-xl text-text-tertiary'></i>
+        <AddTask
+          onAdd={(title) => {
+            onAdd(title, period);
+          }}
+        />
+      </div>
       <ul className='mt-3 space-y-2'>
         {tasks.get(period).map((task) => (
           <Task
