@@ -134,7 +134,7 @@ export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSel
   return (
     <aside
       className={
-        'relative ml-auto flex flex-col overflow-y-auto rounded-l-xl transition-[width] duration-500 ' +
+        'relative ml-auto flex flex-col rounded-l-xl transition-[width] duration-500 ' +
         (isOpen
           ? 'w-[30%] items-stretch bg-background-secondary  p-4'
           : 'w-0 items-center bg-background-primary p-0')
@@ -157,38 +157,40 @@ export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSel
               <i className='fa-solid fa-xmark cursor-pointer text-xl text-text-secondary'></i>
             </button>
           </div>
-          <TaskTitleAndDesc
-            {...{
-              taskTitle,
-              setTaskTitle,
-              taskDescription,
-              setTaskDescription,
-            }}
-          />
-          <div className='grid grid-cols-[1fr_3fr] items-center space-y-2'>
-            <TaskLists taskListId={taskListId} setTaskListId={setTaskListId} lists={lists} />
-            <TaskDueDate taskDueDate={taskDueDate} setTaskDueDate={setTaskDueDate} />
-            <TaskTags
+          <div className='overflow-y-auto'>
+            <TaskTitleAndDesc
               {...{
-                taskTagsIds,
-                tags,
-                isSelectTagOpen,
-                setIsSelectTagOpen,
-                tagsDropDown,
-                tagsDropDownToggler,
-                handleDeleteTagFromTask,
+                taskTitle,
+                setTaskTitle,
+                taskDescription,
+                setTaskDescription,
+              }}
+            />
+            <div className='grid grid-cols-[1fr_3fr] items-center space-y-2'>
+              <TaskLists taskListId={taskListId} setTaskListId={setTaskListId} lists={lists} />
+              <TaskDueDate taskDueDate={taskDueDate} setTaskDueDate={setTaskDueDate} />
+              <TaskTags
+                {...{
+                  taskTagsIds,
+                  tags,
+                  isSelectTagOpen,
+                  setIsSelectTagOpen,
+                  tagsDropDown,
+                  tagsDropDownToggler,
+                  handleDeleteTagFromTask,
+                }}
+              />
+            </div>
+            <TaskSubTasks
+              {...{
+                taskSubtasks,
+                handleAddSubTask,
+                handleDeleteSubtask,
+                handleEditSubtask,
+                handleCompleteSubTask,
               }}
             />
           </div>
-          <TaskSubTasks
-            {...{
-              taskSubtasks,
-              handleAddSubTask,
-              handleDeleteSubtask,
-              handleEditSubtask,
-              handleCompleteSubTask,
-            }}
-          />
           <div className='mt-auto flex gap-3'>
             <button
               className='flex-1 cursor-pointer rounded-lg border border-background-tertiary bg-red-500 py-2 text-center text-sm font-semibold text-background-secondary'
