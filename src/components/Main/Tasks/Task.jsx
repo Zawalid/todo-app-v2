@@ -1,9 +1,17 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Tag } from '../../Menu/Menu Tags/Tag';
 
-
 export function Task({
-  title, dueDate, subtasksNumber, listId, onOpen, isCompleted, onComplete, lists, tags, tagsIds,
+  title,
+  dueDate,
+  subtasksNumber,
+  listId,
+  onOpen,
+  isCompleted,
+  onComplete,
+  lists,
+  tags,
+  tagsIds,
 }) {
   const [checked, setChecked] = useState(isCompleted);
   const listName = useMemo(() => lists.find((l) => l?.id === +listId)?.title, [listId, lists]);
@@ -16,19 +24,26 @@ export function Task({
 
   return (
     <li
-      className={'flex items-center justify-between  gap-3 rounded-lg border-b  border-background-tertiary px-5 py-2 transition-colors duration-500 ' +
-        (checked ? 'bg-background-secondary' : '')}
+      className={
+        'flex items-center justify-between  gap-3 rounded-lg border-b  border-background-tertiary px-5 py-2 transition-colors duration-500 ' +
+        (checked ? 'bg-background-secondary' : '')
+      }
     >
       <div className='relative'>
         <input
           type='checkbox'
           className='task peer'
           checked={checked}
-          onChange={() => setChecked(!checked)} />
+          onChange={() => setChecked(!checked)}
+        />
         <i className='fas fa-check pointer-events-none  absolute left-1  top-1 hidden h-4 w-4 text-sm text-white peer-checked:block'></i>
       </div>
       <div className='flex-1'>
-        <span className='text-sm font-medium text-text-secondary'>{title}</span>
+        <span
+          className={'text-sm font-medium text-text-secondary ' + (checked ? 'line-through' : '')}
+        >
+          {title}
+        </span>
         {(listName || dueDate || subtasksNumber > 0 || tagsIds?.length > 0) && (
           <div className='mt-2 flex flex-wrap items-center gap-5'>
             {dueDate && (
@@ -65,7 +80,8 @@ export function Task({
                         isMainTag={false}
                         showDeleteButton={false}
                         id={tag.id}
-                        customClassName={'px-2 py-1 cursor-auto'} />
+                        customClassName={'px-2 py-1 cursor-auto'}
+                      />
                     );
                 })}
               </ul>
