@@ -1,24 +1,20 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Tag } from '../../Menu/Menu Tags/Tag';
 
-export function Task({
-  title,
-  dueDate,
-  subtasksNumber,
-  listId,
-  onOpen,
-  isCompleted,
-  onComplete,
-  lists,
-  tags,
-  tagsIds,
-}) {
-  const [checked, setChecked] = useState(isCompleted);
-  const listName = useMemo(() => lists.find((l) => l?.id === +listId)?.title, [listId, lists]);
-  const listColor = useMemo(() => lists.find((l) => l?.id === +listId)?.color, [listId, lists]);
+export function Task({ task, onOpen, onComplete, lists, tags }) {
+  const [checked, setChecked] = useState(task.isCompleted);
+
+  const listName = useMemo(
+    () => lists.find((l) => l?.id === +task.listId)?.title,
+    [task.listId, lists],
+  );
+  const listColor = useMemo(
+    () => lists.find((l) => l?.id === +task.listId)?.color,
+    [task.listId, lists],
+  );
 
   useEffect(() => {
-    onComplete(checked);
+    // onComplete(checked);
     // eslint-disable-next-line
   }, [checked]);
 
@@ -42,33 +38,33 @@ export function Task({
         <span
           className={'text-sm font-medium text-text-secondary ' + (checked ? 'line-through' : '')}
         >
-          {title}
+          {task.title}
         </span>
-        {(listName || dueDate || subtasksNumber > 0 || tagsIds?.length > 0) && (
+        {(listName || task.dueDate || task.subtasksNumber > 0 || task.tagsIds?.length > 0) && (
           <div className='mt-2 flex flex-wrap items-center gap-5'>
-            {dueDate && (
+            {task.dueDate && (
               <div className='flex items-center gap-2'>
                 <i className='fas fa-calendar-alt text-text-tertiary'></i>
-                <span className='text-xs font-semibold text-text-secondary'>{dueDate}</span>
+                <span className='text-xs font-semibold text-text-secondary'>{task.dueDate}</span>
               </div>
             )}
-            {subtasksNumber > 0 && (
+            {task.subtasksNumber > 0 && (
               <div className='flex items-center gap-2'>
                 <span className='rounded-sm bg-background-tertiary px-3 py-[1px] text-xs font-semibold text-text-secondary'>
-                  {subtasksNumber}
+                  {task.subtasksNumber}
                 </span>
                 <span className='text-xs font-semibold text-text-secondary'>Subtasks</span>
               </div>
             )}
-            {listName && listId !== 'none' && (
+            {listName && task.listId !== 'none' && (
               <div className='flex items-center gap-2'>
                 <span className='h-4 w-4 rounded-sm' style={{ backgroundColor: listColor }}></span>
                 <span className='text-xs font-semibold text-text-secondary'>{listName}</span>
               </div>
             )}
-            {tagsIds?.length > 0 && (
+            {task.tagsIds?.length > 0 && (
               <ul className='flex flex-wrap items-center gap-2'>
-                {tagsIds.map((tagId) => {
+                {task.tagsIds.map((tagId) => {
                   const tag = tags.find((t) => t.id === +tagId);
                   if (tag)
                     return (

@@ -2,9 +2,10 @@ import { useMemo } from 'react';
 import { BigTitle } from './Title';
 import { StickyWall } from './Sticky Wall/StickyWall';
 import { DisplayedTasks } from './Tasks/DisplayedTasks';
+import { Upcoming } from './Tasks/Upcoming';
 
 export function Main({
-  todayTasks,
+  tasks,
   onAddTask,
   onOpen,
   onComplete,
@@ -34,11 +35,19 @@ export function Main({
       : 'Sticky Wall';
 
   const count = useMemo(() => {
-    if (activeTab === 'today' || activeTab === 'upcoming') return todayTasks.length;
+    if (activeTab === 'today') return tasks.get('today').length;
+    if (activeTab === 'upcoming')
+      return (
+        tasks.get('today').length +
+        tasks.get('tomorrow').length +
+        tasks.get('thisWeek').length +
+        tasks.get('thisMonth').length +
+        tasks.get('thisYear').length
+      );
     if (activeTab === 'stickyWall') return stickyNotes.length;
     if (listId) return lists.find((list) => list.id === +activeTab)?.tasks.length;
     return 0;
-  }, [activeTab, todayTasks, listId, stickyNotes, lists]);
+  }, [activeTab, tasks, listId, stickyNotes, lists]);
 
   const condition = (task) => {
     if (listId) return +task.listId === +listId;
@@ -48,18 +57,11 @@ export function Main({
   return (
     <main className='flex flex-1 flex-col overflow-hidden rounded-xl bg-background-primary px-5 '>
       <BigTitle title={title} count={count} />
-      {activeTab === 'stickyWall' ? (
-        <StickyWall
-          stickyNotes={stickyNotes}
-          onAdd={onAddNote}
-          onUpdate={onUpdateNote}
-          onDelete={onDeleteNote}
-        />
-      ) : (
+      {activeTab === 'today' || listId ? (
         <DisplayedTasks
-          todayTasks={todayTasks}
+          todayTasks={tasks.get('today')}
           onAdd={(title) => {
-            onAddTask(title, listId);
+            onAddTask(title, 'today', listId);
           }}
           onOpen={onOpen}
           onComplete={onComplete}
@@ -67,6 +69,26 @@ export function Main({
           tags={tags}
           condition={condition}
           activeTab={activeTab}
+        />
+      ) : null}
+      {activeTab === 'upcoming' && (
+        <Upcoming
+          tasks={tasks}
+          onAdd={(title, period) => {
+            onAddTask(title, period);
+          }}
+          onOpen={onOpen}
+          onComplete={onComplete}
+          lists={lists}
+          tags={tags}
+        />
+      )}
+      {activeTab === 'stickyWall' && (
+        <StickyWall
+          stickyNotes={stickyNotes}
+          onAdd={onAddNote}
+          onUpdate={onUpdateNote}
+          onDelete={onDeleteNote}
         />
       )}
     </main>

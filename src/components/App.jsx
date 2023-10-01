@@ -8,18 +8,86 @@ import '../styles/App.css';
 export default function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(true);
   const [isTaskInfoOpen, setIsTaskInfoOpen] = useState(false);
-  const [todayTasks, setTodayTasks] = useLocalStorageState('todayTasks', [
-    {
-      id: Math.random(),
-      title: 'Consult accountant',
-      description: '',
-      dueDate: '',
-      listId: 'none',
-      subtasks: [],
-      isCompleted: true,
-      tagsIds: [],
-    },
-  ]);
+  const [tasks, setTasks] = useLocalStorageState(
+    'tasks',
+    new Map([
+      [
+        'today',
+        [
+          {
+            id: Math.random(),
+            title: 'Consult accountant',
+            description: '',
+            dueDate: '',
+            listId: 'none',
+            subtasks: [],
+            isCompleted: true,
+            tagsIds: [],
+          },
+        ],
+      ],
+      [
+        'tomorrow',
+        [
+          {
+            id: Math.random(),
+            title: 'Consult accountant',
+            description: '',
+            dueDate: '',
+            listId: 'none',
+            subtasks: [],
+            isCompleted: true,
+            tagsIds: [],
+          },
+        ],
+      ],
+      [
+        'thisWeek',
+        [
+          {
+            id: Math.random(),
+            title: 'Consult accountant',
+            description: '',
+            dueDate: '',
+            listId: 'none',
+            subtasks: [],
+            isCompleted: true,
+            tagsIds: [],
+          },
+        ],
+      ],
+      [
+        'thisMonth',
+        [
+          {
+            id: Math.random(),
+            title: 'Consult accountant',
+            description: '',
+            dueDate: '',
+            listId: 'none',
+            subtasks: [],
+            isCompleted: true,
+            tagsIds: [],
+          },
+        ],
+      ],
+      [
+        'thisYear',
+        [
+          {
+            id: Math.random(),
+            title: 'Consult accountant',
+            description: '',
+            dueDate: '',
+            listId: 'none',
+            subtasks: [],
+            isCompleted: true,
+            tagsIds: [],
+          },
+        ],
+      ],
+    ]),
+  );
   const [currentTask, setCurrentTask] = useState(null);
   const [lists, setLists] = useLocalStorageState('lists', [
     {
@@ -67,9 +135,9 @@ export default function App() {
     },
   ]);
 
-  const [activeTab, setActiveTab] = useState('stickyWall');
+  const [activeTab, setActiveTab] = useState('upcoming');
 
-  function handlerAddTask(title, listId) {
+  function handlerAddTask(title, period,listId) {
     const newTask = {
       id: Math.random(),
       title,
@@ -80,26 +148,30 @@ export default function App() {
       isCompleted: false,
       tagsIds: [],
     };
-    setTodayTasks((prev) => [...prev, newTask]);
+    setTasks((prev) => {
+      const newTasks = [...prev.get(period), newTask];
+      return new Map([...prev, [period, newTasks]]);
+    });
+
     if (listId) handleAddTasksToList(listId, newTask);
   }
   function handleOpenTask(task) {
     setCurrentTask(task);
     setIsTaskInfoOpen(true);
   }
-  function handleEditTask(task) {
-    setTodayTasks((prev) => {
-      const index = prev.findIndex((t) => t.id === task.id);
-      prev[index] = task;
-      return [...prev];
+  function handleEditTask(task, period) {
+    setTasks((prev) => {
+      const index = prev.get(period).findIndex((t) => t.id === task.id);
+      prev.get(period)[index] = task;
+      return new Map([...prev]);
     });
     setIsTaskInfoOpen(false);
   }
-  function handleDeleteTask(id) {
-    setTodayTasks((prev) => {
-      const index = prev.findIndex((t) => t.id === id);
-      prev.splice(index, 1);
-      return [...prev];
+  function handleDeleteTask(id, period) {
+    setTasks((prev) => {
+      const index = prev.get(period).findIndex((t) => t.id === id);
+      prev.get(period).splice(index, 1);
+      return new Map([...prev]);
     });
     const newLists = lists.map((list) => {
       const tasks = list.tasks.filter((t) => t.id !== id);
@@ -108,9 +180,11 @@ export default function App() {
     setLists(newLists);
     setIsTaskInfoOpen(false);
   }
-  function handleCompleteTask(id, isCompleted) {
-    const newTasks = todayTasks.map((task) => (task.id === id ? { ...task, isCompleted } : task));
-    setTodayTasks(newTasks);
+  function handleCompleteTask(id, isCompleted, period) {
+    const newTasks = tasks
+      .get(period)
+      .map((task) => (task.id === id ? { ...task, isCompleted } : task));
+    setTasks((prev) => new Map([...prev, [period, newTasks]]));
   }
   function handleAddList(title, color) {
     const newList = {
@@ -204,7 +278,7 @@ export default function App() {
         setIsOpen={setIsMenuOpen}
         lists={lists}
         onAddList={handleAddList}
-        todayTasksNumber={todayTasks.length}
+        todayTasksNumber={tasks.get('today').length}
         stickyNotesNumber={stickyNotes.length}
         onRenameList={handleRenameList}
         onDeleteList={handleDeleteList}
@@ -216,7 +290,7 @@ export default function App() {
         onChangeTab={handleChangeTab}
       />
       <Main
-        todayTasks={todayTasks}
+        tasks={tasks}
         onAddTask={handlerAddTask}
         onOpen={handleOpenTask}
         onComplete={handleCompleteTask}

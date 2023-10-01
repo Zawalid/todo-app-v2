@@ -101,7 +101,7 @@ export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSel
         subtasks: taskSubtasks,
         tagsIds: taskTagsIds,
       };
-      onEdit(editedTask);
+      onEdit(editedTask, 'today');
       onSelectList(taskListId, editedTask);
     }
   }
@@ -158,15 +158,15 @@ export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSel
             <TaskLists taskListId={taskListId} setTaskListId={setTaskListId} lists={lists} />
             <TaskDueDate taskDueDate={taskDueDate} setTaskDueDate={setTaskDueDate} />
             <TaskTags
-             {...{
-              taskTagsIds,
-              tags,
-              isSelectTagOpen,
-              setIsSelectTagOpen,
-              tagsDropDown,
-              tagsDropDownToggler,
-              handleDeleteTagFromTask,
-             }}
+              {...{
+                taskTagsIds,
+                tags,
+                isSelectTagOpen,
+                setIsSelectTagOpen,
+                tagsDropDown,
+                tagsDropDownToggler,
+                handleDeleteTagFromTask,
+              }}
             />
           </div>
           <TaskSubTasks
@@ -202,5 +202,3 @@ export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSel
     </aside>
   );
 }
-
-

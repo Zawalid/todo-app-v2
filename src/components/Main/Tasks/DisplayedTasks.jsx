@@ -14,10 +14,7 @@ export function DisplayedTasks({
   return (
     <>
       <div className='relative h-full'>
-        <div className='flex flex-1 items-center gap-3 rounded-xl border border-background-tertiary px-5 py-1'>
-          <i className='fa-solid fa-plus text-xl text-text-tertiary'></i>
-          <AddTask onAdd={onAdd} />
-        </div>
+        <AddTask onAdd={onAdd} />
         {todayTasks.filter((task) => condition(task)).length > 0 && (
           <ul className='mt-3 space-y-2 overflow-y-auto'>
             {todayTasks
@@ -25,22 +22,17 @@ export function DisplayedTasks({
               .map((task) => (
                 <Task
                   key={task.id}
-                  title={task.title}
-                  dueDate={task.dueDate}
-                  subtasksNumber={task.subtasks.length}
-                  listId={task.listId}
+                  task={task}
                   onOpen={() => onOpen(task)}
-                  isCompleted={task.isCompleted}
                   onComplete={(isCompleted) => onComplete(task.id, isCompleted)}
                   lists={lists}
                   tags={tags}
-                  tagsIds={task.tagsIds}
                 />
               ))}
           </ul>
         )}
         {todayTasks.filter((task) => condition(task)).length === 0 && (
-          <div className='absolute w-full top-1/2 flex flex-col items-center justify-center gap-2'>
+          <div className='absolute top-1/2 flex w-full flex-col items-center justify-center gap-2'>
             <h2 className='text-2xl font-semibold text-text-secondary'>
               {activeTab === 'today'
                 ? 'You have no tasks scheduled for today.'
