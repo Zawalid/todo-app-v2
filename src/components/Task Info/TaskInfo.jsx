@@ -4,6 +4,7 @@ import { TaskLists } from './TaskLists';
 import { TaskDueDate } from './TaskDueDate';
 import { TaskTags } from './TaskTags';
 import { TaskSubTasks } from './TaskSubTasks';
+import { ConfirmationModal } from './ConfirmationModal';
 
 export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSelectList, tags }) {
   const [taskTitle, setTaskTitle] = useState();
@@ -14,6 +15,7 @@ export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSel
   const [taskTagsIds, setTaskTagsIds] = useState();
   const [isSelectTagOpen, setIsSelectTagOpen] = useState(false);
   const [isChanged, setIsChanged] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const tagsDropDown = useRef(null);
   const tagsDropDownToggler = useRef(null);
 
@@ -101,7 +103,7 @@ export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSel
         subtasks: taskSubtasks,
         tagsIds: taskTagsIds,
       };
-      onEdit(editedTask, 'today');
+      onEdit(editedTask, task.period);
       onSelectList(taskListId, editedTask);
     }
   }
@@ -132,12 +134,21 @@ export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSel
   return (
     <aside
       className={
-        'ml-auto flex flex-col overflow-y-auto rounded-l-xl transition-[width] duration-500 ' +
+        'relative ml-auto flex flex-col overflow-y-auto rounded-l-xl transition-[width] duration-500 ' +
         (isOpen
           ? 'w-[30%] items-stretch bg-background-secondary  p-4'
           : 'w-0 items-center bg-background-primary p-0')
       }
     >
+      {isDeleteModalOpen && (
+        <ConfirmationModal
+          onDelete={() => {
+            onDelete(task.id, task.period);
+            setIsDeleteModalOpen(false);
+          }}
+          onClose={() => setIsDeleteModalOpen(false)}
+        />
+      )}
       {isOpen && (
         <>
           <div className='flex items-center justify-between'>
@@ -181,7 +192,7 @@ export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSel
           <div className='mt-auto flex gap-3'>
             <button
               className='flex-1 cursor-pointer rounded-lg border border-background-tertiary bg-red-500 py-2 text-center text-sm font-semibold text-background-secondary'
-              onClick={() => onDelete(task.id)}
+              onClick={() => setIsDeleteModalOpen(true)}
             >
               Delete Task
             </button>

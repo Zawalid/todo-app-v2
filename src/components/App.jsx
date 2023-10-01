@@ -23,69 +23,14 @@ export default function App() {
             subtasks: [],
             isCompleted: true,
             tagsIds: [],
+            period: 'today',
           },
         ],
       ],
-      [
-        'tomorrow',
-        [
-          {
-            id: Math.random(),
-            title: 'Consult accountant',
-            description: '',
-            dueDate: '',
-            listId: 'none',
-            subtasks: [],
-            isCompleted: true,
-            tagsIds: [],
-          },
-        ],
-      ],
-      [
-        'thisWeek',
-        [
-          {
-            id: Math.random(),
-            title: 'Consult accountant',
-            description: '',
-            dueDate: '',
-            listId: 'none',
-            subtasks: [],
-            isCompleted: true,
-            tagsIds: [],
-          },
-        ],
-      ],
-      [
-        'thisMonth',
-        [
-          {
-            id: Math.random(),
-            title: 'Consult accountant',
-            description: '',
-            dueDate: '',
-            listId: 'none',
-            subtasks: [],
-            isCompleted: true,
-            tagsIds: [],
-          },
-        ],
-      ],
-      [
-        'thisYear',
-        [
-          {
-            id: Math.random(),
-            title: 'Consult accountant',
-            description: '',
-            dueDate: '',
-            listId: 'none',
-            subtasks: [],
-            isCompleted: true,
-            tagsIds: [],
-          },
-        ],
-      ],
+      ['tomorrow', []],
+      ['thisWeek', []],
+      ['thisMonth', []],
+      ['thisYear', []],
     ]),
   );
   const [currentTask, setCurrentTask] = useState(null);
@@ -147,6 +92,7 @@ export default function App() {
       subtasks: [],
       isCompleted: false,
       tagsIds: [],
+      period,
     };
     setTasks((prev) => {
       const newTasks = [...prev.get(period), newTask];
@@ -217,6 +163,7 @@ export default function App() {
   function handleDeleteList(id) {
     const newLists = lists.filter((list) => list.id !== id);
     setLists(newLists);
+    setActiveTab('upcoming');
   }
   function handleChangeListColor(id, color) {
     handleUpdateList(id, 'color', color);
@@ -240,7 +187,14 @@ export default function App() {
       number: 0,
     };
     setLists((prev) => [...prev, duplicatedList]);
-    setTodayTasks((prev) => [...prev, ...newListTasks]);
+    setTasks((prev) => {
+      const newTasks = new Map(prev);
+      newListTasks.forEach((task) => {
+        const periodTasks = newTasks.get(task.period);
+        newTasks.set(task.period, [...periodTasks, task]);
+      });
+      return newTasks;
+    });
   }
   function handleAddTag(title, bgColor, textColor) {
     const newTag = {
@@ -278,13 +232,13 @@ export default function App() {
         setIsOpen={setIsMenuOpen}
         lists={lists}
         onAddList={handleAddList}
-        todayTasksNumber={tasks.get('today').length}
+        todayTasksNumber={tasks.get('today')?.length}
         upcomingTasksNumber={
-          tasks.get('today').length +
-          tasks.get('tomorrow').length +
-          tasks.get('thisWeek').length +
-          tasks.get('thisMonth').length +
-          tasks.get('thisYear').length
+          tasks.get('today')?.length +
+          tasks.get('tomorrow')?.length +
+          tasks.get('thisWeek')?.length +
+          tasks.get('thisMonth')?.length +
+          tasks.get('thisYear')?.length
         }
         stickyNotesNumber={stickyNotes.length}
         onRenameList={handleRenameList}

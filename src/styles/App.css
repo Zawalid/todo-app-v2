@@ -41,3 +41,6 @@ input[type='checkbox'].subtask {
   -webkit-line-clamp: 8;
 }
 
+.full_screen {
+  @apply absolute  z-10 h-full max-h-full w-full !important;
+}

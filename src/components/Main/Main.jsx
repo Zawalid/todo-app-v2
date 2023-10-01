@@ -51,7 +51,7 @@ export function Main({
 
   const condition = (task) => {
     if (listId) return +task.listId === +listId;
-    return true;
+    return task.period === "today"
   };
 
   return (
@@ -59,12 +59,12 @@ export function Main({
       <BigTitle title={title} count={count} />
       {activeTab === 'today' || listId ? (
         <DisplayedTasks
-          todayTasks={tasks.get('today')}
           onAdd={(title) => {
             onAddTask(title, 'today', listId);
           }}
           onOpen={onOpen}
           onComplete={onComplete}
+          tasks={tasks}
           lists={lists}
           tags={tags}
           condition={condition}
