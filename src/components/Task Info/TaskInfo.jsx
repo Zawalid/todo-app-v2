@@ -151,7 +151,7 @@ export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSel
       )}
       {isOpen && (
         <>
-          <div className='flex items-center justify-between'>
+          <div className='flex items-center pb-3 justify-between'>
             <h2 className='text-xl font-bold text-text-secondary'>Task:</h2>
             <button onClick={onClose}>
               <i className='fa-solid fa-xmark cursor-pointer text-xl text-text-secondary'></i>
@@ -191,7 +191,7 @@ export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSel
               }}
             />
           </div>
-          <div className='mt-auto flex gap-3'>
+          <div className='mt-auto pt-3 flex gap-3'>
             <button
               className='flex-1 cursor-pointer rounded-lg border border-background-tertiary bg-red-500 py-2 text-center text-sm font-semibold text-background-secondary'
               onClick={() => setIsDeleteModalOpen(true)}

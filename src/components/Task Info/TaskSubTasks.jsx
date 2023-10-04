@@ -5,7 +5,7 @@ export function TaskSubTasks({
   taskSubtasks, handleAddSubTask, handleDeleteSubtask, handleEditSubtask, handleCompleteSubTask,
 }) {
   return (
-    <div className='mt-7  flex-shrink-0 '>
+    <div className='mt-7 pb-5 flex-shrink-0 '>
       <h2 className='mb-4 text-xl font-bold text-text-secondary'>Subtasks:</h2>
       <div className='flex items-center gap-3 border-b border-background-tertiary px-3 py-1'>
         <i className='fa-solid fa-plus text-xl text-text-tertiary'></i>

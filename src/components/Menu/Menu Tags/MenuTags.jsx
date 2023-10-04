@@ -25,7 +25,7 @@ export function MenuTags({ tags, onAddTag, onDeleteTag }) {
   }, []);
 
   return (
-    <div className='mb-16'>
+    <div className='pb-5'>
       <h4 className='mb-4 mt-5 font-medium text-text-secondary'>Tags</h4>
       <ul className='flex flex-wrap gap-2'>
         {tags.map((tag) => (

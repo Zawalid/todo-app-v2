@@ -31,7 +31,7 @@ export function StickyNoteEditor({ currentNote, stickyNotes, onBack, onAdd, onUp
   function handleAddNote() {
     onAdd({
       id: Math.random(),
-      title: title || 'Untitled',
+      title: !title || title.trim() === '' ? 'Untitled' : title,
       content,
       description,
       bgColor,

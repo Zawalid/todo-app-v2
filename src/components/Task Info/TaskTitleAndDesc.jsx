@@ -1,6 +1,6 @@
 export function TaskTitleAndDesc({ taskTitle, setTaskTitle, taskDescription, setTaskDescription }) {
   return (
-    <div className='my-5'>
+    <div className='mb-5'>
       <input
         type='text'
         className='w-full rounded-lg border border-background-tertiary  bg-transparent  p-2  text-sm text-text-secondary placeholder:text-text-tertiary focus:outline-none'

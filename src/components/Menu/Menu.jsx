@@ -47,7 +47,7 @@ export function Menu({
       className={
         'flex flex-col  rounded-l-xl  p-4  transition-[width]  duration-500   ' +
         (isOpen
-          ? 'w-[22%] items-stretch bg-background-secondary overflow-y-auto'
+          ? 'w-[22%] items-stretch bg-background-secondary '
           : 'w-0 items-center bg-background-primary  ')
       }
       ref={menu}
@@ -59,32 +59,38 @@ export function Menu({
       )}
       {isOpen && (
         <>
-          <div className='flex  items-center justify-between'>
+          <div className='flex items-center justify-between pb-3'>
             <h2 className='text-xl font-bold text-text-secondary'>Menu</h2>
             <button onClick={() => setIsOpen(false)}>
               <i className='fa-solid fa-xmark cursor-pointer text-xl text-text-secondary'></i>
             </button>
           </div>
-          <div className='relative my-5 w-full'>
-            <i className='fas fa-search absolute left-3 top-[5px] text-sm text-text-tertiary'></i>
-            <input
-              type='text'
-              className='w-full rounded-lg border border-background-tertiary  bg-transparent  py-1 pl-10  text-sm text-text-tertiary placeholder:text-text-tertiary focus:outline-none'
-              placeholder='Search'
+          <div className='overflow-y-auto'>
+            <div className='relative mb-5 w-full'>
+              <i className='fas fa-search absolute left-3 top-[5px] text-sm text-text-tertiary'></i>
+              <input
+                type='text'
+                className='w-full rounded-lg border border-background-tertiary  bg-transparent  py-1 pl-10  text-sm text-text-tertiary placeholder:text-text-tertiary focus:outline-none'
+                placeholder='Search'
+              />
+            </div>
+            <MenuTasks
+              todayTasksNumber={todayTasksNumber}
+              upcomingTasksNumber={upcomingTasksNumber}
+              stickyNotesNumber={stickyNotesNumber}
             />
+            <MenuLists
+              lists={lists}
+              onAddList={onAddList}
+              onRenameList={onRenameList}
+              onDeleteList={onDeleteList}
+              onChangeListColor={onChangeListColor}
+              onDuplicateList={onDuplicateList}
+            />
+            <MenuTags tags={tags} onAddTag={onAddTag} onDeleteTag={onDeleteTag} />
           </div>
-          <MenuTasks todayTasksNumber={todayTasksNumber} upcomingTasksNumber={upcomingTasksNumber} stickyNotesNumber={stickyNotesNumber} />
-          <MenuLists
-            lists={lists}
-            onAddList={onAddList}
-            onRenameList={onRenameList}
-            onDeleteList={onDeleteList}
-            onChangeListColor={onChangeListColor}
-            onDuplicateList={onDuplicateList}
-          />
-          <MenuTags tags={tags} onAddTag={onAddTag} onDeleteTag={onDeleteTag} />
-          {/* <div className='mt-auto'>
-            <ul className='space-y-3'>
+          {/* <div className=' mt-auto  pt-3'>
+            <ul className='flex items-center justify-between text-sm'>
               <li className='grid cursor-pointer grid-cols-[25px_auto] items-center'>
                 <i className='fa-solid fa-sliders text-text-tertiary'></i>
                 <span className='text-text-secondary'>Settings</span>
