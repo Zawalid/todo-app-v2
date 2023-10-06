@@ -6,6 +6,7 @@ import { Upcoming } from './Tasks/Upcoming';
 
 export function Main({
   tasks,
+  tasksDate,
   setTasksDate,
   onAddTask,
   onOpen,
@@ -71,6 +72,7 @@ export function Main({
       {activeTab === 'upcoming' && (
         <Upcoming
           tasks={tasks}
+          tasksDate={tasksDate}
           setTasksDate={setTasksDate}
           onAdd={(title, period) => {
             onAddTask(title, period);

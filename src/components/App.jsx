@@ -225,6 +225,7 @@ export default function App() {
       />
       <Main
         tasks={tasks}
+        tasksDate={tasksDate}
         setTasksDate={setTasksDate}
         onAddTask={handlerAddTask}
         onOpen={handleOpenTask}

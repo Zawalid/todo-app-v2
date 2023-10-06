@@ -5,12 +5,21 @@ import { TasksPeriod } from './TaskPeriod';
 
 const periods = ['days', 'weeks', 'months', 'years'];
 
-export function Upcoming({ tasks, onAdd, onOpen, onComplete, lists, tags, setTasksDate }) {
+export function Upcoming({
+  tasks,
+  onAdd,
+  onOpen,
+  onComplete,
+  lists,
+  tags,
+  tasksDate,
+  setTasksDate,
+}) {
   const wrapper = useRef(null);
   return (
     <div className='relative flex  h-full flex-wrap gap-5 overflow-auto pr-2 ' ref={wrapper}>
       {periods.map((period) => (
-        <PeriodTasks
+        <Period
           key={period}
           period={period}
           tasks={tasks}
@@ -20,6 +29,7 @@ export function Upcoming({ tasks, onAdd, onOpen, onComplete, lists, tags, setTas
           lists={lists}
           tags={tags}
           parentRef={wrapper}
+          tasksDate={tasksDate}
           setTasksDate={setTasksDate}
         />
       ))}
@@ -27,7 +37,7 @@ export function Upcoming({ tasks, onAdd, onOpen, onComplete, lists, tags, setTas
   );
 }
 
-function PeriodTasks({
+function Period({
   period,
   tasks,
   onAdd,
@@ -36,10 +46,10 @@ function PeriodTasks({
   lists,
   tags,
   parentRef,
+  tasksDate,
   setTasksDate,
 }) {
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const [count, setCount] = useState(0);
 
   useEffect(() => {
     if (isFullScreen) {
@@ -53,6 +63,19 @@ function PeriodTasks({
   const todayTasks = tasks?.filter(
     (task) => new Date(task.date).toLocaleDateString() === new Date().toLocaleDateString(),
   );
+  function getPeriodTasks(condition) {
+    return (
+      <PeriodTasks
+        tasks={tasks}
+        lists={lists}
+        tags={tags}
+        onOpen={onOpen}
+        onComplete={onComplete}
+        tasksDate={tasksDate}
+        condition={condition}
+      />
+    );
+  }
   return (
     <div
       className={
@@ -60,8 +83,7 @@ function PeriodTasks({
         (isFullScreen ? 'full_screen' : '')
       }
     >
-      {/* <SmallTitle title={title} /> */}
-      <TasksPeriod count={count} setCount={setCount} period={period} setTasksDate={setTasksDate} />
+      <TasksPeriod period={period} setTasksDate={setTasksDate} />
       {/* <i
         className={
           'fa-solid absolute right-3 top-5 cursor-pointer ' +
@@ -80,9 +102,38 @@ function PeriodTasks({
         />
       </div>
 
+      {period === 'days' &&
+        getPeriodTasks(
+          (task) =>
+            new Date(task.date).getDate() === tasksDate.getDate() &&
+            new Date(task.date).getMonth() === tasksDate.getMonth() &&
+            new Date(task.date).getFullYear() === tasksDate.getFullYear(),
+        )}
+      {period === 'weeks' &&
+        getPeriodTasks(
+          (task) =>
+            new Date(task.date) >=
+              new Date(
+                new Date(tasksDate).setDate(tasksDate.getDate() - tasksDate.getDay()),
+              ).setHours(0, 0, 0, 0) &&
+            new Date(task.date) <=
+              new Date(
+                new Date(tasksDate).setDate(tasksDate.getDate() - tasksDate.getDay() + 6),
+              ).setHours(0, 0, 0, 0),
+        )}
+      {period === 'months' &&
+        getPeriodTasks(
+          (task) =>
+            new Date(task.date).getMonth() === tasksDate.getMonth() &&
+            new Date(task.date).getFullYear() === tasksDate.getFullYear(),
+        )}
+      {period === 'years' &&
+        getPeriodTasks((task) => new Date(task.date).getFullYear() === tasksDate.getFullYear())}
+
+      {/* 
       <ul className='mt-3 flex-1 space-y-2 '>
-        {todayTasks.length > 0 ? (
-          todayTasks.map((task, id) => (
+        {tasks.map((task, id) => {
+          const taskComponent = (
             <Task
               key={task.id}
               task={task}
@@ -92,14 +143,65 @@ function PeriodTasks({
               tags={tags}
               isLast={id === todayTasks.length - 1}
             />
-          ))
-        ) : (
-          <div className='  flex h-full flex-col items-center justify-center'>
+          );
+
+          const startOfWeek = new Date(tasksDate);
+          startOfWeek.setHours(0, 0, 0, 0);
+          const endOfWeek = new Date(startOfWeek);
+          endOfWeek.setDate(endOfWeek.getDate() + 6);
+
+          switch (period) {
+            case 'days':
+              return (
+                new Date(task.date).getDate() === tasksDate.getDate() &&
+                new Date(task.date).getMonth() === tasksDate.getMonth() &&
+                new Date(task.date).getFullYear() === tasksDate.getFullYear() &&
+                taskComponent
+              );
+            case 'weeks':
+              return (
+                new Date(task.date) >= startOfWeek &&
+                new Date(task.date) <= endOfWeek &&
+                taskComponent
+              );
+            case 'months':
+              return (
+                new Date(task.date).getMonth() === tasksDate.getMonth() &&
+                new Date(task.date).getFullYear() === tasksDate.getFullYear() &&
+                taskComponent
+              );
+            case 'years':
+              return new Date(task.date).getFullYear() === tasksDate.getFullYear() && taskComponent;
+            default:
+              return taskComponent;
+          }
+        })}
+
+        <div className='  flex h-full flex-col items-center justify-center'>
             <h5 className='font-semibold text-text-secondary'>You don&apos;t have any tasks</h5>
             <p className=' text-xs font-medium text-text-tertiary'>Add a new task to get started</p>
           </div>
-        )}
-      </ul>
+      </ul> */}
     </div>
+  );
+}
+
+function PeriodTasks({ tasks, lists, tags, onOpen, onComplete, tasksDate, condition }) {
+  return (
+    <ul className='mt-3 flex-1 space-y-2 '>
+      {tasks.map((task, id) => {
+        if (condition(task))
+          return (
+            <Task
+              key={task.id}
+              task={task}
+              onOpen={() => onOpen(task)}
+              onComplete={(isCompleted) => onComplete(task.id, isCompleted, task.period)}
+              lists={lists}
+              tags={tags}
+            />
+          );
+      })}
+    </ul>
   );
 }

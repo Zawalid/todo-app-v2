@@ -1,23 +1,26 @@
 import { useEffect, useMemo, useState } from 'react';
-export function TasksPeriod({ count, setCount, period, setTasksDate }) {
+export function TasksPeriod({ period, setTasksDate }) {
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [count, setCount] = useState(0);
 
-  const dateNow = useMemo(() => new Date(), []);
-
-  useEffect(() => {
-    updateCurrentDate(period, count);
-  }, [period, count]);
+  const dateNow = new Date();
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      updateCurrentDate(period, count);
-    }, 1000);
-    return () => {
-      clearInterval(interval);
-    };
-  }, [dateNow, period, count]);
+    updateCurrentDate(count);
+    // eslint-disable-next-line
+  }, [count]);
 
-  const updateCurrentDate = (period, count) => {
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     updateCurrentDate(count);
+  //   }, 1000);
+  //   return () => {
+  //     clearInterval(interval);
+  //   };
+  //   // eslint-disable-next-line
+  // }, [dateNow, period, count]);
+
+  const updateCurrentDate = (count) => {
     const newDate = new Date();
     if (period === 'days') {
       newDate.setDate(newDate.getDate() + count);
@@ -35,27 +38,8 @@ export function TasksPeriod({ count, setCount, period, setTasksDate }) {
     setTasksDate(currentDate);
   }, [period, count, setTasksDate, currentDate]);
 
-  useEffect(() => {
-    setCount(0);
-  }, [period, setCount]);
-
-  useEffect(() => {
-    function handleKeyDown(e) {
-      if (e.key === 'ArrowLeft') {
-        setCount((prev) => prev - 1);
-      } else if (e.key === 'ArrowRight') {
-        setCount((prev) => prev + 1);
-      }
-    }
-    document.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-    // eslint-disable-next-line
-  }, [count]);
-
   return (
-    <div className='flex mb-2 items-center justify-between  text-center'>
+    <div className='mb-2 flex items-center justify-between  text-center'>
       <i
         className='fa-solid fa-chevron-left cursor-pointer text-lg text-text-primary'
         onClick={() => setCount((prev) => prev - 1)}
@@ -95,7 +79,7 @@ function TasksByDays({ currentDate }) {
               weekday: 'long',
             })}
       </h1>
-      <p className=' font-semibold text-text-secondary text-sm'>
+      <p className=' text-sm font-semibold text-text-secondary'>
         {currentDate.toLocaleDateString('en-US', {
           month: 'short',
           day: 'numeric',
@@ -125,7 +109,7 @@ function TasksByWeeks({ currentDate }) {
           day: 'numeric',
         })}
       </h1>
-      <p className=' font-semibold text-text-secondary text-sm'>
+      <p className=' text-sm font-semibold text-text-secondary'>
         {currentDate.toLocaleDateString('en-US', {
           year: 'numeric',
         })}
@@ -141,7 +125,7 @@ function TasksByMonths({ currentDate }) {
           month: 'long',
         })}
       </h1>
-      <p className=' font-semibold text-text-secondary text-sm'>
+      <p className=' text-sm font-semibold text-text-secondary'>
         {currentDate.toLocaleDateString('en-US', {
           year: 'numeric',
         })}
