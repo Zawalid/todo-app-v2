@@ -37,8 +37,8 @@ export function Main({
 
   const count = useMemo(() => {
     if (activeTab === 'today')
-      return tasks.filter(
-        (task) => task.date.toLocaleDateString() === new Date().toLocaleDateString(),
+      return tasks?.filter(
+        (task) => new Date(task.date).toLocaleDateString() === new Date().toLocaleDateString(),
       ).length;
     if (activeTab === 'upcoming') return tasks.length;
     if (activeTab === 'stickyWall') return stickyNotes.length;

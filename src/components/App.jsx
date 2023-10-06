@@ -22,7 +22,6 @@ export default function App() {
     },
   ]);
   const [tasksDate, setTasksDate] = useState(new Date());
-
   const [currentTask, setCurrentTask] = useState(null);
   const [lists, setLists] = useLocalStorageState('lists', [
     {
@@ -69,10 +68,10 @@ export default function App() {
       creationDate: new Date().toLocaleDateString(),
     },
   ]);
-  const [activeTab, setActiveTab] = useState('upcoming');
+  const [activeTab, setActiveTab] = useState('today');
 
-  const todayTasks = tasks.filter(
-    (task) => task.date.toLocaleDateString() === new Date().toLocaleDateString(),
+  const todayTasks = tasks?.filter(
+    (task) => new Date(task.date).toLocaleDateString() === new Date().toLocaleDateString(),
   );
 
   function handlerAddTask(title, listId) {
