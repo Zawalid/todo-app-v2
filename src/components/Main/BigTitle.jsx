@@ -1,6 +1,4 @@
-export function SmallTitle({ title }) {
-    return <h1 className="mb-3 text-2xl font-bold text-text-primary">{title}</h1>;
-  }
+
   export function BigTitle({ title, count }) {
     return (
       <div className="mb-10 flex items-center gap-8">

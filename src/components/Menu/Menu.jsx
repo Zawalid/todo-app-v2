@@ -51,6 +51,7 @@ export function Menu({
           : 'w-0 items-center bg-background-primary  ')
       }
       ref={menu}
+      
     >
       {isOpen || (
         <button onClick={() => setIsOpen(true)}>

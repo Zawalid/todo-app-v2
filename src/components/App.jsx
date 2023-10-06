@@ -8,31 +8,21 @@ import '../styles/App.css';
 export default function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(true);
   const [isTaskInfoOpen, setIsTaskInfoOpen] = useState(false);
-  const [tasks, setTasks] = useLocalStorageState(
-    'tasks',
-    new Map([
-      [
-        'today',
-        [
-          {
-            id: Math.random(),
-            title: 'Consult accountant',
-            description: '',
-            dueDate: '',
-            listId: 'none',
-            subtasks: [],
-            isCompleted: true,
-            tagsIds: [],
-            period: 'today',
-          },
-        ],
-      ],
-      ['tomorrow', []],
-      ['thisWeek', []],
-      ['thisMonth', []],
-      ['thisYear', []],
-    ]),
-  );
+  const [tasks, setTasks] = useLocalStorageState('tasks', [
+    {
+      id: Math.random(),
+      title: 'Consult accountant',
+      description: '',
+      dueDate: '',
+      listId: 'none',
+      subtasks: [],
+      isCompleted: true,
+      tagsIds: [],
+      date: new Date(),
+    },
+  ]);
+  const [tasksDate, setTasksDate] = useState(new Date());
+
   const [currentTask, setCurrentTask] = useState(null);
   const [lists, setLists] = useLocalStorageState('lists', [
     {
@@ -79,10 +69,13 @@ export default function App() {
       creationDate: new Date().toLocaleDateString(),
     },
   ]);
-
   const [activeTab, setActiveTab] = useState('upcoming');
 
-  function handlerAddTask(title, period, listId) {
+  const todayTasks = tasks.filter(
+    (task) => task.date.toLocaleDateString() === new Date().toLocaleDateString(),
+  );
+
+  function handlerAddTask(title, listId) {
     const newTask = {
       id: Math.random(),
       title,
@@ -92,12 +85,9 @@ export default function App() {
       subtasks: [],
       isCompleted: false,
       tagsIds: [],
-      period,
+      date: tasksDate,
     };
-    setTasks((prev) => {
-      const newTasks = [...prev.get(period), newTask];
-      return new Map([...prev, [period, newTasks]]);
-    });
+    setTasks((prev) => [...prev, newTask]);
 
     if (listId) handleAddTasksToList(listId, newTask);
   }
@@ -105,20 +95,12 @@ export default function App() {
     setCurrentTask(task);
     setIsTaskInfoOpen(true);
   }
-  function handleEditTask(task, period) {
-    setTasks((prev) => {
-      const index = prev.get(period).findIndex((t) => t.id === task.id);
-      prev.get(period)[index] = task;
-      return new Map([...prev]);
-    });
+  function handleEditTask(task) {
+    setTasks((prev) => prev.map((t) => (t.id === task.id ? task : t)));
     setIsTaskInfoOpen(false);
   }
-  function handleDeleteTask(id, period) {
-    setTasks((prev) => {
-      const index = prev.get(period).findIndex((t) => t.id === id);
-      prev.get(period).splice(index, 1);
-      return new Map([...prev]);
-    });
+  function handleDeleteTask(id) {
+    setTasks((prev) => prev.filter((t) => t.id !== id));
     const newLists = lists.map((list) => {
       const tasks = list.tasks.filter((t) => t.id !== id);
       return { ...list, tasks };
@@ -126,11 +108,9 @@ export default function App() {
     setLists(newLists);
     setIsTaskInfoOpen(false);
   }
-  function handleCompleteTask(id, isCompleted, period) {
-    const newTasks = tasks
-      .get(period)
-      .map((task) => (task.id === id ? { ...task, isCompleted } : task));
-    setTasks((prev) => new Map([...prev, [period, newTasks]]));
+  function handleCompleteTask(id, isCompleted) {
+    const newTasks = tasks.map((task) => (task.id === id ? { ...task, isCompleted } : task));
+    setTasks(newTasks);
   }
   function handleAddList(title, color) {
     const newList = {
@@ -232,14 +212,8 @@ export default function App() {
         setIsOpen={setIsMenuOpen}
         lists={lists}
         onAddList={handleAddList}
-        todayTasksNumber={tasks.get('today')?.length}
-        upcomingTasksNumber={
-          tasks.get('today')?.length +
-          tasks.get('tomorrow')?.length +
-          tasks.get('thisWeek')?.length +
-          tasks.get('thisMonth')?.length +
-          tasks.get('thisYear')?.length
-        }
+        todayTasksNumber={todayTasks.length}
+        upcomingTasksNumber={tasks.length}
         stickyNotesNumber={stickyNotes.length}
         onRenameList={handleRenameList}
         onDeleteList={handleDeleteList}
@@ -252,6 +226,7 @@ export default function App() {
       />
       <Main
         tasks={tasks}
+        setTasksDate={setTasksDate}
         onAddTask={handlerAddTask}
         onOpen={handleOpenTask}
         onComplete={handleCompleteTask}

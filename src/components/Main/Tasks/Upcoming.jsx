@@ -1,39 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
-import { SmallTitle } from '../Title';
 import { AddTask } from './AddTask';
 import { Task } from './Task';
+import { TasksPeriod } from './TaskPeriod';
 
-const periods = [
-  {
-    title: 'Today',
-    id: 'today',
-  },
-  {
-    title: 'Tomorrow',
-    id: 'tomorrow',
-  },
-  {
-    title: 'This Week',
-    id: 'thisWeek',
-  },
-  {
-    title: 'This Month',
-    id: 'thisMonth',
-  },
-  {
-    title: 'This Year',
-    id: 'thisYear',
-  },
-];
+const periods = ['days', 'weeks', 'months', 'years'];
+
 export function Upcoming({ tasks, onAdd, onOpen, onComplete, lists, tags }) {
   const wrapper = useRef(null);
   return (
     <div className='relative flex  h-full flex-wrap gap-5 overflow-auto pr-2 ' ref={wrapper}>
       {periods.map((period) => (
         <PeriodTasks
-          key={period.id}
-          title={period.title}
-          period={period.id}
+          key={period}
+          period={period}
           tasks={tasks}
           onAdd={onAdd}
           onOpen={onOpen}
@@ -47,8 +26,19 @@ export function Upcoming({ tasks, onAdd, onOpen, onComplete, lists, tags }) {
   );
 }
 
-function PeriodTasks({ title, period, tasks, onAdd, onOpen, onComplete, lists, tags, parentRef }) {
+function PeriodTasks({
+  period,
+  tasks,
+  onAdd,
+  onOpen,
+  onComplete,
+  lists,
+  tags,
+  parentRef,
+  setTasksDate,
+}) {
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const [count, setCount] = useState(0);
 
   useEffect(() => {
     if (isFullScreen) {
@@ -62,12 +52,13 @@ function PeriodTasks({ title, period, tasks, onAdd, onOpen, onComplete, lists, t
   return (
     <div
       className={
-        'relative  flex max-h-[400px] min-w-[400px] flex-1 flex-col overflow-auto rounded-lg border border-background-tertiary bg-background-primary  p-4  ' +
+        'relative flex max-h-[400px] min-w-[400px] flex-1 flex-col overflow-auto rounded-lg border border-background-tertiary bg-background-primary p-4 pt-2  ' +
         (isFullScreen ? 'full_screen' : '')
       }
     >
-      <SmallTitle title={title} />
-      <i
+      {/* <SmallTitle title={title} /> */}
+      <TasksPeriod count={count} setCount={setCount} period={period} setTasksDate={setTasksDate} />
+      {/* <i
         className={
           'fa-solid absolute right-3 top-5 cursor-pointer ' +
           (isFullScreen
@@ -75,17 +66,17 @@ function PeriodTasks({ title, period, tasks, onAdd, onOpen, onComplete, lists, t
             : 'fa-up-right-and-down-left-from-center ')
         }
         onClick={() => setIsFullScreen((prev) => !prev)}
-      ></i>
+      ></i> */}
       <div className='flex items-center gap-3 rounded-xl border border-background-tertiary px-5 py-1'>
         <i className='fa-solid fa-plus text-xl text-text-tertiary'></i>
         <AddTask
           onAdd={(title) => {
-            onAdd(title, period);
+            onAdd(title, 'today');
           }}
         />
       </div>
 
-      <ul className='mt-3 flex-1 space-y-2'>
+      {/* <ul className='mt-3 flex-1 space-y-2'>
         {tasks.get(period).length > 0 ? (
           tasks
             .get(period)
@@ -106,7 +97,7 @@ function PeriodTasks({ title, period, tasks, onAdd, onOpen, onComplete, lists, t
             <p className=' text-xs font-medium text-text-tertiary'>Add a new task to get started</p>
           </div>
         )}
-      </ul>
+      </ul> */}
     </div>
   );
 }

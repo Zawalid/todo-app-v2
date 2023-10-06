@@ -1,11 +1,12 @@
 import { useMemo } from 'react';
-import { BigTitle } from './Title';
+import { BigTitle } from './BigTitle';
 import { StickyWall } from './Sticky Wall/StickyWall';
 import { DisplayedTasks } from './Tasks/DisplayedTasks';
 import { Upcoming } from './Tasks/Upcoming';
 
 export function Main({
   tasks,
+  setTasksDate,
   onAddTask,
   onOpen,
   onComplete,
@@ -35,15 +36,11 @@ export function Main({
       : 'Sticky Wall';
 
   const count = useMemo(() => {
-    if (activeTab === 'today') return tasks.get('today').length;
-    if (activeTab === 'upcoming')
-      return (
-        tasks.get('today').length +
-        tasks.get('tomorrow').length +
-        tasks.get('thisWeek').length +
-        tasks.get('thisMonth').length +
-        tasks.get('thisYear').length
-      );
+    if (activeTab === 'today')
+      return tasks.filter(
+        (task) => task.date.toLocaleDateString() === new Date().toLocaleDateString(),
+      ).length;
+    if (activeTab === 'upcoming') return tasks.length;
     if (activeTab === 'stickyWall') return stickyNotes.length;
     if (listId) return lists.find((list) => list.id === +activeTab)?.tasks.length;
     return 0;
@@ -51,7 +48,7 @@ export function Main({
 
   const condition = (task) => {
     if (listId) return +task.listId === +listId;
-    return task.period === "today"
+    return task.period === 'today';
   };
 
   return (
@@ -81,6 +78,7 @@ export function Main({
           onComplete={onComplete}
           lists={lists}
           tags={tags}
+          setTasksDate={setTasksDate}
         />
       )}
       {activeTab === 'stickyWall' && (
