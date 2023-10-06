@@ -68,7 +68,7 @@ export default function App() {
       creationDate: new Date().toLocaleDateString(),
     },
   ]);
-  const [activeTab, setActiveTab] = useState('today');
+  const [activeTab, setActiveTab] = useState('upcoming');
 
   const todayTasks = tasks?.filter(
     (task) => new Date(task.date).toLocaleDateString() === new Date().toLocaleDateString(),

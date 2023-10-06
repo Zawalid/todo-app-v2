@@ -48,7 +48,7 @@ export function Main({
 
   const condition = (task) => {
     if (listId) return +task.listId === +listId;
-    return task.period === 'today';
+    return new Date(task.date).toLocaleDateString() === new Date().toLocaleDateString();
   };
 
   return (
@@ -57,7 +57,7 @@ export function Main({
       {activeTab === 'today' || listId ? (
         <DisplayedTasks
           onAdd={(title) => {
-            onAddTask(title, 'today', listId);
+            onAddTask(title, listId);
           }}
           onOpen={onOpen}
           onComplete={onComplete}
@@ -71,6 +71,7 @@ export function Main({
       {activeTab === 'upcoming' && (
         <Upcoming
           tasks={tasks}
+          setTasksDate={setTasksDate}
           onAdd={(title, period) => {
             onAddTask(title, period);
           }}
@@ -78,7 +79,6 @@ export function Main({
           onComplete={onComplete}
           lists={lists}
           tags={tags}
-          setTasksDate={setTasksDate}
         />
       )}
       {activeTab === 'stickyWall' && (

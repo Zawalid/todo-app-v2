@@ -5,7 +5,7 @@ import { TasksPeriod } from './TaskPeriod';
 
 const periods = ['days', 'weeks', 'months', 'years'];
 
-export function Upcoming({ tasks, onAdd, onOpen, onComplete, lists, tags }) {
+export function Upcoming({ tasks, onAdd, onOpen, onComplete, lists, tags, setTasksDate }) {
   const wrapper = useRef(null);
   return (
     <div className='relative flex  h-full flex-wrap gap-5 overflow-auto pr-2 ' ref={wrapper}>
@@ -20,6 +20,7 @@ export function Upcoming({ tasks, onAdd, onOpen, onComplete, lists, tags }) {
           lists={lists}
           tags={tags}
           parentRef={wrapper}
+          setTasksDate={setTasksDate}
         />
       ))}
     </div>
@@ -49,10 +50,13 @@ function PeriodTasks({
     }
   }, [isFullScreen, parentRef]);
 
+  const todayTasks = tasks?.filter(
+    (task) => new Date(task.date).toLocaleDateString() === new Date().toLocaleDateString(),
+  );
   return (
     <div
       className={
-        'relative flex max-h-[400px] min-w-[400px] flex-1 flex-col overflow-auto rounded-lg border border-background-tertiary bg-background-primary p-4 pt-2  ' +
+        'relative flex max-h-[420px] min-w-[400px] flex-1 flex-col overflow-auto rounded-lg border border-background-tertiary bg-background-primary p-4 pt-2  ' +
         (isFullScreen ? 'full_screen' : '')
       }
     >
@@ -76,28 +80,26 @@ function PeriodTasks({
         />
       </div>
 
-      {/* <ul className='mt-3 flex-1 space-y-2'>
-        {tasks.get(period).length > 0 ? (
-          tasks
-            .get(period)
-            .map((task, id) => (
-              <Task
-                key={task.id}
-                task={task}
-                onOpen={() => onOpen(task)}
-                onComplete={(isCompleted) => onComplete(task.id, isCompleted, task.period)}
-                lists={lists}
-                tags={tags}
-                isLast={id === tasks.get(period).length - 1}
-              />
-            ))
+      <ul className='mt-3 flex-1 space-y-2 '>
+        {todayTasks.length > 0 ? (
+          todayTasks.map((task, id) => (
+            <Task
+              key={task.id}
+              task={task}
+              onOpen={() => onOpen(task)}
+              onComplete={(isCompleted) => onComplete(task.id, isCompleted, task.period)}
+              lists={lists}
+              tags={tags}
+              isLast={id === todayTasks.length - 1}
+            />
+          ))
         ) : (
           <div className='  flex h-full flex-col items-center justify-center'>
             <h5 className='font-semibold text-text-secondary'>You don&apos;t have any tasks</h5>
             <p className=' text-xs font-medium text-text-tertiary'>Add a new task to get started</p>
           </div>
         )}
-      </ul> */}
+      </ul>
     </div>
   );
 }
