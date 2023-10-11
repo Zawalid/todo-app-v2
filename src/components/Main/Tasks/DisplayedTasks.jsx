@@ -14,7 +14,6 @@ export function DisplayedTasks({
   const allTasks = [...tasks.values()].flat();
   return (
     <>
-      
       <div className='relative h-full'>
         <div className='flex  items-center gap-3 rounded-xl border border-background-tertiary px-5 py-1'>
           <i className='fa-solid fa-plus text-xl text-text-tertiary'></i>

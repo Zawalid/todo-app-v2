@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocalStorageState } from '../useLocalStorageState';
 import { TaskInfo } from './Task Info/TaskInfo';
 import { Menu } from './Menu/Menu';
@@ -12,7 +12,7 @@ export default function App() {
     {
       id: Math.random(),
       title: 'Consult accountant',
-      description: '',
+      note: '',
       dueDate: '',
       listId: 'none',
       subtasks: [],
@@ -21,7 +21,6 @@ export default function App() {
       date: new Date(),
     },
   ]);
-  const [tasksDate, setTasksDate] = useState(new Date());
   const [currentTask, setCurrentTask] = useState(null);
   const [lists, setLists] = useLocalStorageState('lists', [
     {
@@ -52,7 +51,7 @@ export default function App() {
       id: Math.random(),
       title: 'Social Media',
       content: '- Plan social content - Build content calendar - Plan promotion and distribution',
-      description: 'Social Media',
+      note: 'Social Media',
       bgColor: '#fdf2b3',
       textColor: '#444',
       creationDate: new Date().toLocaleDateString(),
@@ -73,18 +72,21 @@ export default function App() {
   const todayTasks = tasks?.filter(
     (task) => new Date(task.date).toLocaleDateString() === new Date().toLocaleDateString(),
   );
+  useEffect(() => {
+    isTaskInfoOpen || setCurrentTask(null);
+  }, [isTaskInfoOpen]);
 
-  function handlerAddTask(title, listId) {
+  function handlerAddTask(title, date, listId) {
     const newTask = {
       id: Math.random(),
       title,
-      description: '',
+      note: '',
       dueDate: '',
       listId: listId || 'none',
       subtasks: [],
       isCompleted: false,
       tagsIds: [],
-      date: tasksDate,
+      date: activeTab === 'today' ? new Date() : date,
     };
     setTasks((prev) => [...prev, newTask]);
 
@@ -225,8 +227,6 @@ export default function App() {
       />
       <Main
         tasks={tasks}
-        tasksDate={tasksDate}
-        setTasksDate={setTasksDate}
         onAddTask={handlerAddTask}
         onOpen={handleOpenTask}
         onComplete={handleCompleteTask}

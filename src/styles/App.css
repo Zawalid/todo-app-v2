@@ -42,5 +42,5 @@ input[type='checkbox'].subtask {
 }
 
 .full_screen {
-  @apply absolute  z-10 h-full max-h-full w-full !important;
+  @apply absolute  z-10 h-full  w-full !important;
 }

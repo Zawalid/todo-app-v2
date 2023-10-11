@@ -39,7 +39,7 @@ export function TasksPeriod({ period, setTasksDate }) {
   }, [period, count, setTasksDate, currentDate]);
 
   return (
-    <div className='mb-2 flex items-center justify-between  text-center'>
+    <div className='mb-2 flex items-center justify-between h-12  text-center'>
       <i
         className='fa-solid fa-chevron-left cursor-pointer text-lg text-text-primary'
         onClick={() => setCount((prev) => prev - 1)}

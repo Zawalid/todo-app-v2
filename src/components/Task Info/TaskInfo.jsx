@@ -1,14 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
-import { TaskTitleAndDesc } from './TaskTitleAndDesc';
+import { TaskTitleAndNote } from './TaskTitleAndNote';
 import { TaskLists } from './TaskLists';
 import { TaskDueDate } from './TaskDueDate';
 import { TaskTags } from './TaskTags';
 import { TaskSubTasks } from './TaskSubTasks';
 import { ConfirmationModal } from './ConfirmationModal';
+import { getFormatedDate } from '../../Utils';
 
 export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSelectList, tags }) {
   const [taskTitle, setTaskTitle] = useState();
-  const [taskDescription, setTaskDescription] = useState();
+  const [taskNote, setTaskNote] = useState();
   const [taskListId, setTaskListId] = useState('none');
   const [taskDueDate, setTaskDueDate] = useState();
   const [taskSubtasks, setTaskSubtasks] = useState();
@@ -18,18 +19,19 @@ export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSel
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const tagsDropDown = useRef(null);
   const tagsDropDownToggler = useRef(null);
+  const taskDate = getFormatedDate(task?.date);
 
   useEffect(() => {
     if (isOpen) {
       setTaskTitle(task?.title);
-      setTaskDescription(task?.description);
+      setTaskNote(task?.note);
       setTaskListId(task?.listId);
       setTaskDueDate(task?.dueDate);
       setTaskSubtasks(task?.subtasks);
       setTaskTagsIds(task?.tagsIds);
     } else {
       setTaskTitle('');
-      setTaskDescription('');
+      setTaskNote('');
       setTaskListId('');
       setTaskDueDate('');
       setTaskSubtasks([]);
@@ -38,8 +40,8 @@ export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSel
   }, [task, isOpen]);
   useEffect(() => {
     if (isOpen)
-      task?.title !== taskTitle ||
-      task?.description !== taskDescription ||
+      task?.title?.trim() !== taskTitle?.trim() ||
+      task?.note?.trim() !== taskNote?.trim() ||
       task?.listId !== taskListId ||
       task?.dueDate !== taskDueDate ||
       task?.subtasks?.length !== taskSubtasks?.length ||
@@ -53,16 +55,7 @@ export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSel
       task?.tagsIds.some((tagId, index) => tagId !== taskTagsIds[index])
         ? setIsChanged(true)
         : setIsChanged(false);
-  }, [
-    isOpen,
-    task,
-    taskTitle,
-    taskDescription,
-    taskListId,
-    taskDueDate,
-    taskSubtasks,
-    taskTagsIds,
-  ]);
+  }, [isOpen, task, taskTitle, taskNote, taskListId, taskDueDate, taskSubtasks, taskTagsIds]);
   useEffect(() => {
     function handleClickOutside(event) {
       if (
@@ -96,8 +89,8 @@ export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSel
     if (isChanged) {
       const editedTask = {
         ...task,
-        title: taskTitle,
-        description: taskDescription,
+        title: taskTitle.trim() ? taskTitle  : "Untitled Task",
+        note: taskNote,
         listId: taskListId,
         dueDate: taskDueDate,
         subtasks: taskSubtasks,
@@ -151,19 +144,21 @@ export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSel
       )}
       {isOpen && (
         <>
-          <div className='flex items-center pb-3 justify-between'>
-            <h2 className='text-xl font-bold text-text-secondary'>Task:</h2>
+          <div className='flex items-center justify-between pb-3'>
+            <h2 className='text-xl font-bold text-text-secondary'>
+             Task :
+            </h2>
             <button onClick={onClose}>
               <i className='fa-solid fa-xmark cursor-pointer text-xl text-text-secondary'></i>
             </button>
           </div>
           <div className='overflow-y-auto'>
-            <TaskTitleAndDesc
+            <TaskTitleAndNote
               {...{
                 taskTitle,
                 setTaskTitle,
-                taskDescription,
-                setTaskDescription,
+                taskNote,
+                setTaskNote,
               }}
             />
             <div className='grid grid-cols-[1fr_3fr] items-center space-y-2'>
@@ -191,7 +186,7 @@ export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSel
               }}
             />
           </div>
-          <div className='mt-auto pt-3 flex gap-3'>
+          <div className='mt-auto flex gap-3 pt-3'>
             <button
               className='flex-1 cursor-pointer rounded-lg border border-background-tertiary bg-red-500 py-2 text-center text-sm font-semibold text-background-secondary'
               onClick={() => setIsDeleteModalOpen(true)}

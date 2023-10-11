@@ -6,8 +6,6 @@ import { Upcoming } from './Tasks/Upcoming';
 
 export function Main({
   tasks,
-  tasksDate,
-  setTasksDate,
   onAddTask,
   onOpen,
   onComplete,
@@ -58,7 +56,7 @@ export function Main({
       {activeTab === 'today' || listId ? (
         <DisplayedTasks
           onAdd={(title) => {
-            onAddTask(title, listId);
+            onAddTask(title, new Date(), listId);
           }}
           onOpen={onOpen}
           onComplete={onComplete}
@@ -72,10 +70,8 @@ export function Main({
       {activeTab === 'upcoming' && (
         <Upcoming
           tasks={tasks}
-          tasksDate={tasksDate}
-          setTasksDate={setTasksDate}
-          onAdd={(title, period) => {
-            onAddTask(title, period);
+          onAdd={(title, date) => {
+            onAddTask(title, date);
           }}
           onOpen={onOpen}
           onComplete={onComplete}
