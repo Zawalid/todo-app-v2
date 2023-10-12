@@ -1,14 +1,19 @@
 import { useMemo } from 'react';
-import { BigTitle } from './BigTitle';
+import { Title } from './Title';
 import { StickyWall } from './Sticky Wall/StickyWall';
 import { DisplayedTasks } from './Tasks/DisplayedTasks';
 import { Upcoming } from './Tasks/Upcoming';
+import { checkIfToday } from '../../Utils';
 
 export function Main({
   tasks,
   onAddTask,
   onOpen,
   onComplete,
+  todayTasks,
+  tomorrowTasks,
+  thisWeekTasks,
+  upcomingTasksNumber,
   lists,
   tags,
   stickyNotes,
@@ -35,28 +40,26 @@ export function Main({
       : 'Sticky Wall';
 
   const count = useMemo(() => {
-    if (activeTab === 'today')
-      return tasks?.filter(
-        (task) => new Date(task.date).toLocaleDateString() === new Date().toLocaleDateString(),
-      ).length;
-    if (activeTab === 'upcoming') return tasks.length;
+    if (activeTab === 'today') return todayTasks.length;
+    if (activeTab === 'upcoming') return upcomingTasksNumber;
     if (activeTab === 'stickyWall') return stickyNotes.length;
     if (listId) return lists.find((list) => list.id === +activeTab)?.tasks.length;
     return 0;
-  }, [activeTab, tasks, listId, stickyNotes, lists]);
+  }, [activeTab, listId, stickyNotes, lists, todayTasks, upcomingTasksNumber]);
 
   const condition = (task) => {
     if (listId) return +task.listId === +listId;
-    return new Date(task.date).toLocaleDateString() === new Date().toLocaleDateString();
+    return checkIfToday(task.dueDate);
   };
 
   return (
     <main className='flex flex-1 flex-col overflow-hidden rounded-xl bg-background-primary px-5 '>
-      <BigTitle title={title} count={count} />
+      <Title title={title} count={count} />
       {activeTab === 'today' || listId ? (
         <DisplayedTasks
           onAdd={(title) => {
-            onAddTask(title, new Date(), listId);
+            const dueDate = activeTab === 'today' && new Date().toISOString().split('T')[0];
+            onAddTask(title, dueDate, listId);
           }}
           onOpen={onOpen}
           onComplete={onComplete}
@@ -69,10 +72,9 @@ export function Main({
       ) : null}
       {activeTab === 'upcoming' && (
         <Upcoming
-          tasks={tasks}
-          onAdd={(title, date) => {
-            onAddTask(title, date);
-          }}
+          todayTasks={todayTasks}
+          tomorrowTasks={tomorrowTasks}
+          thisWeekTasks={thisWeekTasks}
           onOpen={onOpen}
           onComplete={onComplete}
           lists={lists}

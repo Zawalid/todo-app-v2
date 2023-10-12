@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Tag } from '../../Menu/Menu Tags/Tag';
+import { checkIfToday, checkIfTomorrow } from '../../../Utils';
 
 export function Task({ task, onOpen, onComplete, lists, tags, isLast }) {
   const [checked, setChecked] = useState(task.isCompleted);
@@ -12,7 +13,6 @@ export function Task({ task, onOpen, onComplete, lists, tags, isLast }) {
     () => lists.find((l) => l?.id === +task.listId)?.color,
     [task.listId, lists],
   );
-
   useEffect(() => {
     onComplete(checked);
     // eslint-disable-next-line
@@ -46,7 +46,13 @@ export function Task({ task, onOpen, onComplete, lists, tags, isLast }) {
             {task.dueDate && (
               <div className='flex items-center gap-2'>
                 <i className='fas fa-calendar-alt text-text-tertiary'></i>
-                <span className='text-xs font-semibold text-text-secondary'>{task.dueDate}</span>
+                <span className='text-xs font-semibold text-text-secondary'>
+                  {checkIfToday(task.dueDate)
+                    ? 'Today'
+                    : checkIfTomorrow(task.dueDate)
+                    ? 'Tomorrow'
+                    : task.dueDate}
+                </span>
               </div>
             )}
             {task.subtasks.length > 0 && (

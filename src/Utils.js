@@ -27,3 +27,12 @@ export function getFormatedDate(date) {
   }
   return formatedDate;
 }
+
+export function checkIfToday(date) {
+  if (!date) return;
+  return date === new Date().toISOString().split('T')[0];
+}
+export function checkIfTomorrow(date) {
+  if (!date) return;
+  return date === new Date(Date.now() + 86400000).toISOString().split('T')[0];
+}

@@ -4,6 +4,7 @@ import { TaskInfo } from './Task Info/TaskInfo';
 import { Menu } from './Menu/Menu';
 import { Main } from './Main/Main';
 import '../styles/App.css';
+import { checkIfToday, checkIfTomorrow } from '../Utils';
 
 export default function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(true);
@@ -18,7 +19,6 @@ export default function App() {
       subtasks: [],
       isCompleted: true,
       tagsIds: [],
-      date: new Date(),
     },
   ]);
   const [currentTask, setCurrentTask] = useState(null);
@@ -67,26 +67,29 @@ export default function App() {
       creationDate: new Date().toLocaleDateString(),
     },
   ]);
-  const [activeTab, setActiveTab] = useState('upcoming');
+  const [activeTab, setActiveTab] = useState('today');
 
-  const todayTasks = tasks?.filter(
-    (task) => new Date(task.date).toLocaleDateString() === new Date().toLocaleDateString(),
+  const todayTasks = tasks?.filter((task) => checkIfToday(task.dueDate));
+  const tomorrowTasks = tasks?.filter((task) => checkIfTomorrow(task.dueDate));
+  const endOfTheWeek = new Date().setDate(new Date().getDate() + 7);
+  const thisWeekTasks = tasks?.filter(
+    (task) => new Date(task.dueDate && task.dueDate) < endOfTheWeek,
   );
+  const upcomingTasksNumber = todayTasks.length + tomorrowTasks.length + thisWeekTasks.length;
   useEffect(() => {
     isTaskInfoOpen || setCurrentTask(null);
   }, [isTaskInfoOpen]);
 
-  function handlerAddTask(title, date, listId) {
+  function handlerAddTask(title, dueDate, listId) {
     const newTask = {
       id: Math.random(),
       title,
       note: '',
-      dueDate: '',
+      dueDate: dueDate || '',
       listId: listId || 'none',
       subtasks: [],
       isCompleted: false,
       tagsIds: [],
-      date: activeTab === 'today' ? new Date() : date,
     };
     setTasks((prev) => [...prev, newTask]);
 
@@ -214,7 +217,7 @@ export default function App() {
         lists={lists}
         onAddList={handleAddList}
         todayTasksNumber={todayTasks.length}
-        upcomingTasksNumber={tasks.length}
+        upcomingTasksNumber={upcomingTasksNumber}
         stickyNotesNumber={stickyNotes.length}
         onRenameList={handleRenameList}
         onDeleteList={handleDeleteList}
@@ -229,6 +232,10 @@ export default function App() {
         tasks={tasks}
         onAddTask={handlerAddTask}
         onOpen={handleOpenTask}
+        todayTasks={todayTasks}
+        tomorrowTasks={tomorrowTasks}
+        thisWeekTasks={thisWeekTasks}
+        upcomingTasksNumber={upcomingTasksNumber}
         onComplete={handleCompleteTask}
         lists={lists}
         tags={tags}

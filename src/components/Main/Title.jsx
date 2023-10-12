@@ -1,5 +1,5 @@
 
-  export function BigTitle({ title, count }) {
+  export function Title({ title, count }) {
     return (
       <div className="mb-10 flex items-center gap-8">
         <h1 className="text-4xl font-bold text-text-primary">{title}</h1>
