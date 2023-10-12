@@ -1,27 +1,39 @@
 import { useEffect, useRef, useState } from 'react';
+import { SmallTitle } from '../Title';
 import { AddTask } from './AddTask';
 import { Task } from './Task';
-import { TasksPeriod } from './TaskPeriod';
 
-const periods = ['days', 'weeks', 'months', 'years'];
-
-export function Upcoming({
-  tasks,
-  onAdd,
-  onOpen,
-  onComplete,
-  lists,
-  tags,
-  tasksDate,
-  setTasksDate,
-}) {
+const periods = [
+  {
+    title: 'Today',
+    id: 'today',
+  },
+  {
+    title: 'Tomorrow',
+    id: 'tomorrow',
+  },
+  {
+    title: 'This Week',
+    id: 'thisWeek',
+  },
+  {
+    title: 'This Month',
+    id: 'thisMonth',
+  },
+  {
+    title: 'This Year',
+    id: 'thisYear',
+  },
+];
+export function Upcoming({ tasks, onAdd, onOpen, onComplete, lists, tags }) {
   const wrapper = useRef(null);
   return (
     <div className='relative flex  h-full flex-wrap gap-5 overflow-auto pr-2 ' ref={wrapper}>
       {periods.map((period) => (
-        <Period
-          key={period}
-          period={period}
+        <PeriodTasks
+          key={period.id}
+          title={period.title}
+          period={period.id}
           tasks={tasks}
           onAdd={onAdd}
           onOpen={onOpen}
@@ -29,17 +41,14 @@ export function Upcoming({
           lists={lists}
           tags={tags}
           parentRef={wrapper}
-          tasksDate={tasksDate}
-          setTasksDate={setTasksDate}
         />
       ))}
     </div>
   );
 }
 
-function Period({ period, tasks, onAdd, onOpen, onComplete, lists, tags, parentRef }) {
+function PeriodTasks({ title, period, tasks, onAdd, onOpen, onComplete, lists, tags, parentRef }) {
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const [tasksDate, setTasksDate] = useState(new Date());
 
   useEffect(() => {
     if (isFullScreen) {
@@ -50,31 +59,17 @@ function Period({ period, tasks, onAdd, onOpen, onComplete, lists, tags, parentR
     }
   }, [isFullScreen, parentRef]);
 
-  function getPeriodTasks(condition) {
-    return (
-      <PeriodTasks
-        tasks={tasks}
-        lists={lists}
-        tags={tags}
-        onOpen={onOpen}
-        onComplete={onComplete}
-        tasksDate={tasksDate}
-        condition={condition}
-        isFullScreen={isFullScreen}
-      />
-    );
-  }
   return (
     <div
       className={
-        'relative flex  min-w-[400px] flex-1 flex-col  rounded-lg border border-background-tertiary bg-background-primary p-4 pt-2  ' +
+        'relative  flex max-h-[400px] min-w-[400px] flex-1 flex-col overflow-auto rounded-lg border border-background-tertiary bg-background-primary  p-4  ' +
         (isFullScreen ? 'full_screen' : '')
       }
     >
-      <TasksPeriod period={period} setTasksDate={setTasksDate} />
+      <SmallTitle title={title} />
       <i
         className={
-          'fa-solid absolute bottom-1 right-1 cursor-pointer text-text-secondary ' +
+          'fa-solid absolute right-3 top-5 cursor-pointer ' +
           (isFullScreen
             ? 'fa-down-left-and-up-right-to-center'
             : 'fa-up-right-and-down-left-from-center ')
@@ -85,67 +80,33 @@ function Period({ period, tasks, onAdd, onOpen, onComplete, lists, tags, parentR
         <i className='fa-solid fa-plus text-xl text-text-tertiary'></i>
         <AddTask
           onAdd={(title) => {
-            onAdd(title, tasksDate);
+            onAdd(title, period);
           }}
         />
       </div>
 
-      {period === 'days' &&
-        getPeriodTasks(
-          (task) =>
-            new Date(task.date).getDate() === tasksDate.getDate() &&
-            new Date(task.date).getMonth() === tasksDate.getMonth() &&
-            new Date(task.date).getFullYear() === tasksDate.getFullYear(),
+      <ul className='mt-3 flex-1 space-y-2'>
+        {tasks.get(period).length > 0 ? (
+          tasks
+            .get(period)
+            .map((task, id) => (
+              <Task
+                key={task.id}
+                task={task}
+                onOpen={() => onOpen(task)}
+                onComplete={(isCompleted) => onComplete(task.id, isCompleted, task.period)}
+                lists={lists}
+                tags={tags}
+                isLast={id === tasks.get(period).length - 1}
+              />
+            ))
+        ) : (
+          <div className='  flex h-full flex-col items-center justify-center'>
+            <h5 className='font-semibold text-text-secondary'>You don&apos;t have any tasks</h5>
+            <p className=' text-xs font-medium text-text-tertiary'>Add a new task to get started</p>
+          </div>
         )}
-      {period === 'weeks' &&
-        getPeriodTasks((task) => {
-          const startOfWeek = new Date(tasksDate);
-          startOfWeek.setHours(0, 0, 0, 0);
-          const endOfWeek = new Date(startOfWeek);
-          endOfWeek.setDate(endOfWeek.getDate() + 6);
-
-          return new Date(task.date) >= startOfWeek && new Date(task.date) <= endOfWeek;
-        })}
-      {period === 'months' &&
-        getPeriodTasks(
-          (task) =>
-            new Date(task.date).getMonth() === tasksDate.getMonth() &&
-            new Date(task.date).getFullYear() === tasksDate.getFullYear(),
-        )}
-      {period === 'years' &&
-        getPeriodTasks((task) => new Date(task.date).getFullYear() === tasksDate.getFullYear())}
+      </ul>
     </div>
-  );
-}
-
-function PeriodTasks({ tasks, lists, tags, onOpen, onComplete, condition, isFullScreen }) {
-  const displayTasks = tasks.filter((task) => condition(task));
-  return (
-    <>
-      {displayTasks.length === 0 ? (
-        <div className='mt-3  flex h-full flex-col items-center justify-center'>
-          <h5 className='font-semibold text-text-secondary'>You don&apos;t have any tasks</h5>
-          <p className=' text-xs font-medium text-text-tertiary'>Add a new task to get started</p>
-        </div>
-      ) : (
-        <ul
-          className={
-            'mt-3 flex-1 space-y-2 overflow-auto  pr-2 ' + (isFullScreen ? '' : 'max-h-[280px]')
-          }
-        >
-          {displayTasks.map((task, id) => (
-            <Task
-              key={task.id}
-              task={task}
-              onOpen={() => onOpen(task)}
-              onComplete={(isCompleted) => onComplete(task.id, isCompleted, task.period)}
-              lists={lists}
-              tags={tags}
-              isLast={id === displayTasks.length - 1}
-            />
-          ))}
-        </ul>
-      )}
-    </>
   );
 }
