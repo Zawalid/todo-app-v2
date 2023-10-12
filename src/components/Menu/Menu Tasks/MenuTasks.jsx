@@ -5,6 +5,15 @@ export function MenuTasks({ todayTasksNumber,upcomingTasksNumber,stickyNotesNumb
     <div className='pb-5'>
       <h4 className='mb-4 mt-5  font-medium text-text-secondary'>Tasks</h4>
       <ul className='space-y-1'>
+        <li className='menu_element group' data-tab='all'>
+          <i className='fas fa-angles-right text-text-tertiary'></i>
+          <span className='text-sm text-text-secondary transition-[font-weight] duration-100 group-hover:font-bold'>
+            All Tasks
+          </span>
+          <div className='grid place-content-center rounded-sm bg-background-tertiary py-[1px] transition-colors duration-300  group-hover:bg-background-primary'>
+            <span className='text-xs font-semibold text-text-secondary'>{upcomingTasksNumber}</span>
+          </div>
+        </li>
         <li className='menu_element group' data-tab='upcoming'>
           <i className='fas fa-angles-right text-text-tertiary'></i>
           <span className='text-sm text-text-secondary transition-[font-weight] duration-100 group-hover:font-bold'>
