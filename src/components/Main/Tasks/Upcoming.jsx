@@ -117,7 +117,6 @@ function PeriodTasks({
           }}
         />
       </div>
-
       <ul
         className={' flex-1 space-y-2 overflow-auto  px-4 ' + (isFullScreen ? '' : 'max-h-[280px]')}
       >

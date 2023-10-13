@@ -13,7 +13,7 @@ export function DisplayedTasks({
 }) {
   return (
     <>
-      <div className='relative h-full'>
+      <div className='relative flex h-full flex-col overflow-auto'>
         <div className='flex  items-center gap-3 rounded-xl border border-background-tertiary px-5 py-1'>
           <i className='fa-solid fa-plus text-xl text-text-tertiary'></i>
           <AddTask onAdd={onAdd} />
@@ -30,7 +30,6 @@ export function DisplayedTasks({
                   onComplete={(isCompleted) => onComplete(task.id, isCompleted, 'today')}
                   lists={lists}
                   tags={tags}
-                  
                 />
               ))}
           </ul>
