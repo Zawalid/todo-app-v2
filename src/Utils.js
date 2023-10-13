@@ -1,4 +1,4 @@
-import moment from "moment";
+import moment from 'moment';
 
 export function getFormattedDate(date) {
   const inputDate = moment(date);
@@ -17,6 +17,11 @@ export function checkIfTomorrow(date) {
   if (!date) return;
   return date === new Date(Date.now() + 86400000).toISOString().split('T')[0];
 }
+moment.updateLocale('en', {
+  week: {
+    dow: 1,
+  }
+});
 export function isDateInCurrentWeek(dateToCheck) {
   const startOfWeek = moment().startOf('week');
   const endOfWeek = moment().endOf('week');

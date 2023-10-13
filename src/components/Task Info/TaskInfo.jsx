@@ -5,7 +5,7 @@ import { TaskDueDate } from './TaskDueDate';
 import { TaskTags } from './TaskTags';
 import { TaskSubTasks } from './TaskSubTasks';
 import { ConfirmationModal } from './ConfirmationModal';
-import { getFormatedDate } from '../../Utils';
+import { getFormattedDate } from '../../Utils';
 
 export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSelectList, tags }) {
   const [taskTitle, setTaskTitle] = useState();
@@ -19,7 +19,7 @@ export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSel
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const tagsDropDown = useRef(null);
   const tagsDropDownToggler = useRef(null);
-  const taskDate = getFormatedDate(task?.date);
+  const taskDate = getFormattedDate(task?.date);
 
   useEffect(() => {
     if (isOpen) {

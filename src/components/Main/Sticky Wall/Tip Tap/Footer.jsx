@@ -1,7 +1,7 @@
-import { getFormatedDate } from '../../../../Utils';
+import { getFormattedDate } from '../../../../Utils';
 
 export function Footer({ editor, creationDate }) {
-  const cDate = getFormatedDate(creationDate);
+  const cDate = getFormattedDate(creationDate);
   return (
     <div className='mt-3 flex items-center justify-between bg-background-secondary px-3 py-2 text-sm font-medium text-text-tertiary'>
       <div>

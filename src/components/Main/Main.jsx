@@ -75,6 +75,7 @@ export function Main({
           todayTasks={todayTasks}
           tomorrowTasks={tomorrowTasks}
           thisWeekTasks={thisWeekTasks}
+          onAdd={(title, dueDate) => onAddTask(title, dueDate)}
           onOpen={onOpen}
           onComplete={onComplete}
           lists={lists}

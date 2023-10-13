@@ -1,24 +1,38 @@
 import { useEffect, useRef, useState } from 'react';
 import { Task } from './Task';
+import { AddTask } from './AddTask';
+import moment from 'moment';
 
 const periods = [
   {
     title: 'Today',
     id: 'today',
     tasks: 'todayTasks',
+    dueDate: new Date().toISOString().split('T')[0],
   },
   {
     title: 'Tomorrow',
     id: 'tomorrow',
     tasks: 'tomorrowTasks',
+    dueDate: new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().split('T')[0],
   },
   {
     title: 'This Week',
     id: 'thisWeek',
     tasks: 'thisWeekTasks',
+    dueDate: moment().endOf('week').format('YYYY-MM-DD'),
   },
 ];
-export function Upcoming({ todayTasks, tomorrowTasks,thisWeekTasks, onAdd, onOpen, onComplete, lists, tags }) {
+export function Upcoming({
+  todayTasks,
+  tomorrowTasks,
+  thisWeekTasks,
+  onAdd,
+  onOpen,
+  onComplete,
+  lists,
+  tags,
+}) {
   const wrapper = useRef(null);
   return (
     <div className='relative flex  h-full flex-wrap gap-5 overflow-auto pr-2 ' ref={wrapper}>
@@ -76,10 +90,15 @@ function PeriodTasks({
       className={
         'relative  flex max-h-[400px] min-w-[400px] flex-1 flex-col  rounded-lg border border-background-tertiary bg-background-primary ' +
         (isFullScreen ? 'full_screen ' : '') +
-        (isToday  ? 'w-full basis-auto' : '')
+        (isToday ? 'w-full basis-auto' : '')
       }
     >
-      <h1 className='mb-3 border-b p-4 pb-3 text-2xl font-bold text-text-primary'>{title}</h1>
+      <h1 className='mb-3 border-b p-4 pb-3 text-2xl font-bold text-text-primary'>
+        {title}
+        {title === 'This Week' && (
+          <span className='ml-3 text-xs text-text-tertiary'>(Mon - Sun)</span>
+        )}
+      </h1>
       <i
         className={
           'fa-solid absolute right-3 top-5 cursor-pointer ' +
@@ -90,9 +109,18 @@ function PeriodTasks({
         onClick={() => setIsFullScreen((prev) => !prev)}
       ></i>
 
-      <ul className={
-            ' flex-1 space-y-2 overflow-auto  px-4 ' + (isFullScreen ? '' : 'max-h-[280px]')
-          }> 
+      <div className='flex items-center gap-3 rounded-xl border border-background-tertiary px-5 py-1'>
+        <i className='fa-solid fa-plus text-xl text-text-tertiary'></i>
+        <AddTask
+          onAdd={(title) => {
+            onAdd(title, period.dueDate);
+          }}
+        />
+      </div>
+
+      <ul
+        className={' flex-1 space-y-2 overflow-auto  px-4 ' + (isFullScreen ? '' : 'max-h-[280px]')}
+      >
         {tasks[period.tasks]?.length > 0 ? (
           tasks[period.tasks]?.map((task, id) => (
             <Task
@@ -106,7 +134,7 @@ function PeriodTasks({
             />
           ))
         ) : (
-          <div className='  flex h-full flex-col pb-4 items-center justify-center'>
+          <div className='  flex h-full flex-col items-center justify-center pb-4'>
             <h5 className='font-semibold text-text-secondary'>You don&apos;t have any tasks</h5>
             <p className=' text-xs font-medium text-text-tertiary'>Add a new task to get started</p>
           </div>
