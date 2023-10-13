@@ -71,13 +71,17 @@ export default function App() {
 
   const todayTasks = tasks?.filter((task) => checkIfToday(task.dueDate));
   const tomorrowTasks = tasks?.filter((task) => checkIfTomorrow(task.dueDate));
-
-  
   const thisWeekTasks = tasks?.filter((task) => {
     if (!task.dueDate) return;
     return isDateInCurrentWeek(task.dueDate);
   });
-  const upcomingTasksNumber = todayTasks.length + tomorrowTasks.length + thisWeekTasks.length;
+  const todayAndTomorrowTasks = [...todayTasks, ...tomorrowTasks];
+  const thisWeekWithoutTodayAndTomorrowTasks = thisWeekTasks.filter(
+    (t) => !todayAndTomorrowTasks.includes(t),
+  );
+  const upcomingTasksNumber =
+    todayAndTomorrowTasks.length + thisWeekWithoutTodayAndTomorrowTasks.length;
+
   useEffect(() => {
     isTaskInfoOpen || setCurrentTask(null);
   }, [isTaskInfoOpen]);

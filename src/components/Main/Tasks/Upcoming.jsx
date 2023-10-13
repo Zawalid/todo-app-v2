@@ -88,7 +88,7 @@ function PeriodTasks({
   return (
     <div
       className={
-        'relative  flex max-h-[400px] min-w-[400px] flex-1 flex-col  rounded-lg border border-background-tertiary bg-background-primary ' +
+        'relative  flex max-h-[400px] pb-4 min-w-[400px] flex-1 flex-col  rounded-lg border border-background-tertiary bg-background-primary ' +
         (isFullScreen ? 'full_screen ' : '') +
         (isToday ? 'w-full basis-auto' : '')
       }
@@ -134,7 +134,7 @@ function PeriodTasks({
             />
           ))
         ) : (
-          <div className='  flex h-full flex-col items-center justify-center pb-4'>
+          <div className='  flex h-full flex-col items-center justify-center'>
             <h5 className='font-semibold text-text-secondary'>You don&apos;t have any tasks</h5>
             <p className=' text-xs font-medium text-text-tertiary'>Add a new task to get started</p>
           </div>
