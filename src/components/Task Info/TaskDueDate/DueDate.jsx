@@ -1,5 +1,6 @@
 import Tippy from '@tippyjs/react';
 import { useEffect, useRef, useState } from 'react';
+import { isTaskOverdue } from '../../../Utils';
 
 export function DueDate({ taskDueDate, setTaskDueDate }) {
   const [isOpen, setIsOpen] = useState();
@@ -8,6 +9,8 @@ export function DueDate({ taskDueDate, setTaskDueDate }) {
   const today = new Date();
   const tomorrow = new Date(today);
   tomorrow.setDate(today.getDate() + 1);
+
+  const isOverDue = isTaskOverdue(taskDueDate);
 
   function handleAddDueDate(dueDate) {
     const date =
@@ -21,40 +24,53 @@ export function DueDate({ taskDueDate, setTaskDueDate }) {
   }
 
   return (
-    <Tippy
-      content={
-        <Dates
-          isOpen={isOpen}
-          taskDueDate={taskDueDate}
-          onAdd={handleAddDueDate}
-          today={today}
-          tomorrow={tomorrow}
-        />
-      }
-      className='w-52 rounded-lg bg-background-primary shadow-md'
-      trigger='click'
-      interactive={true}
-      arrow={false}
-      placement='bottom'
-      onClickOutside={(instance) => instance.hide()}
-      onMount={(instance) => (instanceRef.current = instance)}
-    >
-      <div
-        className='flex w-32 cursor-pointer items-center justify-between rounded-lg border border-background-tertiary p-2 '
-        id='dueDate'
-        onClick={() => setIsOpen(!isOpen)}
+    <div className='flex items-center gap-2'>
+      <Tippy
+        content={
+          <Dates
+            isOpen={isOpen}
+            taskDueDate={taskDueDate}
+            onAdd={handleAddDueDate}
+            today={today}
+            tomorrow={tomorrow}
+          />
+        }
+        className='w-52 rounded-lg bg-background-primary shadow-md'
+        trigger='click'
+        interactive={true}
+        arrow={false}
+        placement='bottom'
+        onClickOutside={(instance) => instance.hide()}
+        onMount={(instance) => (instanceRef.current = instance)}
       >
-        <span className='text-sm text-text-secondary'>
-          {!taskDueDate && 'Not set'}
-          {taskDueDate === today.toISOString().split('T')[0]
-            ? 'Today'
-            : taskDueDate === tomorrow.toISOString().split('T')[0]
-            ? 'Tomorrow'
-            : taskDueDate}
-        </span>
-        <i className='fa-solid fa-calendar  text-sm text-text-secondary'></i>
-      </div>
-    </Tippy>
+        <div
+          className={
+            'flex w-32 cursor-pointer items-center justify-between rounded-lg border border-background-tertiary p-2 ' +
+            (isOverDue ? 'text-text-error' : 'text-text-secondary')
+          }
+          id='dueDate'
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          <span className='text-sm'>
+            {!taskDueDate && 'Not set'}
+            {taskDueDate === today.toISOString().split('T')[0]
+              ? 'Today'
+              : taskDueDate === tomorrow.toISOString().split('T')[0]
+              ? 'Tomorrow'
+              : taskDueDate}
+          </span>
+          <i className='fa-solid fa-calendar-days  text-sm'></i>
+        </div>
+      </Tippy>
+      {taskDueDate && (
+        <button
+          className={isOverDue ? 'text-text-error' : 'text-text-secondary'}
+          onClick={() => setTaskDueDate('')}
+        >
+          <i className='fa-solid fa-xmark'></i>
+        </button>
+      )}
+    </div>
   );
 }
 
@@ -103,7 +119,6 @@ function Dates({ isOpen, taskDueDate, onAdd, today, tomorrow }) {
         <input
           type='date'
           className='h-full w-full bg-transparent text-text-primary focus:outline-none'
-          min={new Date().toISOString().split('T')[0]}
           value={taskDueDate}
           onChange={(e) => onAdd(e.target.value)}
         />

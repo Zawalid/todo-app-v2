@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { TaskTitleAndNote } from './TaskTitleAndNote';
 import { TaskLists } from './TaskLists';
-import { TaskDueDate } from './TaskDueDate';
+import { TaskDueDate } from './TaskDueDate/TaskDueDate';
 import { TaskTags } from './TaskTags';
 import { TaskSubTasks } from './TaskSubTasks';
 import { ConfirmationModal } from './ConfirmationModal';

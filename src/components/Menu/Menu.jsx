@@ -7,6 +7,7 @@ import { MenuTasks } from './Menu Tasks/MenuTasks';
 export function Menu({
   isOpen,
   setIsOpen,
+  allTasksNumber,
   todayTasksNumber,
   upcomingTasksNumber,
   stickyNotesNumber,
@@ -76,6 +77,7 @@ export function Menu({
               />
             </div>
             <MenuTasks
+              allTasksNumber={allTasksNumber}
               todayTasksNumber={todayTasksNumber}
               upcomingTasksNumber={upcomingTasksNumber}
               stickyNotesNumber={stickyNotesNumber}

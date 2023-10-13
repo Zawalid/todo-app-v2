@@ -31,7 +31,9 @@ export function Main({
   }, [lists, listId]);
 
   const title =
-    activeTab === 'today'
+    activeTab === 'all'
+      ? 'All Tasks'
+      : activeTab === 'today'
       ? "Today's Tasks"
       : activeTab === 'upcoming'
       ? 'Upcoming Tasks'
@@ -40,22 +42,23 @@ export function Main({
       : 'Sticky Wall';
 
   const count = useMemo(() => {
+    if (activeTab === 'all') return tasks.length;
     if (activeTab === 'today') return todayTasks.length;
     if (activeTab === 'upcoming') return upcomingTasksNumber;
     if (activeTab === 'stickyWall') return stickyNotes.length;
     if (listId) return lists.find((list) => list.id === +activeTab)?.tasks.length;
     return 0;
-  }, [activeTab, listId, stickyNotes, lists, todayTasks, upcomingTasksNumber]);
+  }, [activeTab, tasks, listId, stickyNotes, lists, todayTasks, upcomingTasksNumber]);
 
   const condition = (task) => {
     if (listId) return +task.listId === +listId;
-    return checkIfToday(task.dueDate);
+    return activeTab === 'today' ? checkIfToday(task.dueDate) : true;
   };
 
   return (
     <main className='flex flex-1 flex-col overflow-hidden rounded-xl bg-background-primary px-5 '>
       <Title title={title} count={count} />
-      {activeTab === 'today' || listId ? (
+      {activeTab !== 'upcoming' && activeTab !== 'stickyWall' ? (
         <DisplayedTasks
           onAdd={(title) => {
             const dueDate = activeTab === 'today' && new Date().toISOString().split('T')[0];

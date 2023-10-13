@@ -8,13 +8,13 @@ const periods = [
     title: 'Today',
     id: 'today',
     tasks: 'todayTasks',
-    dueDate: new Date().toISOString().split('T')[0],
+    dueDate: moment().format('YYYY-MM-DD'),
   },
   {
     title: 'Tomorrow',
     id: 'tomorrow',
     tasks: 'tomorrowTasks',
-    dueDate: new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().split('T')[0],
+    dueDate: moment().add(1, 'day').format('YYYY-MM-DD'),
   },
   {
     title: 'This Week',
@@ -109,7 +109,7 @@ function PeriodTasks({
         onClick={() => setIsFullScreen((prev) => !prev)}
       ></i>
 
-      <div className='flex items-center gap-3 rounded-xl border border-background-tertiary px-5 py-1'>
+      <div className='flex mb-3 mx-4 items-center gap-3 rounded-xl border border-background-tertiary px-5 py-1'>
         <i className='fa-solid fa-plus text-xl text-text-tertiary'></i>
         <AddTask
           onAdd={(title) => {
@@ -122,7 +122,7 @@ function PeriodTasks({
         className={' flex-1 space-y-2 overflow-auto  px-4 ' + (isFullScreen ? '' : 'max-h-[280px]')}
       >
         {tasks[period.tasks]?.length > 0 ? (
-          tasks[period.tasks]?.map((task, id) => (
+          tasks[period.tasks]?.map((task) => (
             <Task
               key={task.id}
               task={task}
@@ -130,7 +130,7 @@ function PeriodTasks({
               onComplete={(isCompleted) => onComplete(task.id, isCompleted, task.period)}
               lists={lists}
               tags={tags}
-              isLast={id === tasks[period.tasks]?.length - 1}
+              
             />
           ))
         ) : (

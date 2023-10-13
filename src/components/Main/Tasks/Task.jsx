@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Tag } from '../../Menu/Menu Tags/Tag';
-import { checkIfToday, checkIfTomorrow } from '../../../Utils';
+import { checkIfToday, checkIfTomorrow, checkIfYesterday, isTaskOverdue } from '../../../Utils';
+import Tippy from '@tippyjs/react';
 
-export function Task({ task, onOpen, onComplete, lists, tags, isLast }) {
+export function Task({ task, onOpen, onComplete, lists, tags }) {
   const [checked, setChecked] = useState(task.isCompleted);
+  const isPassed = isTaskOverdue(task.dueDate);
 
   const listName = useMemo(
     () => lists.find((l) => l?.id === +task.listId)?.title,
@@ -21,9 +23,8 @@ export function Task({ task, onOpen, onComplete, lists, tags, isLast }) {
   return (
     <li
       className={
-        'flex items-center justify-between  gap-3 rounded-lg   px-5 py-2 transition-colors duration-500 ' +
-        (checked ? 'bg-background-secondary' : '') +
-        (isLast ? '' : ' border-b border-background-tertiary')
+        'flex items-center justify-between gap-3 rounded-lg  border-b border-background-tertiary   px-5 py-2 transition-colors duration-500 ' +
+        (checked ? 'bg-background-tertiary ' : 'bg-slate-50 ')
       }
     >
       <div className='relative'>
@@ -45,12 +46,24 @@ export function Task({ task, onOpen, onComplete, lists, tags, isLast }) {
           <div className='mt-2 flex flex-wrap items-center gap-5'>
             {task.dueDate && (
               <div className='flex items-center gap-2'>
-                <i className='fas fa-calendar-alt text-text-tertiary'></i>
-                <span className='text-xs font-semibold text-text-secondary'>
+                <i
+                  className={
+                    'fas fa-calendar-alt text-text-tertiary ' +
+                    (isPassed && !checked ? 'text-text-error' : 'text-text-secondary')
+                  }
+                ></i>
+                <span
+                  className={
+                    'text-xs font-semibold ' +
+                    (isPassed && !checked ? 'text-text-error' : 'text-text-secondary')
+                  }
+                >
                   {checkIfToday(task.dueDate)
                     ? 'Today'
                     : checkIfTomorrow(task.dueDate)
                     ? 'Tomorrow'
+                    : checkIfYesterday(task.dueDate)
+                    ? 'Yesterday'
                     : task.dueDate}
                 </span>
               </div>
@@ -92,6 +105,20 @@ export function Task({ task, onOpen, onComplete, lists, tags, isLast }) {
           </div>
         )}
       </div>
+      {isPassed && !checked && (
+        <Tippy
+          content={<span className='  text-text-error font-semibold'>This task is overdue !</span>}
+          placement='top'
+          className='bg-background-primary text-center shadow-md'
+          arrow={false}
+          animation='fade'
+        >
+          <button>
+            <i className='fa-solid  fa-triangle-exclamation text-text-error text-lg'></i>
+          </button>
+        </Tippy>
+      )}
+
       <button onClick={onOpen}>
         <i className='fa-solid fa-chevron-right cursor-pointer text-text-tertiary'></i>
       </button>

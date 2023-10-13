@@ -10,7 +10,7 @@ export default {
         'text-primary': '#212529',
         'text-secondary': '#444444',
         'text-tertiary': '#7C7C7C',
-        'button-primary': '#FFD43B',
+        'text-error': '#FF0000',
         'custom-1': '#ff6b6b',
         'custom-2': '#da77f2',
         'custom-3': '#9775fa',

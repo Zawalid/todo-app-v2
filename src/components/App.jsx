@@ -67,7 +67,7 @@ export default function App() {
       creationDate: new Date().toLocaleDateString(),
     },
   ]);
-  const [activeTab, setActiveTab] = useState('today');
+  const [activeTab, setActiveTab] = useState('all');
 
   const todayTasks = tasks?.filter((task) => checkIfToday(task.dueDate));
   const tomorrowTasks = tasks?.filter((task) => checkIfTomorrow(task.dueDate));
@@ -218,6 +218,7 @@ export default function App() {
         setIsOpen={setIsMenuOpen}
         lists={lists}
         onAddList={handleAddList}
+        allTasksNumber={tasks.length}
         todayTasksNumber={todayTasks.length}
         upcomingTasksNumber={upcomingTasksNumber}
         stickyNotesNumber={stickyNotes.length}

@@ -11,19 +11,28 @@ export function getFormattedDate(date) {
 
 export function checkIfToday(date) {
   if (!date) return;
-  return date === new Date().toISOString().split('T')[0];
+  return moment(date).isSame(moment(), 'day');
 }
 export function checkIfTomorrow(date) {
   if (!date) return;
-  return date === new Date(Date.now() + 86400000).toISOString().split('T')[0];
+  return moment(date).isSame(moment().add(1, 'day'), 'day');
 }
+export function checkIfYesterday(date) {
+  if (!date) return;
+  return moment(date).isSame(moment().subtract(1, 'day'), 'day');
+}
+
 moment.updateLocale('en', {
   week: {
     dow: 1,
-  }
+  },
 });
 export function isDateInCurrentWeek(dateToCheck) {
   const startOfWeek = moment().startOf('week');
   const endOfWeek = moment().endOf('week');
   return moment(dateToCheck).isBetween(startOfWeek, endOfWeek);
+}
+
+export function isTaskOverdue(dateToCheck) {
+  return moment(dateToCheck).isBefore(moment(), 'day');
 }
