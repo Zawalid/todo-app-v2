@@ -42,7 +42,11 @@ export function Task({ task, onOpen, onComplete, lists, tags }) {
         >
           {task.title}
         </span>
-        {(listName || task.dueDate || task.subtasks.length > 0 || task.tagsIds?.length > 0) && (
+        {(listName ||
+          task.dueDate ||
+          task.subtasks.length > 0 ||
+          task.tagsIds?.length > 0 ||
+          task.priority !== 'none') && (
           <div className='mt-2 flex flex-wrap items-center gap-5'>
             {task.dueDate && (
               <div className='flex items-center gap-2'>
@@ -101,6 +105,30 @@ export function Task({ task, onOpen, onComplete, lists, tags }) {
                     );
                 })}
               </ul>
+            )}
+
+            {task.priority !== 'none' && (
+              <div className='flex items-center gap-2'>
+                <i
+                  className={
+                    'fas fa-flag ' +
+                    (task.priority === '0'
+                      ? 'text-[#FFD700]'
+                      : task.priority === '1'
+                      ? 'text-[#c0ac3a]'
+                      : 'text-text-error')
+                  }
+                ></i>
+                <span className='text-xs font-semibold text-text-secondary'>
+                  {task.priority === '0'
+                    ? 'Low'
+                    : task.priority === '1'
+                    ? 'Medium'
+                    : task.priority === '2'
+                    ? 'High'
+                    : ''}
+                </span>
+              </div>
             )}
           </div>
         )}

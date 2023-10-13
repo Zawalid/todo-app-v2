@@ -19,6 +19,7 @@ export default function App() {
       subtasks: [],
       isCompleted: true,
       tagsIds: [],
+      priority: '',
     },
   ]);
   const [currentTask, setCurrentTask] = useState(null);
@@ -96,6 +97,7 @@ export default function App() {
       subtasks: [],
       isCompleted: false,
       tagsIds: [],
+      priority: '',
     };
     setTasks((prev) => [...prev, newTask]);
 
@@ -177,14 +179,7 @@ export default function App() {
       number: 0,
     };
     setLists((prev) => [...prev, duplicatedList]);
-    setTasks((prev) => {
-      const newTasks = new Map(prev);
-      newListTasks.forEach((task) => {
-        const periodTasks = newTasks.get(task.period);
-        newTasks.set(task.period, [...periodTasks, task]);
-      });
-      return newTasks;
-    });
+    setTasks((prev) => [...prev, ...newListTasks]);
   }
   function handleAddTag(title, bgColor, textColor) {
     const newTag = {

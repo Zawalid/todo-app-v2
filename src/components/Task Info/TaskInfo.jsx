@@ -5,7 +5,7 @@ import { TaskDueDate } from './TaskDueDate/TaskDueDate';
 import { TaskTags } from './TaskTags';
 import { TaskSubTasks } from './TaskSubTasks';
 import { ConfirmationModal } from './ConfirmationModal';
-import { getFormattedDate } from '../../Utils';
+import { TaskPriority } from './TaskPriority';
 
 export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSelectList, tags }) {
   const [taskTitle, setTaskTitle] = useState();
@@ -14,12 +14,12 @@ export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSel
   const [taskDueDate, setTaskDueDate] = useState();
   const [taskSubtasks, setTaskSubtasks] = useState();
   const [taskTagsIds, setTaskTagsIds] = useState();
+  const [taskPriority, setTaskPriority] = useState('none');
   const [isSelectTagOpen, setIsSelectTagOpen] = useState(false);
   const [isChanged, setIsChanged] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const tagsDropDown = useRef(null);
   const tagsDropDownToggler = useRef(null);
-  const taskDate = getFormattedDate(task?.date);
 
   useEffect(() => {
     if (isOpen) {
@@ -29,6 +29,7 @@ export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSel
       setTaskDueDate(task?.dueDate);
       setTaskSubtasks(task?.subtasks);
       setTaskTagsIds(task?.tagsIds);
+      setTaskPriority(task?.priority);
     } else {
       setTaskTitle('');
       setTaskNote('');
@@ -36,6 +37,7 @@ export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSel
       setTaskDueDate('');
       setTaskSubtasks([]);
       setTaskTagsIds([]);
+      setTaskPriority('none');
     }
   }, [task, isOpen]);
   useEffect(() => {
@@ -52,10 +54,11 @@ export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSel
         );
       }) ||
       task?.tagsIds?.length !== taskTagsIds?.length ||
-      task?.tagsIds.some((tagId, index) => tagId !== taskTagsIds[index])
+      task?.tagsIds.some((tagId, index) => tagId !== taskTagsIds[index]) ||
+      task?.priority !== taskPriority
         ? setIsChanged(true)
         : setIsChanged(false);
-  }, [isOpen, task, taskTitle, taskNote, taskListId, taskDueDate, taskSubtasks, taskTagsIds]);
+  }, [isOpen, task, taskTitle, taskNote, taskListId, taskDueDate, taskSubtasks, taskTagsIds,taskPriority]);
   useEffect(() => {
     function handleClickOutside(event) {
       if (
@@ -89,12 +92,13 @@ export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSel
     if (isChanged) {
       const editedTask = {
         ...task,
-        title: taskTitle.trim() ? taskTitle  : "Untitled Task",
+        title: taskTitle.trim() ? taskTitle : 'Untitled Task',
         note: taskNote,
         listId: taskListId,
         dueDate: taskDueDate,
         subtasks: taskSubtasks,
         tagsIds: taskTagsIds,
+        priority: taskPriority,
       };
       onEdit(editedTask, task.period);
       onSelectList(taskListId, editedTask);
@@ -145,9 +149,7 @@ export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSel
       {isOpen && (
         <>
           <div className='flex items-center justify-between pb-3'>
-            <h2 className='text-xl font-bold text-text-secondary'>
-             Task :
-            </h2>
+            <h2 className='text-xl font-bold text-text-secondary'>Task :</h2>
             <button onClick={onClose}>
               <i className='fa-solid fa-xmark cursor-pointer text-xl text-text-secondary'></i>
             </button>
@@ -175,6 +177,7 @@ export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSel
                   handleDeleteTagFromTask,
                 }}
               />
+              <TaskPriority taskPriority={taskPriority} setTaskPriority={setTaskPriority} />
             </div>
             <TaskSubTasks
               {...{
