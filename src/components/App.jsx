@@ -4,7 +4,7 @@ import { TaskInfo } from './Task Info/TaskInfo';
 import { Menu } from './Menu/Menu';
 import { Main } from './Main/Main';
 import '../styles/App.css';
-import { checkIfToday, checkIfTomorrow } from '../Utils';
+import { checkIfToday, checkIfTomorrow, isDateInCurrentWeek } from '../Utils';
 
 export default function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(true);
@@ -71,10 +71,12 @@ export default function App() {
 
   const todayTasks = tasks?.filter((task) => checkIfToday(task.dueDate));
   const tomorrowTasks = tasks?.filter((task) => checkIfTomorrow(task.dueDate));
-  const endOfTheWeek = new Date().setDate(new Date().getDate() + 7);
-  const thisWeekTasks = tasks?.filter(
-    (task) => new Date(task.dueDate && task.dueDate) < endOfTheWeek,
-  );
+
+  
+  const thisWeekTasks = tasks?.filter((task) => {
+    if (!task.dueDate) return;
+    return isDateInCurrentWeek(task.dueDate);
+  });
   const upcomingTasksNumber = todayTasks.length + tomorrowTasks.length + thisWeekTasks.length;
   useEffect(() => {
     isTaskInfoOpen || setCurrentTask(null);

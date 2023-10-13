@@ -75,8 +75,8 @@ function PeriodTasks({
     <div
       className={
         'relative  flex max-h-[400px] min-w-[400px] flex-1 flex-col  rounded-lg border border-background-tertiary bg-background-primary ' +
-        (isFullScreen ? 'full_screen' : '') +
-        (isToday ? 'w-full basis-auto' : '')
+        (isFullScreen ? 'full_screen ' : '') +
+        (isToday  ? 'w-full basis-auto' : '')
       }
     >
       <h1 className='mb-3 border-b p-4 pb-3 text-2xl font-bold text-text-primary'>{title}</h1>
@@ -90,7 +90,9 @@ function PeriodTasks({
         onClick={() => setIsFullScreen((prev) => !prev)}
       ></i>
 
-      <ul className=' flex-1 space-y-2 px-4 overflow-auto'> 
+      <ul className={
+            ' flex-1 space-y-2 overflow-auto  px-4 ' + (isFullScreen ? '' : 'max-h-[280px]')
+          }> 
         {tasks[period.tasks]?.length > 0 ? (
           tasks[period.tasks]?.map((task, id) => (
             <Task

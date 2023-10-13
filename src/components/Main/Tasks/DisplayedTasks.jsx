@@ -24,7 +24,7 @@ export function DisplayedTasks({
           <ul className='mt-3 space-y-2 overflow-y-auto'>
             {allTasks
               .filter((task) => condition(task))
-              .map((task) => (
+              .map((task,i) => (
                 <Task
                   key={task.id}
                   task={task}
@@ -32,6 +32,7 @@ export function DisplayedTasks({
                   onComplete={(isCompleted) => onComplete(task.id, isCompleted, 'today')}
                   lists={lists}
                   tags={tags}
+                  isLast={i === allTasks.filter((task) => condition(task)).length - 1}
                 />
               ))}
           </ul>

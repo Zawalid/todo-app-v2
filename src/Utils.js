@@ -1,31 +1,12 @@
-function getDifferenceInDays(date1, date2) {
-  const diffInMs = Math.abs(date2 - date1);
-  return Math.floor(diffInMs / (1000 * 60 * 60 * 24));
-}
-export function getFormatedDate(date) {
-  let formatedDate;
-  const diffDays = getDifferenceInDays(new Date(), new Date(date));
+import moment from "moment";
 
-  if (diffDays <= 7) {
-    switch (diffDays) {
-      case 0:
-        formatedDate = 'Today';
-        break;
-      case 1:
-        formatedDate = 'Yesterday';
-        break;
-      default:
-        formatedDate = `${diffDays} days ago`;
-    }
-  } else {
-    formatedDate = new Date(date).toDateString({
-      weekday: 'short',
-      month: 'short',
-      day: 'numeric',
-      year: '2-digit',
-    });
-  }
-  return formatedDate;
+export function getFormattedDate(date) {
+  const inputDate = moment(date);
+  const diffDays = moment().diff(inputDate, 'days');
+
+  if (diffDays === 0) return 'Today';
+  if (diffDays === 1) return 'Yesterday';
+  return diffDays <= 7 ? `${diffDays} days ago` : inputDate.format('ddd MMM D YY');
 }
 
 export function checkIfToday(date) {
@@ -35,4 +16,9 @@ export function checkIfToday(date) {
 export function checkIfTomorrow(date) {
   if (!date) return;
   return date === new Date(Date.now() + 86400000).toISOString().split('T')[0];
+}
+export function isDateInCurrentWeek(dateToCheck) {
+  const startOfWeek = moment().startOf('week');
+  const endOfWeek = moment().endOf('week');
+  return moment(dateToCheck).isBetween(startOfWeek, endOfWeek);
 }
