@@ -1,11 +1,11 @@
-export function FilterTasks({ selectedOption, onSelect }) {
+export function FilterTasks({ filter, onSelect }) {
   return (
     <div className='relative flex-1'>
       <i className='fas fa-filter absolute left-3 top-2 text-text-tertiary '></i>
       <select
         className='w-full cursor-pointer rounded-lg bg-background-secondary py-1 pl-10 text-text-tertiary  focus:outline-none
         '
-        value={selectedOption}
+        value={filter}
         onChange={onSelect}
       >
         <option value='all'>All</option>

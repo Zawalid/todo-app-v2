@@ -215,6 +215,14 @@ export default function App() {
       condition1(task) && condition2(task) ? null : filteredTasks.push(task),
     );
     setTasks(filteredTasks);
+    setLists(
+      lists.map((list) => {
+        const listTasks = list.tasks.filter((task) =>
+          filteredTasks.map((t) => t.id).includes(task.id),
+        );
+        return { ...list, tasks: listTasks };
+      }),
+    );
   }
   return (
     <div className='flex h-full gap-2 bg-background-primary p-5'>

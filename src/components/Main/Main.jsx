@@ -50,7 +50,6 @@ export function Main({
     if (listId) return lists.find((list) => list.id === +activeTab)?.tasks.length;
     return 0;
   }, [activeTab, tasks, listId, stickyNotes, lists, todayTasks, upcomingTasksNumber]);
-
   const condition = (task) => {
     if (listId) return +task.listId === +listId;
     return activeTab === 'today' ? checkIfToday(task.dueDate) : true;

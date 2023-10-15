@@ -27,12 +27,14 @@ export function DisplayedTasks({
   activeTab,
 }) {
   const [filter, setFilter] = useState('all');
-  const [filteredTasks, setFilteredTasks] = useState(tasks);
+  const [filteredTasks, setFilteredTasks] = useState(tasks.filter((task) => condition(task)));
   const [isClearAllModalOpen, setIsClearAllModalOpen] = useState(false);
 
   useEffect(() => {
-    setFilteredTasks(tasks.filter((task) => filtersConditions[filter](task)));
-  }, [tasks, filter]);
+    setFilteredTasks(
+      tasks.filter((task) => condition(task)).filter((task) => filtersConditions[filter](task)),
+    );
+  }, [tasks, filter, condition]);
 
   useEffect(() => {
     setFilter('all');
@@ -59,7 +61,7 @@ export function DisplayedTasks({
               <TasksActions
                 filter={filter}
                 onSelect={(e) => setFilter(e.target.value)}
-                onClearAll={() => setIsClearAllModalOpen(true)}
+                onClearAll={() => filteredTasks.length > 0 && setIsClearAllModalOpen(true)}
               />
             }
             className=' rounded-lg  bg-background-primary shadow-md'
