@@ -10,6 +10,7 @@ export function Main({
   onAddTask,
   onOpen,
   onComplete,
+  onClearAllTasks,
   todayTasks,
   tomorrowTasks,
   thisWeekTasks,
@@ -67,6 +68,7 @@ export function Main({
           onOpen={onOpen}
           onComplete={onComplete}
           tasks={tasks}
+          onClearAllTasks={onClearAllTasks}
           lists={lists}
           tags={tags}
           condition={condition}

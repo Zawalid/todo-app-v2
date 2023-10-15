@@ -19,7 +19,7 @@ export default function App() {
       subtasks: [],
       isCompleted: true,
       tagsIds: [],
-      priority: '',
+      priority: 'none',
     },
   ]);
   const [currentTask, setCurrentTask] = useState(null);
@@ -97,7 +97,7 @@ export default function App() {
       subtasks: [],
       isCompleted: false,
       tagsIds: [],
-      priority: '',
+      priority: 'none',
     };
     setTasks((prev) => [...prev, newTask]);
 
@@ -209,7 +209,13 @@ export default function App() {
     setActiveTab(tab);
     setIsTaskInfoOpen(false);
   }
-
+  function handleClearAllTasks(condition1, condition2) {
+    const filteredTasks = [];
+    tasks.forEach((task) =>
+      condition1(task) && condition2(task) ? null : filteredTasks.push(task),
+    );
+    setTasks(filteredTasks);
+  }
   return (
     <div className='flex h-full gap-2 bg-background-primary p-5'>
       <Menu
@@ -239,6 +245,7 @@ export default function App() {
         thisWeekTasks={thisWeekTasks}
         upcomingTasksNumber={upcomingTasksNumber}
         onComplete={handleCompleteTask}
+        onClearAllTasks={handleClearAllTasks}
         lists={lists}
         tags={tags}
         stickyNotes={stickyNotes}
