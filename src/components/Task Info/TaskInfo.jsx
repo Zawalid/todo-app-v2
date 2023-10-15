@@ -14,7 +14,7 @@ export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSel
   const [taskDueDate, setTaskDueDate] = useState();
   const [taskSubtasks, setTaskSubtasks] = useState();
   const [taskTagsIds, setTaskTagsIds] = useState();
-  const [taskPriority, setTaskPriority] = useState('none');
+  const [taskPriority, setTaskPriority] = useState(0);
   const [isSelectTagOpen, setIsSelectTagOpen] = useState(false);
   const [isChanged, setIsChanged] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -37,7 +37,7 @@ export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSel
       setTaskDueDate('');
       setTaskSubtasks([]);
       setTaskTagsIds([]);
-      setTaskPriority('none');
+      setTaskPriority(0);
     }
   }, [task, isOpen]);
   useEffect(() => {

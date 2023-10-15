@@ -46,7 +46,7 @@ export function Task({ task, onOpen, onComplete, lists, tags }) {
           task.dueDate ||
           task.subtasks.length > 0 ||
           task.tagsIds?.length > 0 ||
-          task.priority !== 'none') && (
+          task.priority !== 0) && (
           <div className='mt-2 flex flex-wrap items-center gap-5'>
             {task.dueDate && (
               <div className='flex items-center gap-2'>
@@ -107,24 +107,24 @@ export function Task({ task, onOpen, onComplete, lists, tags }) {
               </ul>
             )}
 
-            {task.priority !== 'none' && (
+            {task.priority !== 0 && (
               <div className='flex items-center gap-2'>
                 <i
                   className={
                     'fas fa-flag ' +
-                    (task.priority === '0'
+                    (task.priority === 1
                       ? 'text-[#FFD700]'
-                      : task.priority === '1'
+                      : task.priority === 2
                       ? 'text-[#c0ac3a]'
                       : 'text-text-error')
                   }
                 ></i>
                 <span className='text-xs font-semibold text-text-secondary'>
-                  {task.priority === '0'
+                  {task.priority === 1
                     ? 'Low'
-                    : task.priority === '1'
+                    : task.priority === 2
                     ? 'Medium'
-                    : task.priority === '2'
+                    : task.priority === 3
                     ? 'High'
                     : ''}
                 </span>
@@ -135,14 +135,14 @@ export function Task({ task, onOpen, onComplete, lists, tags }) {
       </div>
       {isPassed && !checked && (
         <Tippy
-          content={<span className='  text-text-error font-semibold'>This task is overdue !</span>}
+          content={<span className='  font-semibold text-text-error'>This task is overdue !</span>}
           placement='top'
           className='bg-background-primary text-center shadow-md'
           arrow={false}
           animation='fade'
         >
           <button>
-            <i className='fa-solid  fa-triangle-exclamation text-text-error text-lg'></i>
+            <i className='fa-solid  fa-triangle-exclamation text-lg text-text-error'></i>
           </button>
         </Tippy>
       )}

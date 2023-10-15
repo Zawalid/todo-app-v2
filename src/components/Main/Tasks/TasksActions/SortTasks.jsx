@@ -2,8 +2,8 @@ export function SortTasks({ reference }) {
   return (
     <div className='flex flex-wrap gap-3' ref={reference}>
       <Button dataKey='title' title='Title' />
-      <Button dataKey='dueDate' title='Due Date' />
-      <Button dataKey='created' title='Creation Date' />
+      <Button dataKey='dDate' title='Due Date' />
+      <Button dataKey='cDate' title='Creation Date' />
       <Button dataKey='priority' title='Priority' />
     </div>
   );

@@ -29,6 +29,8 @@ export function DisplayedTasks({
   const [filter, setFilter] = useState('all');
   const [filteredTasks, setFilteredTasks] = useState(tasks.filter((task) => condition(task)));
   const [isClearAllModalOpen, setIsClearAllModalOpen] = useState(false);
+  const [sortKey, setSortKey] = useState('cDate');
+  const [sortDirection, setSortDirection] = useState('asc');
 
   useEffect(() => {
     setFilteredTasks(
@@ -62,6 +64,9 @@ export function DisplayedTasks({
                 filter={filter}
                 onSelect={(e) => setFilter(e.target.value)}
                 onClearAll={() => filteredTasks.length > 0 && setIsClearAllModalOpen(true)}
+                sortDirection={sortDirection}
+                setSortDirection={setSortDirection}
+                setSortKey={setSortKey}
               />
             }
             className=' rounded-lg  bg-background-primary shadow-md'
@@ -79,8 +84,30 @@ export function DisplayedTasks({
         {tasks.filter((task) => condition(task)).length > 0 && (
           <>
             <ul className='mt-3 space-y-2 overflow-y-auto'>
-              {filteredTasks
+              {[...filteredTasks]
                 .filter((task) => condition(task))
+                .sort((a, b) => {
+                  if(sortKey === 'cDate') {
+                    return sortDirection === 'asc'
+                    ? a.createdAt - b.createdAt
+                    : b.createdAt - a.createdAt;
+                  }
+                  if (sortKey === 'dDate') {
+                    return sortDirection === 'asc'
+                      ? new Date(a.dueDate || 0) - new Date(b.dueDate || 0)
+                      : new Date(b.dueDate || 0) - new Date(a.dueDate || 0);
+                  }
+                  if (sortKey === 'priority') {
+                    return sortDirection === 'asc'
+                      ? a.priority - b.priority
+                      : b.priority - a.priority;
+                  }
+                  if (sortKey === 'title') {
+                    return sortDirection === 'asc'
+                      ? a.title.localeCompare(b.title)
+                      : b.title.localeCompare(a.title);
+                  }
+                })
                 .map((task) => (
                   <Task
                     key={task.id}

@@ -19,7 +19,8 @@ export default function App() {
       subtasks: [],
       isCompleted: true,
       tagsIds: [],
-      priority: 'none',
+      priority: 0,
+      createdAt: new Date(),
     },
   ]);
   const [currentTask, setCurrentTask] = useState(null);
@@ -97,7 +98,8 @@ export default function App() {
       subtasks: [],
       isCompleted: false,
       tagsIds: [],
-      priority: 'none',
+      priority: 0,
+      createdAt: new Date(),
     };
     setTasks((prev) => [...prev, newTask]);
 
