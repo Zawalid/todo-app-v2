@@ -126,10 +126,9 @@ function PeriodTasks({
               key={task.id}
               task={task}
               onOpen={() => onOpen(task)}
-              onComplete={(isCompleted) => onComplete(task.id, isCompleted, task.period)}
+              onComplete={(isCompleted) => onComplete(task.id, isCompleted)}
               lists={lists}
               tags={tags}
-              
             />
           ))
         ) : (

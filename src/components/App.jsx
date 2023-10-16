@@ -53,7 +53,7 @@ export default function App() {
       id: Math.random(),
       title: 'Social Media',
       content: '- Plan social content - Build content calendar - Plan promotion and distribution',
-      note: 'Social Media',
+      description: 'Social Media',
       bgColor: '#fdf2b3',
       textColor: '#444',
       creationDate: new Date().toLocaleDateString(),
@@ -69,7 +69,9 @@ export default function App() {
       creationDate: new Date().toLocaleDateString(),
     },
   ]);
-  const [activeTab, setActiveTab] = useState('all');
+  const [activeTab, setActiveTab] = useState('searchResults');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [currentSearchTab, setCurrentSearchTab] = useState('all');
 
   const todayTasks = tasks?.filter((task) => checkIfToday(task.dueDate));
   const tomorrowTasks = tasks?.filter((task) => checkIfTomorrow(task.dueDate));
@@ -84,9 +86,31 @@ export default function App() {
   const upcomingTasksNumber =
     todayAndTomorrowTasks.length + thisWeekWithoutTodayAndTomorrowTasks.length;
 
+  const searchSection =
+    currentSearchTab === 'all'
+      ? tasks
+      : currentSearchTab === 'today'
+      ? todayTasks
+      : currentSearchTab === 'upcoming'
+      ? [...todayAndTomorrowTasks, ...thisWeekWithoutTodayAndTomorrowTasks]
+      : stickyNotes;
+
+  const searchResults = searchSection.filter(
+    (result) =>
+      result.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      result[currentSearchTab === 'stickyWall' ? 'content' : 'note']
+        .toLowerCase()
+        .includes(searchQuery) ||
+      result.description?.toLowerCase().includes(searchQuery),
+  );
+
   useEffect(() => {
     isTaskInfoOpen || setCurrentTask(null);
   }, [isTaskInfoOpen]);
+
+  useEffect(() => {
+    searchQuery.trim() === '' && setActiveTab(activeTab === 'searchResults' ? 'all' : activeTab);
+  }, [searchQuery,activeTab]);
 
   function handlerAddTask(title, dueDate, listId) {
     const newTask = {
@@ -226,6 +250,12 @@ export default function App() {
       }),
     );
   }
+  function handleSearch(query) {
+    setSearchQuery(query);
+    if (query.trim() !== '') {
+      setActiveTab('searchResults');
+    }
+  }
   return (
     <div className='flex h-full gap-2 bg-background-primary p-5'>
       <Menu
@@ -245,6 +275,8 @@ export default function App() {
         onAddTag={handleAddTag}
         onDeleteTag={handleDeleteTag}
         onChangeTab={handleChangeTab}
+        searchQuery={searchQuery}
+        onSearch={(query) => handleSearch(query)}
       />
       <Main
         tasks={tasks}
@@ -263,6 +295,9 @@ export default function App() {
         onUpdateNote={handleUpdateStickyNote}
         onDeleteNote={handleDeleteStickyNote}
         activeTab={activeTab}
+        searchResults={searchResults}
+        currentSearchTab={currentSearchTab}
+        setCurrentSearchTab={setCurrentSearchTab}
       />
       <TaskInfo
         isOpen={isTaskInfoOpen}

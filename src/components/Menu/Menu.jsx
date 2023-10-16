@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { MenuLists } from './Menu Lists/MenuLists';
 import { MenuTags } from './Menu Tags/MenuTags';
 import { MenuTasks } from './Menu Tasks/MenuTasks';
+import { Search } from './Search';
 
 // ------------------------------ Menu ------------------------------
 export function Menu({
@@ -21,6 +22,8 @@ export function Menu({
   onAddTag,
   onDeleteTag,
   onChangeTab,
+  searchQuery,
+  onSearch
 }) {
   const menu = useRef(null);
 
@@ -68,14 +71,7 @@ export function Menu({
             </button>
           </div>
           <div className='overflow-y-auto'>
-            <div className='relative mb-5 w-full'>
-              <i className='fas fa-search absolute left-3 top-[5px] text-sm text-text-tertiary'></i>
-              <input
-                type='text'
-                className='w-full rounded-lg border border-background-tertiary  bg-transparent  py-1 pl-10  text-sm text-text-tertiary placeholder:text-text-tertiary focus:outline-none'
-                placeholder='Search'
-              />
-            </div>
+           <Search searchQuery={searchQuery} onSearch={onSearch} />
             <MenuTasks
               allTasksNumber={allTasksNumber}
               todayTasksNumber={todayTasksNumber}

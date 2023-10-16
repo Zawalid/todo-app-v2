@@ -1,9 +1,10 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { Title } from './Title';
 import { StickyWall } from './Sticky Wall/StickyWall';
 import { DisplayedTasks } from './Tasks/DisplayedTasks';
 import { Upcoming } from './Tasks/Upcoming';
 import { checkIfToday } from '../../Utils';
+import { SearchResults } from './SearchResults';
 
 export function Main({
   tasks,
@@ -22,7 +23,14 @@ export function Main({
   onUpdateNote,
   onDeleteNote,
   activeTab,
+  searchResults,
+  currentSearchTab,
+  setCurrentSearchTab,
 }) {
+  const [currentNote, setCurrentNote] = useState(null);
+  const [isEditorOpen, setIsEditorOpen] = useState(false);
+  const [isStickyNoteOpened, setIsStickyNoteOpened] = useState(false);
+
   const listId = useMemo(() => {
     const id = Number.isFinite(+activeTab) && +activeTab;
     return id;
@@ -40,16 +48,28 @@ export function Main({
       ? 'Upcoming Tasks'
       : listName
       ? listName
-      : 'Sticky Wall';
+      : activeTab === 'stickyWall'
+      ? 'Sticky Wall'
+      : 'Search Results';
 
   const count = useMemo(() => {
     if (activeTab === 'all') return tasks.length;
     if (activeTab === 'today') return todayTasks.length;
     if (activeTab === 'upcoming') return upcomingTasksNumber;
     if (activeTab === 'stickyWall') return stickyNotes.length;
+    if (activeTab === 'searchResults') return searchResults.length;
     if (listId) return lists.find((list) => list.id === +activeTab)?.tasks.length;
     return 0;
-  }, [activeTab, tasks, listId, stickyNotes, lists, todayTasks, upcomingTasksNumber]);
+  }, [
+    activeTab,
+    tasks,
+    listId,
+    stickyNotes,
+    lists,
+    todayTasks,
+    upcomingTasksNumber,
+    searchResults,
+  ]);
   const condition = (task) => {
     if (listId) return +task.listId === +listId;
     return activeTab === 'today' ? checkIfToday(task.dueDate) : true;
@@ -58,7 +78,7 @@ export function Main({
   return (
     <main className='flex flex-1 flex-col overflow-hidden rounded-xl bg-background-primary px-5 '>
       <Title title={title} count={count} />
-      {activeTab !== 'upcoming' && activeTab !== 'stickyWall' ? (
+      {activeTab !== 'upcoming' && activeTab !== 'stickyWall' && activeTab !== 'searchResults' ? (
         <DisplayedTasks
           onAdd={(title) => {
             const dueDate = activeTab === 'today' && new Date().toISOString().split('T')[0];
@@ -86,12 +106,31 @@ export function Main({
           tags={tags}
         />
       )}
-      {activeTab === 'stickyWall' && (
+      {(activeTab === 'stickyWall' || isStickyNoteOpened) && (
         <StickyWall
           stickyNotes={stickyNotes}
           onAdd={onAddNote}
           onUpdate={onUpdateNote}
           onDelete={onDeleteNote}
+          currentNote={currentNote}
+          setCurrentNote={setCurrentNote}
+          isEditorOpen={isEditorOpen}
+          setIsEditorOpen={setIsEditorOpen}
+          setIsStickyNoteOpened={setIsStickyNoteOpened}
+        />
+      )}
+      {(activeTab === 'searchResults' && !isStickyNoteOpened ) && (
+        <SearchResults
+          searchResults={searchResults}
+          onOpen={onOpen}
+          onComplete={onComplete}
+          lists={lists}
+          tags={tags}
+          currentSearchTab={currentSearchTab}
+          setCurrentSearchTab={setCurrentSearchTab}
+          setCurrentNote={setCurrentNote}
+          setIsEditorOpen={setIsEditorOpen}
+          setIsStickyNoteOpened={setIsStickyNoteOpened}
         />
       )}
     </main>

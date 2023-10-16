@@ -2,12 +2,20 @@ import { useState } from 'react';
 import { StickyNote } from './StickyNote';
 import { StickyNoteEditor } from './Sticky Note Editor/StickyNoteEditor';
 
-export function StickyWall({ stickyNotes, onAdd, onUpdate, onDelete }) {
-  const [isEditorOpen, setIsEditorOpen] = useState(false);
-  const [currentNote, setCurrentNote] = useState(null);
-
+export function StickyWall({
+  stickyNotes,
+  onAdd,
+  onUpdate,
+  onDelete,
+  currentNote,
+  setCurrentNote,
+  isEditorOpen,
+  setIsEditorOpen,
+  setIsStickyNoteOpened,
+}) {
   function handleBack() {
     setIsEditorOpen(false);
+    setIsStickyNoteOpened(false)
   }
 
   return isEditorOpen ? (
