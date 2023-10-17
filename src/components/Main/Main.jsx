@@ -4,7 +4,7 @@ import { StickyWall } from './Sticky Wall/StickyWall';
 import { DisplayedTasks } from './Tasks/DisplayedTasks';
 import { Upcoming } from './Tasks/Upcoming';
 import { checkIfToday } from '../../Utils';
-import { SearchResults } from './SearchResults';
+import { SearchResults } from './Search/SearchResults';
 
 export function Main({
   tasks,
