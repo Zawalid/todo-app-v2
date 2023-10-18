@@ -181,7 +181,7 @@ export default function App() {
   function handleDeleteList(id) {
     const newLists = lists.filter((list) => list.id !== id);
     setLists(newLists);
-    setActiveTab('upcoming');
+    setActiveTab('all');
   }
   function handleChangeListColor(id, color) {
     handleUpdateList(id, 'color', color);

@@ -4,6 +4,7 @@ import { Task } from './Task';
 import { TasksActions } from './TasksActions/TasksActions';
 import { useEffect, useState } from 'react';
 import { isTaskOverdue } from '../../../Utils';
+import { ConfirmationModal } from '../../ConfirmationModal';
 
 const filtersConditions = {
   all: () => true,
@@ -143,28 +144,14 @@ export function DisplayedTasks({
       )}
 
       {isClearAllModalOpen && (
-        <div className='fixed left-0 top-0  z-[999999] grid h-full w-full place-content-center bg-black bg-opacity-25 backdrop-blur-[1px]'>
-          <div className=' rounded-lg bg-white p-4'>
-            <h4 className='text-center  font-semibold text-text-secondary'>
-              Are you sure you want to clear all tasks?
-            </h4>
-            <div className='mt-5 flex items-center justify-evenly'>
-              <button
-                className='rounded-lg bg-red-500 px-3 py-1 text-sm font-semibold text-background-secondary'
-                onClick={handleClearAll}
-              >
-                Clear All
-              </button>
-              <button
-                className='rounded-lg bg-background-secondary px-3 py-1 text-sm font-semibold text-text-secondary'
-                onClick={handleCloseModal}
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
+        <ConfirmationModal
+          sentence='Are you sure you want to clear all tasks?'
+          confirmText='Clear All'
+          onConfirm={handleClearAll}
+          onCancel={handleCloseModal}
+        />
       )}
     </div>
   );
 }
+

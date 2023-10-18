@@ -4,7 +4,7 @@ import { TaskLists } from './TaskLists';
 import { TaskDueDate } from './TaskDueDate/TaskDueDate';
 import { TaskTags } from './TaskTags';
 import { TaskSubTasks } from './TaskSubTasks';
-import { ConfirmationModal } from './ConfirmationModal';
+import { ConfirmationModal } from '../ConfirmationModal';
 import { TaskPriority } from './TaskPriority';
 
 export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSelectList, tags }) {
@@ -58,7 +58,17 @@ export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSel
       task?.priority !== taskPriority
         ? setIsChanged(true)
         : setIsChanged(false);
-  }, [isOpen, task, taskTitle, taskNote, taskListId, taskDueDate, taskSubtasks, taskTagsIds,taskPriority]);
+  }, [
+    isOpen,
+    task,
+    taskTitle,
+    taskNote,
+    taskListId,
+    taskDueDate,
+    taskSubtasks,
+    taskTagsIds,
+    taskPriority,
+  ]);
   useEffect(() => {
     function handleClickOutside(event) {
       if (
@@ -139,11 +149,13 @@ export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSel
     >
       {isDeleteModalOpen && (
         <ConfirmationModal
-          onDelete={() => {
+          sentence='Are you sure you want to delete this task?'
+          confirmText='Delete'
+          onConfirm={() => {
             onDelete(task.id, task.period);
             setIsDeleteModalOpen(false);
           }}
-          onClose={() => setIsDeleteModalOpen(false)}
+          onCancel={() => setIsDeleteModalOpen(false)}
         />
       )}
       {isOpen && (
