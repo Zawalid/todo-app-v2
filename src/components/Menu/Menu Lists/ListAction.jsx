@@ -1,7 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { Colors } from '../../Colors';
 export function ListAction({
-  isOpen, reference, onDelete, onClose, onChangeColor, onOpenRenameInput, onDuplicateList,
+  isOpen,
+  reference,
+  onDelete,
+  onClose,
+  onChangeColor,
+  onOpenRenameInput,
+  onDuplicateList,
 }) {
   const [isColorsOpen, setIsColorsOpen] = useState(false);
   const colorsDiv = useRef(null);
@@ -27,8 +33,10 @@ export function ListAction({
 
   return (
     <ul
-      className={'absolute right-1 top-full mt-2 z-10 w-44 rounded-lg bg-background-primary p-3 shadow-md ' +
-        (isOpen ? 'block' : 'hidden')}
+      className={
+        'absolute right-1 top-full z-10 mt-2 w-44 rounded-lg bg-background-primary p-3 shadow-md ' +
+        (isOpen ? 'block' : 'hidden')
+      }
       ref={reference}
     >
       <li
@@ -51,8 +59,10 @@ export function ListAction({
         </li>
       )}
       <div
-        className={'flex flex-wrap items-center gap-2  overflow-hidden transition-[height] duration-300 ' +
-          (isColorsOpen ? 'h-16' : 'h-0')}
+        className={
+          'flex flex-wrap items-center gap-2  overflow-hidden transition-[height] duration-300 ' +
+          (isColorsOpen ? 'h-16' : 'h-0')
+        }
         ref={colorsDiv}
       >
         <Colors />
@@ -74,13 +84,10 @@ export function ListAction({
         <i className='fa-solid fa-trash-can '></i>
         <p>Delete List</p>
       </li>
-      {
-        // Todo : Add the (Add to favorites) feature
-      }
-      {/* <li className='mt-3 grid cursor-pointer grid-cols-[15px_1fr] items-center gap-2 text-start text-sm text-text-secondary transition-colors duration-300 hover:text-text-tertiary'>
-                    <i className='fa-solid fa-heart '></i>
-                    <p>Add To Favorites</p>
-                  </li> */}
+      <li className='mt-3 grid cursor-pointer grid-cols-[15px_1fr] items-center gap-2 text-start text-sm text-text-secondary transition-colors duration-300 hover:text-text-tertiary'>
+        <i className='fa-solid fa-heart '></i>
+        <p>Add To Favorites</p>
+      </li>
     </ul>
   );
 }

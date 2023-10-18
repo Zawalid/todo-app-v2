@@ -103,6 +103,12 @@ export function Menu({
               <span className='text-text-secondary font-medium'>Trash</span>
             </button>
             <button
+              className='grid cursor-pointer mb-2 grid-cols-[25px_auto] items-center text-sm'
+            >
+              <i className='fa-solid fa-heart text-text-tertiary'></i>
+              <span className='text-text-secondary font-medium'>Favorites</span>
+            </button>
+            <button
               className='grid cursor-pointer grid-cols-[25px_auto] items-center text-sm'
             >
               <i className='fa-solid fa-gear text-text-tertiary'></i>
