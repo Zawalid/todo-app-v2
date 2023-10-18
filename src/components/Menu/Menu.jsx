@@ -1,8 +1,9 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { MenuLists } from './Menu Lists/MenuLists';
 import { MenuTags } from './Menu Tags/MenuTags';
 import { MenuTasks } from './Menu Tasks/MenuTasks';
 import { Search } from './Search';
+import { Trash } from './Trash/Trash';
 
 // ------------------------------ Menu ------------------------------
 export function Menu({
@@ -23,8 +24,13 @@ export function Menu({
   onDeleteTag,
   onChangeTab,
   searchQuery,
-  onSearch
+  onSearch,
+  trash,
+  onDeleteFromTrash,
+  onEmptyTypeFromTrash,
+  onEmptyTrash,
 }) {
+  const [isTrashOpen, setIsTrashOpen] = useState(false);
   const menu = useRef(null);
 
   useEffect(() => {
@@ -55,7 +61,6 @@ export function Menu({
           : 'w-0 items-center bg-background-primary  ')
       }
       ref={menu}
-      
     >
       {isOpen || (
         <button onClick={() => setIsOpen(true)}>
@@ -71,7 +76,7 @@ export function Menu({
             </button>
           </div>
           <div className='overflow-y-auto'>
-           <Search searchQuery={searchQuery} onSearch={onSearch} />
+            <Search searchQuery={searchQuery} onSearch={onSearch} />
             <MenuTasks
               allTasksNumber={allTasksNumber}
               todayTasksNumber={todayTasksNumber}
@@ -100,6 +105,24 @@ export function Menu({
               </li>
             </ul>
           </div> */}
+          <div className=' mt-auto  pt-3'>
+            <button
+              className='grid cursor-pointer grid-cols-[25px_auto] items-center text-sm'
+              onClick={() => setIsTrashOpen(true)}
+            >
+              <i className='fa-solid fa-trash-can text-text-tertiary'></i>
+              <span className='text-text-secondary'>Trash</span>
+            </button>
+          </div>
+          {isTrashOpen && (
+            <Trash
+              trash={trash}
+              onDelete={onDeleteFromTrash}
+              onEmptyTypeFromTrash={onEmptyTypeFromTrash}
+              onEmptyTrash={onEmptyTrash}
+              onClose={() => setIsTrashOpen(false)}
+            />
+          )}
         </>
       )}
     </aside>

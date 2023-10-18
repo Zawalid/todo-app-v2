@@ -72,7 +72,85 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('searchResults');
   const [searchQuery, setSearchQuery] = useState('');
   const [currentSearchTab, setCurrentSearchTab] = useState('all');
-
+  const [trash, setTrash] = useLocalStorageState('trash', {
+    tasks: [
+      {
+        id: Math.random(),
+        title: 'Consult accountant',
+        note: '',
+        dueDate: '',
+        listId: 'none',
+        subtasks: [],
+        isCompleted: true,
+        tagsIds: [],
+        priority: 0,
+        createdAt: new Date(),
+      },
+      {
+        id: Math.random(),
+        title: 'Do homework',
+        note: '',
+        dueDate: '',
+        listId: 'none',
+        subtasks: [],
+        isCompleted: true,
+        tagsIds: [],
+        priority: 0,
+        createdAt: new Date(),
+      },
+    ],
+    lists: [
+      {
+        id: Math.random(),
+        title: 'Personal',
+        color: '#ff6b6b',
+        tasks: [],
+        number: 0,
+      },
+      {
+        id: Math.random(),
+        title: 'Work',
+        color: '#66d9e8',
+        tasks: [],
+        number: 0,
+      },
+    ],
+    tags: [
+      {
+        id: Math.random(),
+        title: 'Tag 1',
+        bgColor: '#d1eaed',
+        textColor: '#444',
+      },
+      {
+        id: Math.random(),
+        title: 'Tag 2',
+        bgColor: '#d1eaed',
+        textColor: '#444',
+      },
+    ],
+    notes: [
+      {
+        id: Math.random(),
+        title: 'Social Media',
+        content: '- Plan social content - Build content calendar - Plan promotion and distribution',
+        description: 'Social Media',
+        bgColor: '#fdf2b3',
+        textColor: '#444',
+        creationDate: new Date().toLocaleDateString(),
+      },
+      {
+        id: Math.random(),
+        title: 'Content Strategy',
+        content:
+          'Would need time to get insights (goals, personals, budget, audits), but after, it would be good to focus on assembling my team (start with SEO specialist, then perhaps an email marketer?). Also need to brainstorm on tooling.',
+        description: 'Content Strategy',
+        bgColor: '#d1eaed',
+        textColor: '#444',
+        creationDate: new Date().toLocaleDateString(),
+      },
+    ],
+  });
   const todayTasks = tasks?.filter((task) => checkIfToday(task.dueDate));
   const tomorrowTasks = tasks?.filter((task) => checkIfTomorrow(task.dueDate));
   const thisWeekTasks = tasks?.filter((task) => {
@@ -110,7 +188,7 @@ export default function App() {
 
   useEffect(() => {
     searchQuery.trim() === '' && setActiveTab(activeTab === 'searchResults' ? 'all' : activeTab);
-  }, [searchQuery,activeTab]);
+  }, [searchQuery, activeTab]);
 
   function handlerAddTask(title, dueDate, listId) {
     const newTask = {
@@ -256,6 +334,22 @@ export default function App() {
       setActiveTab('searchResults');
     }
   }
+  function handleDeleteFromTrash(id, type) {
+    const newTrash = { ...trash };
+    newTrash[type] = newTrash[type].filter((item) => item.id !== id);
+    setTrash(newTrash);
+  }
+  function handleEmptyTypeFromTrash(type) {
+    setTrash((prev) => ({ ...prev, [type]: [] }));
+  }
+  function handleEmptyTrash() {
+    setTrash({
+      tasks: [],
+      lists: [],
+      tags: [],
+      notes: [],
+    });
+  }
   return (
     <div className='flex h-full gap-2 bg-background-primary p-5'>
       <Menu
@@ -277,6 +371,10 @@ export default function App() {
         onChangeTab={handleChangeTab}
         searchQuery={searchQuery}
         onSearch={(query) => handleSearch(query)}
+        trash={trash}
+        onDeleteFromTrash={handleDeleteFromTrash}
+        onEmptyTypeFromTrash={handleEmptyTypeFromTrash}
+        onEmptyTrash={handleEmptyTrash}
       />
       <Main
         tasks={tasks}

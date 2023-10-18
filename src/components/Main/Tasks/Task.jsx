@@ -52,8 +52,8 @@ export function Task({ task, onOpen, onComplete, lists, tags }) {
               <div className='flex items-center gap-2'>
                 <i
                   className={
-                    'fas fa-calendar-alt text-text-tertiary ' +
-                    (isPassed && !checked ? 'text-text-error' : 'text-text-secondary')
+                    'fas fa-calendar-alt  ' +
+                    (isPassed && !checked ? 'text-text-error' : 'text-text-tertiary')
                   }
                 ></i>
                 <span
