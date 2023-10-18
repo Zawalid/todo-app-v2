@@ -4,13 +4,20 @@ import { ConfirmationModal } from '../../ConfirmationModal';
 import trashIcon from '../../../assets/trash.png';
 import { Item } from './Item';
 
-export function Trash({ trash, onDelete, onEmptyTypeFromTrash, onEmptyTrash, onClose }) {
+export function Trash({
+  trash,
+  onDelete,
+  onEmptyTypeFromTrash,
+  onEmptyTrash,
+  onRestoreFromTrash,
+  onClose,
+}) {
   const [currentTab, setCurrentTab] = useState('tasks');
   const [currentItemId, setCurrentItemId] = useState(null);
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const whichDelete = useRef(null);
   return (
-    <div className='fixed left-0 top-0  z-[99]   flex h-full w-full items-center justify-center bg-black bg-opacity-25 backdrop-blur-[1px]'>
+    <div className='fixed left-0 top-0  z-[99]  flex h-full w-full items-center justify-center bg-black bg-opacity-25 backdrop-blur-[1px]'>
       <div className=' flex h-80 w-1/2 flex-col rounded-lg bg-white p-4'>
         <div className='flex items-center justify-between pb-5'>
           <h2 className='text-xl font-bold text-text-secondary'>Trash</h2>
@@ -24,7 +31,7 @@ export function Trash({ trash, onDelete, onEmptyTypeFromTrash, onEmptyTrash, onC
           </button>
         </div>
         <Tabs currentTab={currentTab} setCurrentTab={setCurrentTab} />
-        <ul className='flex flex-1 flex-col gap-2  py-5'>
+        <ul className='flex h-[170px] flex-1 flex-col gap-2 overflow-auto py-5'>
           {trash[currentTab].length > 0 &&
             trash[currentTab].map((item) => (
               <Item
@@ -35,6 +42,7 @@ export function Trash({ trash, onDelete, onEmptyTypeFromTrash, onEmptyTrash, onC
                   setCurrentItemId(item.id);
                   whichDelete.current = 'item';
                 }}
+                onRestore={() => onRestoreFromTrash(item.id, item.index, currentTab)}
               />
             ))}
           {trash[currentTab].length === 0 && (

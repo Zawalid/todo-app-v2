@@ -29,6 +29,7 @@ export function Menu({
   onDeleteFromTrash,
   onEmptyTypeFromTrash,
   onEmptyTrash,
+  onRestoreFromTrash,
 }) {
   const [isTrashOpen, setIsTrashOpen] = useState(false);
   const menu = useRef(null);
@@ -93,25 +94,19 @@ export function Menu({
             />
             <MenuTags tags={tags} onAddTag={onAddTag} onDeleteTag={onDeleteTag} />
           </div>
-          {/* <div className=' mt-auto  pt-3'>
-            <ul className='flex items-center justify-between text-sm'>
-              <li className='grid cursor-pointer grid-cols-[25px_auto] items-center'>
-                <i className='fa-solid fa-sliders text-text-tertiary'></i>
-                <span className='text-text-secondary'>Settings</span>
-              </li>
-              <li className='grid cursor-pointer grid-cols-[25px_auto] items-center'>
-                <i className='fa-solid fa-right-from-bracket text-text-tertiary'></i>
-                <span className='text-text-secondary'>Log Out</span>
-              </li>
-            </ul>
-          </div> */}
           <div className=' mt-auto  pt-3'>
             <button
-              className='grid cursor-pointer grid-cols-[25px_auto] items-center text-sm'
+              className='grid mb-2 cursor-pointer grid-cols-[25px_auto] items-center text-sm'
               onClick={() => setIsTrashOpen(true)}
             >
               <i className='fa-solid fa-trash-can text-text-tertiary'></i>
-              <span className='text-text-secondary'>Trash</span>
+              <span className='text-text-secondary font-medium'>Trash</span>
+            </button>
+            <button
+              className='grid cursor-pointer grid-cols-[25px_auto] items-center text-sm'
+            >
+              <i className='fa-solid fa-gear text-text-tertiary'></i>
+              <span className='text-text-secondary font-medium'>Settings</span>
             </button>
           </div>
           {isTrashOpen && (
@@ -120,6 +115,7 @@ export function Menu({
               onDelete={onDeleteFromTrash}
               onEmptyTypeFromTrash={onEmptyTypeFromTrash}
               onEmptyTrash={onEmptyTrash}
+              onRestoreFromTrash={onRestoreFromTrash}
               onClose={() => setIsTrashOpen(false)}
             />
           )}

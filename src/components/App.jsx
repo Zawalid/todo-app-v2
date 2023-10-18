@@ -21,6 +21,7 @@ export default function App() {
       tagsIds: [],
       priority: 0,
       createdAt: new Date(),
+      index: 0,
     },
   ]);
   const [currentTask, setCurrentTask] = useState(null);
@@ -31,6 +32,7 @@ export default function App() {
       color: '#ff6b6b',
       tasks: [],
       number: 0,
+      index: 0,
     },
     {
       id: Math.random(),
@@ -38,6 +40,7 @@ export default function App() {
       color: '#66d9e8',
       tasks: [],
       number: 0,
+      index: 1,
     },
   ]);
   const [tags, setTags] = useLocalStorageState('tags', [
@@ -46,6 +49,7 @@ export default function App() {
       title: 'Tag 1',
       bgColor: '#d1eaed',
       textColor: '#444',
+      index: 0,
     },
   ]);
   const [stickyNotes, setStickyNotes] = useLocalStorageState('stickyNotes', [
@@ -57,6 +61,7 @@ export default function App() {
       bgColor: '#fdf2b3',
       textColor: '#444',
       creationDate: new Date().toLocaleDateString(),
+      index: 0,
     },
     {
       id: Math.random(),
@@ -66,90 +71,18 @@ export default function App() {
       description: 'Content Strategy',
       bgColor: '#d1eaed',
       textColor: '#444',
-      creationDate: new Date().toLocaleDateString(),
+      creationDate: new Date().toLocaleDateString(),  
+      index: 1,
     },
   ]);
   const [activeTab, setActiveTab] = useState('searchResults');
   const [searchQuery, setSearchQuery] = useState('');
   const [currentSearchTab, setCurrentSearchTab] = useState('all');
   const [trash, setTrash] = useLocalStorageState('trash', {
-    tasks: [
-      {
-        id: Math.random(),
-        title: 'Consult accountant',
-        note: '',
-        dueDate: '',
-        listId: 'none',
-        subtasks: [],
-        isCompleted: true,
-        tagsIds: [],
-        priority: 0,
-        createdAt: new Date(),
-      },
-      {
-        id: Math.random(),
-        title: 'Do homework',
-        note: '',
-        dueDate: '',
-        listId: 'none',
-        subtasks: [],
-        isCompleted: true,
-        tagsIds: [],
-        priority: 0,
-        createdAt: new Date(),
-      },
-    ],
-    lists: [
-      {
-        id: Math.random(),
-        title: 'Personal',
-        color: '#ff6b6b',
-        tasks: [],
-        number: 0,
-      },
-      {
-        id: Math.random(),
-        title: 'Work',
-        color: '#66d9e8',
-        tasks: [],
-        number: 0,
-      },
-    ],
-    tags: [
-      {
-        id: Math.random(),
-        title: 'Tag 1',
-        bgColor: '#d1eaed',
-        textColor: '#444',
-      },
-      {
-        id: Math.random(),
-        title: 'Tag 2',
-        bgColor: '#d1eaed',
-        textColor: '#444',
-      },
-    ],
-    notes: [
-      {
-        id: Math.random(),
-        title: 'Social Media',
-        content: '- Plan social content - Build content calendar - Plan promotion and distribution',
-        description: 'Social Media',
-        bgColor: '#fdf2b3',
-        textColor: '#444',
-        creationDate: new Date().toLocaleDateString(),
-      },
-      {
-        id: Math.random(),
-        title: 'Content Strategy',
-        content:
-          'Would need time to get insights (goals, personals, budget, audits), but after, it would be good to focus on assembling my team (start with SEO specialist, then perhaps an email marketer?). Also need to brainstorm on tooling.',
-        description: 'Content Strategy',
-        bgColor: '#d1eaed',
-        textColor: '#444',
-        creationDate: new Date().toLocaleDateString(),
-      },
-    ],
+    tasks: [],
+    lists: [],
+    tags: [],
+    notes: [],
   });
   const todayTasks = tasks?.filter((task) => checkIfToday(task.dueDate));
   const tomorrowTasks = tasks?.filter((task) => checkIfTomorrow(task.dueDate));
@@ -202,6 +135,7 @@ export default function App() {
       tagsIds: [],
       priority: 0,
       createdAt: new Date(),
+      index: tasks.length,
     };
     setTasks((prev) => [...prev, newTask]);
 
@@ -223,10 +157,28 @@ export default function App() {
     });
     setLists(newLists);
     setIsTaskInfoOpen(false);
+    setTrash((prev) => ({ ...prev, tasks: [...prev.tasks, currentTask] }));
   }
   function handleCompleteTask(id, isCompleted) {
     const newTasks = tasks.map((task) => (task.id === id ? { ...task, isCompleted } : task));
     setTasks(newTasks);
+  }
+  function handleClearAllTasks(condition1, condition2) {
+    const filteredTasks = [];
+    const deletedTasks = [];
+    tasks.forEach((task) =>
+      condition1(task) && condition2(task) ? deletedTasks.push(task) : filteredTasks.push(task),
+    );
+    setTasks(filteredTasks);
+    setLists(
+      lists.map((list) => {
+        const listTasks = list.tasks.filter((task) =>
+          filteredTasks.map((t) => t.id).includes(task.id),
+        );
+        return { ...list, tasks: listTasks };
+      }),
+    );
+    setTrash((prev) => ({ ...prev, tasks: [...prev.tasks, ...deletedTasks] }));
   }
   function handleAddList(title, color) {
     const newList = {
@@ -235,10 +187,12 @@ export default function App() {
       color,
       tasks: [],
       number: 0,
+      index: lists.length,
     };
     setLists((prev) => [...prev, newList]);
   }
   function handleAddTasksToList(listId, task) {
+    if (!listId) return;
     const newLists = lists
       .map((list) => {
         const tasks = list.tasks.filter((t) => t.id !== task.id);
@@ -260,6 +214,7 @@ export default function App() {
     const newLists = lists.filter((list) => list.id !== id);
     setLists(newLists);
     setActiveTab('all');
+    setTrash((prev) => ({ ...prev, lists: [...prev.lists, lists.find((list) => list.id === id)] }));
   }
   function handleChangeListColor(id, color) {
     handleUpdateList(id, 'color', color);
@@ -291,12 +246,14 @@ export default function App() {
       title,
       bgColor,
       textColor,
+      index: tags.length,
     };
     setTags((prev) => [...prev, newTag]);
   }
   function handleDeleteTag(id) {
     const newTags = tags.filter((tag) => tag.id !== id);
     setTags(newTags);
+    setTrash((prev) => ({ ...prev, tags: [...prev.tags, tags.find((tag) => tag.id === id)] }));
   }
   function handleAddStickyNote(note) {
     setStickyNotes((prev) => [...prev, note]);
@@ -308,25 +265,14 @@ export default function App() {
   function handleDeleteStickyNote(id) {
     const newNotes = stickyNotes.filter((n) => n.id !== id);
     setStickyNotes(newNotes);
+    setTrash((prev) => ({
+      ...prev,
+      notes: [...prev.notes, stickyNotes.find((note) => note.id === id)],
+    }));
   }
   function handleChangeTab(tab) {
     setActiveTab(tab);
     setIsTaskInfoOpen(false);
-  }
-  function handleClearAllTasks(condition1, condition2) {
-    const filteredTasks = [];
-    tasks.forEach((task) =>
-      condition1(task) && condition2(task) ? null : filteredTasks.push(task),
-    );
-    setTasks(filteredTasks);
-    setLists(
-      lists.map((list) => {
-        const listTasks = list.tasks.filter((task) =>
-          filteredTasks.map((t) => t.id).includes(task.id),
-        );
-        return { ...list, tasks: listTasks };
-      }),
-    );
   }
   function handleSearch(query) {
     setSearchQuery(query);
@@ -349,6 +295,30 @@ export default function App() {
       tags: [],
       notes: [],
     });
+  }
+  function handleRestoreFromTrash(id, index, type) {
+    const item = trash[type].find((item) => item.id === id);
+    setTrash((prev) => ({
+      ...prev,
+      [type]: prev[type].filter((item) => item.id !== id),
+    }));
+    const restoreItem = (prev, item, index) => {
+      return [...prev.slice(0, index), item, ...prev.slice(index)];
+    };
+
+    if (type === 'tasks') {
+      setTasks((prev) => restoreItem(prev, item, index));
+      handleAddTasksToList(item.listId, item);
+    }
+    if (type === 'lists') {
+      setLists((prev) => restoreItem(prev, item, index));
+    }
+    if (type === 'tags') {
+      setTags((prev) => restoreItem(prev, item, index));
+    }
+    if (type === 'notes') {
+      setStickyNotes((prev) => restoreItem(prev, item, index));
+    }
   }
   return (
     <div className='flex h-full gap-2 bg-background-primary p-5'>
@@ -375,6 +345,7 @@ export default function App() {
         onDeleteFromTrash={handleDeleteFromTrash}
         onEmptyTypeFromTrash={handleEmptyTypeFromTrash}
         onEmptyTrash={handleEmptyTrash}
+        onRestoreFromTrash={handleRestoreFromTrash}
       />
       <Main
         tasks={tasks}

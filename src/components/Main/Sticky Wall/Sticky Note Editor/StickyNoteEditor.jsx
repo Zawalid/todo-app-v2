@@ -37,6 +37,7 @@ export function StickyNoteEditor({ currentNote, stickyNotes, onBack, onAdd, onUp
       bgColor,
       textColor,
       creationDate: new Date().toLocaleDateString(),
+      index : stickyNotes.length
     });
   }
   function handleUpdateNote() {

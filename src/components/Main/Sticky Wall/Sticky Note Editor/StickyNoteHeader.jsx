@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import CustomTippy from '../../CustomTippy';
+import { ConfirmationModal } from '../../../ConfirmationModal';
 
 export function StickyNoteHeader({
   title,
@@ -10,6 +12,7 @@ export function StickyNoteHeader({
   onDelete,
   isChanged,
 }) {
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   return (
     <div className='flex items-center justify-between border-b border-background-tertiary  p-3'>
       <div>
@@ -53,12 +56,23 @@ export function StickyNoteHeader({
         <CustomTippy content='Delete'>
           <button
             className='relative h-10 w-10 cursor-pointer rounded-full bg-background-tertiary text-text-tertiary transition-colors duration-500 hover:bg-red-500 hover:text-white'
-            onClick={onDelete}
+            onClick={() => setIsConfirmationModalOpen(true)}
           >
             <i className='fa-solid fa-trash-can'></i>
           </button>
         </CustomTippy>
       </div>
+      {isConfirmationModalOpen && (
+        <ConfirmationModal
+          sentence='Are you sure you want to delete this sticky note?'
+          confirmText='Delete'
+          onConfirm={() => {
+            onDelete();
+            setIsConfirmationModalOpen(false);
+          }}
+          onCancel={() => setIsConfirmationModalOpen(false)}
+        />
+      )}
     </div>
   );
 }

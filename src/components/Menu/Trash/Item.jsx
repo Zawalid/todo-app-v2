@@ -1,12 +1,15 @@
 import Tippy from '@tippyjs/react';
 
-export function Item({ title, onDelete }) {
+export function Item({ title, onDelete, onRestore }) {
   return (
-    <li className='flex bg-background-secondary px-2 rounded-md py-1 items-center justify-between'>
+    <li className='flex items-center justify-between rounded-md bg-background-secondary px-2 py-1'>
       <span className='text-sm font-medium text-text-secondary'>{title}</span>
       <div>
         <Tippy content='Restore'>
-          <button className='mr-1 w-7 cursor-pointer rounded-sm text-text-tertiary transition-colors duration-300 hover:bg-text-secondary hover:text-white'>
+          <button
+            className='mr-1 w-7 cursor-pointer rounded-sm text-text-tertiary transition-colors duration-300 hover:bg-text-secondary hover:text-white'
+            onClick={onRestore}
+          >
             <i className='fa-solid fa-rotate-left'></i>
           </button>
         </Tippy>
