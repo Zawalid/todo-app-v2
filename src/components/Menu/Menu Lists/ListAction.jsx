@@ -84,10 +84,6 @@ export function ListAction({
         <i className='fa-solid fa-trash-can '></i>
         <p>Delete List</p>
       </li>
-      <li className='mt-3 grid cursor-pointer grid-cols-[15px_1fr] items-center gap-2 text-start text-sm text-text-secondary transition-colors duration-300 hover:text-text-tertiary'>
-        <i className='fa-solid fa-heart '></i>
-        <p>Add To Favorites</p>
-      </li>
     </ul>
   );
 }

@@ -37,19 +37,12 @@ export function StickyNote({
 
           <div className='absolute bottom-3 left-1/2 flex w-full -translate-x-1/2 items-center justify-between px-5 '>
             <span className='text-sm font-semibold text-text-primary'>{creationDate}</span>
-            <div className='flex gap-1'>
-              {/* {// Todo : Add the "Add to favorites" Feature for the notes} */}
-              {/* 
-              <button className=' grid h-6 w-6 place-content-center rounded-full bg-text-primary'>
-                <i className='fa-solid fa-star cursor-pointer text-xs text-white transition-colors duration-300 hover:text-yellow-400'></i>
-              </button> */}
-              <button
-                className=' grid h-6 w-6 place-content-center rounded-full bg-text-primary'
-                onClick={onClick}
-              >
-                <i className='fa-solid fa-pen cursor-pointer text-xs  text-white'></i>
-              </button>
-            </div>
+            <button
+              className=' grid h-6 w-6 place-content-center rounded-full bg-text-primary'
+              onClick={onClick}
+            >
+              <i className='fa-solid fa-pen cursor-pointer text-xs  text-white'></i>
+            </button>
           </div>
         </>
       )}
