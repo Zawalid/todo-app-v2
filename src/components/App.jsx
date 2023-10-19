@@ -5,6 +5,7 @@ import { Menu } from './Menu/Menu';
 import { Main } from './Main/Main';
 import '../styles/App.css';
 import { checkIfToday, checkIfTomorrow, isDateInCurrentWeek } from '../Utils';
+import completedSound from '../assets/completed.mp3'
 
 export default function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(true);
@@ -162,6 +163,7 @@ export default function App() {
   function handleCompleteTask(id, isCompleted) {
     const newTasks = tasks.map((task) => (task.id === id ? { ...task, isCompleted } : task));
     setTasks(newTasks);
+    isCompleted && new Audio(completedSound).play()
   }
   function handleClearAllTasks(condition1, condition2) {
     const filteredTasks = [];

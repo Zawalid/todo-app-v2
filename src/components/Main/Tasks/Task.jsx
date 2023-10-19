@@ -147,7 +147,7 @@ export function Task({ task, onOpen, onComplete, lists, tags }) {
         </Tippy>
       )}
 
-      <button onClick={onOpen}>
+      <button className='transition-colors duration-300 hover:bg-background-primary px-2 py-1 rounded-sm' onClick={onOpen}>
         <i className='fa-solid fa-chevron-right cursor-pointer text-text-tertiary'></i>
       </button>
     </li>
