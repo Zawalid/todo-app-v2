@@ -1,5 +1,5 @@
 import { Tabs } from './Tabs';
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { ConfirmationModal } from '../../ConfirmationModal';
 import trashIcon from '../../../assets/trash.png';
 import { Item } from './Item';
@@ -16,11 +16,14 @@ export function Trash({
   const [currentItemId, setCurrentItemId] = useState(null);
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const whichDelete = useRef(null);
+  const trashLength = useMemo(() => Object.values(trash).flat().length, [trash]);
   return (
     <div className='fixed left-0 top-0  z-[99]  flex h-full w-full items-center justify-center bg-black bg-opacity-25 backdrop-blur-[1px]'>
-      <div className=' flex h-80 w-1/2 flex-col rounded-lg bg-white p-4'>
+      <div className=' relative flex h-80 w-1/2 flex-col rounded-lg bg-white p-4'>
         <div className='flex items-center justify-between pb-5'>
-          <h2 className='text-xl font-bold text-text-secondary'>Trash</h2>
+          <h2 className='text-xl font-bold text-text-secondary'>
+            Trash <span className='text-lg text-text-tertiary'>({trashLength})</span>
+          </h2>
           <button
             onClick={() => {
               onClose();
@@ -97,12 +100,10 @@ export function Trash({
           <button
             className={
               'rounded-lg bg-text-error px-4 py-1 text-sm text-white ' +
-              (Object.values(trash).every((item) => item.length === 0)
-                ? 'cursor-not-allowed opacity-50'
-                : '')
+              (trashLength === 0 ? 'cursor-not-allowed opacity-50' : '')
             }
             onClick={() => {
-              if (Object.values(trash).every((item) => item.length === 0)) return;
+              if (trashLength === 0) return;
               setIsConfirmationModalOpen(true);
               whichDelete.current = 'all';
             }}

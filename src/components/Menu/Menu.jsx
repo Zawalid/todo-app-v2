@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { MenuLists } from './Menu Lists/MenuLists';
 import { MenuTags } from './Menu Tags/MenuTags';
-import { MenuTasks } from './Menu Tasks/MenuTasks';
+import { MenuTasks } from './MenuTasks';
 import { Search } from './Search';
 import { Trash } from './Trash/Trash';
 
