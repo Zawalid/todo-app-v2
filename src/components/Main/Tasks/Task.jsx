@@ -2,6 +2,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { Tag } from '../../Menu/Menu Tags/Tag';
 import { checkIfToday, checkIfTomorrow, checkIfYesterday, isTaskOverdue } from '../../../Utils';
 import Tippy from '@tippyjs/react';
+import completedSoundFile from '../../../assets/completed.mp3';
+
+const completedSound = new Audio(completedSoundFile);
 
 export function Task({ task, onOpen, onComplete, lists, tags }) {
   const [checked, setChecked] = useState(task.isCompleted);
@@ -32,7 +35,10 @@ export function Task({ task, onOpen, onComplete, lists, tags }) {
           type='checkbox'
           className='task peer'
           checked={checked}
-          onChange={() => setChecked(!checked)}
+          onChange={(e) => {
+            setChecked(!checked);
+            e.target.checked && completedSound.play()
+          }}
         />
         <i className='fas fa-check pointer-events-none  absolute left-1  top-1 hidden h-4 w-4 text-sm text-white peer-checked:block'></i>
       </div>
@@ -147,7 +153,10 @@ export function Task({ task, onOpen, onComplete, lists, tags }) {
         </Tippy>
       )}
 
-      <button className='transition-colors duration-300 hover:bg-background-primary px-2 py-1 rounded-sm' onClick={onOpen}>
+      <button
+        className='rounded-sm px-2 py-1 transition-colors duration-300 hover:bg-background-primary'
+        onClick={onOpen}
+      >
         <i className='fa-solid fa-chevron-right cursor-pointer text-text-tertiary'></i>
       </button>
     </li>

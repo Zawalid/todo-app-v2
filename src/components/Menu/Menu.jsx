@@ -96,17 +96,11 @@ export function Menu({
           </div>
           <div className=' mt-auto  pt-3'>
             <button
-              className='grid mb-2 cursor-pointer grid-cols-[25px_auto] items-center text-sm'
+              className='mb-2 grid cursor-pointer grid-cols-[25px_auto] items-center text-sm'
               onClick={() => setIsTrashOpen(true)}
             >
               <i className='fa-solid fa-trash-can text-text-tertiary'></i>
-              <span className='text-text-secondary font-medium'>Trash</span>
-            </button>
-            <button
-              className='grid cursor-pointer grid-cols-[25px_auto] items-center text-sm'
-            >
-              <i className='fa-solid fa-gear text-text-tertiary'></i>
-              <span className='text-text-secondary font-medium'>Settings</span>
+              <span className='font-medium text-text-secondary'>Trash</span>
             </button>
           </div>
           {isTrashOpen && (
