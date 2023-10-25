@@ -63,10 +63,11 @@ export function DisplayedTasks({
             <TasksActions
               filter={filter}
               onSelect={(e) => setFilter(e.target.value)}
-              onClearAll={() => filteredTasks.length > 0 && setIsClearAllModalOpen(true)}
+              onClearAll={() => setIsClearAllModalOpen(true)}
               sortDirection={sortDirection}
               setSortDirection={setSortDirection}
               setSortKey={setSortKey}
+              tasksLength={filteredTasks.length}
             />
           }
           className=' rounded-lg  bg-background-primary shadow-md'
@@ -135,8 +136,8 @@ export function DisplayedTasks({
           <h2 className='text-2xl font-semibold text-text-secondary'>
             {activeTab === 'today'
               ? 'You have no tasks scheduled for today.'
-              : activeTab === 'upcoming'
-              ? "You don't have any upcoming tasks"
+              : activeTab === 'all'
+              ? "You don't have any tasks yet"
               : "You don't have any tasks in this list"}
           </h2>
           <p className=' font-medium text-text-tertiary'>Add a new task to get started</p>
@@ -154,4 +155,3 @@ export function DisplayedTasks({
     </div>
   );
 }
-

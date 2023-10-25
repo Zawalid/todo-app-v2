@@ -9,7 +9,7 @@
   @apply font-bold;
 }
 
-.menu_element.active div:last-child {
+.menu_element.active .count {
   @apply bg-background-primary;
 }
 

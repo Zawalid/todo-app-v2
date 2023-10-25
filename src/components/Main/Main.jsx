@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useHref } from 'react-router-dom';
 import { Title } from './Title';
 import { StickyWall } from './Sticky Wall/StickyWall';
 import { DisplayedTasks } from './Tasks/DisplayedTasks';
@@ -22,7 +23,6 @@ export function Main({
   onAddNote,
   onUpdateNote,
   onDeleteNote,
-  activeTab,
   searchResults,
   currentSearchTab,
   setCurrentSearchTab,
@@ -31,13 +31,10 @@ export function Main({
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [isStickyNoteOpened, setIsStickyNoteOpened] = useState(false);
 
-  const listId = useMemo(() => {
-    const id = Number.isFinite(+activeTab) && +activeTab;
-    return id;
-  }, [activeTab]);
-  const listName = useMemo(() => {
-    return listId && lists.find((list) => list.id === listId)?.title;
-  }, [lists, listId]);
+  let activeTab = useHref();
+  activeTab = activeTab.slice(1);
+
+  const listId = lists.find((list) => list.title.split('   ').join('-') === activeTab)?.id;
 
   const title =
     activeTab === 'all'
@@ -46,8 +43,8 @@ export function Main({
       ? "Today's Tasks"
       : activeTab === 'upcoming'
       ? 'Upcoming Tasks'
-      : listName
-      ? listName
+      : activeTab
+      ? activeTab
       : activeTab === 'stickyWall'
       ? 'Sticky Wall'
       : 'Search Results';
@@ -58,7 +55,7 @@ export function Main({
     if (activeTab === 'upcoming') return upcomingTasksNumber;
     if (activeTab === 'stickyWall') return stickyNotes.length;
     if (activeTab === 'searchResults') return searchResults.length;
-    if (listId) return lists.find((list) => list.id === +activeTab)?.tasks.length;
+    if (listId) return lists.find((list) => list.id === listId)?.tasks.length;
     return 0;
   }, [
     activeTab,
@@ -72,13 +69,15 @@ export function Main({
   ]);
   const condition = (task) => {
     if (listId) return +task.listId === +listId;
-    return activeTab === 'today' ? checkIfToday(task.dueDate) : true;
+    if (activeTab === 'today') return checkIfToday(task.dueDate);
+    if (activeTab === 'all') return true;
+    return false;
   };
 
   return (
     <main className='flex flex-1 flex-col overflow-hidden rounded-xl bg-background-primary px-5 '>
       <Title title={title} count={count} />
-      {activeTab !== 'upcoming' && activeTab !== 'stickyWall' && activeTab !== 'searchResults' ? (
+      {!['upcoming', 'stickyWall', 'searchResults'].includes(activeTab) ? (
         <DisplayedTasks
           onAdd={(title) => {
             const dueDate = activeTab === 'today' && new Date().toISOString().split('T')[0];
@@ -119,7 +118,7 @@ export function Main({
           setIsStickyNoteOpened={setIsStickyNoteOpened}
         />
       )}
-      {(activeTab === 'searchResults' && !isStickyNoteOpened ) && (
+      {activeTab === 'searchResults' && !isStickyNoteOpened && (
         <SearchResults
           searchResults={searchResults}
           onOpen={onOpen}

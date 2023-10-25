@@ -46,7 +46,6 @@ export function MenuLists({
             onDelete={() => onDeleteList(list.id)}
             onChangeColor={(color) => onChangeListColor(list.id, color)}
             onDuplicateList={() => onDuplicateList(list.id)}
-            id={list.id}
           />
         ))}
       </ul>

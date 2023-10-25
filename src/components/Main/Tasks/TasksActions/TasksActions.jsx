@@ -9,6 +9,7 @@ export function TasksActions({
   sortDirection,
   setSortDirection,
   setSortKey,
+  tasksLength,
 }) {
   const sortButtons = useRef(null);
 
@@ -38,8 +39,11 @@ export function TasksActions({
       <div className='mb-3 flex  gap-3'>
         <FilterTasks filter={filter} onSelect={onSelect} />
         <button
-          className='flex-1 rounded-lg bg-red-500 px-6 py-1 font-bold text-white'
-          onClick={onClearAll}
+          className={
+            'flex-1 rounded-lg px-6 py-1 font-bold text-white transition-colors duration-300 ' +
+            (tasksLength > 0 ? 'bg-red-500 hover:bg-red-600' : 'cursor-not-allowed bg-gray-300')
+          }
+          onClick={() => tasksLength > 0 && onClearAll()}
         >
           Clear All
         </button>
@@ -48,7 +52,6 @@ export function TasksActions({
         <h5 className=' text-text-secondary'>Sort By</h5>
         <SortTasks reference={sortButtons} />
       </div>
-     
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { NavLink, useHref, useNavigate } from 'react-router-dom';
 import { ListAction } from './ListAction';
 import { ConfirmationModal } from '../../ConfirmationModal';
 
@@ -10,7 +11,6 @@ export function List({
   onDelete,
   onChangeColor,
   onDuplicateList,
-  id,
 }) {
   const [isListActionsOpen, setIsListActionsOpen] = useState(false);
   const [isRenameInputOpen, setIsRenameInputOpen] = useState(false);
@@ -18,6 +18,8 @@ export function List({
   const [listColor, setListColor] = useState(color);
   const listActions = useRef(null);
   const newListTitle = useRef(null);
+  const navigator = useNavigate();
+  const path = useHref();
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -44,21 +46,27 @@ export function List({
   }
   return (
     <>
-      <li className='menu_element group relative grid-cols-[30px_auto_35px_20px] ' data-tab={id}>
-        <div
-          className='h-4 w-4 rounded-[3px]'
-          style={{
-            backgroundColor: listColor,
-          }}
-        ></div>
-        <span className='first-line: text-sm text-text-secondary outline-none transition-[color_font-weight] duration-100 group-hover:font-bold'>
-          {title}
-        </span>
-        <div className='mx-1 grid place-content-center rounded-sm bg-background-tertiary py-[1px] transition-colors duration-300 group-hover:bg-background-primary'>
-          <span className='text-xs font-semibold text-text-secondary'>{tasksNumber}</span>
-        </div>
+      <li className='relative flex gap-1 pr-2 '>
+        <NavLink
+          to={`/${title.split('   ').join('-')}`}
+          className='menu_element group flex-1  grid-cols-[30px_auto_35px] '
+        >
+          <div
+            className='h-4 w-4 rounded-[3px]'
+            style={{
+              backgroundColor: listColor,
+            }}
+          ></div>
+          <span className='first-line: text-sm text-text-secondary outline-none transition-[color_font-weight] duration-100 group-hover:font-bold'>
+            {title}
+          </span>
+          <div className='count mx-1 grid place-content-center rounded-sm bg-background-tertiary py-[1px] transition-colors duration-300 group-hover:bg-background-primary'>
+            <span className='text-xs font-semibold text-text-secondary'>{tasksNumber}</span>
+          </div>
+        </NavLink>
+
         <button
-          className='cursor-pinter relative rounded-md text-center transition-colors duration-300 hover:bg-background-primary'
+          className='cursor-pinter relative rounded-md px-2 text-center transition-colors duration-300 hover:bg-background-primary'
           onClick={(e) => {
             e.stopPropagation();
             setIsListActionsOpen(true);
@@ -68,7 +76,6 @@ export function List({
           <ListAction
             isOpen={isListActionsOpen}
             reference={listActions}
-            onRename={(title) => onRename(title)}
             onDelete={() => setIsDeleteModalOpen(true)}
             onClose={() => setIsListActionsOpen(false)}
             onChangeColor={changeColor}
@@ -86,8 +93,12 @@ export function List({
           defaultValue={title}
           ref={newListTitle}
           onBlur={(e) => {
-            onRename(e.target.value);
+            const newTitle = e.target.value;
+            onRename(newTitle);
             setIsRenameInputOpen(false);
+            // Change the path to the new title if the renamed list is the active one
+            path === `/${title.split('   ').join('-')}` &&
+              navigator(`/${newTitle.split('   ').join('-')}`);
           }}
           onKeyDown={(e) => e.key === 'Enter' && e.target.blur()}
         />

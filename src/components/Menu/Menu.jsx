@@ -1,11 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import {  useRef, useState } from 'react';
 import { MenuLists } from './Menu Lists/MenuLists';
 import { MenuTags } from './Menu Tags/MenuTags';
 import { MenuTasks } from './MenuTasks';
 import { Search } from './Search';
 import { Trash } from './Trash/Trash';
 
-// ------------------------------ Menu ------------------------------
 export function Menu({
   isOpen,
   setIsOpen,
@@ -22,7 +21,6 @@ export function Menu({
   tags,
   onAddTag,
   onDeleteTag,
-  onChangeTab,
   searchQuery,
   onSearch,
   trash,
@@ -34,24 +32,6 @@ export function Menu({
   const [isTrashOpen, setIsTrashOpen] = useState(false);
   const menu = useRef(null);
 
-  useEffect(() => {
-    function handleClick(e) {
-      if (menu.current && e.target.closest('.menu_element')) {
-        menu.current
-          .querySelectorAll('.menu_element')
-          .forEach((el) => el.classList.remove('active'));
-        const currentTab = e.target.closest('.menu_element');
-        currentTab.classList.add('active');
-        onChangeTab(currentTab.dataset.tab);
-      }
-    }
-    document.addEventListener('click', handleClick);
-
-    return () => {
-      document.removeEventListener('click', handleClick);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [menu]);
 
   return (
     <aside

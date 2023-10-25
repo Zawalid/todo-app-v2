@@ -203,7 +203,7 @@ export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSel
           </div>
           <div className='mt-auto flex gap-3 pt-3'>
             <button
-              className='flex-1 cursor-pointer rounded-lg border border-background-tertiary bg-red-500 py-2 text-center text-sm font-semibold text-background-secondary'
+              className='flex-1 cursor-pointer rounded-lg border  transition-colors duration-300 border-background-tertiary hover:bg-red-600 bg-red-500 py-2 text-center text-sm font-semibold text-background-secondary'
               onClick={() => setIsDeleteModalOpen(true)}
             >
               Delete Task
