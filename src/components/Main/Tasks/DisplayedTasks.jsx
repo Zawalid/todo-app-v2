@@ -30,11 +30,14 @@ export function DisplayedTasks({
 }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const filterParam = searchParams.get('filter');
+  const sortParam = searchParams.get('sort');
+  const dirParam = searchParams.get('dir');
+
   const [filter, setFilter] = useState(filterParam || !filtersConditions[filterParam] || 'all');
   const [filteredTasks, setFilteredTasks] = useState(tasks.filter((task) => condition(task)));
   const [isClearAllModalOpen, setIsClearAllModalOpen] = useState(false);
-  const [sortKey, setSortKey] = useState('cDate');
-  const [sortDirection, setSortDirection] = useState('asc');
+  const [sortKey, setSortKey] = useState(sortParam || 'cDate');
+  const [sortDirection, setSortDirection] = useState(dirParam || 'asc');
 
   useEffect(() => {
     filterParam && setFilter(filterParam);
@@ -45,6 +48,17 @@ export function DisplayedTasks({
     }
   }, [filterParam, setSearchParams]);
 
+  useEffect(() => {
+    if (sortKey === 'cDate' && sortDirection === 'asc')
+      return setSearchParams(filter === 'all' ? '' : { filter });
+    ['cDate', 'dDate', 'title', 'priority'].includes(sortKey)
+      ? setSearchParams(
+          filter === 'all'
+            ? { sort: sortKey, dir: sortDirection }
+            : { filter, sort: sortKey, dir: sortDirection },
+        )
+      : setSearchParams(filter === 'all' ? '' : { filter });
+  }, [sortKey, sortDirection, setSearchParams, filter]);
   useEffect(() => {
     setFilteredTasks(
       tasks.filter((task) => condition(task)).filter((task) => filtersConditions[filter]?.(task)),
@@ -75,6 +89,7 @@ export function DisplayedTasks({
                 setSearchParams({ filter: e.target.value });
               }}
               onClearAll={() => setIsClearAllModalOpen(true)}
+              sortKey={sortKey}
               sortDirection={sortDirection}
               setSortDirection={setSortDirection}
               setSortKey={setSortKey}
@@ -101,8 +116,8 @@ export function DisplayedTasks({
               .sort((a, b) => {
                 if (sortKey === 'cDate') {
                   return sortDirection === 'asc'
-                    ? a.createdAt - b.createdAt
-                    : b.createdAt - a.createdAt;
+                    ? new Date(a.createdAt) - new Date(b.createdAt)
+                    : new Date(b.createdAt) - new Date(a.createdAt);
                 }
                 if (sortKey === 'dDate') {
                   return sortDirection === 'asc'

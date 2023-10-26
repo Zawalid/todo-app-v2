@@ -6,6 +6,7 @@ export function TasksActions({
   filter,
   onSelect,
   onClearAll,
+  sortKey,
   sortDirection,
   setSortDirection,
   setSortKey,
@@ -50,7 +51,7 @@ export function TasksActions({
       </div>
       <div className='flex items-center gap-4'>
         <h5 className=' text-text-secondary'>Sort By</h5>
-        <SortTasks reference={sortButtons} />
+        <SortTasks reference={sortButtons} sortKey={sortKey} sortDirection={sortDirection} />
       </div>
     </div>
   );
