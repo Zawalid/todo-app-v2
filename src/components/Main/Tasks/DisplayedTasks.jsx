@@ -5,6 +5,7 @@ import { TasksActions } from './TasksActions/TasksActions';
 import { useEffect, useState } from 'react';
 import { isTaskOverdue } from '../../../Utils';
 import { ConfirmationModal } from '../../ConfirmationModal';
+import { useSearchParams } from 'react-router-dom';
 
 const filtersConditions = {
   all: () => true,
@@ -27,21 +28,28 @@ export function DisplayedTasks({
   condition,
   activeTab,
 }) {
-  const [filter, setFilter] = useState('all');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const filterParam = searchParams.get('filter');
+  const [filter, setFilter] = useState(filterParam || !filtersConditions[filterParam] || 'all');
   const [filteredTasks, setFilteredTasks] = useState(tasks.filter((task) => condition(task)));
   const [isClearAllModalOpen, setIsClearAllModalOpen] = useState(false);
   const [sortKey, setSortKey] = useState('cDate');
   const [sortDirection, setSortDirection] = useState('asc');
 
   useEffect(() => {
-    setFilteredTasks(
-      tasks.filter((task) => condition(task)).filter((task) => filtersConditions[filter](task)),
-    );
-  }, [tasks, filter, condition]);
+    filterParam && setFilter(filterParam);
+    filterParam === 'all' && setSearchParams('');
+    if (!filtersConditions[filterParam]) {
+      setFilter('all');
+      setSearchParams('');
+    }
+  }, [filterParam, setSearchParams]);
 
   useEffect(() => {
-    setFilter('all');
-  }, [activeTab]);
+    setFilteredTasks(
+      tasks.filter((task) => condition(task)).filter((task) => filtersConditions[filter]?.(task)),
+    );
+  }, [tasks, filter, condition]);
 
   function handleClearAll() {
     onClearAllTasks(condition, filtersConditions[filter]);
@@ -62,7 +70,10 @@ export function DisplayedTasks({
           content={
             <TasksActions
               filter={filter}
-              onSelect={(e) => setFilter(e.target.value)}
+              onSelect={(e) => {
+                setFilter(e.target.value);
+                setSearchParams({ filter: e.target.value });
+              }}
               onClearAll={() => setIsClearAllModalOpen(true)}
               sortDirection={sortDirection}
               setSortDirection={setSortDirection}
