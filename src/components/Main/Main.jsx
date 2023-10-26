@@ -43,18 +43,18 @@ export function Main({
       ? "Today's Tasks"
       : activeTab === 'upcoming'
       ? 'Upcoming Tasks'
-      : activeTab
-      ? activeTab
       : activeTab === 'stickyWall'
       ? 'Sticky Wall'
-      : 'Search Results';
+      : activeTab === 'search'
+      ? 'Search Results'
+      : activeTab;
 
   const count = useMemo(() => {
     if (activeTab === 'all') return tasks.length;
     if (activeTab === 'today') return todayTasks.length;
     if (activeTab === 'upcoming') return upcomingTasksNumber;
     if (activeTab === 'stickyWall') return stickyNotes.length;
-    if (activeTab === 'searchResults') return searchResults.length;
+    if (activeTab === 'search') return searchResults.length;
     if (listId) return lists.find((list) => list.id === listId)?.tasks.length;
     return 0;
   }, [
@@ -77,7 +77,7 @@ export function Main({
   return (
     <main className='flex flex-1 flex-col overflow-hidden rounded-xl bg-background-primary px-5 '>
       <Title title={title} count={count} />
-      {!['upcoming', 'stickyWall', 'searchResults'].includes(activeTab) ? (
+      {!['upcoming', 'stickyWall', 'search'].includes(activeTab) ? (
         <DisplayedTasks
           onAdd={(title) => {
             const dueDate = activeTab === 'today' && new Date().toISOString().split('T')[0];
@@ -118,7 +118,7 @@ export function Main({
           setIsStickyNoteOpened={setIsStickyNoteOpened}
         />
       )}
-      {activeTab === 'searchResults' && !isStickyNoteOpened && (
+      {activeTab === 'search' && !isStickyNoteOpened && (
         <SearchResults
           searchResults={searchResults}
           onOpen={onOpen}

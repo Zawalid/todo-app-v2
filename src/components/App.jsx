@@ -35,6 +35,7 @@ export default function App() {
             key={tab}
           />
         ))}
+        <Route path='search' element={<AppLayout lists={lists} setLists={setLists} />} />
         <Route path='*' element={<NotFound />} />
       </Routes>
     </BrowserRouter>

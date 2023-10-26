@@ -5,8 +5,9 @@ import { Menu } from './Menu/Menu';
 import { Main } from './Main/Main';
 import '../styles/App.css';
 import { checkIfToday, checkIfTomorrow, isDateInCurrentWeek } from '../Utils';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
-export default function AppLayout({lists,setLists}) {
+export default function AppLayout({ lists, setLists }) {
   const [isMenuOpen, setIsMenuOpen] = useState(true);
   const [isTaskInfoOpen, setIsTaskInfoOpen] = useState(false);
   const [tasks, setTasks] = useLocalStorageState('tasks', [
@@ -25,7 +26,7 @@ export default function AppLayout({lists,setLists}) {
     },
   ]);
   const [currentTask, setCurrentTask] = useState(null);
-  
+
   const [tags, setTags] = useLocalStorageState('tags', [
     {
       id: Math.random(),
@@ -58,7 +59,6 @@ export default function AppLayout({lists,setLists}) {
       index: 1,
     },
   ]);
-  const [searchQuery, setSearchQuery] = useState('');
   const [currentSearchTab, setCurrentSearchTab] = useState('all');
   const [trash, setTrash] = useLocalStorageState('trash', {
     tasks: [],
@@ -66,6 +66,10 @@ export default function AppLayout({lists,setLists}) {
     tags: [],
     notes: [],
   });
+  const [searchParams, setSearchParams] = useSearchParams();
+  const searchQuery = searchParams.get('query');
+  const navigate = useNavigate();
+
   const todayTasks = tasks?.filter((task) => checkIfToday(task.dueDate));
   const tomorrowTasks = tasks?.filter((task) => checkIfTomorrow(task.dueDate));
   const thisWeekTasks = tasks?.filter((task) => {
@@ -90,7 +94,7 @@ export default function AppLayout({lists,setLists}) {
 
   const searchResults = searchSection.filter(
     (result) =>
-      result.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      result.title.toLowerCase().includes(searchQuery?.toLowerCase()) ||
       result[currentSearchTab === 'stickyWall' ? 'content' : 'note']
         .toLowerCase()
         .includes(searchQuery) ||
@@ -100,7 +104,6 @@ export default function AppLayout({lists,setLists}) {
   useEffect(() => {
     isTaskInfoOpen || setCurrentTask(null);
   }, [isTaskInfoOpen]);
-
 
   function handlerAddTask(title, dueDate, listId) {
     const newTask = {
@@ -250,9 +253,6 @@ export default function AppLayout({lists,setLists}) {
       notes: [...prev.notes, stickyNotes.find((note) => note.id === id)],
     }));
   }
-  function handleSearch(query) {
-    setSearchQuery(query);
-  }
   function handleDeleteFromTrash(id, type) {
     const newTrash = { ...trash };
     newTrash[type] = newTrash[type].filter((item) => item.id !== id);
@@ -293,9 +293,11 @@ export default function AppLayout({lists,setLists}) {
       setStickyNotes((prev) => restoreItem(prev, item, index));
     }
   }
+  function handleSearch(query) {
+    query?.trim() === '' ? navigate('/') : navigate(`/search?query=${query}`);
+  }
   return (
     <div className='flex h-full gap-2 bg-background-primary p-5'>
-      
       <Menu
         isOpen={isMenuOpen}
         setIsOpen={setIsMenuOpen}
