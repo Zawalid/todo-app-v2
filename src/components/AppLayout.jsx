@@ -294,7 +294,7 @@ export default function AppLayout({ lists, setLists }) {
     }
   }
   function handleSearch(query) {
-    query?.trim() === '' ? navigate('/') : navigate(`/search?query=${query}`);
+    query?.trim() === '' ? navigate('/all') : navigate(`/search?query=${query}`);
   }
   return (
     <div className='flex h-full gap-2 bg-background-primary p-5'>

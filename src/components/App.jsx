@@ -41,5 +41,3 @@ export default function App() {
     </BrowserRouter>
   );
 }
-
-// Use query search as url state and fix the search
