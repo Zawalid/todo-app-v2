@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react';
-import { useHref } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import { useHref, useNavigate } from 'react-router-dom';
 import { Title } from './Title';
 import { StickyWall } from './Sticky Wall/StickyWall';
 import { DisplayedTasks } from './Tasks/DisplayedTasks';
@@ -30,9 +30,13 @@ export function Main({
   const [currentNote, setCurrentNote] = useState(null);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [isStickyNoteOpened, setIsStickyNoteOpened] = useState(false);
-
+  const navigate = useNavigate();
   let activeTab = useHref();
   activeTab = activeTab.slice(1);
+
+  useEffect(() => {
+    activeTab === '' && navigate('/all');
+  }, [activeTab, navigate]);
 
   const listId = lists.find((list) => list.title.split('   ').join('-') === activeTab)?.id;
 
