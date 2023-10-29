@@ -11,7 +11,7 @@ const filtersConditions = {
   all: () => true,
   completed: (task) => task.isCompleted,
   uncompleted: (task) => !task.isCompleted,
-  overdue: (task) => isTaskOverdue(task.dueDate),
+  overdue: (task) => isTaskOverdue(task.dueDate) && !task.isCompleted,
   highPriority: (task) => task.priority === '2',
   mediumPriority: (task) => task.priority === '1',
   lowPriority: (task) => task.priority === '0',
@@ -41,7 +41,6 @@ export function DisplayedTasks({
 
   useEffect(() => {
     filterParam && setFilter(filterParam);
-    filterParam === 'all' && setSearchParams('');
     if (!filtersConditions[filterParam]) {
       setFilter('all');
       setSearchParams('');
@@ -49,16 +48,27 @@ export function DisplayedTasks({
   }, [filterParam, setSearchParams]);
 
   useEffect(() => {
-    if (sortKey === 'cDate' && sortDirection === 'asc')
+    const sortKeys = ['cDate', 'dDate', 'title', 'priority'];
+    if ((sortKey === 'cDate' && sortDirection === 'asc') || !sortKeys.includes(sortKey))
       return setSearchParams(filter === 'all' ? '' : { filter });
-    ['cDate', 'dDate', 'title', 'priority'].includes(sortKey)
-      ? setSearchParams(
-          filter === 'all'
-            ? { sort: sortKey, dir: sortDirection }
-            : { filter, sort: sortKey, dir: sortDirection },
-        )
-      : setSearchParams(filter === 'all' ? '' : { filter });
+
+    sortKeys.includes(sortKey) &&
+      setSearchParams(
+        filter === 'all'
+          ? { sort: sortKey, dir: sortDirection }
+          : { filter, sort: sortKey, dir: sortDirection },
+      );
   }, [sortKey, sortDirection, setSearchParams, filter]);
+
+  useEffect(() => {
+    setFilter('all');
+    setSortKey('cDate');
+    setSortDirection('asc');
+    setSearchParams('');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab]);
+  
+
   useEffect(() => {
     setFilteredTasks(
       tasks.filter((task) => condition(task)).filter((task) => filtersConditions[filter]?.(task)),

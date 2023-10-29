@@ -66,7 +66,7 @@ export default function AppLayout({ lists, setLists }) {
     tags: [],
     notes: [],
   });
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get('query');
   const navigate = useNavigate();
 
