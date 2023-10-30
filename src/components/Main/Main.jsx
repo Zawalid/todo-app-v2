@@ -50,7 +50,7 @@ export function Main({
       ? 'Sticky Wall'
       : activeTab === 'search'
       ? 'Search Results'
-      : activeTab.split('-').join(' ');
+      : activeTab
 
   const count = useMemo(() => {
     if (activeTab === 'all') return tasks.length;

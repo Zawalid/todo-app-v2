@@ -2,8 +2,10 @@ import { useEffect, useRef, useState } from 'react';
 import { NavLink, useHref, useNavigate } from 'react-router-dom';
 import { ListAction } from './ListAction';
 import { ConfirmationModal } from '../../ConfirmationModal';
+import { useIsTitleTaken } from './useIsTitleTaken';
 
 export function List({
+  id,
   title,
   color,
   tasksNumber,
@@ -11,9 +13,11 @@ export function List({
   onDelete,
   onChangeColor,
   onDuplicateList,
+  lists,
 }) {
   const [isListActionsOpen, setIsListActionsOpen] = useState(false);
   const [isRenameInputOpen, setIsRenameInputOpen] = useState(false);
+  const [isNewTitleTaken, , setTitle] = useIsTitleTaken(lists, id, title);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [listColor, setListColor] = useState(color);
   const listActions = useRef(null);
@@ -44,11 +48,19 @@ export function List({
     setIsRenameInputOpen(true);
     setTimeout(() => newListTitle.current.focus(), 50);
   }
+  function renameList(e) {
+    if (isNewTitleTaken) return;
+    const newTitle = e.target.value.trim();
+    onRename(newTitle);
+    setIsRenameInputOpen(false);
+    // Change the path to the new title if the renamed list is the active one
+    path === `/${title.split('   ').join('-')}` && navigator(`/${newTitle.split('   ').join('-')}`);
+  }
   return (
     <>
       <li className='relative flex gap-1 pr-2 '>
         <NavLink
-           to={`/${title.split('   ').join('-')}`}
+          to={`/${title.split('   ').join('-')}`}
           className='menu_element group flex-1  grid-cols-[30px_auto_35px] '
         >
           <div
@@ -83,25 +95,27 @@ export function List({
             onDuplicateList={onDuplicateList}
           />
         </button>
-
-        <input
-          type='text'
+        <div
           className={
-            'absolute  left-0 top-full z-10 w-full rounded-lg border-none bg-background-primary px-3 py-2 text-sm shadow-[-4px_4px_1px_#EBEBEB] focus:outline-none ' +
-            (isRenameInputOpen ? 'block' : 'hidden')
+            'absolute  left-0 top-full z-10 w-[95%]  items-center overflow-hidden rounded-lg bg-background-primary px-3 shadow-[-4px_4px_1px_#EBEBEB] ' +
+            (isRenameInputOpen ? 'flex' : 'hidden')
           }
-          defaultValue={title}
-          ref={newListTitle}
-          onBlur={(e) => {
-            const newTitle = e.target.value;
-            onRename(newTitle);
-            setIsRenameInputOpen(false);
-             // Change the path to the new title if the renamed list is the active one
-             path === `/${title.split('   ').join('-')}` &&
-             navigator(`/${newTitle.split('   ').join('-')}`);
-          }}
-          onKeyDown={(e) => e.key === 'Enter' && e.target.blur()}
-        />
+        >
+          <input
+            type='text'
+            className='w-full  border-none  py-2 text-sm  focus:outline-none '
+            defaultValue={title}
+            ref={newListTitle}
+            onBlur={renameList}
+            onChange={(e) => setTitle(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && !isNewTitleTaken && e.target.blur()}
+          />
+          {isNewTitleTaken ? (
+            <i className='fa-regular fa-circle-xmark text-text-error'></i>
+          ) : (
+            <i className='fa-regular fa-circle-check text-green-500'></i>
+          )}
+        </div>
       </li>
       {isDeleteModalOpen && (
         <ConfirmationModal

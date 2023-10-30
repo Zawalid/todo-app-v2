@@ -190,7 +190,7 @@ export default function AppLayout({ lists, setLists }) {
     setLists(newLists);
   }
   function handleRenameList(id, title) {
-    handleUpdateList(id, 'title', title);
+     handleUpdateList(id, 'title', title);
   }
   function handleDeleteList(id) {
     const newLists = lists.filter((list) => list.id !== id);
@@ -215,7 +215,7 @@ export default function AppLayout({ lists, setLists }) {
     const duplicatedList = {
       ...listToDuplicate,
       id: newListId,
-      title: `${listToDuplicate.title}   (${listToDuplicate.number})`,
+      title: `${listToDuplicate.title}-(${listToDuplicate.number})`,
       tasks: newListTasks,
       number: 0,
       index: lists.length,

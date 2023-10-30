@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { Colors } from '../../Colors';
+import { useIsTitleTaken } from './useIsTitleTaken';
 
-export function AddNewList({ reference, onAdd, isOpen, untitledTasksNumber }) {
+export function AddNewList({ reference, onAdd, isOpen, untitledTasksNumber, lists }) {
   const [value, setValue] = useState('');
   const [color, setColor] = useState('#ff6b6b');
   const inputEl = useRef(null);
   const colorsDiv = useRef(null);
+  const [isTitleTaken, , setTitle] = useIsTitleTaken(lists);
   useEffect(() => {
     inputEl.current.focus();
     function handleClick(e) {
@@ -29,7 +31,7 @@ export function AddNewList({ reference, onAdd, isOpen, untitledTasksNumber }) {
   function handleAdd() {
     const untitledNumber = value || untitledTasksNumber.current++;
     const title = value ? value : `Untitled ${untitledNumber > 0 ? `(${untitledNumber})` : ''}`;
-    onAdd(title, color);
+    onAdd(title.trim(), color);
     setValue('');
   }
 
@@ -41,7 +43,7 @@ export function AddNewList({ reference, onAdd, isOpen, untitledTasksNumber }) {
           className='flex-1'
           onSubmit={(e) => {
             e.preventDefault();
-            handleAdd();
+            !isTitleTaken && handleAdd();
           }}
         >
           <input
@@ -49,9 +51,19 @@ export function AddNewList({ reference, onAdd, isOpen, untitledTasksNumber }) {
             className='w-full rounded-lg bg-transparent p-2 text-sm text-text-secondary placeholder:text-text-tertiary focus:outline-none'
             placeholder='List Name'
             value={value}
-            onChange={(e) => setValue(e.target.value)}
-            ref={inputEl} />
+            onChange={(e) => {
+              setValue(e.target.value);
+              setTitle(e.target.value);
+            }}
+            ref={inputEl}
+          />
         </form>
+        {value.trim() !== '' &&
+          (isTitleTaken ? (
+            <i className='fa-regular fa-circle-xmark text-text-error'></i>
+          ) : (
+            <i className='fa-regular fa-circle-check text-green-500'></i>
+          ))}
       </div>
       <div className='mt-3 flex flex-wrap items-center justify-start gap-2' ref={colorsDiv}>
         <Colors />

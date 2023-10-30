@@ -39,6 +39,7 @@ export function MenuLists({
         {lists.map((list) => (
           <List
             key={list.id}
+            id={list.id}
             title={list.title}
             color={list.color}
             tasksNumber={list.tasks.length}
@@ -46,8 +47,9 @@ export function MenuLists({
             onDelete={() => onDeleteList(list.id)}
             onChangeColor={(color) => onChangeListColor(list.id, color)}
             onDuplicateList={() => onDuplicateList(list.id)}
-          />
-        ))}
+            lists={lists}
+            />
+            ))}
       </ul>
       <button
         className='my-4 flex cursor-pointer items-center text-sm text-text-secondary'
@@ -63,6 +65,7 @@ export function MenuLists({
           isOpen={isAddNewListOpen}
           onAdd={onAddList}
           untitledTasksNumber={untitledTasksNumber}
+            lists={lists}
         />
       )}
     </div>
