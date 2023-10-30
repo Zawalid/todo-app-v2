@@ -215,7 +215,7 @@ export default function AppLayout({ lists, setLists }) {
     const duplicatedList = {
       ...listToDuplicate,
       id: newListId,
-      title: `${listToDuplicate.title}-(${listToDuplicate.number})`,
+      title: `${listToDuplicate.title}   (${listToDuplicate.number})`,
       tasks: newListTasks,
       number: 0,
       index: lists.length,

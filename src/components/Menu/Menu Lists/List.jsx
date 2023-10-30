@@ -54,13 +54,13 @@ export function List({
     onRename(newTitle);
     setIsRenameInputOpen(false);
     // Change the path to the new title if the renamed list is the active one
-    path === `/${title.split('   ').join('-')}` && navigator(`/${newTitle.split('   ').join('-')}`);
+    path.replace(/%20/g, ' ') === `/${title}` && navigator(`/${newTitle}`);
   }
   return (
     <>
       <li className='relative flex gap-1 pr-2 '>
         <NavLink
-          to={`/${title.split('   ').join('-')}`}
+          to={`/${title}`}
           className='menu_element group flex-1  grid-cols-[30px_auto_35px] '
         >
           <div
@@ -121,7 +121,12 @@ export function List({
         <ConfirmationModal
           sentence='Are you sure you want to delete this list?'
           confirmText='Delete'
-          onConfirm={onDelete}
+          onConfirm={() => {
+            if (path.replace(/%20/g, ' ') === `/${title}`) {
+              navigator('/');
+              onDelete();
+            }
+          }}
           onCancel={() => setIsDeleteModalOpen(false)}
         />
       )}

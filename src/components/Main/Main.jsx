@@ -37,7 +37,7 @@ export function Main({
     activeTab === '' && navigate('/all');
   }, [activeTab, navigate]);
 
-  const listId = lists.find((list) => list.title.split('   ').join('-') === activeTab)?.id;
+  const listId = lists.find((list) => list.title === activeTab.replace('%20', ' '))?.id;
 
   const title =
     activeTab === 'all'
@@ -50,7 +50,7 @@ export function Main({
       ? 'Sticky Wall'
       : activeTab === 'search'
       ? 'Search Results'
-      : activeTab
+      : activeTab.replace(/%20/g, ' ');
 
   const count = useMemo(() => {
     if (activeTab === 'all') return tasks.length;
