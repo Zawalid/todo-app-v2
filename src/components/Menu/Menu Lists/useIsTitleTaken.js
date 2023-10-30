@@ -15,7 +15,6 @@ export function useIsTitleTaken(lists, id,curTitle) {
       title?.trim() === '' && (isTaken = true);
       isSameList && (isTaken = false);
     }
-    console.log(isTaken);
     setIsNewTitleTaken(isTaken);
   }, [lists, id, title]);
 

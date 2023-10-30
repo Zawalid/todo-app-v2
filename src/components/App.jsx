@@ -33,7 +33,9 @@ export default function App() {
             path={`/${tab}`}
             element={<AppLayout lists={lists} setLists={setLists} />}
             key={tab}
-          />
+          >
+            <Route path='trash' element={<AppLayout lists={lists} setLists={setLists} />} />
+          </Route>
         ))}
         <Route path='search' element={<AppLayout lists={lists} setLists={setLists} />} />
         <Route path='*' element={<NotFound />} />

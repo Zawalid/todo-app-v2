@@ -1,9 +1,10 @@
-import {  useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { MenuLists } from './Menu Lists/MenuLists';
 import { MenuTags } from './Menu Tags/MenuTags';
 import { MenuTasks } from './MenuTasks';
 import { Search } from './Search';
 import { Trash } from './Trash/Trash';
+import { useHref, useNavigate } from 'react-router-dom';
 
 export function Menu({
   isOpen,
@@ -29,9 +30,10 @@ export function Menu({
   onEmptyTrash,
   onRestoreFromTrash,
 }) {
-  const [isTrashOpen, setIsTrashOpen] = useState(false);
+  const path = useHref().split('/');
+  const [isTrashOpen, setIsTrashOpen] = useState(path.includes('trash'));
   const menu = useRef(null);
-
+  const navigate = useNavigate();
 
   return (
     <aside
@@ -77,7 +79,10 @@ export function Menu({
           <div className=' mt-auto  pt-3'>
             <button
               className='mb-2 grid cursor-pointer grid-cols-[25px_auto] items-center text-sm'
-              onClick={() => setIsTrashOpen(true)}
+              onClick={() => {
+                setIsTrashOpen(true);
+                navigate('trash');
+              }}
             >
               <i className='fa-solid fa-trash-can text-text-tertiary'></i>
               <span className='font-medium text-text-secondary'>Trash</span>
@@ -90,7 +95,10 @@ export function Menu({
               onEmptyTypeFromTrash={onEmptyTypeFromTrash}
               onEmptyTrash={onEmptyTrash}
               onRestoreFromTrash={onRestoreFromTrash}
-              onClose={() => setIsTrashOpen(false)}
+              onClose={() => {
+                setIsTrashOpen(false);
+                navigate(path.filter((part) => part !== 'trash').join('/'));
+              }}
             />
           )}
         </>
