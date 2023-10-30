@@ -22,7 +22,7 @@ export default function App() {
       index: 1,
     },
   ]);
-  const listsTitles = lists.map((list) => list.title);
+  const listsTitles = lists.map((list) => list.title.split('   ').join('-'));
 
   return (
     <BrowserRouter>

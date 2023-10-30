@@ -48,7 +48,7 @@ export function List({
     <>
       <li className='relative flex gap-1 pr-2 '>
         <NavLink
-          to={`/${title}`}
+           to={`/${title.split('   ').join('-')}`}
           className='menu_element group flex-1  grid-cols-[30px_auto_35px] '
         >
           <div
@@ -96,9 +96,9 @@ export function List({
             const newTitle = e.target.value;
             onRename(newTitle);
             setIsRenameInputOpen(false);
-            // Change the path to the new title if the renamed list is the active one
-            path === `/${title}` &&
-              navigator(`/${newTitle}`);
+             // Change the path to the new title if the renamed list is the active one
+             path === `/${title.split('   ').join('-')}` &&
+             navigator(`/${newTitle.split('   ').join('-')}`);
           }}
           onKeyDown={(e) => e.key === 'Enter' && e.target.blur()}
         />
