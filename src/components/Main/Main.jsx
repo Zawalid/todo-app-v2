@@ -30,15 +30,14 @@ export function Main({
   const [currentNote, setCurrentNote] = useState(null);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [isStickyNoteOpened, setIsStickyNoteOpened] = useState(false);
+  const activeTab = useHref().split('/')[1];
   const navigate = useNavigate();
-  let activeTab = useHref();
-  activeTab = activeTab.slice(1);
 
   useEffect(() => {
     activeTab === '' && navigate('/all');
   }, [activeTab, navigate]);
 
-  const listId = lists.find((list) => list.title.split('   ').join('-') === activeTab)?.id;
+  const listId = lists.find((list) => list.title === activeTab)?.id;
 
   const title =
     activeTab === 'all'
@@ -51,7 +50,7 @@ export function Main({
       ? 'Sticky Wall'
       : activeTab === 'search'
       ? 'Search Results'
-      : activeTab;
+      : activeTab.split('%20%20%20').join(' ');
 
   const count = useMemo(() => {
     if (activeTab === 'all') return tasks.length;
