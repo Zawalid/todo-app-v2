@@ -71,10 +71,10 @@ export function PeriodTasks({
         {tasks[period.tasks]?.length > 0 ? (
           tasks[period.tasks]?.map((task) => (
             <Task
-              key={task.id}
+              key={task.$id}
               task={task}
               onOpen={() => onOpen(task)}
-              onComplete={(isCompleted) => onComplete(task.id, isCompleted)}
+              onComplete={(isCompleted) => onComplete(task.$id, task,isCompleted)}
               lists={lists}
               tags={tags}
             />

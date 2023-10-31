@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Colors } from '../../Colors';
-import { useIsTitleTaken } from './useIsTitleTaken';
+import { useIsTitleTaken } from '../../../hooks/useIsTitleTaken';
 
 export function AddNewList({ reference, onAdd, isOpen, untitledTasksNumber, lists }) {
   const [value, setValue] = useState('');

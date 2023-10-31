@@ -67,7 +67,6 @@ export function DisplayedTasks({
     setSearchParams('');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
-  
 
   useEffect(() => {
     setFilteredTasks(
@@ -147,10 +146,10 @@ export function DisplayedTasks({
               })
               .map((task) => (
                 <Task
-                  key={task.id}
+                  key={task.$id}
                   task={task}
-                  onOpen={() => onOpen(task)}
-                  onComplete={(isCompleted) => onComplete(task.id, isCompleted)}
+                  onOpen={() => onOpen(task.$id)}
+                  onComplete={(isCompleted) => onComplete(task.$id, task, isCompleted)}
                   lists={lists}
                   tags={tags}
                 />

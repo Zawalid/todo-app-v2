@@ -37,10 +37,10 @@ export function SearchResults({
             if (currentSearchTab !== 'stickyWall') {
               return (
                 <Task
-                  key={result.id}
+                  key={result.$id}
                   task={result}
                   onOpen={() => onOpen(result)}
-                  onComplete={(isCompleted) => onComplete(result.id, isCompleted)}
+                  onComplete={(isCompleted) => onComplete(result.$id, result, isCompleted)}
                   lists={lists}
                   tags={tags}
                 />

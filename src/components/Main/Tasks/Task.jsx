@@ -50,7 +50,7 @@ export function Task({ task, onOpen, onComplete, lists, tags }) {
         </span>
         {(listName ||
           task.dueDate ||
-          task.subtasks.length > 0 ||
+          task.subtasks?.length > 0 ||
           task.tagsIds?.length > 0 ||
           task.priority !== 0) && (
           <div className='mt-2 flex flex-wrap items-center gap-5'>
@@ -78,7 +78,7 @@ export function Task({ task, onOpen, onComplete, lists, tags }) {
                 </span>
               </div>
             )}
-            {task.subtasks.length > 0 && (
+            {task.subtasks?.length > 0 && (
               <div className='flex items-center gap-2'>
                 <span className='rounded-sm bg-background-tertiary px-3 py-[1px] text-xs font-semibold text-text-secondary'>
                   {task.subtasks.length}

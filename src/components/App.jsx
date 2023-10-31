@@ -1,8 +1,9 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import AppLayout from './AppLayout';
 import NotFound from './NotFound';
-import { useLocalStorageState } from '../useLocalStorageState';
-
+import { useLocalStorageState } from '../hooks/useLocalStorageState';
+import '../AppWrite';
+import { TasksProvider } from '../contexts/Tasks';
 export default function App() {
   const [lists, setLists] = useLocalStorageState('lists', [
     {
@@ -25,21 +26,23 @@ export default function App() {
   const listsTitles = lists.map((list) => list.title);
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path='/' element={<AppLayout lists={lists} setLists={setLists} />} />
-        {['all', 'today', 'stickyWall', 'upcoming', ...listsTitles].map((tab) => (
-          <Route
-            path={`/${tab}`}
-            element={<AppLayout lists={lists} setLists={setLists} />}
-            key={tab}
-          >
-            <Route path='trash' element={<AppLayout lists={lists} setLists={setLists} />} />
-          </Route>
-        ))}
-        <Route path='search' element={<AppLayout lists={lists} setLists={setLists} />} />
-        <Route path='*' element={<NotFound />} />
-      </Routes>
-    </BrowserRouter>
+    <TasksProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path='/' element={<AppLayout lists={lists} setLists={setLists} />} />
+          {['all', 'today', 'stickyWall', 'upcoming', ...listsTitles].map((tab) => (
+            <Route
+              path={`/${tab}`}
+              element={<AppLayout lists={lists} setLists={setLists} />}
+              key={tab}
+            >
+              <Route path='trash' element={<AppLayout lists={lists} setLists={setLists} />} />
+            </Route>
+          ))}
+          <Route path='search' element={<AppLayout lists={lists} setLists={setLists} />} />
+          <Route path='*' element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </TasksProvider>
   );
 }

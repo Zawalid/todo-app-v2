@@ -1,31 +1,39 @@
 import { useEffect, useState } from 'react';
-import { useLocalStorageState } from '../useLocalStorageState';
+import { useLocalStorageState } from '../hooks/useLocalStorageState';
 import { TaskInfo } from './Task Info/TaskInfo';
 import { Menu } from './Menu/Menu';
 import { Main } from './Main/Main';
 import '../styles/App.css';
 import { checkIfToday, checkIfTomorrow, isDateInCurrentWeek } from '../Utils';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useTasks } from '../contexts/Tasks';
 
 export default function AppLayout({ lists, setLists }) {
   const [isMenuOpen, setIsMenuOpen] = useState(true);
-  const [isTaskInfoOpen, setIsTaskInfoOpen] = useState(false);
-  const [tasks, setTasks] = useLocalStorageState('tasks', [
-    {
-      id: Math.random(),
-      title: 'Consult accountant',
-      note: '',
-      dueDate: '',
-      listId: 'none',
-      subtasks: [],
-      isCompleted: true,
-      tagsIds: [],
-      priority: 0,
-      createdAt: new Date(),
-      index: 0,
-    },
-  ]);
-  const [currentTask, setCurrentTask] = useState(null);
+  // const [tasks, setTasks] = useLocalStorageState('tasks', [
+  //   {
+  //     id: Math.random(),
+  //     title: 'Consult accountant',
+  //     note: '',
+  //     dueDate: '',
+  //     listId: 'none',
+  //     subtasks: [],
+  //     isCompleted: true,
+  //     tagsIds: [],
+  //     priority: 0,
+  //     createdAt: new Date(),
+  //     index: 0,
+  //   },
+  // ]);
+  const {
+    tasks,
+    handlerAddTask,
+    handleEditTask,
+    handleDeleteTask,
+    handleCompleteTask,
+    handleClearAllTasks,
+    handleOpenTask,
+  } = useTasks();
 
   const [tags, setTags] = useLocalStorageState('tags', [
     {
@@ -94,74 +102,71 @@ export default function AppLayout({ lists, setLists }) {
 
   const searchResults = searchSection.filter(
     (result) =>
-      result.title.toLowerCase().includes(searchQuery?.toLowerCase()) ||
+      result.title?.toLowerCase().includes(searchQuery?.toLowerCase()) ||
       result[currentSearchTab === 'stickyWall' ? 'content' : 'note']
-        .toLowerCase()
+        ?.toLowerCase()
         .includes(searchQuery) ||
       result.description?.toLowerCase().includes(searchQuery),
   );
 
-  useEffect(() => {
-    isTaskInfoOpen || setCurrentTask(null);
-  }, [isTaskInfoOpen]);
 
-  function handlerAddTask(title, dueDate, listId) {
-    const newTask = {
-      id: Math.random(),
-      title,
-      note: '',
-      dueDate: dueDate || '',
-      listId: listId || 'none',
-      subtasks: [],
-      isCompleted: false,
-      tagsIds: [],
-      priority: 0,
-      createdAt: new Date(),
-      index: tasks.length,
-    };
-    setTasks((prev) => [...prev, newTask]);
+  // function handlerAddTask(title, dueDate, listId) {
+  //   const newTask = {
+  //     id: Math.random(),
+  //     title,
+  //     note: '',
+  //     dueDate: dueDate || '',
+  //     listId: listId || 'none',
+  //     subtasks: [],
+  //     isCompleted: false,
+  //     tagsIds: [],
+  //     priority: 0,
+  //     createdAt: new Date(),
+  //     index: tasks.length,
+  //   };
+  //   setTasks((prev) => [...prev, newTask]);
 
-    if (listId) handleAddTasksToList(listId, newTask);
-  }
-  function handleOpenTask(task) {
-    setCurrentTask(task);
-    setIsTaskInfoOpen(true);
-  }
-  function handleEditTask(task) {
-    setTasks((prev) => prev.map((t) => (t.id === task.id ? task : t)));
-    setIsTaskInfoOpen(false);
-  }
-  function handleDeleteTask(id) {
-    setTasks((prev) => prev.filter((t) => t.id !== id));
-    const newLists = lists.map((list) => {
-      const tasks = list.tasks.filter((t) => t.id !== id);
-      return { ...list, tasks };
-    });
-    setLists(newLists);
-    setIsTaskInfoOpen(false);
-    setTrash((prev) => ({ ...prev, tasks: [...prev.tasks, currentTask] }));
-  }
-  function handleCompleteTask(id, isCompleted) {
-    const newTasks = tasks.map((task) => (task.id === id ? { ...task, isCompleted } : task));
-    setTasks(newTasks);
-  }
-  function handleClearAllTasks(condition1, condition2) {
-    const filteredTasks = [];
-    const deletedTasks = [];
-    tasks.forEach((task) =>
-      condition1(task) && condition2(task) ? deletedTasks.push(task) : filteredTasks.push(task),
-    );
-    setTasks(filteredTasks);
-    setLists(
-      lists.map((list) => {
-        const listTasks = list.tasks.filter((task) =>
-          filteredTasks.map((t) => t.id).includes(task.id),
-        );
-        return { ...list, tasks: listTasks };
-      }),
-    );
-    setTrash((prev) => ({ ...prev, tasks: [...prev.tasks, ...deletedTasks] }));
-  }
+  //   if (listId) handleAddTasksToList(listId, newTask);
+  // }
+  // function handleOpenTask(task) {
+  //   setCurrentTask(task);
+  //   setIsTaskOpen(true);
+  // }
+  // function handleEditTask(task) {
+  //   setTasks((prev) => prev.map((t) => (t.id === task.id ? task : t)));
+  //   setIsTaskOpen(false);
+  // }
+  // function handleDeleteTask(id) {
+  //   setTasks((prev) => prev.filter((t) => t.id !== id));
+  //   const newLists = lists.map((list) => {
+  //     const tasks = list.tasks.filter((t) => t.id !== id);
+  //     return { ...list, tasks };
+  //   });
+  //   setLists(newLists);
+  //   setIsTaskOpen(false);
+  //   setTrash((prev) => ({ ...prev, tasks: [...prev.tasks, currentTask] }));
+  // }
+  // function handleCompleteTask(id, isCompleted) {
+  //   const newTasks = tasks.map((task) => (task.id === id ? { ...task, isCompleted } : task));
+  //   setTasks(newTasks);
+  // }
+  // function handleClearAllTasks(condition1, condition2) {
+  //   const filteredTasks = [];
+  //   const deletedTasks = [];
+  //   tasks.forEach((task) =>
+  //     condition1(task) && condition2(task) ? deletedTasks.push(task) : filteredTasks.push(task),
+  //   );
+  //   setTasks(filteredTasks);
+  //   setLists(
+  //     lists.map((list) => {
+  //       const listTasks = list.tasks.filter((task) =>
+  //         filteredTasks.map((t) => t.id).includes(task.id),
+  //       );
+  //       return { ...list, tasks: listTasks };
+  //     }),
+  //   );
+  //   setTrash((prev) => ({ ...prev, tasks: [...prev.tasks, ...deletedTasks] }));
+  // }
   function handleAddList(title, color) {
     const newList = {
       id: Math.random(),
@@ -190,7 +195,7 @@ export default function AppLayout({ lists, setLists }) {
     setLists(newLists);
   }
   function handleRenameList(id, title) {
-     handleUpdateList(id, 'title', title);
+    handleUpdateList(id, 'title', title);
   }
   function handleDeleteList(id) {
     const newLists = lists.filter((list) => list.id !== id);
@@ -343,9 +348,6 @@ export default function AppLayout({ lists, setLists }) {
         setCurrentSearchTab={setCurrentSearchTab}
       />
       <TaskInfo
-        isOpen={isTaskInfoOpen}
-        onClose={() => setIsTaskInfoOpen(false)}
-        task={currentTask}
         onEdit={handleEditTask}
         onDelete={handleDeleteTask}
         lists={lists}

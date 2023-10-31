@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { NavLink, useHref, useNavigate } from 'react-router-dom';
 import { ListAction } from './ListAction';
 import { ConfirmationModal } from '../../ConfirmationModal';
-import { useIsTitleTaken } from './useIsTitleTaken';
+import { useIsTitleTaken } from '../../../hooks/useIsTitleTaken';
 
 export function List({
   id,

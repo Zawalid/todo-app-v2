@@ -6,8 +6,10 @@ import { TaskTags } from './TaskTags';
 import { TaskSubTasks } from './TaskSubTasks';
 import { ConfirmationModal } from '../ConfirmationModal';
 import { TaskPriority } from './TaskPriority';
+import { useTasks } from '../../contexts/Tasks';
 
-export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSelectList, tags }) {
+export function TaskInfo({ onEdit, onDelete, lists, onSelectList, tags }) {
+  const { currentTask, isTaskOpen, setIsTaskOpen } = useTasks();
   const [taskTitle, setTaskTitle] = useState();
   const [taskNote, setTaskNote] = useState();
   const [taskListId, setTaskListId] = useState('none');
@@ -22,14 +24,14 @@ export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSel
   const tagsDropDownToggler = useRef(null);
 
   useEffect(() => {
-    if (isOpen) {
-      setTaskTitle(task?.title);
-      setTaskNote(task?.note);
-      setTaskListId(task?.listId);
-      setTaskDueDate(task?.dueDate);
-      setTaskSubtasks(task?.subtasks);
-      setTaskTagsIds(task?.tagsIds);
-      setTaskPriority(task?.priority);
+    if (isTaskOpen) {
+      setTaskTitle(currentTask?.title);
+      setTaskNote(currentTask?.note);
+      setTaskListId(currentTask?.listId);
+      setTaskDueDate(currentTask?.dueDate);
+      setTaskSubtasks(currentTask?.subtasks);
+      setTaskTagsIds(currentTask?.tagsIds);
+      setTaskPriority(currentTask?.priority);
     } else {
       setTaskTitle('');
       setTaskNote('');
@@ -39,28 +41,28 @@ export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSel
       setTaskTagsIds([]);
       setTaskPriority(0);
     }
-  }, [task, isOpen]);
+  }, [currentTask, isTaskOpen]);
   useEffect(() => {
-    if (isOpen)
-      task?.title?.trim() !== taskTitle?.trim() ||
-      task?.note?.trim() !== taskNote?.trim() ||
-      task?.listId !== taskListId ||
-      task?.dueDate !== taskDueDate ||
-      task?.subtasks?.length !== taskSubtasks?.length ||
-      task?.subtasks.some((subtask, index) => {
+    if (isTaskOpen)
+      currentTask?.title?.trim() !== taskTitle?.trim() ||
+      currentTask?.note?.trim() !== taskNote?.trim() ||
+      currentTask?.listId !== taskListId ||
+      currentTask?.dueDate !== taskDueDate ||
+      currentTask?.subtasks?.length !== taskSubtasks?.length ||
+      currentTask?.subtasks.some((subtask, index) => {
         return (
           subtask.title !== taskSubtasks[index].title ||
           subtask.isCompleted !== taskSubtasks[index].isCompleted
         );
       }) ||
-      task?.tagsIds?.length !== taskTagsIds?.length ||
-      task?.tagsIds.some((tagId, index) => tagId !== taskTagsIds[index]) ||
-      task?.priority !== taskPriority
+      currentTask?.tagsIds?.length !== taskTagsIds?.length ||
+      currentTask?.tagsIds.some((tagId, index) => tagId !== taskTagsIds[index]) ||
+      currentTask?.priority !== taskPriority
         ? setIsChanged(true)
         : setIsChanged(false);
   }, [
-    isOpen,
-    task,
+    isTaskOpen,
+    currentTask,
     taskTitle,
     taskNote,
     taskListId,
@@ -101,7 +103,7 @@ export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSel
   function handleSaveChanges() {
     if (isChanged) {
       const editedTask = {
-        ...task,
+        ...currentTask,
         title: taskTitle.trim() ? taskTitle : 'Untitled Task',
         note: taskNote,
         listId: taskListId,
@@ -110,7 +112,7 @@ export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSel
         tagsIds: taskTagsIds,
         priority: taskPriority,
       };
-      onEdit(editedTask, task.period);
+      onEdit(currentTask.$id, editedTask);
       onSelectList(taskListId, editedTask);
     }
   }
@@ -142,7 +144,7 @@ export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSel
     <aside
       className={
         'relative ml-auto flex flex-col rounded-l-xl transition-[width] duration-500 ' +
-        (isOpen
+        (isTaskOpen
           ? 'w-[30%] items-stretch bg-background-secondary  p-4'
           : 'w-0 items-center bg-background-primary p-0')
       }
@@ -152,17 +154,17 @@ export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSel
           sentence='Are you sure you want to delete this task?'
           confirmText='Delete'
           onConfirm={() => {
-            onDelete(task.id, task.period);
+            onDelete(currentTask.$id);
             setIsDeleteModalOpen(false);
           }}
           onCancel={() => setIsDeleteModalOpen(false)}
         />
       )}
-      {isOpen && (
+      {isTaskOpen && (
         <>
           <div className='flex items-center justify-between pb-3'>
             <h2 className='text-xl font-bold text-text-secondary'>Task :</h2>
-            <button onClick={onClose}>
+            <button onClick={() => setIsTaskOpen(false)}>
               <i className='fa-solid fa-xmark cursor-pointer text-xl text-text-secondary'></i>
             </button>
           </div>
@@ -203,7 +205,7 @@ export function TaskInfo({ isOpen, onClose, task, onEdit, onDelete, lists, onSel
           </div>
           <div className='mt-auto flex gap-3 pt-3'>
             <button
-              className='flex-1 cursor-pointer rounded-lg border  transition-colors duration-300 border-background-tertiary hover:bg-red-600 bg-red-500 py-2 text-center text-sm font-semibold text-background-secondary'
+              className='flex-1 cursor-pointer rounded-lg border  border-background-tertiary bg-red-500 py-2 text-center text-sm font-semibold text-background-secondary transition-colors duration-300 hover:bg-red-600'
               onClick={() => setIsDeleteModalOpen(true)}
             >
               Delete Task
