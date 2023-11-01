@@ -4,26 +4,15 @@ import { Title } from './Title';
 import { StickyWall } from './Sticky Wall/StickyWall';
 import { DisplayedTasks } from './Tasks/DisplayedTasks';
 import { Upcoming } from './Tasks/Upcoming';
-import { checkIfToday } from '../../Utils';
+import { checkIfToday } from '../../Moment';
 import { SearchResults } from './Search/SearchResults';
 import { useTasks } from '../../hooks/useTasks';
+import { useSearch } from '../../hooks/useSearch';
 
-export function Main({
-  todayTasks,
-  tomorrowTasks,
-  thisWeekTasks,
-  upcomingTasksNumber,
-  lists,
-  tags,
-  stickyNotes,
-  onAddNote,
-  onUpdateNote,
-  onDeleteNote,
-  searchResults,
-  currentSearchTab,
-  setCurrentSearchTab,
-}) {
-  const { tasks, handleAddTask } = useTasks();
+export function Main({ lists, tags, stickyNotes, onAddNote, onUpdateNote, onDeleteNote }) {
+  const { tasks, handleAddTask, todayTasks, tomorrowTasks, thisWeekTasks, upcomingTasks } =
+    useTasks();
+    const {searchResults} = useSearch();
   const [currentNote, setCurrentNote] = useState(null);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [isStickyNoteOpened, setIsStickyNoteOpened] = useState(false);
@@ -52,21 +41,13 @@ export function Main({
   const count = useMemo(() => {
     if (activeTab === 'all') return tasks.length;
     if (activeTab === 'today') return todayTasks.length;
-    if (activeTab === 'upcoming') return upcomingTasksNumber;
+    if (activeTab === 'upcoming') return upcomingTasks.length;
     if (activeTab === 'stickyWall') return stickyNotes.length;
     if (activeTab === 'search') return searchResults.length;
     if (listId) return lists.find((list) => list.id === listId)?.tasks.length;
     return 0;
-  }, [
-    activeTab,
-    tasks,
-    listId,
-    stickyNotes,
-    lists,
-    todayTasks,
-    upcomingTasksNumber,
-    searchResults,
-  ]);
+  }, [activeTab, tasks, listId, stickyNotes, lists, todayTasks, upcomingTasks, searchResults]);
+
   const condition = (task) => {
     if (listId) return +task.listId === +listId;
     if (activeTab === 'today') return checkIfToday(task.dueDate);
@@ -113,11 +94,9 @@ export function Main({
       )}
       {activeTab === 'search' && !isStickyNoteOpened && (
         <SearchResults
-          searchResults={searchResults}
+          stickyNotes={stickyNotes}
           lists={lists}
           tags={tags}
-          currentSearchTab={currentSearchTab}
-          setCurrentSearchTab={setCurrentSearchTab}
           setCurrentNote={setCurrentNote}
           setIsEditorOpen={setIsEditorOpen}
           setIsStickyNoteOpened={setIsStickyNoteOpened}

@@ -7,11 +7,6 @@ import { Trash } from './Trash/Trash';
 import { useHref, useNavigate } from 'react-router-dom';
 
 export function Menu({
-  isOpen,
-  setIsOpen,
-  allTasksNumber,
-  todayTasksNumber,
-  upcomingTasksNumber,
   stickyNotesNumber,
   lists,
   onAddList,
@@ -22,14 +17,13 @@ export function Menu({
   tags,
   onAddTag,
   onDeleteTag,
-  searchQuery,
-  onSearch,
   trash,
   onDeleteFromTrash,
   onEmptyTypeFromTrash,
   onEmptyTrash,
   onRestoreFromTrash,
 }) {
+  const [isOpen, setIsOpen] = useState(true);
   const path = useHref().split('/');
   const [isTrashOpen, setIsTrashOpen] = useState(path.includes('trash'));
   const menu = useRef(null);
@@ -59,13 +53,8 @@ export function Menu({
             </button>
           </div>
           <div className='overflow-y-auto'>
-            <Search searchQuery={searchQuery} onSearch={onSearch} />
-            <MenuTasks
-              allTasksNumber={allTasksNumber}
-              todayTasksNumber={todayTasksNumber}
-              upcomingTasksNumber={upcomingTasksNumber}
-              stickyNotesNumber={stickyNotesNumber}
-            />
+            <Search />
+            <MenuTasks stickyNotesNumber={stickyNotesNumber} />
             <MenuLists
               lists={lists}
               onAddList={onAddList}

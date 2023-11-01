@@ -1,17 +1,13 @@
-import { useState } from 'react';
 import { useLocalStorageState } from '../hooks/useLocalStorageState';
 import { TaskInfo } from './Task Info/TaskInfo';
 import { Menu } from './Menu/Menu';
 import { Main } from './Main/Main';
 import '../styles/App.css';
-import { checkIfToday, checkIfTomorrow, isDateInCurrentWeek } from '../Utils';
-import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTasks } from '../hooks/useTasks';
+import { SearchProvider } from '../contexts/Search';
 
 export default function AppLayout({ lists, setLists }) {
-  const [isMenuOpen, setIsMenuOpen] = useState(true);
-
-  const { tasks, handleCompleteTask, handleClearAllTasks } = useTasks();
+  const { tasks } = useTasks();
 
   const [tags, setTags] = useLocalStorageState('tags', [
     {
@@ -45,46 +41,12 @@ export default function AppLayout({ lists, setLists }) {
       index: 1,
     },
   ]);
-  const [currentSearchTab, setCurrentSearchTab] = useState('all');
   const [trash, setTrash] = useLocalStorageState('trash', {
     tasks: [],
     lists: [],
     tags: [],
     notes: [],
   });
-  const [searchParams] = useSearchParams();
-  const searchQuery = searchParams.get('query');
-  const navigate = useNavigate();
-
-  const todayTasks = tasks?.filter((task) => checkIfToday(task.dueDate));
-  const tomorrowTasks = tasks?.filter((task) => checkIfTomorrow(task.dueDate));
-  const thisWeekTasks = tasks?.filter((task) => {
-    if (!task.dueDate) return;
-    return isDateInCurrentWeek(task.dueDate);
-  });
-  const todayAndTomorrowTasks = [...todayTasks, ...tomorrowTasks];
-  const thisWeekWithoutTodayAndTomorrowTasks = thisWeekTasks.filter(
-    (t) => !todayAndTomorrowTasks.includes(t),
-  );
-  const upcomingTasksNumber =
-    todayAndTomorrowTasks.length + thisWeekWithoutTodayAndTomorrowTasks.length;
-
-  const searchSection =
-    currentSearchTab === 'all'
-      ? tasks
-      : currentSearchTab === 'today'
-      ? todayTasks
-      : currentSearchTab === 'upcoming'
-      ? [...todayAndTomorrowTasks, ...thisWeekWithoutTodayAndTomorrowTasks]
-      : stickyNotes;
-
-  const searchResults = searchSection.filter((result) =>
-    `${result.title ?? ''} ${
-      result[currentSearchTab === 'stickyWall' ? 'content' : 'note'] ?? ''
-    } ${result.description ?? ''}}`
-      .toLowerCase()
-      .includes(searchQuery?.toLowerCase()),
-  );
 
   // function handlerAddTask(title, dueDate, listId) {
   //   const newTask = {
@@ -202,7 +164,7 @@ export default function AppLayout({ lists, setLists }) {
       index: lists.length,
     };
     setLists((prev) => [...prev, duplicatedList]);
-    setTasks((prev) => [...prev, ...newListTasks]);
+    // setTasks((prev) => [...prev, ...newListTasks]);
   }
   function handleAddTag(title, bgColor, textColor) {
     const newTag = {
@@ -261,7 +223,7 @@ export default function AppLayout({ lists, setLists }) {
     };
 
     if (type === 'tasks') {
-      setTasks((prev) => restoreItem(prev, item, index));
+      // setTasks((prev) => restoreItem(prev, item, index));
       handleAddTasksToList(item.listId, item);
     }
     if (type === 'lists') {
@@ -274,52 +236,36 @@ export default function AppLayout({ lists, setLists }) {
       setStickyNotes((prev) => restoreItem(prev, item, index));
     }
   }
-  function handleSearch(query) {
-    query?.trim() === '' ? navigate('/all') : navigate(`/search?query=${query}`);
-  }
+
   return (
     <div className='flex h-full gap-2 bg-background-primary p-5'>
-      <Menu
-        isOpen={isMenuOpen}
-        setIsOpen={setIsMenuOpen}
-        lists={lists}
-        onAddList={handleAddList}
-        allTasksNumber={tasks.length}
-        todayTasksNumber={todayTasks.length}
-        upcomingTasksNumber={upcomingTasksNumber}
-        stickyNotesNumber={stickyNotes.length}
-        onRenameList={handleRenameList}
-        onDeleteList={handleDeleteList}
-        onChangeListColor={handleChangeListColor}
-        onDuplicateList={handleDuplicateLists}
-        tags={tags}
-        onAddTag={handleAddTag}
-        onDeleteTag={handleDeleteTag}
-        searchQuery={searchQuery}
-        onSearch={(query) => handleSearch(query)}
-        trash={trash}
-        onDeleteFromTrash={handleDeleteFromTrash}
-        onEmptyTypeFromTrash={handleEmptyTypeFromTrash}
-        onEmptyTrash={handleEmptyTrash}
-        onRestoreFromTrash={handleRestoreFromTrash}
-      />
-      <Main
-        todayTasks={todayTasks}
-        tomorrowTasks={tomorrowTasks}
-        thisWeekTasks={thisWeekTasks}
-        upcomingTasksNumber={upcomingTasksNumber}
-        onComplete={handleCompleteTask}
-        onClearAllTasks={handleClearAllTasks}
-        lists={lists}
-        tags={tags}
-        stickyNotes={stickyNotes}
-        onAddNote={handleAddStickyNote}
-        onUpdateNote={handleUpdateStickyNote}
-        onDeleteNote={handleDeleteStickyNote}
-        searchResults={searchResults}
-        currentSearchTab={currentSearchTab}
-        setCurrentSearchTab={setCurrentSearchTab}
-      />
+      <SearchProvider>
+        <Menu
+          lists={lists}
+          onAddList={handleAddList}
+          stickyNotesNumber={stickyNotes.length}
+          onRenameList={handleRenameList}
+          onDeleteList={handleDeleteList}
+          onChangeListColor={handleChangeListColor}
+          onDuplicateList={handleDuplicateLists}
+          tags={tags}
+          onAddTag={handleAddTag}
+          onDeleteTag={handleDeleteTag}
+          trash={trash}
+          onDeleteFromTrash={handleDeleteFromTrash}
+          onEmptyTypeFromTrash={handleEmptyTypeFromTrash}
+          onEmptyTrash={handleEmptyTrash}
+          onRestoreFromTrash={handleRestoreFromTrash}
+        />
+        <Main
+          lists={lists}
+          tags={tags}
+          stickyNotes={stickyNotes}
+          onAddNote={handleAddStickyNote}
+          onUpdateNote={handleUpdateStickyNote}
+          onDeleteNote={handleDeleteStickyNote}
+        />
+      </SearchProvider>
       <TaskInfo lists={lists} onSelectList={handleAddTasksToList} tags={tags} />
     </div>
   );

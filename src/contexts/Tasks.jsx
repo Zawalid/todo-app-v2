@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from 'react';
 import { databases } from '../AppWrite';
 import { ID } from 'appwrite';
+import { checkIfToday, checkIfTomorrow, isDateInCurrentWeek } from '../Moment';
 
 export const DATABASE_ID = '654169b1a5c05d9c1e7e';
 export const TASKS_COLLECTION_ID = '65416a6c8f0a546d8b4b';
@@ -11,6 +12,18 @@ export function TasksProvider({ children }) {
   const [tasks, setTasks] = useState([]);
   const [currentTask, setCurrentTask] = useState(null);
   const [isTaskOpen, setIsTaskOpen] = useState(false);
+
+  const todayTasks = tasks?.filter((task) => checkIfToday(task.dueDate));
+  const tomorrowTasks = tasks?.filter((task) => checkIfTomorrow(task.dueDate));
+  const thisWeekTasks = tasks?.filter((task) => {
+    if (!task.dueDate) return;
+    return isDateInCurrentWeek(task.dueDate);
+  });
+  const upcomingTasks = [
+    ...todayTasks,
+    ...tomorrowTasks,
+    ...thisWeekTasks.filter((t) => ![...todayTasks, ...tomorrowTasks].includes(t)),
+  ];
 
   async function handleAddTask(title, dueDate, listId) {
     const newTask = {
@@ -79,6 +92,10 @@ export function TasksProvider({ children }) {
       value={{
         tasks,
         currentTask,
+        todayTasks,
+        tomorrowTasks,
+        thisWeekTasks,
+        upcomingTasks,
         handleAddTask,
         handleEditTask,
         handleDeleteTask,

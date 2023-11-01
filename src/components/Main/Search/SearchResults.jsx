@@ -2,17 +2,17 @@ import { Task } from '../Tasks/Task';
 import noResults from '../../../assets/no_result.png';
 import { StickyNote } from '../Sticky Wall/StickyNote';
 import { Tabs } from './Tabs';
+import { useSearch } from '../../../hooks/useSearch';
 
 export function SearchResults({
-  searchResults,
   lists,
   tags,
-  currentSearchTab,
-  setCurrentSearchTab,
   setCurrentNote,
   setIsEditorOpen,
   setIsStickyNoteOpened,
 }) {
+  const { searchResults, currentSearchTab, setCurrentSearchTab } = useSearch();
+
   return (
     <div className='relative flex h-full flex-col  overflow-auto'>
       <Tabs currentSearchTab={currentSearchTab} setCurrentSearchTab={setCurrentSearchTab} />
@@ -33,14 +33,7 @@ export function SearchResults({
         >
           {searchResults.map((result) => {
             if (currentSearchTab !== 'stickyWall') {
-              return (
-                <Task
-                  key={result.$id}
-                  task={result}
-                  lists={lists}
-                  tags={tags}
-                />
-              );
+              return <Task key={result.$id} task={result} lists={lists} tags={tags} />;
             }
             if (currentSearchTab === 'stickyWall') {
               return (
