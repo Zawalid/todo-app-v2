@@ -5,8 +5,6 @@ import { Tabs } from './Tabs';
 
 export function SearchResults({
   searchResults,
-  onOpen,
-  onComplete,
   lists,
   tags,
   currentSearchTab,
@@ -39,8 +37,6 @@ export function SearchResults({
                 <Task
                   key={result.$id}
                   task={result}
-                  onOpen={() => onOpen(result)}
-                  onComplete={(isCompleted) => onComplete(result.$id, result, isCompleted)}
                   lists={lists}
                   tags={tags}
                 />

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useLocalStorageState } from '../hooks/useLocalStorageState';
 import { TaskInfo } from './Task Info/TaskInfo';
 import { Menu } from './Menu/Menu';
@@ -6,34 +6,12 @@ import { Main } from './Main/Main';
 import '../styles/App.css';
 import { checkIfToday, checkIfTomorrow, isDateInCurrentWeek } from '../Utils';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useTasks } from '../contexts/Tasks';
+import { useTasks } from '../hooks/useTasks';
 
 export default function AppLayout({ lists, setLists }) {
   const [isMenuOpen, setIsMenuOpen] = useState(true);
-  // const [tasks, setTasks] = useLocalStorageState('tasks', [
-  //   {
-  //     id: Math.random(),
-  //     title: 'Consult accountant',
-  //     note: '',
-  //     dueDate: '',
-  //     listId: 'none',
-  //     subtasks: [],
-  //     isCompleted: true,
-  //     tagsIds: [],
-  //     priority: 0,
-  //     createdAt: new Date(),
-  //     index: 0,
-  //   },
-  // ]);
-  const {
-    tasks,
-    handlerAddTask,
-    handleEditTask,
-    handleDeleteTask,
-    handleCompleteTask,
-    handleClearAllTasks,
-    handleOpenTask,
-  } = useTasks();
+
+  const { tasks, handleCompleteTask, handleClearAllTasks } = useTasks();
 
   const [tags, setTags] = useLocalStorageState('tags', [
     {
@@ -100,15 +78,13 @@ export default function AppLayout({ lists, setLists }) {
       ? [...todayAndTomorrowTasks, ...thisWeekWithoutTodayAndTomorrowTasks]
       : stickyNotes;
 
-  const searchResults = searchSection.filter(
-    (result) =>
-      result.title?.toLowerCase().includes(searchQuery?.toLowerCase()) ||
-      result[currentSearchTab === 'stickyWall' ? 'content' : 'note']
-        ?.toLowerCase()
-        .includes(searchQuery) ||
-      result.description?.toLowerCase().includes(searchQuery),
+  const searchResults = searchSection.filter((result) =>
+    `${result.title ?? ''} ${
+      result[currentSearchTab === 'stickyWall' ? 'content' : 'note'] ?? ''
+    } ${result.description ?? ''}}`
+      .toLowerCase()
+      .includes(searchQuery?.toLowerCase()),
   );
-
 
   // function handlerAddTask(title, dueDate, listId) {
   //   const newTask = {
@@ -328,9 +304,6 @@ export default function AppLayout({ lists, setLists }) {
         onRestoreFromTrash={handleRestoreFromTrash}
       />
       <Main
-        tasks={tasks}
-        onAddTask={handlerAddTask}
-        onOpen={handleOpenTask}
         todayTasks={todayTasks}
         tomorrowTasks={tomorrowTasks}
         thisWeekTasks={thisWeekTasks}
@@ -347,13 +320,7 @@ export default function AppLayout({ lists, setLists }) {
         currentSearchTab={currentSearchTab}
         setCurrentSearchTab={setCurrentSearchTab}
       />
-      <TaskInfo
-        onEdit={handleEditTask}
-        onDelete={handleDeleteTask}
-        lists={lists}
-        onSelectList={handleAddTasksToList}
-        tags={tags}
-      />
+      <TaskInfo lists={lists} onSelectList={handleAddTasksToList} tags={tags} />
     </div>
   );
 }

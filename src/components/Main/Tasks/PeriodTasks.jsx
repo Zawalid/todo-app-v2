@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Task } from './Task';
 import { AddTask } from './AddTask';
+import { useTasks } from '../../../hooks/useTasks';
 
 export function PeriodTasks({
   title,
@@ -8,15 +9,13 @@ export function PeriodTasks({
   tomorrowTasks,
   thisWeekTasks,
   period,
-  onAdd,
-  onOpen,
-  onComplete,
   lists,
   tags,
   parentRef,
   isToday,
 }) {
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const {handleAddTask} = useTasks();
 
   const tasks = {
     todayTasks,
@@ -61,7 +60,7 @@ export function PeriodTasks({
         <i className='fa-solid fa-plus text-xl text-text-tertiary'></i>
         <AddTask
           onAdd={(title) => {
-            onAdd(title, period.dueDate);
+            handleAddTask(title, period.dueDate);
           }}
         />
       </div>
@@ -73,8 +72,6 @@ export function PeriodTasks({
             <Task
               key={task.$id}
               task={task}
-              onOpen={() => onOpen(task)}
-              onComplete={(isCompleted) => onComplete(task.$id, task,isCompleted)}
               lists={lists}
               tags={tags}
             />

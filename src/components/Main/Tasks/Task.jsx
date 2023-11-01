@@ -3,12 +3,14 @@ import { Tag } from '../../Menu/Menu Tags/Tag';
 import { checkIfToday, checkIfTomorrow, checkIfYesterday, isTaskOverdue } from '../../../Utils';
 import Tippy from '@tippyjs/react';
 import completedSoundFile from '../../../assets/completed.mp3';
+import { useTasks } from '../../../hooks/useTasks';
 
 const completedSound = new Audio(completedSoundFile);
 
-export function Task({ task, onOpen, onComplete, lists, tags }) {
+export function Task({ task, lists, tags }) {
   const [checked, setChecked] = useState(task.isCompleted);
   const isPassed = isTaskOverdue(task.dueDate);
+  const { handleOpenTask, handleCompleteTask } = useTasks();
 
   const listName = useMemo(
     () => lists.find((l) => l?.id === +task.listId)?.title,
@@ -19,7 +21,7 @@ export function Task({ task, onOpen, onComplete, lists, tags }) {
     [task.listId, lists],
   );
   useEffect(() => {
-    onComplete(checked);
+    handleCompleteTask(task.$id, task, checked);
     // eslint-disable-next-line
   }, [checked]);
 
@@ -37,7 +39,7 @@ export function Task({ task, onOpen, onComplete, lists, tags }) {
           checked={checked}
           onChange={(e) => {
             setChecked(!checked);
-            e.target.checked && completedSound.play()
+            e.target.checked && completedSound.play();
           }}
         />
         <i className='fas fa-check pointer-events-none  absolute left-1  top-1 hidden h-4 w-4 text-sm text-white peer-checked:block'></i>
@@ -155,7 +157,7 @@ export function Task({ task, onOpen, onComplete, lists, tags }) {
 
       <button
         className='rounded-sm px-2 py-1 transition-colors duration-300 hover:bg-background-primary'
-        onClick={onOpen}
+        onClick={() => handleOpenTask(task.$id)}
       >
         <i className='fa-solid fa-chevron-right cursor-pointer text-text-tertiary'></i>
       </button>

@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { isTaskOverdue } from '../../../Utils';
 import { ConfirmationModal } from '../../ConfirmationModal';
 import { useSearchParams } from 'react-router-dom';
+import { useTasks } from '../../../hooks/useTasks';
 
 const filtersConditions = {
   all: () => true,
@@ -17,18 +18,10 @@ const filtersConditions = {
   lowPriority: (task) => task.priority === '0',
 };
 
-export function DisplayedTasks({
-  onAdd,
-  onOpen,
-  onComplete,
-  tasks,
-  onClearAllTasks,
-  lists,
-  tags,
-  condition,
-  activeTab,
-}) {
+export function DisplayedTasks({ onAdd, lists, tags, condition, activeTab }) {
+  const { tasks, handleClearAllTasks } = useTasks();
   const [searchParams, setSearchParams] = useSearchParams();
+
   const filterParam = searchParams.get('filter');
   const sortParam = searchParams.get('sort');
   const dirParam = searchParams.get('dir');
@@ -74,14 +67,6 @@ export function DisplayedTasks({
     );
   }, [tasks, filter, condition]);
 
-  function handleClearAll() {
-    onClearAllTasks(condition, filtersConditions[filter]);
-    handleCloseModal();
-  }
-  function handleCloseModal() {
-    setIsClearAllModalOpen(false);
-  }
-
   return (
     <div className='relative flex h-full flex-col overflow-auto'>
       <div className='flex items-center gap-2'>
@@ -125,8 +110,8 @@ export function DisplayedTasks({
               .sort((a, b) => {
                 if (sortKey === 'cDate') {
                   return sortDirection === 'asc'
-                    ? new Date(a.createdAt) - new Date(b.createdAt)
-                    : new Date(b.createdAt) - new Date(a.createdAt);
+                    ? new Date(a.$createdAt) - new Date(b.$createdAt)
+                    : new Date(b.$createdAt) - new Date(a.$createdAt);
                 }
                 if (sortKey === 'dDate') {
                   return sortDirection === 'asc'
@@ -145,14 +130,7 @@ export function DisplayedTasks({
                 }
               })
               .map((task) => (
-                <Task
-                  key={task.$id}
-                  task={task}
-                  onOpen={() => onOpen(task.$id)}
-                  onComplete={(isCompleted) => onComplete(task.$id, task, isCompleted)}
-                  lists={lists}
-                  tags={tags}
-                />
+                <Task key={task.$id} task={task} lists={lists} tags={tags} />
               ))}
           </ul>
           {filteredTasks.filter((task) => condition(task)).length === 0 && (
@@ -183,8 +161,11 @@ export function DisplayedTasks({
         <ConfirmationModal
           sentence='Are you sure you want to clear all tasks?'
           confirmText='Clear All'
-          onConfirm={handleClearAll}
-          onCancel={handleCloseModal}
+          onConfirm={() => {
+            handleClearAllTasks(condition, filtersConditions[filter]);
+            setIsClearAllModalOpen(false);
+          }}
+          onCancel={() => setIsClearAllModalOpen(false)}
         />
       )}
     </div>

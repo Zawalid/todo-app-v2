@@ -6,10 +6,10 @@ import { TaskTags } from './TaskTags';
 import { TaskSubTasks } from './TaskSubTasks';
 import { ConfirmationModal } from '../ConfirmationModal';
 import { TaskPriority } from './TaskPriority';
-import { useTasks } from '../../contexts/Tasks';
+import { useTasks } from '../../hooks/useTasks';
 
-export function TaskInfo({ onEdit, onDelete, lists, onSelectList, tags }) {
-  const { currentTask, isTaskOpen, setIsTaskOpen } = useTasks();
+export function TaskInfo({ lists, onSelectList, tags }) {
+  const { currentTask, isTaskOpen, setIsTaskOpen, handleEditTask, handleDeleteTask } = useTasks();
   const [taskTitle, setTaskTitle] = useState();
   const [taskNote, setTaskNote] = useState();
   const [taskListId, setTaskListId] = useState('none');
@@ -112,8 +112,9 @@ export function TaskInfo({ onEdit, onDelete, lists, onSelectList, tags }) {
         tagsIds: taskTagsIds,
         priority: taskPriority,
       };
-      onEdit(currentTask.$id, editedTask);
+      handleEditTask(currentTask.$id, editedTask);
       onSelectList(taskListId, editedTask);
+      setIsTaskOpen(false);
     }
   }
   function handleEditSubtask(id, title) {
@@ -154,8 +155,9 @@ export function TaskInfo({ onEdit, onDelete, lists, onSelectList, tags }) {
           sentence='Are you sure you want to delete this task?'
           confirmText='Delete'
           onConfirm={() => {
-            onDelete(currentTask.$id);
+            handleDeleteTask(currentTask.$id);
             setIsDeleteModalOpen(false);
+            setIsTaskOpen(false);
           }}
           onCancel={() => setIsDeleteModalOpen(false)}
         />

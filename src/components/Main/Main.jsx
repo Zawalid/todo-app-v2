@@ -6,13 +6,9 @@ import { DisplayedTasks } from './Tasks/DisplayedTasks';
 import { Upcoming } from './Tasks/Upcoming';
 import { checkIfToday } from '../../Utils';
 import { SearchResults } from './Search/SearchResults';
+import { useTasks } from '../../hooks/useTasks';
 
 export function Main({
-  tasks,
-  onAddTask,
-  onOpen,
-  onComplete,
-  onClearAllTasks,
   todayTasks,
   tomorrowTasks,
   thisWeekTasks,
@@ -27,6 +23,7 @@ export function Main({
   currentSearchTab,
   setCurrentSearchTab,
 }) {
+  const { tasks, handleAddTask } = useTasks();
   const [currentNote, setCurrentNote] = useState(null);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [isStickyNoteOpened, setIsStickyNoteOpened] = useState(false);
@@ -84,12 +81,8 @@ export function Main({
         <DisplayedTasks
           onAdd={(title) => {
             const dueDate = activeTab === 'today' && new Date().toISOString().split('T')[0];
-            onAddTask(title, dueDate, listId);
+            handleAddTask(title, dueDate, listId);
           }}
-          onOpen={onOpen}
-          onComplete={onComplete}
-          tasks={tasks}
-          onClearAllTasks={onClearAllTasks}
           lists={lists}
           tags={tags}
           condition={condition}
@@ -101,9 +94,6 @@ export function Main({
           todayTasks={todayTasks}
           tomorrowTasks={tomorrowTasks}
           thisWeekTasks={thisWeekTasks}
-          onAdd={(title, dueDate) => onAddTask(title, dueDate)}
-          onOpen={onOpen}
-          onComplete={onComplete}
           lists={lists}
           tags={tags}
         />
@@ -124,8 +114,6 @@ export function Main({
       {activeTab === 'search' && !isStickyNoteOpened && (
         <SearchResults
           searchResults={searchResults}
-          onOpen={onOpen}
-          onComplete={onComplete}
           lists={lists}
           tags={tags}
           currentSearchTab={currentSearchTab}
