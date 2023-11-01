@@ -18,7 +18,8 @@ const filtersConditions = {
   lowPriority: (task) => task.priority === '0',
 };
 
-export function DisplayedTasks({ onAdd, lists, tags, condition, activeTab }) {
+export function DisplayedTasks({ onAdd, tags, condition, activeTab }) {
+
   const { tasks, handleClearAllTasks } = useTasks();
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -66,7 +67,6 @@ export function DisplayedTasks({ onAdd, lists, tags, condition, activeTab }) {
       tasks.filter((task) => condition(task)).filter((task) => filtersConditions[filter]?.(task)),
     );
   }, [tasks, filter, condition]);
-
   return (
     <div className='relative flex h-full flex-col overflow-auto'>
       <div className='flex items-center gap-2'>
@@ -130,7 +130,7 @@ export function DisplayedTasks({ onAdd, lists, tags, condition, activeTab }) {
                 }
               })
               .map((task) => (
-                <Task key={task.$id} task={task} lists={lists} tags={tags} />
+                <Task key={task.$id} task={task} tags={tags} />
               ))}
           </ul>
           {filteredTasks.filter((task) => condition(task)).length === 0 && (

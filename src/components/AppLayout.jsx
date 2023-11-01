@@ -164,7 +164,7 @@ export default function AppLayout() {
 
     if (type === 'tasks') {
       // setTasks((prev) => restoreItem(prev, item, index));
-      // handleAddTasksToList(item.listId, item);
+      // handleAddTaskToList(item.listId, item);
     }
     if (type === 'lists') {
       // setLists((prev) => restoreItem(prev, item, index));

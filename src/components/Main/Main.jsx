@@ -13,7 +13,7 @@ import { useLists } from '../../hooks/useLists';
 export function Main({ tags, stickyNotes, onAddNote, onUpdateNote, onDeleteNote }) {
   const { tasks, handleAddTask, todayTasks, tomorrowTasks, thisWeekTasks, upcomingTasks } =
     useTasks();
-  const { lists } = useLists();
+  const { lists, handleAddTaskToList } = useLists();
 
   const { searchResults } = useSearch();
   const [currentNote, setCurrentNote] = useState(null);
@@ -26,7 +26,7 @@ export function Main({ tags, stickyNotes, onAddNote, onUpdateNote, onDeleteNote 
     activeTab === '' && navigate('/all');
   }, [activeTab, navigate]);
 
-  const listId = lists.find((list) => list.title === activeTab.replace('%20', ' '))?.id;
+  const listId = lists.find((list) => list.title === activeTab.replace('%20', ' '))?.$id;
 
   const title =
     activeTab === 'all'
@@ -47,12 +47,12 @@ export function Main({ tags, stickyNotes, onAddNote, onUpdateNote, onDeleteNote 
     if (activeTab === 'upcoming') return upcomingTasks.length;
     if (activeTab === 'stickyWall') return stickyNotes.length;
     if (activeTab === 'search') return searchResults.length;
-    if (listId) return lists.find((list) => list.id === listId)?.tasks.length;
+    if (listId) return lists.find((list) => list.$id === listId)?.tasks.length;
     return 0;
   }, [activeTab, tasks, listId, stickyNotes, lists, todayTasks, upcomingTasks, searchResults]);
 
   const condition = (task) => {
-    if (listId) return +task.listId === +listId;
+    if (listId) return task.listId === listId;
     if (activeTab === 'today') return checkIfToday(task.dueDate);
     if (activeTab === 'all') return true;
     return false;
@@ -65,9 +65,20 @@ export function Main({ tags, stickyNotes, onAddNote, onUpdateNote, onDeleteNote 
         <DisplayedTasks
           onAdd={(title) => {
             const dueDate = activeTab === 'today' && new Date().toISOString().split('T')[0];
-            handleAddTask(title, dueDate, listId);
+            const newTask = {
+              title,
+              note: '',
+              dueDate: dueDate || '',
+              listId: listId || 'none',
+              subtasks: [],
+              isCompleted: false,
+              tagsIds: [],
+              priority: 0,
+              index: tasks.length,
+            };
+            if (listId) handleAddTaskToList(listId, newTask);
+            handleAddTask(newTask);
           }}
-          lists={lists}
           tags={tags}
           condition={condition}
           activeTab={activeTab}
@@ -78,7 +89,6 @@ export function Main({ tags, stickyNotes, onAddNote, onUpdateNote, onDeleteNote 
           todayTasks={todayTasks}
           tomorrowTasks={tomorrowTasks}
           thisWeekTasks={thisWeekTasks}
-          lists={lists}
           tags={tags}
         />
       )}

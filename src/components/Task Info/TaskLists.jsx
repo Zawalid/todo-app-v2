@@ -1,4 +1,7 @@
-export function TaskLists({ taskListId, setTaskListId, lists }) {
+import { useLists } from "../../hooks/useLists";
+
+export function TaskLists({ taskListId, setTaskListId }) {
+  const {lists} = useLists()
   return (
     <>
       <label className='text-sm text-text-tertiary'>List</label>
@@ -9,7 +12,7 @@ export function TaskLists({ taskListId, setTaskListId, lists }) {
       >
         <option value='none'>None</option>
         {lists.map((list) => (
-          <option key={list.id} value={list.id}>
+          <option key={list.$id} value={list.$id}>
             {list.title}
           </option>
         ))}

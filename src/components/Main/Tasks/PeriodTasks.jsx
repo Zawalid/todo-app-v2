@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Task } from './Task';
 import { AddTask } from './AddTask';
 import { useTasks } from '../../../hooks/useTasks';
+import { useLists } from '../../../hooks/useLists';
 
 export function PeriodTasks({
   title,
@@ -9,13 +10,13 @@ export function PeriodTasks({
   tomorrowTasks,
   thisWeekTasks,
   period,
-  lists,
   tags,
   parentRef,
   isToday,
 }) {
+  const { lists } = useLists();
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const {handleAddTask} = useTasks();
+  const { handleAddTask } = useTasks();
 
   const tasks = {
     todayTasks,
@@ -30,7 +31,6 @@ export function PeriodTasks({
       parentRef.current.classList.replace('overflow-hidden', 'overflow-auto');
     }
   }, [isFullScreen, parentRef]);
-
 
   return (
     <div
@@ -60,7 +60,18 @@ export function PeriodTasks({
         <i className='fa-solid fa-plus text-xl text-text-tertiary'></i>
         <AddTask
           onAdd={(title) => {
-            handleAddTask(title, period.dueDate);
+            const newTask = {
+              title,
+              note: '',
+              dueDate: period.dueDate || '',
+              listId: 'none',
+              subtasks: [],
+              isCompleted: false,
+              tagsIds: [],
+              priority: 0,
+              index: tasks.length,
+            };
+            handleAddTask(newTask);
           }}
         />
       </div>
@@ -69,12 +80,7 @@ export function PeriodTasks({
       >
         {tasks[period.tasks]?.length > 0 ? (
           tasks[period.tasks]?.map((task) => (
-            <Task
-              key={task.$id}
-              task={task}
-              lists={lists}
-              tags={tags}
-            />
+            <Task key={task.$id} task={task}  tags={tags} />
           ))
         ) : (
           <div className='  flex h-full flex-col items-center justify-center'>

@@ -31,9 +31,15 @@ export function ListsProvider({ children, lists, setLists }) {
     setLists((lists) => [...lists, response]);
   }
   async function handleUpdateList(id, list, property, value) {
-    const updatedList = { ...list, [property]: value };
+    const updatedList = {
+      ...list,
+      [property]: Array.isArray(value) ? Array.from(value) : value,
+    };
     remove$Properties(updatedList);
-    await databases.updateDocument(DATABASE_ID, LISTS_COLLECTION_ID, id, updatedList);
+    console.log(list)
+    console.log(updatedList)
+    const res = await databases.updateDocument(DATABASE_ID, LISTS_COLLECTION_ID, id, updatedList);
+    console.log(res);
     await handleGetAllLists();
   }
   async function handleRenameList(id, list, title) {
@@ -42,18 +48,10 @@ export function ListsProvider({ children, lists, setLists }) {
   async function handleChangeListColor(id, list, color) {
     handleUpdateList(id, list, 'color', color);
   }
-  async function handleAddTasksToList(listId, list, task) {
+  async function handleAddTaskToList(listId, task) {
     if (!listId) return;
-    // const newLists = lists
-    //   .map((list) => {
-    //     const tasks = list.tasks.filter((t) => t.$id !== task.$id);
-    //     return { ...list, tasks };
-    //   })
-    //   .map((list) => {
-    //     return list.$id === +listId ? { ...list, tasks: [...list.tasks, task] } : list;
-    //   });
-    // setLists(newLists);
-    const newTasks = [...list.tasks, task];
+    const list = lists.find((l) => l.$id === listId);
+    const newTasks = [...list.tasks, task]
     handleUpdateList(listId, list, 'tasks', newTasks);
   }
   async function handleDuplicateList(id) {
@@ -77,7 +75,7 @@ export function ListsProvider({ children, lists, setLists }) {
     };
     handleAddList(null, null, duplicatedList, duplicatedListId);
     newListTasks.forEach((task) => {
-      handleAddTask(null, null, null, task);
+      handleAddTask(task);
     });
   }
   async function handleDeleteList(id) {
@@ -103,7 +101,7 @@ export function ListsProvider({ children, lists, setLists }) {
         handleDeleteList,
         handleRenameList,
         handleChangeListColor,
-        handleAddTasksToList,
+        handleAddTaskToList,
         handleDuplicateList,
       }}
     >

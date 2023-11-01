@@ -4,20 +4,22 @@ import { checkIfToday, checkIfTomorrow, checkIfYesterday, isTaskOverdue } from '
 import Tippy from '@tippyjs/react';
 import completedSoundFile from '../../../assets/completed.mp3';
 import { useTasks } from '../../../hooks/useTasks';
+import { useLists } from '../../../hooks/useLists';
 
 const completedSound = new Audio(completedSoundFile);
 
-export function Task({ task, lists, tags }) {
+export function Task({ task, tags }) {
+  const {lists} = useLists()
   const [checked, setChecked] = useState(task.isCompleted);
   const isPassed = isTaskOverdue(task.dueDate);
   const { handleOpenTask, handleCompleteTask } = useTasks();
 
   const listName = useMemo(
-    () => lists.find((l) => l?.id === +task.listId)?.title,
+    () => lists.find((l) => l?.$id === task.listId)?.title,
     [task.listId, lists],
   );
   const listColor = useMemo(
-    () => lists.find((l) => l?.id === +task.listId)?.color,
+    () => lists.find((l) => l?.$id === task.listId)?.color,
     [task.listId, lists],
   );
   useEffect(() => {

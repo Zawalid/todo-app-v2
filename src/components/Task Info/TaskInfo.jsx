@@ -7,9 +7,11 @@ import { TaskSubTasks } from './TaskSubTasks';
 import { ConfirmationModal } from '../ConfirmationModal';
 import { TaskPriority } from './TaskPriority';
 import { useTasks } from '../../hooks/useTasks';
+import { useLists } from '../../hooks/useLists';
 
-export function TaskInfo({ lists, onSelectList, tags }) {
+export function TaskInfo({ tags }) {
   const { currentTask, isTaskOpen, setIsTaskOpen, handleUpdateTask, handleDeleteTask } = useTasks();
+  const { handleAddTaskToList } = useLists();
   const [taskTitle, setTaskTitle] = useState();
   const [taskNote, setTaskNote] = useState();
   const [taskListId, setTaskListId] = useState('none');
@@ -100,23 +102,6 @@ export function TaskInfo({ lists, onSelectList, tags }) {
     };
     setTaskSubtasks((prev) => [...prev, newSubtask]);
   }
-  function handleSaveChanges() {
-    if (isChanged) {
-      const editedTask = {
-        ...currentTask,
-        title: taskTitle.trim() ? taskTitle : 'Untitled Task',
-        note: taskNote,
-        listId: taskListId,
-        dueDate: taskDueDate,
-        subtasks: taskSubtasks,
-        tagsIds: taskTagsIds,
-        priority: taskPriority,
-      };
-      handleUpdateTask(currentTask.$id, editedTask);
-      onSelectList(taskListId, editedTask);
-      setIsTaskOpen(false);
-    }
-  }
   function handleUpdateSubtask(id, title) {
     const newSubtasks = taskSubtasks
       .map((subtask) => (subtask.id === id ? { ...subtask, title } : subtask))
@@ -140,6 +125,23 @@ export function TaskInfo({ lists, onSelectList, tags }) {
   }
   function handleDeleteTagFromTask(tagId) {
     setTaskTagsIds((prev) => prev.filter((id) => id !== tagId));
+  }
+  function handleSaveChanges() {
+    if (isChanged) {
+      const editedTask = {
+        ...currentTask,
+        title: taskTitle.trim() ? taskTitle : 'Untitled Task',
+        note: taskNote,
+        listId: taskListId,
+        dueDate: taskDueDate,
+        subtasks: taskSubtasks,
+        tagsIds: taskTagsIds,
+        priority: taskPriority,
+      };
+      setIsTaskOpen(false);
+      handleUpdateTask(currentTask.$id, editedTask);
+      handleAddTaskToList(taskListId, editedTask);
+    }
   }
   return (
     <aside
@@ -180,7 +182,7 @@ export function TaskInfo({ lists, onSelectList, tags }) {
               }}
             />
             <div className='grid grid-cols-[1fr_3fr] items-center space-y-2'>
-              <TaskLists taskListId={taskListId} setTaskListId={setTaskListId} lists={lists} />
+              <TaskLists taskListId={taskListId} setTaskListId={setTaskListId} />
               <TaskDueDate taskDueDate={taskDueDate} setTaskDueDate={setTaskDueDate} />
               <TaskTags
                 {...{

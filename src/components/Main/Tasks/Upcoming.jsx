@@ -26,7 +26,6 @@ export function Upcoming({
   todayTasks,
   tomorrowTasks,
   thisWeekTasks,
-  lists,
   tags,
 }) {
   
@@ -41,7 +40,6 @@ export function Upcoming({
           todayTasks={todayTasks}
           tomorrowTasks={tomorrowTasks}
           thisWeekTasks={thisWeekTasks}
-          lists={lists}
           tags={tags}
           parentRef={wrapper}
           isToday={i === 0}

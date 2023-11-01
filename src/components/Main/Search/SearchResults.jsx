@@ -5,7 +5,6 @@ import { Tabs } from './Tabs';
 import { useSearch } from '../../../hooks/useSearch';
 
 export function SearchResults({
-  lists,
   tags,
   setCurrentNote,
   setIsEditorOpen,
@@ -33,7 +32,7 @@ export function SearchResults({
         >
           {searchResults.map((result) => {
             if (currentSearchTab !== 'stickyWall') {
-              return <Task key={result.$id} task={result} lists={lists} tags={tags} />;
+              return <Task key={result.$id} task={result}  tags={tags} />;
             }
             if (currentSearchTab === 'stickyWall') {
               return (
