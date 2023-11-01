@@ -8,12 +8,6 @@ import { useHref, useNavigate } from 'react-router-dom';
 
 export function Menu({
   stickyNotesNumber,
-  lists,
-  onAddList,
-  onRenameList,
-  onDeleteList,
-  onChangeListColor,
-  onDuplicateList,
   tags,
   onAddTag,
   onDeleteTag,
@@ -55,14 +49,7 @@ export function Menu({
           <div className='overflow-y-auto'>
             <Search />
             <MenuTasks stickyNotesNumber={stickyNotesNumber} />
-            <MenuLists
-              lists={lists}
-              onAddList={onAddList}
-              onRenameList={onRenameList}
-              onDeleteList={onDeleteList}
-              onChangeListColor={onChangeListColor}
-              onDuplicateList={onDuplicateList}
-            />
+            <MenuLists />
             <MenuTags tags={tags} onAddTag={onAddTag} onDeleteTag={onDeleteTag} />
           </div>
           <div className=' mt-auto  pt-3'>

@@ -3,7 +3,7 @@ import { AddTask } from './AddTask';
 import { Task } from './Task';
 import { TasksActions } from './TasksActions/TasksActions';
 import { useEffect, useState } from 'react';
-import { isTaskOverdue } from '../../../Moment';
+import { isTaskOverdue } from '../../../utils/Moment';
 import { ConfirmationModal } from '../../ConfirmationModal';
 import { useSearchParams } from 'react-router-dom';
 import { useTasks } from '../../../hooks/useTasks';

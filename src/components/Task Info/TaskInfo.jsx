@@ -9,7 +9,7 @@ import { TaskPriority } from './TaskPriority';
 import { useTasks } from '../../hooks/useTasks';
 
 export function TaskInfo({ lists, onSelectList, tags }) {
-  const { currentTask, isTaskOpen, setIsTaskOpen, handleEditTask, handleDeleteTask } = useTasks();
+  const { currentTask, isTaskOpen, setIsTaskOpen, handleUpdateTask, handleDeleteTask } = useTasks();
   const [taskTitle, setTaskTitle] = useState();
   const [taskNote, setTaskNote] = useState();
   const [taskListId, setTaskListId] = useState('none');
@@ -112,12 +112,12 @@ export function TaskInfo({ lists, onSelectList, tags }) {
         tagsIds: taskTagsIds,
         priority: taskPriority,
       };
-      handleEditTask(currentTask.$id, editedTask);
+      handleUpdateTask(currentTask.$id, editedTask);
       onSelectList(taskListId, editedTask);
       setIsTaskOpen(false);
     }
   }
-  function handleEditSubtask(id, title) {
+  function handleUpdateSubtask(id, title) {
     const newSubtasks = taskSubtasks
       .map((subtask) => (subtask.id === id ? { ...subtask, title } : subtask))
       .filter((subtask) => subtask.title !== '');
@@ -200,7 +200,7 @@ export function TaskInfo({ lists, onSelectList, tags }) {
                 taskSubtasks,
                 handleAddSubTask,
                 handleDeleteSubtask,
-                handleEditSubtask,
+                handleUpdateSubtask,
                 handleCompleteSubTask,
               }}
             />

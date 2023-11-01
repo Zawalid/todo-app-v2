@@ -15,6 +15,7 @@ export function ListAction({
   useEffect(() => {
     isOpen || setIsColorsOpen(false);
   }, [isOpen]);
+
   useEffect(() => {
     function handleClick(e) {
       if (isOpen && e.target.tagName === 'SPAN') {
@@ -26,10 +27,6 @@ export function ListAction({
     return () => document.removeEventListener('click', handleClick);
     // eslint-disable-next-line
   }, [isOpen]);
-
-  function handleChangeColor() {
-    setIsColorsOpen(!isColorsOpen);
-  }
 
   return (
     <ul
@@ -52,7 +49,7 @@ export function ListAction({
       {isColorsOpen || (
         <li
           className='grid cursor-pointer grid-cols-[15px_1fr] items-center gap-2 text-start text-sm text-text-secondary transition-colors duration-300 hover:text-text-tertiary'
-          onClick={handleChangeColor}
+          onClick={() => setIsColorsOpen(!isColorsOpen)}
         >
           <i className='fa-solid fa-palette'></i>
           <p>Change Color</p>

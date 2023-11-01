@@ -3,21 +3,15 @@ import { NavLink, useHref, useNavigate } from 'react-router-dom';
 import { ListAction } from './ListAction';
 import { ConfirmationModal } from '../../ConfirmationModal';
 import { useIsTitleTaken } from '../../../hooks/useIsTitleTaken';
+import { useLists } from '../../../hooks/useLists';
 
-export function List({
-  id,
-  title,
-  color,
-  tasksNumber,
-  onRename,
-  onDelete,
-  onChangeColor,
-  onDuplicateList,
-  lists,
-}) {
+export function List({ list }) {
+  const { $id, title, color, tasks } = list;
+  const { lists, handleDeleteList, handleRenameList, handleChangeListColor } = useLists();
+
   const [isListActionsOpen, setIsListActionsOpen] = useState(false);
   const [isRenameInputOpen, setIsRenameInputOpen] = useState(false);
-  const [isNewTitleTaken, , setTitle] = useIsTitleTaken(lists, id, title);
+  const [isNewTitleTaken, , setTitle] = useIsTitleTaken(lists, $id, title);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [listColor, setListColor] = useState(color);
   const listActions = useRef(null);
@@ -41,8 +35,9 @@ export function List({
   }, [listActions]);
 
   function changeColor(color) {
+    console.log(color);
     setListColor(color);
-    onChangeColor(color);
+    handleChangeListColor($id, list, color);
   }
   function openRenameInput() {
     setIsRenameInputOpen(true);
@@ -51,7 +46,7 @@ export function List({
   function renameList(e) {
     if (isNewTitleTaken) return;
     const newTitle = e.target.value.trim();
-    onRename(newTitle);
+    handleRenameList($id, list, newTitle);
     setIsRenameInputOpen(false);
     // Change the path to the new title if the renamed list is the active one
     path.replace(/%20/g, ' ') === `/${title}` && navigator(`/${newTitle}`);
@@ -73,16 +68,13 @@ export function List({
             {title}
           </span>
           <div className='count mx-1 grid place-content-center rounded-sm bg-background-tertiary py-[1px] transition-colors duration-300 group-hover:bg-background-primary'>
-            <span className='text-xs font-semibold text-text-secondary'>{tasksNumber}</span>
+            <span className='text-xs font-semibold text-text-secondary'>{tasks.length}</span>
           </div>
         </NavLink>
 
         <button
           className='cursor-pinter relative rounded-md px-2 text-center transition-colors duration-300 hover:bg-background-primary'
-          onClick={(e) => {
-            e.stopPropagation();
-            setIsListActionsOpen(true);
-          }}
+          onClick={() => setIsListActionsOpen(true)}
         >
           <i className='fas fa-ellipsis-vertical text-text-tertiary'></i>
           <ListAction
@@ -92,7 +84,7 @@ export function List({
             onClose={() => setIsListActionsOpen(false)}
             onChangeColor={changeColor}
             onOpenRenameInput={openRenameInput}
-            onDuplicateList={onDuplicateList}
+            // onDuplicateList={onDuplicateList}
           />
         </button>
         <div
@@ -122,10 +114,9 @@ export function List({
           sentence='Are you sure you want to delete this list?'
           confirmText='Delete'
           onConfirm={() => {
-            if (path.replace(/%20/g, ' ') === `/${title}`) {
-              navigator('/');
-              onDelete();
-            }
+            handleDeleteList($id);
+            setIsDeleteModalOpen(false);
+            path.replace(/%20/g, ' ') === `/${title}` && navigator('/');
           }}
           onCancel={() => setIsDeleteModalOpen(false)}
         />

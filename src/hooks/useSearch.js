@@ -3,5 +3,7 @@ import { SearchContext } from '../contexts/Search';
 
 
 export function useSearch() {
-    return useContext(SearchContext);
+    const context = useContext(SearchContext);
+    if (context === undefined) throw new Error('useSearch must be used within a SearchProvider');
+    return context;
 }

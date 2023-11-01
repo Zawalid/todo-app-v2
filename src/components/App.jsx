@@ -1,11 +1,14 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import AppLayout from './AppLayout';
 import NotFound from './NotFound';
-import { useLocalStorageState } from '../hooks/useLocalStorageState';
 import '../AppWrite';
 import { TasksProvider } from '../contexts/Tasks';
+import { ListsProvider } from '../contexts/Lists';
+// import { useLists } from '../hooks/useLists';
+
 export default function App() {
-  const [lists, setLists] = useLocalStorageState('lists', [
+  // const { lists } = useLists();
+  const lists = [
     {
       id: Math.random(),
       title: 'Personal',
@@ -22,27 +25,25 @@ export default function App() {
       number: 0,
       index: 1,
     },
-  ]);
+  ];
   const listsTitles = lists.map((list) => list.title);
 
   return (
-    <TasksProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path='/' element={<AppLayout lists={lists} setLists={setLists} />} />
-          {['all', 'today', 'stickyWall', 'upcoming', ...listsTitles].map((tab) => (
-            <Route
-              path={`/${tab}`}
-              element={<AppLayout lists={lists} setLists={setLists} />}
-              key={tab}
-            >
-              <Route path='trash' element={<AppLayout lists={lists} setLists={setLists} />} />
-            </Route>
-          ))}
-          <Route path='search' element={<AppLayout lists={lists} setLists={setLists} />} />
-          <Route path='*' element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+    <ListsProvider>
+        <TasksProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path='/' element={<AppLayout />} />
+            {['all', 'today', 'stickyWall', 'upcoming', ...listsTitles].map((tab) => (
+              <Route path={`/${tab}`} element={<AppLayout />} key={tab}>
+                <Route path='trash' element={<AppLayout />} />
+              </Route>
+            ))}
+            <Route path='search' element={<AppLayout />} />
+            <Route path='*' element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
     </TasksProvider>
+      </ListsProvider>
   );
 }

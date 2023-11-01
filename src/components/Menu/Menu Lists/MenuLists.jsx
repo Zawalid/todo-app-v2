@@ -1,15 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { List } from './List';
 import { AddNewList } from './AddNewList';
+import { useLists } from '../../../hooks/useLists';
 
-export function MenuLists({
-  lists,
-  onAddList,
-  onRenameList,
-  onDeleteList,
-  onChangeListColor,
-  onDuplicateList,
-}) {
+export function MenuLists() {
+  const { lists } = useLists();
   const [isAddNewListOpen, setIsAddNewListOpen] = useState(false);
   const addNewListContainer = useRef(null);
   const addNewListToggler = useRef(null);
@@ -37,19 +32,8 @@ export function MenuLists({
       <h4 className='mb-4 mt-5  font-medium text-text-secondary'>Lists</h4>
       <ul className=' space-y-1 '>
         {lists.map((list) => (
-          <List
-            key={list.id}
-            id={list.id}
-            title={list.title}
-            color={list.color}
-            tasksNumber={list.tasks.length}
-            onRename={(title) => onRenameList(list.id, title)}
-            onDelete={() => onDeleteList(list.id)}
-            onChangeColor={(color) => onChangeListColor(list.id, color)}
-            onDuplicateList={() => onDuplicateList(list.id)}
-            lists={lists}
-            />
-            ))}
+          <List key={list.$id} list={list} />
+        ))}
       </ul>
       <button
         className='my-4 flex cursor-pointer items-center text-sm text-text-secondary'
@@ -63,9 +47,7 @@ export function MenuLists({
         <AddNewList
           reference={addNewListContainer}
           isOpen={isAddNewListOpen}
-          onAdd={onAddList}
           untitledTasksNumber={untitledTasksNumber}
-            lists={lists}
         />
       )}
     </div>

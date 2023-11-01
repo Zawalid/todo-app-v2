@@ -1,6 +1,6 @@
 import Tippy from '@tippyjs/react';
 import { useEffect, useRef, useState } from 'react';
-import { isTaskOverdue } from '../../../Moment';
+import { isTaskOverdue } from '../../../utils/Moment';
 
 export function DueDate({ taskDueDate, setTaskDueDate }) {
   const [isOpen, setIsOpen] = useState();

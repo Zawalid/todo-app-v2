@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Tag } from '../../Menu/Menu Tags/Tag';
-import { checkIfToday, checkIfTomorrow, checkIfYesterday, isTaskOverdue } from '../../../Moment';
+import { checkIfToday, checkIfTomorrow, checkIfYesterday, isTaskOverdue } from '../../../utils/Moment';
 import Tippy from '@tippyjs/react';
 import completedSoundFile from '../../../assets/completed.mp3';
 import { useTasks } from '../../../hooks/useTasks';

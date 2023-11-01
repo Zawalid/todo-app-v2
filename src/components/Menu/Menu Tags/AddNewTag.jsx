@@ -14,7 +14,7 @@ export function AddNewTag({ reference, isOpen, onAdd }) {
     function handleClick(e) {
       if (isOpen && bgColorsDiv.current && bgColorsDiv.current.contains(e.target)) {
         const color = e.target.dataset.color;
-        setBgColor(color);
+        color && setBgColor(color);
       }
       if (isOpen && textColorsDiv.current && textColorsDiv.current.contains(e.target)) {
         const color = e.target.dataset.color;

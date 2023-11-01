@@ -4,15 +4,18 @@ import { Title } from './Title';
 import { StickyWall } from './Sticky Wall/StickyWall';
 import { DisplayedTasks } from './Tasks/DisplayedTasks';
 import { Upcoming } from './Tasks/Upcoming';
-import { checkIfToday } from '../../Moment';
+import { checkIfToday } from '../../utils/Moment';
 import { SearchResults } from './Search/SearchResults';
 import { useTasks } from '../../hooks/useTasks';
 import { useSearch } from '../../hooks/useSearch';
+import { useLists } from '../../hooks/useLists';
 
-export function Main({ lists, tags, stickyNotes, onAddNote, onUpdateNote, onDeleteNote }) {
+export function Main({ tags, stickyNotes, onAddNote, onUpdateNote, onDeleteNote }) {
   const { tasks, handleAddTask, todayTasks, tomorrowTasks, thisWeekTasks, upcomingTasks } =
     useTasks();
-    const {searchResults} = useSearch();
+  const { lists } = useLists();
+
+  const { searchResults } = useSearch();
   const [currentNote, setCurrentNote] = useState(null);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [isStickyNoteOpened, setIsStickyNoteOpened] = useState(false);

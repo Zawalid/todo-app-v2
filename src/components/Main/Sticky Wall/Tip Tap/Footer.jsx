@@ -1,4 +1,4 @@
-import { getFormattedDate } from '../../../../Moment';
+import { getFormattedDate } from '../../../../utils/Moment';
 
 export function Footer({ editor, creationDate }) {
   const cDate = getFormattedDate(creationDate);
