@@ -7,7 +7,8 @@ import { useLists } from '../../../hooks/useLists';
 
 export function List({ list }) {
   const { $id, title, color, tasks } = list;
-  const { lists, handleDeleteList, handleRenameList, handleChangeListColor } = useLists();
+  const { lists, handleDeleteList, handleRenameList, handleChangeListColor, handleDuplicateList } =
+    useLists();
 
   const [isListActionsOpen, setIsListActionsOpen] = useState(false);
   const [isRenameInputOpen, setIsRenameInputOpen] = useState(false);
@@ -84,7 +85,7 @@ export function List({ list }) {
             onClose={() => setIsListActionsOpen(false)}
             onChangeColor={changeColor}
             onOpenRenameInput={openRenameInput}
-            // onDuplicateList={onDuplicateList}
+            onDuplicateList={() => handleDuplicateList($id)}
           />
         </button>
         <div

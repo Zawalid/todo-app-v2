@@ -4,33 +4,69 @@ import NotFound from './NotFound';
 import '../AppWrite';
 import { TasksProvider } from '../contexts/Tasks';
 import { ListsProvider } from '../contexts/Lists';
-// import { useLists } from '../hooks/useLists';
+import { useState } from 'react';
 
 export default function App() {
-  // const { lists } = useLists();
-  const lists = [
+ 
+  const [lists, setLists] = useState([
     {
-      id: Math.random(),
       title: 'Personal',
       color: '#ff6b6b',
       tasks: [],
       number: 0,
-      index: 0,
+      index: 3,
+      $id: '65424b5a69fab6f186d2',
+      $createdAt: '2023-11-01T12:58:02.435+00:00',
+      $updatedAt: '2023-11-01T12:58:02.435+00:00',
+      $permissions: [],
+      $databaseId: '654169b1a5c05d9c1e7e',
+      $collectionId: '65422c65a17f95378d53',
     },
     {
-      id: Math.random(),
       title: 'Work',
-      color: '#66d9e8',
+      color: '#fffebe',
       tasks: [],
       number: 0,
-      index: 1,
+      index: 4,
+      $id: '65424b881a6f20cec5cd',
+      $createdAt: '2023-11-01T12:58:48.109+00:00',
+      $updatedAt: '2023-11-01T12:58:48.109+00:00',
+      $permissions: [],
+      $databaseId: '654169b1a5c05d9c1e7e',
+      $collectionId: '65422c65a17f95378d53',
     },
-  ];
+    {
+      title: 'no',
+      color: '#ff6b6b',
+      tasks: [],
+      number: 0,
+      index: 5,
+      $id: '65424b9f1451b234e086',
+      $createdAt: '2023-11-01T12:59:11.084+00:00',
+      $updatedAt: '2023-11-01T12:59:11.084+00:00',
+      $permissions: [],
+      $databaseId: '654169b1a5c05d9c1e7e',
+      $collectionId: '65422c65a17f95378d53',
+    },
+    {
+      title: 'no',
+      color: '#ff6b6b',
+      tasks: [],
+      number: 0,
+      index: 5,
+      $id: '65424ba9dcf2f29e1ca9',
+      $createdAt: '2023-11-01T12:59:21.993+00:00',
+      $updatedAt: '2023-11-01T12:59:21.993+00:00',
+      $permissions: [],
+      $databaseId: '654169b1a5c05d9c1e7e',
+      $collectionId: '65422c65a17f95378d53',
+    },
+  ]);
   const listsTitles = lists.map((list) => list.title);
 
   return (
-    <ListsProvider>
-        <TasksProvider>
+    <TasksProvider>
+        <ListsProvider lists={lists} setLists={setLists}  >
         <BrowserRouter>
           <Routes>
             <Route path='/' element={<AppLayout />} />
@@ -43,7 +79,7 @@ export default function App() {
             <Route path='*' element={<NotFound />} />
           </Routes>
         </BrowserRouter>
-    </TasksProvider>
-      </ListsProvider>
+    </ListsProvider>
+      </TasksProvider>
   );
 }

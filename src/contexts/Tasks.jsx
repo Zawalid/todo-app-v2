@@ -10,7 +10,7 @@ export const TASKS_COLLECTION_ID = '65416a6c8f0a546d8b4b';
 
 export const TasksContext = createContext();
 
-export function TasksProvider({ children }) {
+export function TasksProvider({ children}) {
   const [tasks, setTasks] = useState([
     {
       title: 'idk',
@@ -98,7 +98,7 @@ export function TasksProvider({ children }) {
       $collectionId: '65416a6c8f0a546d8b4b',
     },
   ]);
-  const { handleAddTasksToList } = useLists();
+  // const { handleAddTasksToList } = useLists();
   const [currentTask, setCurrentTask] = useState(null);
   const [isTaskOpen, setIsTaskOpen] = useState(false);
 
@@ -114,19 +114,20 @@ export function TasksProvider({ children }) {
     ...thisWeekTasks.filter((t) => ![...todayTasks, ...tomorrowTasks].includes(t)),
   ];
 
-  async function handleAddTask(title, dueDate, listId) {
-    const newTask = {
-      title,
-      note: '',
-      dueDate: dueDate || '',
-      listId: listId || 'none',
-      subtasks: [],
-      isCompleted: false,
-      tagsIds: [],
-      priority: 0,
-      index: tasks.length,
-    };
-    console.log(newTask)
+  async function handleAddTask(title, dueDate, listId, task) {
+    const newTask = task
+      ? task
+      : {
+          title,
+          note: '',
+          dueDate: dueDate || '',
+          listId: listId || 'none',
+          subtasks: [],
+          isCompleted: false,
+          tagsIds: [],
+          priority: 0,
+          index: tasks.length,
+        };
     const response = await databases.createDocument(
       DATABASE_ID,
       TASKS_COLLECTION_ID,
@@ -134,7 +135,7 @@ export function TasksProvider({ children }) {
       newTask,
     );
     setTasks((tasks) => [...tasks, response]);
-    if (listId) handleAddTasksToList(listId, newTask);
+    // if (listId) handleAddTasksToList(listId, newTask);
   }
   async function handleUpdateTask(id, task, isCompleted) {
     const updatedTask = isCompleted ? { ...task, isCompleted } : { ...task };
