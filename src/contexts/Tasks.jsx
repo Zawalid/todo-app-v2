@@ -133,7 +133,7 @@ export function TasksProvider({ children}) {
   }
   async function handleDeleteTask(id) {
     await databases.deleteDocument(DATABASE_ID, TASKS_COLLECTION_ID, id);
-    setTasks((tasks) => tasks.filter((idea) => idea.$id !== id));
+    setTasks((tasks) => tasks.filter((task) => task.$id !== id));
   }
   async function handleClearAllTasks() {
     const response = await databases.listDocuments(DATABASE_ID, TASKS_COLLECTION_ID);

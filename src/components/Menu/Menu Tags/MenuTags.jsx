@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { Tag } from './Tag';
 import { AddNewTag } from './AddNewTag';
+import { useTags } from '../../../hooks/useTags';
 
-export function MenuTags({ tags, onAddTag, onDeleteTag }) {
+export function MenuTags() {
+  const {tags} = useTags()
   const [isAddNewTagOpen, setIsAddNewTagOpen] = useState(false);
   const addNewTagContainer = useRef(null);
   const addNewTagToggler = useRef(null);
@@ -29,14 +31,7 @@ export function MenuTags({ tags, onAddTag, onDeleteTag }) {
       <h4 className='mb-4 mt-5 font-medium text-text-secondary'>Tags</h4>
       <ul className='flex flex-wrap gap-2'>
         {tags.map((tag) => (
-          <Tag
-            key={tag.id}
-            title={tag.title}
-            bgColor={tag.bgColor}
-            textColor={tag.textColor}
-            onDeleteTag={() => onDeleteTag(tag.id)}
-            showDeleteButton={true}
-          />
+          <Tag key={tag.$id} tag={tag} showDeleteButton={true} />
         ))}
         <li
           className='menu_tag_element cursor-pointer bg-background-tertiary text-text-secondary'
@@ -45,9 +40,7 @@ export function MenuTags({ tags, onAddTag, onDeleteTag }) {
         >
           + Add Tag
         </li>
-        {isAddNewTagOpen && (
-          <AddNewTag reference={addNewTagContainer} isOpen={isAddNewTagOpen} onAdd={onAddTag} />
-        )}
+        {isAddNewTagOpen && <AddNewTag reference={addNewTagContainer} isOpen={isAddNewTagOpen} />}
       </ul>
     </div>
   );

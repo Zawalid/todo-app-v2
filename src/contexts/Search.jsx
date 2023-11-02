@@ -1,12 +1,14 @@
 import { createContext, useState } from 'react';
 import { useTasks } from '../hooks/useTasks';
 import { useSearchParams } from 'react-router-dom';
+import { useStickyNotes } from '../hooks/useStickyNotes';
 
 export const SearchContext = createContext();
 
 export const SearchProvider = ({ children }) => {
   const [currentSearchTab, setCurrentSearchTab] = useState('all');
   const { tasks, todayTasks, upcomingTasks } = useTasks();
+  const { stickyNotes } = useStickyNotes();
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get('query');
 
@@ -17,7 +19,7 @@ export const SearchProvider = ({ children }) => {
       ? todayTasks
       : currentSearchTab === 'upcoming'
       ? upcomingTasks
-      : upcomingTasks; //fix
+      : stickyNotes;
 
   const searchResults = searchSection.filter((result) =>
     `${result.title ?? ''} ${
@@ -33,6 +35,7 @@ export const SearchProvider = ({ children }) => {
         currentSearchTab,
         setCurrentSearchTab,
         searchResults,
+        searchQuery,
       }}
     >
       {children}

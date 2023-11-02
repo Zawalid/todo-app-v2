@@ -26,7 +26,6 @@ export function Upcoming({
   todayTasks,
   tomorrowTasks,
   thisWeekTasks,
-  tags,
 }) {
   
   const wrapper = useRef(null);
@@ -40,7 +39,6 @@ export function Upcoming({
           todayTasks={todayTasks}
           tomorrowTasks={tomorrowTasks}
           thisWeekTasks={thisWeekTasks}
-          tags={tags}
           parentRef={wrapper}
           isToday={i === 0}
         />

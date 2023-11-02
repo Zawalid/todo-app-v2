@@ -6,47 +6,12 @@ import '../styles/App.css';
 import { SearchProvider } from '../contexts/Search';
 
 export default function AppLayout() {
-
-  const [tags, setTags] = useLocalStorageState('tags', [
-    {
-      id: Math.random(),
-      title: 'Tag 1',
-      bgColor: '#d1eaed',
-      textColor: '#444',
-      index: 0,
-    },
-  ]);
-  const [stickyNotes, setStickyNotes] = useLocalStorageState('stickyNotes', [
-    {
-      id: Math.random(),
-      title: 'Social Media',
-      content: '- Plan social content - Build content calendar - Plan promotion and distribution',
-      description: 'Social Media',
-      bgColor: '#fdf2b3',
-      textColor: '#444',
-      creationDate: new Date().toLocaleDateString(),
-      index: 0,
-    },
-    {
-      id: Math.random(),
-      title: 'Content Strategy',
-      content:
-        'Would need time to get insights (goals, personals, budget, audits), but after, it would be good to focus on assembling my team (start with SEO specialist, then perhaps an email marketer?). Also need to brainstorm on tooling.',
-      description: 'Content Strategy',
-      bgColor: '#d1eaed',
-      textColor: '#444',
-      creationDate: new Date().toLocaleDateString(),
-      index: 1,
-    },
-  ]);
   const [trash, setTrash] = useLocalStorageState('trash', {
     tasks: [],
     lists: [],
     tags: [],
     notes: [],
   });
-
-
 
   // function handleDeleteTask(id) {
   //   setTasks((prev) => prev.filter((t) => t.id !== id));
@@ -58,7 +23,7 @@ export default function AppLayout() {
   //   setIsTaskOpen(false);
   //   setTrash((prev) => ({ ...prev, tasks: [...prev.tasks, currentTask] }));
   // }
- 
+
   // function handleClearAllTasks(condition1, condition2) {
   //   const filteredTasks = [];
   //   const deletedTasks = [];
@@ -106,36 +71,21 @@ export default function AppLayout() {
   //   setLists((prev) => [...prev, duplicatedList]);
   //   // setTasks((prev) => [...prev, ...newListTasks]);
   // }
-  function handleAddTag(title, bgColor, textColor) {
-    const newTag = {
-      id: Math.random(),
-      title,
-      bgColor,
-      textColor,
-      index: tags.length,
-    };
-    setTags((prev) => [...prev, newTag]);
-  }
-  function handleDeleteTag(id) {
-    const newTags = tags.filter((tag) => tag.id !== id);
-    setTags(newTags);
-    setTrash((prev) => ({ ...prev, tags: [...prev.tags, tags.find((tag) => tag.id === id)] }));
-  }
-  function handleAddStickyNote(note) {
-    setStickyNotes((prev) => [...prev, note]);
-  }
-  function handleUpdateStickyNote(note) {
-    const newNotes = stickyNotes.map((n) => (n.id === note.id ? note : n));
-    setStickyNotes(newNotes);
-  }
-  function handleDeleteStickyNote(id) {
-    const newNotes = stickyNotes.filter((n) => n.id !== id);
-    setStickyNotes(newNotes);
-    setTrash((prev) => ({
-      ...prev,
-      notes: [...prev.notes, stickyNotes.find((note) => note.id === id)],
-    }));
-  }
+
+  // function handleDeleteTag(id) {
+  //   const newTags = tags.filter((tag) => tag.id !== id);
+  //   setTags(newTags);
+  //   setTrash((prev) => ({ ...prev, tags: [...prev.tags, tags.find((tag) => tag.id === id)] }));
+  // }
+
+  // function handleDeleteStickyNote(id) {
+  //   const newNotes = stickyNotes.filter((n) => n.id !== id);
+  //   setStickyNotes(newNotes);
+  //   setTrash((prev) => ({
+  //     ...prev,
+  //     notes: [...prev.notes, stickyNotes.find((note) => note.id === id)],
+  //   }));
+  // }
   function handleDeleteFromTrash(id, type) {
     const newTrash = { ...trash };
     newTrash[type] = newTrash[type].filter((item) => item.id !== id);
@@ -170,10 +120,10 @@ export default function AppLayout() {
       // setLists((prev) => restoreItem(prev, item, index));
     }
     if (type === 'tags') {
-      setTags((prev) => restoreItem(prev, item, index));
+      // setTags((prev) => restoreItem(prev, item, index));
     }
     if (type === 'notes') {
-      setStickyNotes((prev) => restoreItem(prev, item, index));
+      // setStickyNotes((prev) => restoreItem(prev, item, index));
     }
   }
 
@@ -181,25 +131,15 @@ export default function AppLayout() {
     <div className='flex h-full gap-2 bg-background-primary p-5'>
       <SearchProvider>
         <Menu
-          stickyNotesNumber={stickyNotes.length}
-          tags={tags}
-          onAddTag={handleAddTag}
-          onDeleteTag={handleDeleteTag}
           trash={trash}
           onDeleteFromTrash={handleDeleteFromTrash}
           onEmptyTypeFromTrash={handleEmptyTypeFromTrash}
           onEmptyTrash={handleEmptyTrash}
           onRestoreFromTrash={handleRestoreFromTrash}
         />
-        <Main
-          tags={tags}
-          stickyNotes={stickyNotes}
-          onAddNote={handleAddStickyNote}
-          onUpdateNote={handleUpdateStickyNote}
-          onDeleteNote={handleDeleteStickyNote}
-        />
+        <Main />
       </SearchProvider>
-      <TaskInfo  tags={tags} />
+      <TaskInfo />
     </div>
   );
 }

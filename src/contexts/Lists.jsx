@@ -79,7 +79,7 @@ export function ListsProvider({ children, lists, setLists }) {
     });
   }
   async function handleDeleteList(id) {
-    setLists((Lists) => Lists.filter((idea) => idea.$id !== id));
+    setLists((Lists) => Lists.filter((list) => list.$id !== id));
     await databases.deleteDocument(DATABASE_ID, LISTS_COLLECTION_ID, id);
   }
   async function handleGetAllLists() {

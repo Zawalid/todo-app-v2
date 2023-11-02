@@ -1,9 +1,16 @@
 import { Tag } from '../Menu/Menu Tags/Tag';
 import { TagsDropDown } from './TagsDropDown';
+import { useTags } from '../../hooks/useTags';
 
 export function TaskTags({
-  taskTagsIds, tags, isSelectTagOpen, setIsSelectTagOpen, tagsDropDown, tagsDropDownToggler, handleDeleteTagFromTask,
+  taskTagsIds,
+  isSelectTagOpen,
+  setIsSelectTagOpen,
+  tagsDropDown,
+  tagsDropDownToggler,
+  handleDeleteTagFromTask,
 }) {
+  const { tags } = useTags();
   return (
     <>
       <label className='text-sm text-text-tertiary'>Tags</label>
@@ -20,7 +27,8 @@ export function TaskTags({
                 isMainTag={false}
                 showDeleteButton={true}
                 id={tag.id}
-                onDeleteTag={() => handleDeleteTagFromTask(tag.id)} />
+                onDeleteTag={() => handleDeleteTagFromTask(tag.id)}
+              />
             );
         })}
         <li
@@ -29,7 +37,7 @@ export function TaskTags({
           onClick={() => setIsSelectTagOpen(true)}
         >
           + Add Tag
-          {isSelectTagOpen && <TagsDropDown tags={tags} reference={tagsDropDown} />}
+          {isSelectTagOpen && <TagsDropDown  reference={tagsDropDown} />}
         </li>
       </ul>
     </>

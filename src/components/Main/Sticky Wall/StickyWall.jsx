@@ -1,82 +1,54 @@
-import { useState } from 'react';
 import { StickyNote } from './StickyNote';
 import { StickyNoteEditor } from './Sticky Note Editor/StickyNoteEditor';
+import { useStickyNotes } from '../../../hooks/useStickyNotes';
 
-export function StickyWall({
-  stickyNotes,
-  onAdd,
-  onUpdate,
-  onDelete,
-  currentNote,
-  setCurrentNote,
-  isEditorOpen,
-  setIsEditorOpen,
-  setIsStickyNoteOpened,
-}) {
+export function StickyWall() {
+  const {
+    stickyNotes,
+    currentNote,
+    setCurrentNote,
+    setIsStickyNoteOpened,
+    isStickyNoteEditorOpen,
+    setIsStickyNoteEditorOpen,
+  } = useStickyNotes();
+
   function handleBack() {
-    setIsEditorOpen(false);
-    setIsStickyNoteOpened(false)
+    setIsStickyNoteEditorOpen(false);
+    setIsStickyNoteOpened(false);
   }
 
-  return isEditorOpen ? (
-    <StickyNoteEditor
-      currentNote={currentNote}
-      stickyNotes={stickyNotes}
-      onBack={handleBack}
-      onAdd={(note) => {
-        onAdd(note);
-        handleBack();
-      }}
-      onUpdate={(note) => {
-        onUpdate(note);
-        handleBack();
-      }}
-      onDelete={(id) => {
-        onDelete(id);
-        handleBack();
-      }}
-    />
+  return isStickyNoteEditorOpen ? (
+    <StickyNoteEditor currentNote={currentNote} onBack={handleBack} />
   ) : (
     <div className='stickyWall grid h-full grid-cols-[repeat(auto-fill,minmax(270px,1fr))] place-content-start gap-6 overflow-auto rounded-lg border border-background-tertiary p-5'>
       {stickyNotes.map((stickyNote) => {
         return (
           <StickyNote
-            key={stickyNote.id}
-            title={stickyNote.title}
-            description={stickyNote.description}
-            bgColor={stickyNote.bgColor}
-            textColor={stickyNote.textColor}
-            creationDate={stickyNote.creationDate}
+            key={stickyNote.$id}
+            stickyNote={stickyNote}
             onClick={() => {
-              setCurrentNote({
-                id: stickyNote.id,
-                title: stickyNote.title,
-                content: stickyNote.content || '<p></p>',
-                description: stickyNote.description,
-                bgColor: stickyNote.bgColor,
-                textColor: stickyNote.textColor,
-                creationDate: stickyNote.creationDate,
-              });
-              setIsEditorOpen(true);
+              setCurrentNote(stickyNote);
+              setIsStickyNoteEditorOpen(true);
             }}
           />
         );
       })}
       <StickyNote
         key={Math.random()}
-        bgColor='#EBEBEB'
+        stickyNote={{
+          bgColor: '#EBEBEB',
+          textColor: '#000',
+        }}
         adder
         onClick={() => {
           setCurrentNote({
-            id: Math.random(),
             title: '',
             content: '<p></p>',
             description: '',
             bgColor: '#ff922b',
             textColor: '#fff',
-            creationDate: new Date().toLocaleDateString(),
           });
-          setIsEditorOpen(true);
+          setIsStickyNoteEditorOpen(true);
         }}
       />
     </div>

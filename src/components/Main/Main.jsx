@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useHref, useNavigate } from 'react-router-dom';
 import { Title } from './Title';
 import { StickyWall } from './Sticky Wall/StickyWall';
@@ -9,16 +9,14 @@ import { SearchResults } from './Search/SearchResults';
 import { useTasks } from '../../hooks/useTasks';
 import { useSearch } from '../../hooks/useSearch';
 import { useLists } from '../../hooks/useLists';
+import { useStickyNotes } from '../../hooks/useStickyNotes';
 
-export function Main({ tags, stickyNotes, onAddNote, onUpdateNote, onDeleteNote }) {
+export function Main() {
   const { tasks, handleAddTask, todayTasks, tomorrowTasks, thisWeekTasks, upcomingTasks } =
     useTasks();
   const { lists, handleAddTaskToList } = useLists();
-
+  const { stickyNotes, isStickyNoteOpened } = useStickyNotes();
   const { searchResults } = useSearch();
-  const [currentNote, setCurrentNote] = useState(null);
-  const [isEditorOpen, setIsEditorOpen] = useState(false);
-  const [isStickyNoteOpened, setIsStickyNoteOpened] = useState(false);
   const activeTab = useHref().split('/')[1];
   const navigate = useNavigate();
 
@@ -79,7 +77,6 @@ export function Main({ tags, stickyNotes, onAddNote, onUpdateNote, onDeleteNote 
             if (listId) handleAddTaskToList(listId, newTask);
             handleAddTask(newTask);
           }}
-          tags={tags}
           condition={condition}
           activeTab={activeTab}
         />
@@ -89,32 +86,10 @@ export function Main({ tags, stickyNotes, onAddNote, onUpdateNote, onDeleteNote 
           todayTasks={todayTasks}
           tomorrowTasks={tomorrowTasks}
           thisWeekTasks={thisWeekTasks}
-          tags={tags}
         />
       )}
-      {(activeTab === 'stickyWall' || isStickyNoteOpened) && (
-        <StickyWall
-          stickyNotes={stickyNotes}
-          onAdd={onAddNote}
-          onUpdate={onUpdateNote}
-          onDelete={onDeleteNote}
-          currentNote={currentNote}
-          setCurrentNote={setCurrentNote}
-          isEditorOpen={isEditorOpen}
-          setIsEditorOpen={setIsEditorOpen}
-          setIsStickyNoteOpened={setIsStickyNoteOpened}
-        />
-      )}
-      {activeTab === 'search' && !isStickyNoteOpened && (
-        <SearchResults
-          stickyNotes={stickyNotes}
-          lists={lists}
-          tags={tags}
-          setCurrentNote={setCurrentNote}
-          setIsEditorOpen={setIsEditorOpen}
-          setIsStickyNoteOpened={setIsStickyNoteOpened}
-        />
-      )}
+      {(activeTab === 'stickyWall' || isStickyNoteOpened) && <StickyWall />}
+      {activeTab === 'search' && !isStickyNoteOpened && <SearchResults />}
     </main>
   );
 }

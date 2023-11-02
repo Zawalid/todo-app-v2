@@ -1,9 +1,5 @@
 export function StickyNote({
-  title,
-  description,
-  bgColor,
-  textColor,
-  creationDate,
+  stickyNote,
   adder,
   onClick,
 }) {
@@ -11,11 +7,11 @@ export function StickyNote({
     <div
       className={
         'group relative h-[270px] overflow-hidden rounded-lg p-5 shadow-[rgba(3_3_3_0.08)_0px_6px_16px] ' +
-        (adder || !description ? 'grid place-content-center' : '')
+        (adder || !stickyNote.description ? 'grid place-content-center' : '')
       }
       style={{
-        backgroundColor: bgColor,
-        color: textColor,
+        backgroundColor: stickyNote.bgColor,
+        color: stickyNote.textColor,
       }}
     >
       {adder && (
@@ -25,23 +21,25 @@ export function StickyNote({
       )}
       {!adder && (
         <>
-          <h2 className='mb-3 text-2xl font-bold'>{title}</h2>
+          <h2 className='mb-3 text-2xl font-bold'>{stickyNote.title}</h2>
           <p
             className={
               'note_text overflow-hidden text-sm font-medium ' +
-              (textColor === '#fff' ? 'text-background-tertiary' : 'text-text-tertiary')
+              (stickyNote.textColor === '#fff' ? 'text-background-tertiary' : 'text-text-tertiary')
             }
           >
-            {description}
+            {stickyNote.description}
           </p>
 
           <div className='absolute bottom-3 left-1/2 flex w-full -translate-x-1/2 items-center justify-between px-5 '>
-            <span className='text-sm font-semibold text-text-primary'>{creationDate}</span>
+            <span className='text-sm font-semibold text-text-primary'>{
+              new Date(stickyNote.$createdAt).toLocaleDateString()
+            }</span>
             <button
-              className=' grid h-6 w-6 place-content-center rounded-full bg-text-primary'
+              className=' grid h-7 w-7 place-content-center rounded-full bg-text-primary'
               onClick={onClick}
             >
-              <i className='fa-solid fa-pen cursor-pointer text-xs  text-white'></i>
+              <i className='fa-solid fa-eye cursor-pointer text-xs  text-white'></i>
             </button>
           </div>
         </>

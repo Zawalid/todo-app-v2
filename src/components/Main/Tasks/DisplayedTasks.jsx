@@ -18,8 +18,7 @@ const filtersConditions = {
   lowPriority: (task) => task.priority === '0',
 };
 
-export function DisplayedTasks({ onAdd, tags, condition, activeTab }) {
-
+export function DisplayedTasks({ onAdd, condition, activeTab }) {
   const { tasks, handleClearAllTasks } = useTasks();
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -130,7 +129,7 @@ export function DisplayedTasks({ onAdd, tags, condition, activeTab }) {
                 }
               })
               .map((task) => (
-                <Task key={task.$id} task={task} tags={tags} />
+                <Task key={task.$id} task={task} />
               ))}
           </ul>
           {filteredTasks.filter((task) => condition(task)).length === 0 && (

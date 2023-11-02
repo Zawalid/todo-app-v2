@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { Colors } from '../../Colors';
+import { useTags } from '../../../hooks/useTags';
 
-export function AddNewTag({ reference, isOpen, onAdd }) {
+export function AddNewTag({ reference, isOpen }) {
+  const { handleAddTag } = useTags();
   const [value, setValue] = useState('');
   const [bgColor, setBgColor] = useState('#ff6b6b');
   const [textColor, setTextColor] = useState('#ffffff');
@@ -35,7 +37,7 @@ export function AddNewTag({ reference, isOpen, onAdd }) {
 
   function handleAdd() {
     if (!value) return;
-    onAdd(value, bgColor, textColor);
+    handleAddTag(value, bgColor, textColor);
     setValue('');
   }
   return (
@@ -65,7 +67,8 @@ export function AddNewTag({ reference, isOpen, onAdd }) {
             style={{ backgroundColor: bgColor, color: textColor }}
             value={value}
             onChange={(e) => setValue(e.target.value)}
-            ref={inputEl} />
+            ref={inputEl}
+          />
         </form>
       </div>
       <div className='mt-3 flex flex-wrap items-center justify-start gap-2' ref={bgColorsDiv}>

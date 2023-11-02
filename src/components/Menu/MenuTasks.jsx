@@ -1,9 +1,10 @@
 import { NavLink } from 'react-router-dom';
 import { useTasks } from '../../hooks/useTasks';
+import { useStickyNotes } from '../../hooks/useStickyNotes';
 
-export function MenuTasks({ stickyNotesNumber }) {
+export function MenuTasks() {
   const { todayTasks, tasks, upcomingTasks } = useTasks();
-
+  const { stickyNotes } = useStickyNotes();
   return (
     <div className='pb-5'>
       <h4 className='mb-4 mt-5  font-medium text-text-secondary'>Tasks</h4>
@@ -50,7 +51,9 @@ export function MenuTasks({ stickyNotesNumber }) {
               Sticky Wall
             </span>
             <div className='count grid place-content-center rounded-sm bg-background-tertiary py-[1px] transition-colors  duration-300 group-hover:bg-background-primary'>
-              <span className='text-xs font-semibold text-text-secondary'>{stickyNotesNumber}</span>
+              <span className='text-xs font-semibold text-text-secondary'>
+                {stickyNotes.length}
+              </span>
             </div>
           </NavLink>
         </li>

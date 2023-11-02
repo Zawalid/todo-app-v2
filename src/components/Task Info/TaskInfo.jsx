@@ -9,7 +9,7 @@ import { TaskPriority } from './TaskPriority';
 import { useTasks } from '../../hooks/useTasks';
 import { useLists } from '../../hooks/useLists';
 
-export function TaskInfo({ tags }) {
+export function TaskInfo() {
   const { currentTask, isTaskOpen, setIsTaskOpen, handleUpdateTask, handleDeleteTask } = useTasks();
   const { handleAddTaskToList } = useLists();
   const [taskTitle, setTaskTitle] = useState();
@@ -187,7 +187,6 @@ export function TaskInfo({ tags }) {
               <TaskTags
                 {...{
                   taskTagsIds,
-                  tags,
                   isSelectTagOpen,
                   setIsSelectTagOpen,
                   tagsDropDown,

@@ -7,10 +7,6 @@ import { Trash } from './Trash/Trash';
 import { useHref, useNavigate } from 'react-router-dom';
 
 export function Menu({
-  stickyNotesNumber,
-  tags,
-  onAddTag,
-  onDeleteTag,
   trash,
   onDeleteFromTrash,
   onEmptyTypeFromTrash,
@@ -48,9 +44,9 @@ export function Menu({
           </div>
           <div className='overflow-y-auto'>
             <Search />
-            <MenuTasks stickyNotesNumber={stickyNotesNumber} />
+            <MenuTasks />
             <MenuLists />
-            <MenuTags tags={tags} onAddTag={onAddTag} onDeleteTag={onDeleteTag} />
+            <MenuTags/>
           </div>
           <div className=' mt-auto  pt-3'>
             <button

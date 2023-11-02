@@ -10,11 +10,9 @@ export function PeriodTasks({
   tomorrowTasks,
   thisWeekTasks,
   period,
-  tags,
   parentRef,
   isToday,
 }) {
-  const { lists } = useLists();
   const [isFullScreen, setIsFullScreen] = useState(false);
   const { handleAddTask } = useTasks();
 
@@ -79,9 +77,7 @@ export function PeriodTasks({
         className={' flex-1 space-y-2 overflow-auto  px-4 ' + (isFullScreen ? '' : 'max-h-[280px]')}
       >
         {tasks[period.tasks]?.length > 0 ? (
-          tasks[period.tasks]?.map((task) => (
-            <Task key={task.$id} task={task}  tags={tags} />
-          ))
+          tasks[period.tasks]?.map((task) => <Task key={task.$id} task={task} />)
         ) : (
           <div className='  flex h-full flex-col items-center justify-center'>
             <h5 className='font-semibold text-text-secondary'>You don&apos;t have any tasks</h5>
