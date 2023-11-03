@@ -1,82 +1,52 @@
 import { createContext, useEffect } from 'react';
-import { databases } from '../AppWrite';
+import { databases, appWriteConfig } from '../AppWrite';
 import { ID } from 'appwrite';
 import { remove$Properties } from '../utils/remove$Properties';
-import { useTasks } from '../hooks/useTasks';
 
-export const DATABASE_ID = '654169b1a5c05d9c1e7e';
-export const LISTS_COLLECTION_ID = '65422c65a17f95378d53';
+const DATABASE_ID = appWriteConfig.databaseId;
+const LISTS_COLLECTION_ID = '65422c65a17f95378d53';
 
 export const ListsContext = createContext();
 
 export function ListsProvider({ children, lists, setLists }) {
-  const { handleAddTask, tasks } = useTasks();
-
-  async function handleAddList(title, color, list, id) {
+  async function handleAddList(title, color, list) {
     const newList = list
       ? list
       : {
           title,
           color,
           tasks: [],
-          number: 0,
           index: lists.length,
         };
     const response = await databases.createDocument(
       DATABASE_ID,
       LISTS_COLLECTION_ID,
-      id ? id : ID.unique(),
+      ID.unique(),
       newList,
     );
     setLists((lists) => [...lists, response]);
   }
-  async function handleUpdateList(id, list, property, value) {
+  async function handleUpdateList(id, property, value) {
+    const list = lists.find((list) => list.$id === id);
     const updatedList = {
       ...list,
-      [property]: Array.isArray(value) ? Array.from(value) : value,
+      [property]: value,
     };
     remove$Properties(updatedList);
-    console.log(list)
-    console.log(updatedList)
-    const res = await databases.updateDocument(DATABASE_ID, LISTS_COLLECTION_ID, id, updatedList);
-    console.log(res);
+
+    await databases.updateDocument(DATABASE_ID, LISTS_COLLECTION_ID, id, updatedList);
     await handleGetAllLists();
   }
-  async function handleRenameList(id, list, title) {
-    handleUpdateList(id, list, 'title', title);
+  async function handleRenameList(id,  title) {
+    handleUpdateList(id, 'title', title);
   }
-  async function handleChangeListColor(id, list, color) {
-    handleUpdateList(id, list, 'color', color);
+  async function handleChangeListColor(id,  color) {
+    handleUpdateList(id, 'color', color);
   }
-  async function handleAddTaskToList(listId, task) {
-    if (!listId) return;
+  async function handleAddTaskToList(listId, taskId) {
     const list = lists.find((l) => l.$id === listId);
-    const newTasks = [...list.tasks, task]
-    handleUpdateList(listId, list, 'tasks', newTasks);
-  }
-  async function handleDuplicateList(id) {
-    const listToDuplicate = lists.find((list) => list.$id === id);
-    handleUpdateList(id, listToDuplicate, 'number', listToDuplicate.number + 1);
-
-    const duplicatedListId = ID.unique();
-    const newListTasks = listToDuplicate.tasks.map((task) => {
-      return {
-        ...task,
-        listId: duplicatedListId,
-        index: tasks.length,
-      };
-    });
-    const duplicatedList = {
-      ...listToDuplicate,
-      title: `${listToDuplicate.title}   (${listToDuplicate.number})`,
-      tasks: newListTasks,
-      number: 0,
-      index: lists.length,
-    };
-    handleAddList(null, null, duplicatedList, duplicatedListId);
-    newListTasks.forEach((task) => {
-      handleAddTask(task);
-    });
+    const newTasks = [...list.tasks, taskId];
+    handleUpdateList(listId, 'tasks', newTasks);
   }
   async function handleDeleteList(id) {
     setLists((Lists) => Lists.filter((list) => list.$id !== id));
@@ -102,7 +72,6 @@ export function ListsProvider({ children, lists, setLists }) {
         handleRenameList,
         handleChangeListColor,
         handleAddTaskToList,
-        handleDuplicateList,
       }}
     >
       {children}

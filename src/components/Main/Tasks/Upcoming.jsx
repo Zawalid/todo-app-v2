@@ -22,11 +22,7 @@ const periods = [
     dueDate: moment().endOf('week').format('YYYY-MM-DD'),
   },
 ];
-export function Upcoming({
-  todayTasks,
-  tomorrowTasks,
-  thisWeekTasks,
-}) {
+export function Upcoming() {
   
   const wrapper = useRef(null);
   return (
@@ -36,9 +32,6 @@ export function Upcoming({
           key={period.id}
           title={period.title}
           period={period}
-          todayTasks={todayTasks}
-          tomorrowTasks={tomorrowTasks}
-          thisWeekTasks={thisWeekTasks}
           parentRef={wrapper}
           isToday={i === 0}
         />

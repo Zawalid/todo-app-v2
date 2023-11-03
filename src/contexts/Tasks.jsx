@@ -1,15 +1,16 @@
-import { createContext, useEffect, useState } from 'react';
-import { databases } from '../AppWrite';
+import { createContext, useEffect, useRef, useState } from 'react';
+import { databases, appWriteConfig } from '../AppWrite';
 import { ID } from 'appwrite';
 import { checkIfToday, checkIfTomorrow, isDateInCurrentWeek } from '../utils/Moment';
 import { remove$Properties } from '../utils/remove$Properties';
+import { useLists } from '../hooks/useLists';
 
-export const DATABASE_ID = '654169b1a5c05d9c1e7e';
-export const TASKS_COLLECTION_ID = '65416a6c8f0a546d8b4b';
+const DATABASE_ID = appWriteConfig.databaseId;
+const TASKS_COLLECTION_ID = appWriteConfig.tasksCollectionId;
 
 export const TasksContext = createContext();
 
-export function TasksProvider({ children}) {
+export function TasksProvider({ children }) {
   const [tasks, setTasks] = useState([
     // {
     //   title: 'idk',
@@ -99,6 +100,9 @@ export function TasksProvider({ children}) {
   ]);
   const [currentTask, setCurrentTask] = useState(null);
   const [isTaskOpen, setIsTaskOpen] = useState(false);
+  const [isAddingTask, setIsAddingTask] = useState(false);
+  const addNewTaskReference = useRef(null);
+  const { lists, handleAddTaskToList, handleUpdateList } = useLists();
 
   const todayTasks = tasks?.filter((task) => checkIfToday(task.dueDate));
   const tomorrowTasks = tasks?.filter((task) => checkIfTomorrow(task.dueDate));
@@ -112,8 +116,8 @@ export function TasksProvider({ children}) {
     ...thisWeekTasks.filter((t) => ![...todayTasks, ...tomorrowTasks].includes(t)),
   ];
 
-  async function handleAddTask( task) {
-   
+  async function handleAddTask(task, listId) {
+    setIsAddingTask(true);
     const response = await databases.createDocument(
       DATABASE_ID,
       TASKS_COLLECTION_ID,
@@ -121,6 +125,10 @@ export function TasksProvider({ children}) {
       task,
     );
     setTasks((tasks) => [...tasks, response]);
+    setIsAddingTask(false);
+    if (listId) {
+      handleAddTaskToList(listId, response.$id);
+    }
   }
   async function handleUpdateTask(id, task, isCompleted) {
     const updatedTask = isCompleted ? { ...task, isCompleted } : { ...task };
@@ -131,16 +139,31 @@ export function TasksProvider({ children}) {
   async function handleCompleteTask(id, task, isCompleted) {
     handleUpdateTask(id, task, isCompleted);
   }
-  async function handleDeleteTask(id) {
+  async function handleDeleteTask(id, listId) {
     await databases.deleteDocument(DATABASE_ID, TASKS_COLLECTION_ID, id);
     setTasks((tasks) => tasks.filter((task) => task.$id !== id));
+    // Remove the deleted task from the list it was in
+    if (listId === 'none') return;
+    const list = lists.find((list) => list.$id === listId);
+    if (!list) return;
+    const newTasks = list.tasks.filter((taskId) => taskId !== id);
+    await handleUpdateList(listId, 'tasks', newTasks);
   }
-  async function handleClearAllTasks() {
-    const response = await databases.listDocuments(DATABASE_ID, TASKS_COLLECTION_ID);
-    response.documents.forEach(async (task) => {
-      await databases.deleteDocument(DATABASE_ID, TASKS_COLLECTION_ID, task.$id);
-    });
-    setTasks([]);
+  async function handleClearAllTasks(condition1, condition2) {
+    const deletedTasks = tasks.filter((task) => condition1(task) && condition2(task));
+    await Promise.all(
+      deletedTasks.map(async (task) => {
+        await handleDeleteTask(task.$id);
+      }),
+    );
+    await Promise.all(
+      lists.map(async (list) => {
+        const newTasks = list.tasks.filter(
+          (taskId) => !deletedTasks.map((task) => task.$id).includes(taskId),
+        );
+        await handleUpdateList(list.$id, 'tasks', newTasks);
+      }),
+    );
   }
   async function handleOpenTask(id) {
     setCurrentTask(null);
@@ -177,6 +200,8 @@ export function TasksProvider({ children}) {
         handleOpenTask,
         isTaskOpen,
         setIsTaskOpen,
+        isAddingTask,
+        addNewTaskReference,
       }}
     >
       {children}

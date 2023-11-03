@@ -16,18 +16,15 @@ export function TaskTags({
       <label className='text-sm text-text-tertiary'>Tags</label>
       <ul className='flex flex-wrap gap-2'>
         {taskTagsIds?.map((tagId) => {
-          const tag = tags.find((t) => t.id === +tagId);
+          const tag = tags.find((t) => t.$id === tagId);
           if (tag)
             return (
               <Tag
-                key={tag.id}
-                title={tag.title}
-                bgColor={tag.bgColor}
-                textColor={tag.textColor}
+                key={tag.$id}
+                tag={tag}
                 isMainTag={false}
                 showDeleteButton={true}
-                id={tag.id}
-                onDeleteTag={() => handleDeleteTagFromTask(tag.id)}
+                onDeleteTag={() => handleDeleteTagFromTask(tag.$id)}
               />
             );
         })}
@@ -37,7 +34,7 @@ export function TaskTags({
           onClick={() => setIsSelectTagOpen(true)}
         >
           + Add Tag
-          {isSelectTagOpen && <TagsDropDown  reference={tagsDropDown} />}
+          {isSelectTagOpen && <TagsDropDown reference={tagsDropDown} />}
         </li>
       </ul>
     </>

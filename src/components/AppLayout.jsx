@@ -1,4 +1,3 @@
-import { useLocalStorageState } from '../hooks/useLocalStorageState';
 import { TaskInfo } from './Task Info/TaskInfo';
 import { Menu } from './Menu/Menu';
 import { Main } from './Main/Main';
@@ -6,12 +5,7 @@ import '../styles/App.css';
 import { SearchProvider } from '../contexts/Search';
 
 export default function AppLayout() {
-  const [trash, setTrash] = useLocalStorageState('trash', {
-    tasks: [],
-    lists: [],
-    tags: [],
-    notes: [],
-  });
+
 
   // function handleDeleteTask(id) {
   //   setTasks((prev) => prev.filter((t) => t.id !== id));
@@ -86,56 +80,56 @@ export default function AppLayout() {
   //     notes: [...prev.notes, stickyNotes.find((note) => note.id === id)],
   //   }));
   // }
-  function handleDeleteFromTrash(id, type) {
-    const newTrash = { ...trash };
-    newTrash[type] = newTrash[type].filter((item) => item.id !== id);
-    setTrash(newTrash);
-  }
-  function handleEmptyTypeFromTrash(type) {
-    setTrash((prev) => ({ ...prev, [type]: [] }));
-  }
-  function handleEmptyTrash() {
-    setTrash({
-      tasks: [],
-      lists: [],
-      tags: [],
-      notes: [],
-    });
-  }
-  function handleRestoreFromTrash(id, index, type) {
-    const item = trash[type].find((item) => item.id === id);
-    setTrash((prev) => ({
-      ...prev,
-      [type]: prev[type].filter((item) => item.id !== id),
-    }));
-    const restoreItem = (prev, item, index) => {
-      return [...prev.slice(0, index), item, ...prev.slice(index)];
-    };
+  // function handleDeleteFromTrash(id, type) {
+  //   const newTrash = { ...trash };
+  //   newTrash[type] = newTrash[type].filter((item) => item.id !== id);
+  //   setTrash(newTrash);
+  // }
+  // function handleEmptyTypeFromTrash(type) {
+  //   setTrash((prev) => ({ ...prev, [type]: [] }));
+  // }
+  // function handleEmptyTrash() {
+  //   setTrash({
+  //     tasks: [],
+  //     lists: [],
+  //     tags: [],
+  //     notes: [],
+  //   });
+  // }
+  // function handleRestoreFromTrash(id, index, type) {
+  //   const item = trash[type].find((item) => item.id === id);
+  //   setTrash((prev) => ({
+  //     ...prev,
+  //     [type]: prev[type].filter((item) => item.id !== id),
+  //   }));
+  //   const restoreItem = (prev, item, index) => {
+  //     return [...prev.slice(0, index), item, ...prev.slice(index)];
+  //   };
 
-    if (type === 'tasks') {
-      // setTasks((prev) => restoreItem(prev, item, index));
-      // handleAddTaskToList(item.listId, item);
-    }
-    if (type === 'lists') {
-      // setLists((prev) => restoreItem(prev, item, index));
-    }
-    if (type === 'tags') {
-      // setTags((prev) => restoreItem(prev, item, index));
-    }
-    if (type === 'notes') {
-      // setStickyNotes((prev) => restoreItem(prev, item, index));
-    }
-  }
+  //   if (type === 'tasks') {
+  //     // setTasks((prev) => restoreItem(prev, item, index));
+  //     // handleAddTaskToList(item.listId, item);
+  //   }
+  //   if (type === 'lists') {
+  //     // setLists((prev) => restoreItem(prev, item, index));
+  //   }
+  //   if (type === 'tags') {
+  //     // setTags((prev) => restoreItem(prev, item, index));
+  //   }
+  //   if (type === 'notes') {
+  //     // setStickyNotes((prev) => restoreItem(prev, item, index));
+  //   }
+  // }
 
   return (
     <div className='flex h-full gap-2 bg-background-primary p-5'>
       <SearchProvider>
         <Menu
-          trash={trash}
-          onDeleteFromTrash={handleDeleteFromTrash}
-          onEmptyTypeFromTrash={handleEmptyTypeFromTrash}
-          onEmptyTrash={handleEmptyTrash}
-          onRestoreFromTrash={handleRestoreFromTrash}
+          // trash={trash}
+          // onDeleteFromTrash={handleDeleteFromTrash}
+          // onEmptyTypeFromTrash={handleEmptyTypeFromTrash}
+          // onEmptyTrash={handleEmptyTrash}
+          // onRestoreFromTrash={handleRestoreFromTrash}
         />
         <Main />
       </SearchProvider>

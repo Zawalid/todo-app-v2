@@ -12,9 +12,15 @@ import { useLists } from '../../hooks/useLists';
 import { useStickyNotes } from '../../hooks/useStickyNotes';
 
 export function Main() {
-  const { tasks, handleAddTask, todayTasks, tomorrowTasks, thisWeekTasks, upcomingTasks } =
-    useTasks();
-  const { lists, handleAddTaskToList } = useLists();
+  const {
+    tasks,
+    handleAddTask,
+    todayTasks,
+    upcomingTasks,
+    addNewTaskReference,
+  } = useTasks();
+
+  const { lists } = useLists();
   const { stickyNotes, isStickyNoteOpened } = useStickyNotes();
   const { searchResults } = useSearch();
   const activeTab = useHref().split('/')[1];
@@ -23,6 +29,10 @@ export function Main() {
   useEffect(() => {
     activeTab === '' && navigate('/all');
   }, [activeTab, navigate]);
+
+  useEffect(() => {
+    addNewTaskReference.current?.focus();
+  }, [activeTab, addNewTaskReference]);
 
   const listId = lists.find((list) => list.title === activeTab.replace('%20', ' '))?.$id;
 
@@ -74,20 +84,13 @@ export function Main() {
               priority: 0,
               index: tasks.length,
             };
-            if (listId) handleAddTaskToList(listId, newTask);
-            handleAddTask(newTask);
+            handleAddTask(newTask, listId);
           }}
           condition={condition}
           activeTab={activeTab}
         />
       ) : null}
-      {activeTab === 'upcoming' && (
-        <Upcoming
-          todayTasks={todayTasks}
-          tomorrowTasks={tomorrowTasks}
-          thisWeekTasks={thisWeekTasks}
-        />
-      )}
+      {activeTab === 'upcoming' && <Upcoming />}
       {(activeTab === 'stickyWall' || isStickyNoteOpened) && <StickyWall />}
       {activeTab === 'search' && !isStickyNoteOpened && <SearchResults />}
     </main>

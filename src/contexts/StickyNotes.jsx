@@ -1,10 +1,10 @@
 import { createContext, useEffect, useState } from 'react';
-import { databases } from '../AppWrite';
+import { databases,appWriteConfig } from '../AppWrite';
 import { ID } from 'appwrite';
 import { remove$Properties } from '../utils/remove$Properties';
 
-export const DATABASE_ID = '654169b1a5c05d9c1e7e';
-export const STICKY_NOTES_COLLECTION_ID = '6542b6c775ec72031bb6';
+ const DATABASE_ID = appWriteConfig.databaseId;
+ const STICKY_NOTES_COLLECTION_ID = appWriteConfig.stickyNotesCollectionId;
 
 export const StickyNotesContext = createContext();
 

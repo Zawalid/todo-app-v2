@@ -66,6 +66,7 @@ export function DisplayedTasks({ onAdd, condition, activeTab }) {
       tasks.filter((task) => condition(task)).filter((task) => filtersConditions[filter]?.(task)),
     );
   }, [tasks, filter, condition]);
+
   return (
     <div className='relative flex h-full flex-col overflow-auto'>
       <div className='flex items-center gap-2'>
@@ -160,9 +161,9 @@ export function DisplayedTasks({ onAdd, condition, activeTab }) {
         <ConfirmationModal
           sentence='Are you sure you want to clear all tasks?'
           confirmText='Clear All'
-          onConfirm={() => {
-            handleClearAllTasks(condition, filtersConditions[filter]);
+          onConfirm={async () => {
             setIsClearAllModalOpen(false);
+            await handleClearAllTasks(condition, filtersConditions[filter]);
           }}
           onCancel={() => setIsClearAllModalOpen(false)}
         />

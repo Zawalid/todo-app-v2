@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ConfirmationModal } from '../../ConfirmationModal';
 import { useTags } from '../../../hooks/useTags';
 
-export function Tag({ tag, showDeleteButton, customClassName }) {
+export function Tag({ tag, showDeleteButton, customClassName, onDeleteTag }) {
   const { handleDeleteTag } = useTags();
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   return (
@@ -15,7 +15,7 @@ export function Tag({ tag, showDeleteButton, customClassName }) {
         {showDeleteButton && (
           <button
             className='absolute -right-1 -top-1 grid h-3 w-3 cursor-pointer place-content-center rounded-full bg-red-600'
-            onClick={() => setIsConfirmationModalOpen(true)}
+            onClick={() => (onDeleteTag ? onDeleteTag() : setIsConfirmationModalOpen(true))}
           >
             <i className='fas fa-xmark  text-[10px] text-white'></i>
           </button>

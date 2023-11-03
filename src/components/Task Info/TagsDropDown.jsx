@@ -12,12 +12,9 @@ export function TagsDropDown({ reference }) {
         {tags.length > 0 &&
           tags.map((tag) => (
             <Tag
-              key={tag.id}
-              title={tag.title}
-              bgColor={tag.bgColor}
-              textColor={tag.textColor}
+              key={tag.$id}
+              tag={tag}
               showDeleteButton={false}
-              id={tag.id}
               customClassName={'cursor-pointer'}
             />
           ))}

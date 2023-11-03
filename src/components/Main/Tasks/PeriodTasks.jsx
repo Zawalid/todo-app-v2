@@ -2,19 +2,10 @@ import { useEffect, useState } from 'react';
 import { Task } from './Task';
 import { AddTask } from './AddTask';
 import { useTasks } from '../../../hooks/useTasks';
-import { useLists } from '../../../hooks/useLists';
 
-export function PeriodTasks({
-  title,
-  todayTasks,
-  tomorrowTasks,
-  thisWeekTasks,
-  period,
-  parentRef,
-  isToday,
-}) {
+export function PeriodTasks({ title, period, parentRef, isToday }) {
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const { handleAddTask } = useTasks();
+  const { handleAddTask, todayTasks, tomorrowTasks, thisWeekTasks } = useTasks();
 
   const tasks = {
     todayTasks,

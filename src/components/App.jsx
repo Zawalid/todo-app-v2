@@ -84,8 +84,8 @@ export default function App() {
   const listsTitles = lists.map((list) => list.title);
 
   return (
-    <TasksProvider>
-      <ListsProvider lists={lists} setLists={setLists}>
+    <ListsProvider lists={lists} setLists={setLists}>
+      <TasksProvider>
         <StickyNotesProvider>
           <TagsProvider>
             <BrowserRouter>
@@ -102,7 +102,7 @@ export default function App() {
             </BrowserRouter>
           </TagsProvider>
         </StickyNotesProvider>
-      </ListsProvider>
-    </TasksProvider>
+      </TasksProvider>
+    </ListsProvider>
   );
 }

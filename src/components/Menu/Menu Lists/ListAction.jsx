@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Colors } from '../../Colors';
+
 export function ListAction({
   isOpen,
   reference,
@@ -7,7 +8,6 @@ export function ListAction({
   onClose,
   onChangeColor,
   onOpenRenameInput,
-  onDuplicateList,
 }) {
   const [isColorsOpen, setIsColorsOpen] = useState(false);
   const colorsDiv = useRef(null);
@@ -48,7 +48,7 @@ export function ListAction({
       </li>
       {isColorsOpen || (
         <li
-          className='grid cursor-pointer grid-cols-[15px_1fr] items-center gap-2 text-start text-sm text-text-secondary transition-colors duration-300 hover:text-text-tertiary'
+          className=' grid cursor-pointer grid-cols-[15px_1fr] items-center gap-2 text-start text-sm text-text-secondary transition-colors duration-300 hover:text-text-tertiary'
           onClick={() => setIsColorsOpen(!isColorsOpen)}
         >
           <i className='fa-solid fa-palette'></i>
@@ -65,17 +65,7 @@ export function ListAction({
         <Colors />
       </div>
       <li
-        className='my-3 grid cursor-pointer grid-cols-[15px_1fr] items-center gap-2 text-start text-sm text-text-secondary transition-colors duration-300 hover:text-text-tertiary'
-        onClick={() => {
-          onDuplicateList();
-          setTimeout(() => onClose(), 50);
-        }}
-      >
-        <i className='fa-solid fa-copy '></i>
-        <p>Duplicate List</p>
-      </li>
-      <li
-        className='grid cursor-pointer grid-cols-[15px_1fr] items-center gap-2 text-start text-sm text-text-secondary transition-colors duration-300 hover:text-text-tertiary'
+        className='mt-3 grid cursor-pointer grid-cols-[15px_1fr] items-center gap-2 text-start text-sm text-text-secondary transition-colors duration-300 hover:text-text-tertiary'
         onClick={onDelete}
       >
         <i className='fa-solid fa-trash-can '></i>

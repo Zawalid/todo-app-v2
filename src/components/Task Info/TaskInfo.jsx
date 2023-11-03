@@ -7,11 +7,9 @@ import { TaskSubTasks } from './TaskSubTasks';
 import { ConfirmationModal } from '../ConfirmationModal';
 import { TaskPriority } from './TaskPriority';
 import { useTasks } from '../../hooks/useTasks';
-import { useLists } from '../../hooks/useLists';
 
 export function TaskInfo() {
   const { currentTask, isTaskOpen, setIsTaskOpen, handleUpdateTask, handleDeleteTask } = useTasks();
-  const { handleAddTaskToList } = useLists();
   const [taskTitle, setTaskTitle] = useState();
   const [taskNote, setTaskNote] = useState();
   const [taskListId, setTaskListId] = useState('none');
@@ -31,7 +29,7 @@ export function TaskInfo() {
       setTaskNote(currentTask?.note);
       setTaskListId(currentTask?.listId);
       setTaskDueDate(currentTask?.dueDate);
-      setTaskSubtasks(currentTask?.subtasks);
+      setTaskSubtasks(currentTask?.subtasks.map((el) => JSON.parse(el)));
       setTaskTagsIds(currentTask?.tagsIds);
       setTaskPriority(currentTask?.priority);
     } else {
@@ -51,12 +49,14 @@ export function TaskInfo() {
       currentTask?.listId !== taskListId ||
       currentTask?.dueDate !== taskDueDate ||
       currentTask?.subtasks?.length !== taskSubtasks?.length ||
-      currentTask?.subtasks.some((subtask, index) => {
-        return (
-          subtask.title !== taskSubtasks[index].title ||
-          subtask.isCompleted !== taskSubtasks[index].isCompleted
-        );
-      }) ||
+      currentTask?.subtasks
+        .map((el) => JSON.parse(el))
+        .some((subtask, index) => {
+          return (
+            subtask.title !== taskSubtasks[index].title ||
+            subtask.isCompleted !== taskSubtasks[index].isCompleted
+          );
+        }) ||
       currentTask?.tagsIds?.length !== taskTagsIds?.length ||
       currentTask?.tagsIds.some((tagId, index) => tagId !== taskTagsIds[index]) ||
       currentTask?.priority !== taskPriority
@@ -120,10 +120,11 @@ export function TaskInfo() {
   }
   function handleAddTagToTask(tagId) {
     setTaskTagsIds((prev) => {
-      return prev.includes(+tagId) ? prev : [...prev, +tagId];
+      return prev.includes(tagId) ? prev : [...prev, tagId];
     });
   }
   function handleDeleteTagFromTask(tagId) {
+    console.log(tagId);
     setTaskTagsIds((prev) => prev.filter((id) => id !== tagId));
   }
   function handleSaveChanges() {
@@ -134,13 +135,12 @@ export function TaskInfo() {
         note: taskNote,
         listId: taskListId,
         dueDate: taskDueDate,
-        subtasks: taskSubtasks,
+        subtasks: taskSubtasks.map((el) => JSON.stringify(el)), //cause appWrite takes only stings
         tagsIds: taskTagsIds,
         priority: taskPriority,
       };
       setIsTaskOpen(false);
       handleUpdateTask(currentTask.$id, editedTask);
-      handleAddTaskToList(taskListId, editedTask);
     }
   }
   return (
@@ -156,8 +156,8 @@ export function TaskInfo() {
         <ConfirmationModal
           sentence='Are you sure you want to delete this task?'
           confirmText='Delete'
-          onConfirm={() => {
-            handleDeleteTask(currentTask.$id);
+          onConfirm={async () => {
+            await handleDeleteTask(currentTask.$id,taskListId);
             setIsDeleteModalOpen(false);
             setIsTaskOpen(false);
           }}

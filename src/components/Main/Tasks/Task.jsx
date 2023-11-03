@@ -5,14 +5,16 @@ import Tippy from '@tippyjs/react';
 import completedSoundFile from '../../../assets/completed.mp3';
 import { useTasks } from '../../../hooks/useTasks';
 import { useLists } from '../../../hooks/useLists';
+import { useTags } from '../../../hooks/useTags';
 
 const completedSound = new Audio(completedSoundFile);
 
-export function Task({ task, tags }) {
+export function Task({ task }) {
   const {lists} = useLists()
   const [checked, setChecked] = useState(task.isCompleted);
   const isPassed = isTaskOverdue(task.dueDate);
   const { handleOpenTask, handleCompleteTask } = useTasks();
+  const {tags} = useTags()
 
   const listName = useMemo(
     () => lists.find((l) => l?.$id === task.listId)?.title,
@@ -99,17 +101,14 @@ export function Task({ task, tags }) {
             {task.tagsIds?.length > 0 && (
               <ul className='flex flex-wrap items-center gap-2'>
                 {task.tagsIds.map((tagId) => {
-                  const tag = tags.find((t) => t.id === +tagId);
+                  const tag = tags.find((t) => t.$id === tagId);
                   if (tag)
                     return (
                       <Tag
-                        key={tag.id}
-                        title={tag.title}
-                        bgColor={tag.bgColor}
-                        textColor={tag.textColor}
+                        key={tag.$id}
+                        tag={tag}
                         isMainTag={false}
                         showDeleteButton={false}
-                        id={tag.id}
                         customClassName={'px-2 py-1 cursor-auto'}
                       />
                     );

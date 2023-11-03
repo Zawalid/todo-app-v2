@@ -7,8 +7,7 @@ import { useLists } from '../../../hooks/useLists';
 
 export function List({ list }) {
   const { $id, title, color, tasks } = list;
-  const { lists, handleDeleteList, handleRenameList, handleChangeListColor, handleDuplicateList } =
-    useLists();
+  const { lists, handleDeleteList, handleRenameList, handleChangeListColor } = useLists();
 
   const [isListActionsOpen, setIsListActionsOpen] = useState(false);
   const [isRenameInputOpen, setIsRenameInputOpen] = useState(false);
@@ -38,7 +37,7 @@ export function List({ list }) {
   function changeColor(color) {
     console.log(color);
     setListColor(color);
-    handleChangeListColor($id, list, color);
+    handleChangeListColor($id, color);
   }
   function openRenameInput() {
     setIsRenameInputOpen(true);
@@ -47,7 +46,7 @@ export function List({ list }) {
   function renameList(e) {
     if (isNewTitleTaken) return;
     const newTitle = e.target.value.trim();
-    handleRenameList($id, list, newTitle);
+    handleRenameList($id, newTitle);
     setIsRenameInputOpen(false);
     // Change the path to the new title if the renamed list is the active one
     path.replace(/%20/g, ' ') === `/${title}` && navigator(`/${newTitle}`);
@@ -85,7 +84,6 @@ export function List({ list }) {
             onClose={() => setIsListActionsOpen(false)}
             onChangeColor={changeColor}
             onOpenRenameInput={openRenameInput}
-            onDuplicateList={() => handleDuplicateList($id)}
           />
         </button>
         <div
