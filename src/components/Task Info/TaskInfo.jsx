@@ -7,9 +7,11 @@ import { TaskSubTasks } from './TaskSubTasks';
 import { ConfirmationModal } from '../ConfirmationModal';
 import { TaskPriority } from './TaskPriority';
 import { useTasks } from '../../hooks/useTasks';
+import { useLists } from '../../hooks/useLists';
 
 export function TaskInfo() {
   const { currentTask, isTaskOpen, setIsTaskOpen, handleUpdateTask, handleDeleteTask } = useTasks();
+  const { handleAddTaskToList } = useLists();
   const [taskTitle, setTaskTitle] = useState();
   const [taskNote, setTaskNote] = useState();
   const [taskListId, setTaskListId] = useState('none');
@@ -141,6 +143,9 @@ export function TaskInfo() {
       };
       setIsTaskOpen(false);
       handleUpdateTask(currentTask.$id, editedTask);
+      if (taskListId !== 'none' && taskListId !== currentTask.listId) {
+        handleAddTaskToList(taskListId, editedTask.$id);
+      }
     }
   }
   return (
@@ -157,7 +162,7 @@ export function TaskInfo() {
           sentence='Are you sure you want to delete this task?'
           confirmText='Delete'
           onConfirm={async () => {
-            await handleDeleteTask(currentTask.$id,taskListId);
+            await handleDeleteTask(currentTask.$id, taskListId);
             setIsDeleteModalOpen(false);
             setIsTaskOpen(false);
           }}
