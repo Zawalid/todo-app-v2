@@ -4,10 +4,12 @@ import { ListAction } from './ListAction';
 import { ConfirmationModal } from '../../ConfirmationModal';
 import { useIsTitleTaken } from '../../../hooks/useIsTitleTaken';
 import { useLists } from '../../../hooks/useLists';
+// import { useTasks } from '../../../hooks/useTasks';
 
 export function List({ list }) {
-  const { $id, title, color, tasks } = list;
+  const { $id, title, color, tasks: listTasks } = list;
   const { lists, handleDeleteList, handleRenameList, handleChangeListColor } = useLists();
+  // const { tasks, handleDeleteTask } = useTasks();
 
   const [isListActionsOpen, setIsListActionsOpen] = useState(false);
   const [isRenameInputOpen, setIsRenameInputOpen] = useState(false);
@@ -68,7 +70,7 @@ export function List({ list }) {
             {title}
           </span>
           <div className='count mx-1 grid place-content-center rounded-sm bg-background-tertiary py-[1px] transition-colors duration-300 group-hover:bg-background-primary'>
-            <span className='text-xs font-semibold text-text-secondary'>{tasks.length}</span>
+            <span className='text-xs font-semibold text-text-secondary'>{listTasks.length}</span>
           </div>
         </NavLink>
 
@@ -112,10 +114,14 @@ export function List({ list }) {
         <ConfirmationModal
           sentence='Are you sure you want to delete this list?'
           confirmText='Delete'
-          onConfirm={() => {
+          onConfirm={async () => {
             handleDeleteList($id);
             setIsDeleteModalOpen(false);
             path.replace(/%20/g, ' ') === `/${title}` && navigator('/');
+            // To delete all the tasks of the deleted list
+            // const tasksToDelete = tasks.filter((task) => task.listId === $id);
+            // if (tasksToDelete.length === 0) return;
+            // tasksToDelete.forEach(async (task) => await handleDeleteTask(task.$id));
           }}
           onCancel={() => setIsDeleteModalOpen(false)}
         />
