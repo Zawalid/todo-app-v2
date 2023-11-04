@@ -2,6 +2,7 @@ import { createContext, useEffect } from 'react';
 import { databases, appWriteConfig } from '../AppWrite';
 import { ID } from 'appwrite';
 import { remove$Properties } from '../utils/remove$Properties';
+import { useTrash } from '../hooks/useTrash';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 const LISTS_COLLECTION_ID = '65422c65a17f95378d53';
@@ -9,6 +10,8 @@ const LISTS_COLLECTION_ID = '65422c65a17f95378d53';
 export const ListsContext = createContext();
 
 export function ListsProvider({ children, lists, setLists }) {
+  // const { handleAddToTrash } = useTrash();
+
   async function handleAddList(title, color, list) {
     const newList = list
       ? list
@@ -16,7 +19,6 @@ export function ListsProvider({ children, lists, setLists }) {
           title,
           color,
           tasks: [],
-          index: lists.length,
         };
     const response = await databases.createDocument(
       DATABASE_ID,
@@ -37,10 +39,10 @@ export function ListsProvider({ children, lists, setLists }) {
     await databases.updateDocument(DATABASE_ID, LISTS_COLLECTION_ID, id, updatedList);
     await handleGetAllLists();
   }
-  async function handleRenameList(id,  title) {
+  async function handleRenameList(id, title) {
     handleUpdateList(id, 'title', title);
   }
-  async function handleChangeListColor(id,  color) {
+  async function handleChangeListColor(id, color) {
     handleUpdateList(id, 'color', color);
   }
   async function handleAddTaskToList(listId, taskId) {
@@ -51,6 +53,10 @@ export function ListsProvider({ children, lists, setLists }) {
   async function handleDeleteList(id) {
     setLists((Lists) => Lists.filter((list) => list.$id !== id));
     await databases.deleteDocument(DATABASE_ID, LISTS_COLLECTION_ID, id);
+    handleAddToTrash( 'lists', {
+      id,
+      title : lists.find((list) => list.$id === id).title,
+    });
   }
   async function handleGetAllLists() {
     const response = await databases.listDocuments(DATABASE_ID, LISTS_COLLECTION_ID);

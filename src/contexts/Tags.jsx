@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from 'react';
 import { databases,appWriteConfig } from '../AppWrite';
 import { ID } from 'appwrite';
+import { useTrash } from '../hooks/useTrash';
 
  const DATABASE_ID = appWriteConfig.databaseId;
  const TAGS_COLLECTION_ID = appWriteConfig.tagsCollectionId;
@@ -17,6 +18,8 @@ export function TagsProvider({ children }) {
     //   index: 0,
     // },
   ]);
+  // const { handleAddToTrash } = useTrash();
+
 
   async function handleAddTag(title, bgColor, textColor) {
     const response = await databases.createDocument(DATABASE_ID, TAGS_COLLECTION_ID, ID.unique(), {
@@ -30,6 +33,11 @@ export function TagsProvider({ children }) {
   async function handleDeleteTag(id) {
     await databases.deleteDocument(DATABASE_ID, TAGS_COLLECTION_ID, id);
     setTags((notes) => notes.filter((note) => note.$id !== id));
+    handleAddToTrash( 'tags',{
+      id,
+      title:tags.find((tag) => tag.$id === id).title,
+    });
+
   }
   async function handleGetAllTags() {
     const response = await databases.listDocuments(DATABASE_ID, TAGS_COLLECTION_ID);

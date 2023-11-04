@@ -5,8 +5,6 @@ import '../styles/App.css';
 import { SearchProvider } from '../contexts/Search';
 
 export default function AppLayout() {
-
-
   // function handleDeleteTask(id) {
   //   setTasks((prev) => prev.filter((t) => t.id !== id));
   //   const newLists = lists.map((list) => {
@@ -124,13 +122,7 @@ export default function AppLayout() {
   return (
     <div className='flex h-full gap-2 bg-background-primary p-5'>
       <SearchProvider>
-        <Menu
-          // trash={trash}
-          // onDeleteFromTrash={handleDeleteFromTrash}
-          // onEmptyTypeFromTrash={handleEmptyTypeFromTrash}
-          // onEmptyTrash={handleEmptyTrash}
-          // onRestoreFromTrash={handleRestoreFromTrash}
-        />
+        <Menu />
         <Main />
       </SearchProvider>
       <TaskInfo />

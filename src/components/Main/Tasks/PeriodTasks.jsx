@@ -58,7 +58,6 @@ export function PeriodTasks({ title, period, parentRef, isToday }) {
               isCompleted: false,
               tagsIds: [],
               priority: 0,
-              index: tasks.length,
             };
             handleAddTask(newTask);
           }}
@@ -68,7 +67,9 @@ export function PeriodTasks({ title, period, parentRef, isToday }) {
         className={' flex-1 space-y-2 overflow-auto  px-4 ' + (isFullScreen ? '' : 'max-h-[280px]')}
       >
         {tasks[period.tasks]?.length > 0 ? (
-          tasks[period.tasks]?.map((task) => <Task key={task.$id} task={task} />)
+          tasks[period.tasks]
+            ?.filter((task) => !task.isTrashed)
+            ?.map((task) => <Task key={task.$id} task={task} />)
         ) : (
           <div className='  flex h-full flex-col items-center justify-center'>
             <h5 className='font-semibold text-text-secondary'>You don&apos;t have any tasks</h5>

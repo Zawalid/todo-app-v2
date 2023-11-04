@@ -31,6 +31,7 @@ export function Tag({ tag, showDeleteButton, customClassName, onDeleteTag }) {
             setIsConfirmationModalOpen(false);
           }}
           onCancel={() => setIsConfirmationModalOpen(false)}
+          element='Tag'
         />
       )}
     </>

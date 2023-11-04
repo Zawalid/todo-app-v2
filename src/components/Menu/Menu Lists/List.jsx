@@ -124,6 +124,7 @@ export function List({ list }) {
             // tasksToDelete.forEach(async (task) => await handleDeleteTask(task.$id));
           }}
           onCancel={() => setIsDeleteModalOpen(false)}
+          element='List'
         />
       )}
     </>

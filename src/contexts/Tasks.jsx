@@ -4,6 +4,7 @@ import { ID } from 'appwrite';
 import { checkIfToday, checkIfTomorrow, isDateInCurrentWeek } from '../utils/Moment';
 import { remove$Properties } from '../utils/remove$Properties';
 import { useLists } from '../hooks/useLists';
+import { useTrash } from '../hooks/useTrash';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 const TASKS_COLLECTION_ID = appWriteConfig.tasksCollectionId;
@@ -103,6 +104,7 @@ export function TasksProvider({ children }) {
   const [isAddingTask, setIsAddingTask] = useState(false);
   const addNewTaskReference = useRef(null);
   const { lists, handleAddTaskToList, handleUpdateList } = useLists();
+  // const { handleAddToTrash } = useTrash();
 
   const todayTasks = tasks?.filter((task) => checkIfToday(task.dueDate));
   const tomorrowTasks = tasks?.filter((task) => checkIfTomorrow(task.dueDate));
@@ -134,14 +136,25 @@ export function TasksProvider({ children }) {
     const updatedTask = isCompleted ? { ...task, isCompleted } : { ...task };
     remove$Properties(updatedTask);
     await databases.updateDocument(DATABASE_ID, TASKS_COLLECTION_ID, id, updatedTask);
+
     await handleGetAllTasks();
   }
   async function handleCompleteTask(id, task, isCompleted) {
     handleUpdateTask(id, task, isCompleted);
   }
-  async function handleDeleteTask(id, listId) {
-    await databases.deleteDocument(DATABASE_ID, TASKS_COLLECTION_ID, id);
-    setTasks((tasks) => tasks.filter((task) => task.$id !== id));
+  async function handleDeleteTask(id, listId, deletePermanently) {
+    if (deletePermanently) {
+      await databases.deleteDocument(DATABASE_ID, TASKS_COLLECTION_ID, id);
+      setTasks((tasks) => tasks.filter((task) => task.$id !== id));
+    } else {
+      await databases.updateDocument(DATABASE_ID, TASKS_COLLECTION_ID, id, {
+        isTrashed: true,
+      });
+      handleAddToTrash('tasks', {
+        id,
+        title: tasks.find((task) => task.$id === id).title,
+      });
+    }
     // Remove the deleted task from the list it was in
     if (listId === 'none') return;
     const list = lists.find((list) => list.$id === listId);

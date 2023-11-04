@@ -6,13 +6,7 @@ import { Search } from './Search';
 import { Trash } from './Trash/Trash';
 import { useHref, useNavigate } from 'react-router-dom';
 
-export function Menu({
-  trash,
-  onDeleteFromTrash,
-  onEmptyTypeFromTrash,
-  onEmptyTrash,
-  onRestoreFromTrash,
-}) {
+export function Menu() {
   const [isOpen, setIsOpen] = useState(true);
   const path = useHref().split('/');
   const [isTrashOpen, setIsTrashOpen] = useState(path.includes('trash'));
@@ -46,7 +40,7 @@ export function Menu({
             <Search />
             <MenuTasks />
             <MenuLists />
-            <MenuTags/>
+            <MenuTags />
           </div>
           <div className=' mt-auto  pt-3'>
             <button
@@ -62,11 +56,6 @@ export function Menu({
           </div>
           {isTrashOpen && (
             <Trash
-              trash={trash}
-              onDelete={onDeleteFromTrash}
-              onEmptyTypeFromTrash={onEmptyTypeFromTrash}
-              onEmptyTrash={onEmptyTrash}
-              onRestoreFromTrash={onRestoreFromTrash}
               onClose={() => {
                 setIsTrashOpen(false);
                 navigate(path.filter((part) => part !== 'trash').join('/'));

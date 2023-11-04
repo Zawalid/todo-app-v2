@@ -27,7 +27,7 @@ export function DisplayedTasks({ onAdd, condition, activeTab }) {
   const dirParam = searchParams.get('dir');
 
   const [filter, setFilter] = useState(filterParam || !filtersConditions[filterParam] || 'all');
-  const [filteredTasks, setFilteredTasks] = useState(tasks.filter((task) => condition(task)));
+  const [filteredTasks, setFilteredTasks] = useState([]);
   const [isClearAllModalOpen, setIsClearAllModalOpen] = useState(false);
   const [sortKey, setSortKey] = useState(sortParam || 'cDate');
   const [sortDirection, setSortDirection] = useState(dirParam || 'asc');
@@ -63,7 +63,10 @@ export function DisplayedTasks({ onAdd, condition, activeTab }) {
 
   useEffect(() => {
     setFilteredTasks(
-      tasks.filter((task) => condition(task)).filter((task) => filtersConditions[filter]?.(task)),
+      tasks
+        .filter((task) => !task.isTrashed)
+        .filter((task) => condition(task))
+        .filter((task) => filtersConditions[filter]?.(task)),
     );
   }, [tasks, filter, condition]);
 
@@ -166,6 +169,7 @@ export function DisplayedTasks({ onAdd, condition, activeTab }) {
             await handleClearAllTasks(condition, filtersConditions[filter]);
           }}
           onCancel={() => setIsClearAllModalOpen(false)}
+          element='Tasks'
         />
       )}
     </div>

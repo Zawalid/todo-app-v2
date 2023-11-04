@@ -7,6 +7,7 @@ import { ListsProvider } from '../contexts/Lists';
 import { useState } from 'react';
 import { StickyNotesProvider } from '../contexts/StickyNotes';
 import { TagsProvider } from '../contexts/Tags';
+import { TrashProvider } from '../contexts/Trash';
 
 export default function App() {
   const [lists, setLists] = useState([
@@ -54,33 +55,14 @@ export default function App() {
       $databaseId: '654169b1a5c05d9c1e7e',
       $collectionId: '65422c65a17f95378d53',
     },
-    {
-      title: 'no',
-      color: '#ff6b6b',
-      tasks: [],
-      number: 0,
-      index: 5,
-      $id: '65424b9f1451b234e086',
-      $createdAt: '2023-11-01T12:59:11.084+00:00',
-      $updatedAt: '2023-11-01T12:59:11.084+00:00',
-      $permissions: [],
-      $databaseId: '654169b1a5c05d9c1e7e',
-      $collectionId: '65422c65a17f95378d53',
-    },
-    {
-      title: 'no',
-      color: '#ff6b6b',
-      tasks: [],
-      number: 0,
-      index: 5,
-      $id: '65424ba9dcf2f29e1ca9',
-      $createdAt: '2023-11-01T12:59:21.993+00:00',
-      $updatedAt: '2023-11-01T12:59:21.993+00:00',
-      $permissions: [],
-      $databaseId: '654169b1a5c05d9c1e7e',
-      $collectionId: '65422c65a17f95378d53',
-    },
   ]);
+  const [trash, setTrash] = useState({
+    tasks: [],
+    lists: [],
+    tags: [],
+    stickyNotes: [],
+  });
+
   const listsTitles = lists.map((list) => list.title);
 
   return (
@@ -88,18 +70,20 @@ export default function App() {
       <TasksProvider>
         <StickyNotesProvider>
           <TagsProvider>
-            <BrowserRouter>
-              <Routes>
-                <Route path='/' element={<AppLayout />} />
-                {['all', 'today', 'stickyWall', 'upcoming', ...listsTitles].map((tab) => (
-                  <Route path={`/${tab}`} element={<AppLayout />} key={tab}>
-                    <Route path='trash' element={<AppLayout />} />
-                  </Route>
-                ))}
-                <Route path='search' element={<AppLayout />} />
-                <Route path='*' element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
+            <TrashProvider trash={trash} setTrash={setTrash}>
+              <BrowserRouter>
+                <Routes>
+                  <Route path='/' element={<AppLayout />} />
+                  {['all', 'today', 'stickyWall', 'upcoming', ...listsTitles].map((tab) => (
+                    <Route path={`/${tab}`} element={<AppLayout />} key={tab}>
+                      <Route path='trash' element={<AppLayout />} />
+                    </Route>
+                  ))}
+                  <Route path='search' element={<AppLayout />} />
+                  <Route path='*' element={<NotFound />} />
+                </Routes>
+              </BrowserRouter>
+            </TrashProvider>
           </TagsProvider>
         </StickyNotesProvider>
       </TasksProvider>

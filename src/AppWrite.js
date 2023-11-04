@@ -8,6 +8,7 @@ export const appWriteConfig = {
   listsCollectionId: import.meta.env.VITE_LISTS_COLLECTION_ID,
   tagsCollectionId: import.meta.env.VITE_TAGS_COLLECTION_ID,
   stickyNotesCollectionId: import.meta.env.VITE_STICKY_NOTES_COLLECTION_ID,
+  trashCollectionId: import.meta.env.VITE_TRASH_COLLECTION_ID,
   usersCollectionId: import.meta.env.VITE_USERS_COLLECTION_ID,
 };
 const client = new Client();

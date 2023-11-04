@@ -39,7 +39,6 @@ export function StickyNoteEditor({ currentNote, onBack }) {
       description,
       bgColor,
       textColor,
-      index: stickyNotes.length,
     });
     onBack();
   }

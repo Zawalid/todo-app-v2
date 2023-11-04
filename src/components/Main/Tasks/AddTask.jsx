@@ -13,7 +13,7 @@ export function AddTask({ onAdd }) {
   };
 
   useEffect(() => {
-    isAddingTask || addNewTaskReference.current.focus();
+    isAddingTask || addNewTaskReference.current?.focus();
   }, [isAddingTask, addNewTaskReference]);
 
   return (

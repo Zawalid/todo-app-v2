@@ -22,6 +22,7 @@ export function TaskInfo() {
   const [isSelectTagOpen, setIsSelectTagOpen] = useState(false);
   const [isChanged, setIsChanged] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deletePermanently, setDeletePermanently] = useState(false); 
   const tagsDropDown = useRef(null);
   const tagsDropDownToggler = useRef(null);
 
@@ -157,18 +158,6 @@ export function TaskInfo() {
           : 'w-0 items-center bg-background-primary p-0')
       }
     >
-      {isDeleteModalOpen && (
-        <ConfirmationModal
-          sentence='Are you sure you want to delete this task?'
-          confirmText='Delete'
-          onConfirm={async () => {
-            await handleDeleteTask(currentTask.$id, taskListId);
-            setIsDeleteModalOpen(false);
-            setIsTaskOpen(false);
-          }}
-          onCancel={() => setIsDeleteModalOpen(false)}
-        />
-      )}
       {isTaskOpen && (
         <>
           <div className='flex items-center justify-between pb-3'>
@@ -231,6 +220,22 @@ export function TaskInfo() {
             </button>
           </div>
         </>
+      )}
+       {isDeleteModalOpen && (
+        <ConfirmationModal
+          sentence='Are you sure you want to delete this task?'
+          confirmText='Delete'
+          onConfirm={async () => {
+            await handleDeleteTask(currentTask.$id, taskListId,deletePermanently);
+            setIsDeleteModalOpen(false);
+            setIsTaskOpen(false);
+            setDeletePermanently(false)
+          }}
+          onCancel={() => setIsDeleteModalOpen(false)}
+          element='Task'
+          checked={deletePermanently}
+          setChecked={setDeletePermanently}
+        />
       )}
     </aside>
   );

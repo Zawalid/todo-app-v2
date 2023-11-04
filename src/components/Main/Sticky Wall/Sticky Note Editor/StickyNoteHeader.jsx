@@ -71,6 +71,7 @@ export function StickyNoteHeader({
             setIsConfirmationModalOpen(false);
           }}
           onCancel={() => setIsConfirmationModalOpen(false)}
+          element='Sticky Note'
         />
       )}
     </div>
