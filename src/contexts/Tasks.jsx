@@ -1,6 +1,6 @@
 import { createContext, useEffect, useRef, useState } from 'react';
 import { databases, appWriteConfig } from '../AppWrite';
-import { ID } from 'appwrite';
+import { ID, Query } from 'appwrite';
 import { checkIfToday, checkIfTomorrow, isDateInCurrentWeek } from '../utils/Moment';
 import { remove$Properties } from '../utils/remove$Properties';
 import { useLists } from '../hooks/useLists';
@@ -104,7 +104,7 @@ export function TasksProvider({ children }) {
   const [isAddingTask, setIsAddingTask] = useState(false);
   const addNewTaskReference = useRef(null);
   const { lists, handleAddTaskToList, handleUpdateList } = useLists();
-  // const { handleAddToTrash } = useTrash();
+  const { handleAddToTrash } = useTrash();
 
   const todayTasks = tasks?.filter((task) => checkIfToday(task.dueDate));
   const tomorrowTasks = tasks?.filter((task) => checkIfTomorrow(task.dueDate));
@@ -155,6 +155,7 @@ export function TasksProvider({ children }) {
         title: tasks.find((task) => task.$id === id).title,
       });
     }
+    handleGetAllTasks();
     // Remove the deleted task from the list it was in
     if (listId === 'none') return;
     const list = lists.find((list) => list.$id === listId);
@@ -188,7 +189,9 @@ export function TasksProvider({ children }) {
     }
   }
   async function handleGetAllTasks() {
-    const response = await databases.listDocuments(DATABASE_ID, TASKS_COLLECTION_ID);
+    const response = await databases.listDocuments(DATABASE_ID, TASKS_COLLECTION_ID, [
+      Query.equal('isTrashed', [false]),
+    ]);
     setTasks(response.documents);
   }
 

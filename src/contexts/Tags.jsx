@@ -18,7 +18,7 @@ export function TagsProvider({ children }) {
     //   index: 0,
     // },
   ]);
-  // const { handleAddToTrash } = useTrash();
+  const { handleAddToTrash } = useTrash();
 
 
   async function handleAddTag(title, bgColor, textColor) {

@@ -66,11 +66,11 @@ export default function App() {
   const listsTitles = lists.map((list) => list.title);
 
   return (
-    <ListsProvider lists={lists} setLists={setLists}>
-      <TasksProvider>
-        <StickyNotesProvider>
-          <TagsProvider>
-            <TrashProvider trash={trash} setTrash={setTrash}>
+    <TrashProvider trash={trash} setTrash={setTrash}>
+      <ListsProvider lists={lists} setLists={setLists}>
+        <TasksProvider>
+          <StickyNotesProvider>
+            <TagsProvider>
               <BrowserRouter>
                 <Routes>
                   <Route path='/' element={<AppLayout />} />
@@ -83,10 +83,10 @@ export default function App() {
                   <Route path='*' element={<NotFound />} />
                 </Routes>
               </BrowserRouter>
-            </TrashProvider>
-          </TagsProvider>
-        </StickyNotesProvider>
-      </TasksProvider>
-    </ListsProvider>
+            </TagsProvider>
+          </StickyNotesProvider>
+        </TasksProvider>
+      </ListsProvider>
+    </TrashProvider>
   );
 }

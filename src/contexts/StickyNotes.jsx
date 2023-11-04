@@ -36,7 +36,7 @@ export function StickyNotesProvider({ children }) {
   const [currentNote, setCurrentNote] = useState(null);
   const [isStickyNoteOpened, setIsStickyNoteOpened] = useState(false);
   const [isStickyNoteEditorOpen, setIsStickyNoteEditorOpen] = useState(false);
-  // const { handleAddToTrash } = useTrash();
+  const { handleAddToTrash } = useTrash();
 
   async function handleAddStickyNote(note) {
     const response = await databases.createDocument(

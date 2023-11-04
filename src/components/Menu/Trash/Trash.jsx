@@ -54,7 +54,7 @@ export function Trash({ onClose }) {
                   setCurrentItem(JSON.parse(item));
                   whichDelete.current = 'item';
                 }}
-                onRestore={() => handleRestoreFromTrash(currentTab, item.id)}
+                onRestore={() => handleRestoreFromTrash(currentTab, JSON.parse(item).id)}
               />
             ))}
           {trash[currentTab].length === 0 && (
@@ -86,7 +86,7 @@ export function Trash({ onClose }) {
               whichDelete.current === 'item' || whichDelete.current === 'type' ? 'Delete' : 'Empty'
             }
             onConfirm={() => {
-              if (whichDelete.current === 'item') handleDeleteFromTrash(currentTab, currentItem);
+              if (whichDelete.current === 'item') handleDeleteFromTrash(currentTab, currentItem.id);
               if (whichDelete.current === 'type') handleEmptyType(currentTab);
               if (whichDelete.current === 'all') handleEmptyTrash();
               setIsConfirmationModalOpen(false);

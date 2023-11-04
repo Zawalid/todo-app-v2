@@ -10,7 +10,7 @@ const LISTS_COLLECTION_ID = '65422c65a17f95378d53';
 export const ListsContext = createContext();
 
 export function ListsProvider({ children, lists, setLists }) {
-  // const { handleAddToTrash } = useTrash();
+  const { handleAddToTrash } = useTrash();
 
   async function handleAddList(title, color, list) {
     const newList = list

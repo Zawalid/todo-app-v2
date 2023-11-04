@@ -63,10 +63,7 @@ export function DisplayedTasks({ onAdd, condition, activeTab }) {
 
   useEffect(() => {
     setFilteredTasks(
-      tasks
-        .filter((task) => !task.isTrashed)
-        .filter((task) => condition(task))
-        .filter((task) => filtersConditions[filter]?.(task)),
+      tasks.filter((task) => condition(task)).filter((task) => filtersConditions[filter]?.(task)),
     );
   }, [tasks, filter, condition]);
 

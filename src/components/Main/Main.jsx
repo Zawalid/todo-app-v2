@@ -50,9 +50,9 @@ export function Main() {
       : activeTab.replace(/%20/g, ' ');
 
   const count = useMemo(() => {
-    if (activeTab === 'all') return tasks.filter((task) => !task.isTrashed).length;
-    if (activeTab === 'today') return todayTasks.filter((task) => !task.isTrashed).length;
-    if (activeTab === 'upcoming') return upcomingTasks.filter((task) => !task.isTrashed).length;
+    if (activeTab === 'all') return tasks.length;
+    if (activeTab === 'today') return todayTasks.length;
+    if (activeTab === 'upcoming') return upcomingTasks.length;
     if (activeTab === 'stickyWall') return stickyNotes.length;
     if (activeTab === 'search') return searchResults.length;
     if (listId) return lists.find((list) => list.$id === listId)?.tasks.length;
