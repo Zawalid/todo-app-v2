@@ -1,7 +1,15 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useSearch } from '../../hooks/useSearch';
 
-export function Search({ searchQuery, onSearch }) {
+export function Search() {
+  const { searchQuery } = useSearch();
   const [query, setQuery] = useState(searchQuery || '');
+  const navigate = useNavigate();
+
+  function search(query) {
+    query?.trim() === '' ? navigate('/all') : navigate(`/search?query=${query}`);
+  }
   return (
     <div className='relative mb-5 w-full'>
       <input
@@ -11,7 +19,7 @@ export function Search({ searchQuery, onSearch }) {
         value={query}
         onChange={(e) => {
           setQuery(e.target.value);
-          onSearch(e.target.value);
+          search(e.target.value);
         }}
       />
       {query.trim() !== '' && (
@@ -19,7 +27,7 @@ export function Search({ searchQuery, onSearch }) {
           className='absolute right-9 top-[2.5px] cursor-pointer rounded-sm  px-[5px]  text-text-tertiary transition-colors duration-300 hover:bg-background-tertiary'
           onClick={() => {
             setQuery('');
-            onSearch('');
+            search('');
           }}
         >
           <i className='fas fa-xmark'></i>
@@ -27,7 +35,7 @@ export function Search({ searchQuery, onSearch }) {
       )}
       <button
         className='absolute right-2 top-[2.5px] cursor-pointer rounded-sm  px-1 py-[2px] text-sm text-text-tertiary transition-colors duration-300 hover:bg-background-tertiary'
-        onClick={() => onSearch(query)}
+        onClick={() => search(query)}
       >
         <i className='fas fa-search '></i>
       </button>

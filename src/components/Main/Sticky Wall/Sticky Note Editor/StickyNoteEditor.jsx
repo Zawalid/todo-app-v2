@@ -1,10 +1,14 @@
 import { useEffect, useMemo, useState } from 'react';
+import TipTap from '../Tip Tap/TipTap';
 import { BackgroundColorPicker } from './BackgroundColorPicker';
 import { TextColorPicker } from './TextColorPicker';
-import { StickyNoteContent } from './StickyNoteContent';
 import { StickyNoteHeader } from './StickyNoteHeader';
+import { useStickyNotes } from '../../../../hooks/useStickyNotes';
 
-export function StickyNoteEditor({ currentNote, stickyNotes, onBack, onAdd, onUpdate, onDelete }) {
+export function StickyNoteEditor({ currentNote, onBack }) {
+  const { stickyNotes, handleAddStickyNote, handleUpdateStickyNote, handleDeleteStickyNote } =
+    useStickyNotes();
+
   const [title, setTitle] = useState(currentNote.title);
   const [content, setContent] = useState(currentNote.content);
   const [description, setDescription] = useState(currentNote.description);
@@ -13,7 +17,7 @@ export function StickyNoteEditor({ currentNote, stickyNotes, onBack, onAdd, onUp
   const [isChanged, setIsChanged] = useState(false);
 
   const exists = useMemo(
-    () => stickyNotes.find((note) => note.id === currentNote.id),
+    () => stickyNotes.find((note) => note.$id === currentNote.$id),
     [stickyNotes, currentNote],
   );
 
@@ -29,30 +33,28 @@ export function StickyNoteEditor({ currentNote, stickyNotes, onBack, onAdd, onUp
   }, [currentNote, title, content, description, exists, textColor, bgColor]);
 
   function handleAddNote() {
-    onAdd({
-      id: Math.random(),
+    handleAddStickyNote({
       title: !title || title.trim() === '' ? 'Untitled' : title,
       content,
       description,
       bgColor,
       textColor,
-      creationDate: new Date().toLocaleDateString(),
-      index : stickyNotes.length
     });
+    onBack();
   }
   function handleUpdateNote() {
-    onUpdate({
-      id: currentNote.id,
+    handleUpdateStickyNote(currentNote.$id, {
       title: title || 'Untitled',
       content,
       description,
       bgColor,
       textColor,
-      creationDate: currentNote.creationDate,
     });
+    onBack();
   }
   function handleDeleteNote() {
-    onDelete(currentNote.id);
+    handleDeleteStickyNote(currentNote.$id);
+    onBack();
   }
   function isElementEmpty(htmlElement) {
     const tempElement = document.createElement('div');
@@ -96,10 +98,10 @@ export function StickyNoteEditor({ currentNote, stickyNotes, onBack, onAdd, onUp
           onDelete={handleDeleteNote}
           isChanged={isChanged}
         />
-        <StickyNoteContent
+        <TipTap
+          onUpdateContent={setContent}
           content={content}
-          setContent={setContent}
-          creationDate={currentNote.creationDate}
+          creationDate={currentNote.$createdAt}
         />
       </div>
     </div>

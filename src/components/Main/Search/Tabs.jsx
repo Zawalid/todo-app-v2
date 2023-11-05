@@ -1,4 +1,8 @@
-export function Tabs({ currentSearchTab, setCurrentSearchTab }) {
+import { useSearch } from "../../../hooks/useSearch";
+
+export function Tabs() {
+  const {  currentSearchTab, setCurrentSearchTab } = useSearch();
+
   return (
     <div className='flex items-center justify-center gap-8'>
       <button

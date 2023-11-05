@@ -1,35 +1,28 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useHref, useNavigate } from 'react-router-dom';
 import { Title } from './Title';
 import { StickyWall } from './Sticky Wall/StickyWall';
 import { DisplayedTasks } from './Tasks/DisplayedTasks';
 import { Upcoming } from './Tasks/Upcoming';
-import { checkIfToday } from '../../Utils';
+import { checkIfToday } from '../../utils/Moment';
 import { SearchResults } from './Search/SearchResults';
+import { useTasks } from '../../hooks/useTasks';
+import { useSearch } from '../../hooks/useSearch';
+import { useLists } from '../../hooks/useLists';
+import { useStickyNotes } from '../../hooks/useStickyNotes';
 
-export function Main({
-  tasks,
-  onAddTask,
-  onOpen,
-  onComplete,
-  onClearAllTasks,
-  todayTasks,
-  tomorrowTasks,
-  thisWeekTasks,
-  upcomingTasksNumber,
-  lists,
-  tags,
-  stickyNotes,
-  onAddNote,
-  onUpdateNote,
-  onDeleteNote,
-  searchResults,
-  currentSearchTab,
-  setCurrentSearchTab,
-}) {
-  const [currentNote, setCurrentNote] = useState(null);
-  const [isEditorOpen, setIsEditorOpen] = useState(false);
-  const [isStickyNoteOpened, setIsStickyNoteOpened] = useState(false);
+export function Main() {
+  const {
+    tasks,
+    handleAddTask,
+    todayTasks,
+    upcomingTasks,
+    addNewTaskReference,
+  } = useTasks();
+
+  const { lists } = useLists();
+  const { stickyNotes, isStickyNoteOpened } = useStickyNotes();
+  const { searchResults } = useSearch();
   const activeTab = useHref().split('/')[1];
   const navigate = useNavigate();
 
@@ -37,7 +30,11 @@ export function Main({
     activeTab === '' && navigate('/all');
   }, [activeTab, navigate]);
 
-  const listId = lists.find((list) => list.title === activeTab.replace('%20', ' '))?.id;
+  useEffect(() => {
+    addNewTaskReference.current?.focus();
+  }, [activeTab, addNewTaskReference]);
+
+  const listId = lists.find((list) => list.title === activeTab.replace('%20', ' '))?.$id;
 
   const title =
     activeTab === 'all'
@@ -55,23 +52,15 @@ export function Main({
   const count = useMemo(() => {
     if (activeTab === 'all') return tasks.length;
     if (activeTab === 'today') return todayTasks.length;
-    if (activeTab === 'upcoming') return upcomingTasksNumber;
+    if (activeTab === 'upcoming') return upcomingTasks.length;
     if (activeTab === 'stickyWall') return stickyNotes.length;
     if (activeTab === 'search') return searchResults.length;
-    if (listId) return lists.find((list) => list.id === listId)?.tasks.length;
+    if (listId) return lists.find((list) => list.$id === listId)?.tasks.length;
     return 0;
-  }, [
-    activeTab,
-    tasks,
-    listId,
-    stickyNotes,
-    lists,
-    todayTasks,
-    upcomingTasksNumber,
-    searchResults,
-  ]);
+  }, [activeTab, tasks, listId, stickyNotes, lists, todayTasks, upcomingTasks, searchResults]);
+
   const condition = (task) => {
-    if (listId) return +task.listId === +listId;
+    if (listId) return task.listId === listId;
     if (activeTab === 'today') return checkIfToday(task.dueDate);
     if (activeTab === 'all') return true;
     return false;
@@ -84,57 +73,25 @@ export function Main({
         <DisplayedTasks
           onAdd={(title) => {
             const dueDate = activeTab === 'today' && new Date().toISOString().split('T')[0];
-            onAddTask(title, dueDate, listId);
+            const newTask = {
+              title,
+              note: '',
+              dueDate: dueDate || '',
+              listId: listId || 'none',
+              subtasks: [],
+              isCompleted: false,
+              tagsIds: [],
+              priority: 0,
+            };
+            handleAddTask(newTask, listId);
           }}
-          onOpen={onOpen}
-          onComplete={onComplete}
-          tasks={tasks}
-          onClearAllTasks={onClearAllTasks}
-          lists={lists}
-          tags={tags}
           condition={condition}
           activeTab={activeTab}
         />
       ) : null}
-      {activeTab === 'upcoming' && (
-        <Upcoming
-          todayTasks={todayTasks}
-          tomorrowTasks={tomorrowTasks}
-          thisWeekTasks={thisWeekTasks}
-          onAdd={(title, dueDate) => onAddTask(title, dueDate)}
-          onOpen={onOpen}
-          onComplete={onComplete}
-          lists={lists}
-          tags={tags}
-        />
-      )}
-      {(activeTab === 'stickyWall' || isStickyNoteOpened) && (
-        <StickyWall
-          stickyNotes={stickyNotes}
-          onAdd={onAddNote}
-          onUpdate={onUpdateNote}
-          onDelete={onDeleteNote}
-          currentNote={currentNote}
-          setCurrentNote={setCurrentNote}
-          isEditorOpen={isEditorOpen}
-          setIsEditorOpen={setIsEditorOpen}
-          setIsStickyNoteOpened={setIsStickyNoteOpened}
-        />
-      )}
-      {activeTab === 'search' && !isStickyNoteOpened && (
-        <SearchResults
-          searchResults={searchResults}
-          onOpen={onOpen}
-          onComplete={onComplete}
-          lists={lists}
-          tags={tags}
-          currentSearchTab={currentSearchTab}
-          setCurrentSearchTab={setCurrentSearchTab}
-          setCurrentNote={setCurrentNote}
-          setIsEditorOpen={setIsEditorOpen}
-          setIsStickyNoteOpened={setIsStickyNoteOpened}
-        />
-      )}
+      {activeTab === 'upcoming' && <Upcoming />}
+      {(activeTab === 'stickyWall' || isStickyNoteOpened) && <StickyWall />}
+      {activeTab === 'search' && !isStickyNoteOpened && <SearchResults />}
     </main>
   );
 }

@@ -1,5 +1,10 @@
 import moment from 'moment';
 
+moment.updateLocale('en', {
+  week: {
+    dow: 1,
+  },
+});
 export function getFormattedDate(date) {
   const inputDate = moment(date);
   const diffDays = moment().diff(inputDate, 'days');
@@ -21,12 +26,6 @@ export function checkIfYesterday(date) {
   if (!date) return;
   return moment(date).isSame(moment().subtract(1, 'day'), 'day');
 }
-
-moment.updateLocale('en', {
-  week: {
-    dow: 1,
-  },
-});
 export function isDateInCurrentWeek(dateToCheck) {
   const startOfWeek = moment().startOf('week');
   const endOfWeek = moment().endOf('week');
@@ -36,3 +35,5 @@ export function isDateInCurrentWeek(dateToCheck) {
 export function isTaskOverdue(dateToCheck) {
   return moment(dateToCheck).isBefore(moment(), 'day');
 }
+
+

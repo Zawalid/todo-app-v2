@@ -2,7 +2,7 @@ import { AddTask } from '../Main/Tasks/AddTask';
 import { SubTask } from './SubTask';
 
 export function TaskSubTasks({
-  taskSubtasks, handleAddSubTask, handleDeleteSubtask, handleEditSubtask, handleCompleteSubTask,
+  taskSubtasks, handleAddSubTask, handleDeleteSubtask, handleUpdateSubtask, handleCompleteSubTask,
 }) {
   return (
     <div className='mt-7 pb-5 flex-shrink-0 '>
@@ -17,7 +17,7 @@ export function TaskSubTasks({
             key={subtask.id}
             title={subtask.title}
             onDelete={() => handleDeleteSubtask(subtask.id)}
-            onEdit={(title) => handleEditSubtask(subtask.id, title)}
+            onEdit={(title) => handleUpdateSubtask(subtask.id, title)}
             isCompleted={subtask.isCompleted}
             onComplete={(isCompleted) => handleCompleteSubTask(subtask.id, isCompleted)} />
         ))}

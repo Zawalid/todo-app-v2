@@ -1,4 +1,7 @@
-export function Tabs({ currentTab, setCurrentTab }) {
+import { useTrash } from "../../../hooks/useTrash";
+
+export function Tabs() {
+  const { currentTab, setCurrentTab} = useTrash()
   return (
     <div className='flex items-center gap-8  border-b-2 pb-2 '>
       <button
@@ -31,11 +34,11 @@ export function Tabs({ currentTab, setCurrentTab }) {
       <button
         className={
           'relative  text-sm font-semibold text-text-secondary before:absolute before:-bottom-[10px] before:left-0 before:h-[2px] before:w-full before:transition-colors before:duration-300 hover:before:bg-text-secondary ' +
-          (currentTab === 'notes' ? 'before:bg-text-secondary' : 'before:bg-text-transparent')
+          (currentTab === 'stickyNotes' ? 'before:bg-text-secondary' : 'before:bg-text-transparent')
         }
-        onClick={() => setCurrentTab('notes')}
+        onClick={() => setCurrentTab('stickyNotes')}
       >
-        Notes
+        Sticky Notes
       </button>
     </div>
   );

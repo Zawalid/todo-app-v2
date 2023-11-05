@@ -1,7 +1,8 @@
+import { useTags } from '../../hooks/useTags';
 import { Tag } from '../Menu/Menu Tags/Tag';
 
-
-export function TagsDropDown({ tags, reference }) {
+export function TagsDropDown({ reference }) {
+  const { tags } = useTags();
   return (
     <div
       className='absolute -left-full top-full mt-2 cursor-auto  rounded-lg border  border-background-tertiary bg-background-primary p-3'
@@ -11,13 +12,11 @@ export function TagsDropDown({ tags, reference }) {
         {tags.length > 0 &&
           tags.map((tag) => (
             <Tag
-              key={tag.id}
-              title={tag.title}
-              bgColor={tag.bgColor}
-              textColor={tag.textColor}
+              key={tag.$id}
+              tag={tag}
               showDeleteButton={false}
-              id={tag.id}
-              customClassName={'cursor-pointer'} />
+              customClassName={'cursor-pointer'}
+            />
           ))}
         {tags.length === 0 && (
           <li className='flex-1 text-center text-sm text-text-tertiary'>No tags yet</li>

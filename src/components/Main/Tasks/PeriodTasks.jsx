@@ -1,22 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Task } from './Task';
 import { AddTask } from './AddTask';
+import { useTasks } from '../../../hooks/useTasks';
 
-export function PeriodTasks({
-  title,
-  todayTasks,
-  tomorrowTasks,
-  thisWeekTasks,
-  period,
-  onAdd,
-  onOpen,
-  onComplete,
-  lists,
-  tags,
-  parentRef,
-  isToday,
-}) {
+export function PeriodTasks({ title, period, parentRef, isToday }) {
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const { handleAddTask, todayTasks, tomorrowTasks, thisWeekTasks } = useTasks();
 
   const tasks = {
     todayTasks,
@@ -31,7 +20,6 @@ export function PeriodTasks({
       parentRef.current.classList.replace('overflow-hidden', 'overflow-auto');
     }
   }, [isFullScreen, parentRef]);
-
 
   return (
     <div
@@ -61,7 +49,17 @@ export function PeriodTasks({
         <i className='fa-solid fa-plus text-xl text-text-tertiary'></i>
         <AddTask
           onAdd={(title) => {
-            onAdd(title, period.dueDate);
+            const newTask = {
+              title,
+              note: '',
+              dueDate: period.dueDate || '',
+              listId: 'none',
+              subtasks: [],
+              isCompleted: false,
+              tagsIds: [],
+              priority: 0,
+            };
+            handleAddTask(newTask);
           }}
         />
       </div>
@@ -69,16 +67,7 @@ export function PeriodTasks({
         className={' flex-1 space-y-2 overflow-auto  px-4 ' + (isFullScreen ? '' : 'max-h-[280px]')}
       >
         {tasks[period.tasks]?.length > 0 ? (
-          tasks[period.tasks]?.map((task) => (
-            <Task
-              key={task.id}
-              task={task}
-              onOpen={() => onOpen(task)}
-              onComplete={(isCompleted) => onComplete(task.id, isCompleted)}
-              lists={lists}
-              tags={tags}
-            />
-          ))
+          tasks[period.tasks]?.map((task) => <Task key={task.$id} task={task} />)
         ) : (
           <div className='  flex h-full flex-col items-center justify-center'>
             <h5 className='font-semibold text-text-secondary'>You don&apos;t have any tasks</h5>

@@ -1,25 +1,36 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Tag } from '../../Menu/Menu Tags/Tag';
-import { checkIfToday, checkIfTomorrow, checkIfYesterday, isTaskOverdue } from '../../../Utils';
+import {
+  checkIfToday,
+  checkIfTomorrow,
+  checkIfYesterday,
+  isTaskOverdue,
+} from '../../../utils/Moment';
 import Tippy from '@tippyjs/react';
 import completedSoundFile from '../../../assets/completed.mp3';
+import { useTasks } from '../../../hooks/useTasks';
+import { useLists } from '../../../hooks/useLists';
+import { useTags } from '../../../hooks/useTags';
 
 const completedSound = new Audio(completedSoundFile);
 
-export function Task({ task, onOpen, onComplete, lists, tags }) {
+export function Task({ task }) {
+  const { lists } = useLists();
   const [checked, setChecked] = useState(task.isCompleted);
   const isPassed = isTaskOverdue(task.dueDate);
+  const { handleOpenTask, handleCompleteTask } = useTasks();
+  const { tags } = useTags();
 
   const listName = useMemo(
-    () => lists.find((l) => l?.id === +task.listId)?.title,
+    () => lists.find((l) => l?.$id === task.listId)?.title,
     [task.listId, lists],
   );
   const listColor = useMemo(
-    () => lists.find((l) => l?.id === +task.listId)?.color,
+    () => lists.find((l) => l?.$id === task.listId)?.color,
     [task.listId, lists],
   );
   useEffect(() => {
-    onComplete(checked);
+    task.isCompleted !== checked && handleCompleteTask(task.$id, task, checked);
     // eslint-disable-next-line
   }, [checked]);
 
@@ -37,7 +48,7 @@ export function Task({ task, onOpen, onComplete, lists, tags }) {
           checked={checked}
           onChange={(e) => {
             setChecked(!checked);
-            e.target.checked && completedSound.play()
+            e.target.checked && completedSound.play();
           }}
         />
         <i className='fas fa-check pointer-events-none  absolute left-1  top-1 hidden h-4 w-4 text-sm text-white peer-checked:block'></i>
@@ -50,7 +61,7 @@ export function Task({ task, onOpen, onComplete, lists, tags }) {
         </span>
         {(listName ||
           task.dueDate ||
-          task.subtasks.length > 0 ||
+          task.subtasks?.length > 0 ||
           task.tagsIds?.length > 0 ||
           task.priority !== 0) && (
           <div className='mt-2 flex flex-wrap items-center gap-5'>
@@ -78,7 +89,7 @@ export function Task({ task, onOpen, onComplete, lists, tags }) {
                 </span>
               </div>
             )}
-            {task.subtasks.length > 0 && (
+            {task.subtasks?.length > 0 && (
               <div className='flex items-center gap-2'>
                 <span className='rounded-sm bg-background-tertiary px-3 py-[1px] text-xs font-semibold text-text-secondary'>
                   {task.subtasks.length}
@@ -95,17 +106,14 @@ export function Task({ task, onOpen, onComplete, lists, tags }) {
             {task.tagsIds?.length > 0 && (
               <ul className='flex flex-wrap items-center gap-2'>
                 {task.tagsIds.map((tagId) => {
-                  const tag = tags.find((t) => t.id === +tagId);
+                  const tag = tags.find((t) => t.$id === tagId);
                   if (tag)
                     return (
                       <Tag
-                        key={tag.id}
-                        title={tag.title}
-                        bgColor={tag.bgColor}
-                        textColor={tag.textColor}
+                        key={tag.$id}
+                        tag={tag}
                         isMainTag={false}
                         showDeleteButton={false}
-                        id={tag.id}
                         customClassName={'px-2 py-1 cursor-auto'}
                       />
                     );
@@ -155,7 +163,7 @@ export function Task({ task, onOpen, onComplete, lists, tags }) {
 
       <button
         className='rounded-sm px-2 py-1 transition-colors duration-300 hover:bg-background-primary'
-        onClick={onOpen}
+        onClick={() => handleOpenTask(task.$id)}
       >
         <i className='fa-solid fa-chevron-right cursor-pointer text-text-tertiary'></i>
       </button>

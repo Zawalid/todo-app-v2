@@ -3,20 +3,32 @@ import { useMemo, useRef, useState } from 'react';
 import { ConfirmationModal } from '../../ConfirmationModal';
 import trashIcon from '../../../assets/trash.png';
 import { Item } from './Item';
+import { useTrash } from '../../../hooks/useTrash';
+import { useRestoreElement } from '../../../hooks/useRestoreElement';
+export function Trash({ onClose }) {
+  const {
+    trash,
+    handleDeleteFromTrash,
+    handleEmptyType,
+    handleEmptyTrash,
+    handleRestoreFromTrash,
+    currentTab,
+    setCurrentTab,
+  } = useTrash();
+  const { handleRestoreElement } = useRestoreElement();
 
-export function Trash({
-  trash,
-  onDelete,
-  onEmptyTypeFromTrash,
-  onEmptyTrash,
-  onRestoreFromTrash,
-  onClose,
-}) {
-  const [currentTab, setCurrentTab] = useState('tasks');
-  const [currentItemId, setCurrentItemId] = useState(null);
+  const [currentItem, setCurrentItem] = useState(null);
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const whichDelete = useRef(null);
-  const trashLength = useMemo(() => Object.values(trash).flat().length, [trash]);
+  const trashLength = useMemo(
+    () =>
+      Object.keys(trash)
+        .filter((item) => !item.startsWith('$') && item !== 'owner')
+        .map((key) => trash[key].length)
+        .reduce((acc, cur) => acc + cur, 0),
+    [trash],
+  );
+
   return (
     <div className='fixed left-0 top-0  z-[99]  flex h-full w-full items-center justify-center bg-black bg-opacity-25 backdrop-blur-[1px]'>
       <div className=' relative flex h-80 w-1/2 flex-col rounded-lg bg-white p-4'>
@@ -33,26 +45,29 @@ export function Trash({
             <i className='fa-solid fa-xmark cursor-pointer text-xl text-text-tertiary'></i>
           </button>
         </div>
-        <Tabs currentTab={currentTab} setCurrentTab={setCurrentTab} />
+        <Tabs />
         <ul className='flex h-[170px] flex-1 flex-col gap-2 overflow-auto py-5'>
           {trash[currentTab].length > 0 &&
             trash[currentTab].map((item) => (
               <Item
-                key={item.id}
-                title={item.title}
+                key={JSON.parse(item).id}
+                title={JSON.parse(item).title}
                 onDelete={() => {
                   setIsConfirmationModalOpen(true);
-                  setCurrentItemId(item.id);
+                  setCurrentItem(JSON.parse(item));
                   whichDelete.current = 'item';
                 }}
-                onRestore={() => onRestoreFromTrash(item.id, item.index, currentTab)}
+                onRestore={async() => {
+                  await handleRestoreFromTrash(currentTab, JSON.parse(item).id);
+                  handleRestoreElement(currentTab);
+                }}
               />
             ))}
           {trash[currentTab].length === 0 && (
             <div className='grid h-full place-content-center justify-items-center '>
               <img src={trashIcon} alt='trash' className='w-20' />
               <span className='text-center text-sm font-bold text-text-tertiary'>
-                No {currentTab} in trash
+                No {currentTab === 'stickyNotes' ? 'sticky notes' : currentTab} in trash
               </span>
             </div>
           )}
@@ -61,25 +76,30 @@ export function Trash({
           <ConfirmationModal
             sentence={`Are you sure you want to   ${
               whichDelete.current === 'item'
-                ? 'delete this ' + currentTab.slice(0, currentTab.length - 1) + ' permanently'
+                ? 'delete this ' +
+                  (currentTab === 'stickyNotes' ? 'sticky notes' : currentTab).slice(
+                    0,
+                    currentTab.length - 1,
+                  ) +
+                  ' permanently'
                 : whichDelete.current === 'type'
-                ? 'delete all ' + currentTab + ' permanently'
+                ? 'delete all ' +
+                  (currentTab === 'stickyNotes' ? 'sticky notes' : currentTab) +
+                  ' permanently'
                 : ' empty trash '
             } ? `}
             confirmText={
-              whichDelete.current === 'item'
-                ? 'Delete'
-                : whichDelete.current === 'type'
-                ? 'Delete All'
-                : 'Empty Trash'
+              whichDelete.current === 'item' || whichDelete.current === 'type' ? 'Delete' : 'Empty'
             }
             onConfirm={() => {
-              if (whichDelete.current === 'item') onDelete(currentItemId, currentTab);
-              if (whichDelete.current === 'type') onEmptyTypeFromTrash(currentTab);
-              if (whichDelete.current === 'all') onEmptyTrash();
+              if (whichDelete.current === 'item') handleDeleteFromTrash(currentTab, currentItem.id);
+              if (whichDelete.current === 'type') handleEmptyType(currentTab);
+              if (whichDelete.current === 'all') handleEmptyTrash();
               setIsConfirmationModalOpen(false);
             }}
             onCancel={() => setIsConfirmationModalOpen(false)}
+            element={whichDelete.current === 'all' ? 'Trash' : 'Permanently'}
+            isTrash={true}
           />
         )}
         <div className='mt-auto flex justify-between border-t-2 pt-3'>

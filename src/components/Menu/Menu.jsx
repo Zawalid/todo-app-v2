@@ -6,30 +6,8 @@ import { Search } from './Search';
 import { Trash } from './Trash/Trash';
 import { useHref, useNavigate } from 'react-router-dom';
 
-export function Menu({
-  isOpen,
-  setIsOpen,
-  allTasksNumber,
-  todayTasksNumber,
-  upcomingTasksNumber,
-  stickyNotesNumber,
-  lists,
-  onAddList,
-  onRenameList,
-  onDeleteList,
-  onChangeListColor,
-  onDuplicateList,
-  tags,
-  onAddTag,
-  onDeleteTag,
-  searchQuery,
-  onSearch,
-  trash,
-  onDeleteFromTrash,
-  onEmptyTypeFromTrash,
-  onEmptyTrash,
-  onRestoreFromTrash,
-}) {
+export function Menu() {
+  const [isOpen, setIsOpen] = useState(true);
   const path = useHref().split('/');
   const [isTrashOpen, setIsTrashOpen] = useState(path.includes('trash'));
   const menu = useRef(null);
@@ -59,22 +37,10 @@ export function Menu({
             </button>
           </div>
           <div className='overflow-y-auto'>
-            <Search searchQuery={searchQuery} onSearch={onSearch} />
-            <MenuTasks
-              allTasksNumber={allTasksNumber}
-              todayTasksNumber={todayTasksNumber}
-              upcomingTasksNumber={upcomingTasksNumber}
-              stickyNotesNumber={stickyNotesNumber}
-            />
-            <MenuLists
-              lists={lists}
-              onAddList={onAddList}
-              onRenameList={onRenameList}
-              onDeleteList={onDeleteList}
-              onChangeListColor={onChangeListColor}
-              onDuplicateList={onDuplicateList}
-            />
-            <MenuTags tags={tags} onAddTag={onAddTag} onDeleteTag={onDeleteTag} />
+            <Search />
+            <MenuTasks />
+            <MenuLists />
+            <MenuTags />
           </div>
           <div className=' mt-auto  pt-3'>
             <button
@@ -90,11 +56,6 @@ export function Menu({
           </div>
           {isTrashOpen && (
             <Trash
-              trash={trash}
-              onDelete={onDeleteFromTrash}
-              onEmptyTypeFromTrash={onEmptyTypeFromTrash}
-              onEmptyTrash={onEmptyTrash}
-              onRestoreFromTrash={onRestoreFromTrash}
               onClose={() => {
                 setIsTrashOpen(false);
                 navigate(path.filter((part) => part !== 'trash').join('/'));

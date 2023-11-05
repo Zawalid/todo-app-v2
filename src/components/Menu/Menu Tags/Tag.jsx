@@ -1,42 +1,40 @@
 import { useState } from 'react';
 import { ConfirmationModal } from '../../ConfirmationModal';
+import { useTags } from '../../../hooks/useTags';
 
-export function Tag({
-  title,
-  bgColor,
-  textColor,
-  onDeleteTag,
-  showDeleteButton,
-  id,
-  customClassName,
-}) {
+export function Tag({ tag, showDeleteButton, customClassName, onDeleteTag }) {
+  const { handleDeleteTag } = useTags();
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
+  const [deletePermanently, setDeletePermanently] = useState(false);
   return (
     <>
       <li
         className={'menu_tag_element relative ' + customClassName}
-        style={{ backgroundColor: bgColor, color: textColor }}
-        data-id={id}
+        style={{ backgroundColor: tag.bgColor, color: tag.textColor }}
+        data-id={tag.$id}
       >
         {showDeleteButton && (
           <button
             className='absolute -right-1 -top-1 grid h-3 w-3 cursor-pointer place-content-center rounded-full bg-red-600'
-            onClick={() => setIsConfirmationModalOpen(true)}
+            onClick={() => (onDeleteTag ? onDeleteTag() : setIsConfirmationModalOpen(true))}
           >
             <i className='fas fa-xmark  text-[10px] text-white'></i>
           </button>
         )}
-        {title}
+        {tag.title}
       </li>
       {isConfirmationModalOpen && (
         <ConfirmationModal
           sentence={`Are you sure you want to delete this tag ? `}
           confirmText={'Delete'}
-          onConfirm={() => {
-            onDeleteTag(id);
+          onConfirm={ () => {
             setIsConfirmationModalOpen(false);
+            handleDeleteTag(tag.$id);
           }}
           onCancel={() => setIsConfirmationModalOpen(false)}
+          element='Tag'
+          checked={deletePermanently}
+          setChecked={setDeletePermanently}
         />
       )}
     </>

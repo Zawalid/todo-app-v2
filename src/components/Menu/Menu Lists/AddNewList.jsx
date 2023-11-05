@@ -1,13 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
 import { Colors } from '../../Colors';
-import { useIsTitleTaken } from './useIsTitleTaken';
+import { useIsTitleTaken } from '../../../hooks/useIsTitleTaken';
+import { useLists } from '../../../hooks/useLists';
 
-export function AddNewList({ reference, onAdd, isOpen, untitledTasksNumber, lists }) {
+export function AddNewList({ reference, isOpen, untitledTasksNumber }) {
+  const { lists, handleAddList } = useLists();
+
   const [value, setValue] = useState('');
   const [color, setColor] = useState('#ff6b6b');
   const inputEl = useRef(null);
   const colorsDiv = useRef(null);
   const [isTitleTaken, , setTitle] = useIsTitleTaken(lists);
+
   useEffect(() => {
     inputEl.current.focus();
     function handleClick(e) {
@@ -19,6 +23,7 @@ export function AddNewList({ reference, onAdd, isOpen, untitledTasksNumber, list
     document.addEventListener('click', handleClick);
     return () => document.removeEventListener('click', handleClick);
   }, [isOpen]);
+
   useEffect(() => {
     function handleKeyDown(e) {
       e.key === 'Enter' && isOpen && e.target.tagName !== 'INPUT' && handleAdd();
@@ -31,7 +36,7 @@ export function AddNewList({ reference, onAdd, isOpen, untitledTasksNumber, list
   function handleAdd() {
     const untitledNumber = value || untitledTasksNumber.current++;
     const title = value ? value : `Untitled ${untitledNumber > 0 ? `(${untitledNumber})` : ''}`;
-    onAdd(title.trim(), color);
+    handleAddList(title.trim(), color);
     setValue('');
   }
 
