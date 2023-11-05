@@ -4,6 +4,7 @@ import { ConfirmationModal } from '../../ConfirmationModal';
 import trashIcon from '../../../assets/trash.png';
 import { Item } from './Item';
 import { useTrash } from '../../../hooks/useTrash';
+import { useRestoreElement } from '../../../hooks/useRestoreElement';
 export function Trash({ onClose }) {
   const {
     trash,
@@ -14,6 +15,8 @@ export function Trash({ onClose }) {
     currentTab,
     setCurrentTab,
   } = useTrash();
+  const { handleRestoreElement } = useRestoreElement();
+
   const [currentItem, setCurrentItem] = useState(null);
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const whichDelete = useRef(null);
@@ -54,7 +57,10 @@ export function Trash({ onClose }) {
                   setCurrentItem(JSON.parse(item));
                   whichDelete.current = 'item';
                 }}
-                onRestore={() => handleRestoreFromTrash(currentTab, JSON.parse(item).id)}
+                onRestore={async() => {
+                  await handleRestoreFromTrash(currentTab, JSON.parse(item).id);
+                  handleRestoreElement(currentTab);
+                }}
               />
             ))}
           {trash[currentTab].length === 0 && (

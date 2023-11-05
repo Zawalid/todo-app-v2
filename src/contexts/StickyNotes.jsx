@@ -3,7 +3,7 @@ import { databases, appWriteConfig } from '../AppWrite';
 import { ID } from 'appwrite';
 import { remove$Properties } from '../utils/remove$Properties';
 import { useDelete } from '../hooks/useDelete';
-import { useGet } from '../hooks/useGet';
+import { useGetAllElements } from '../hooks/useGetAllElements';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 const STICKY_NOTES_COLLECTION_ID = appWriteConfig.stickyNotesCollectionId;
@@ -38,7 +38,7 @@ export function StickyNotesProvider({ children }) {
   const [isStickyNoteOpened, setIsStickyNoteOpened] = useState(false);
   const [isStickyNoteEditorOpen, setIsStickyNoteEditorOpen] = useState(false);
   const { handleDeleteElement } = useDelete();
-  const { handleGetAllElements } = useGet();
+  const { handleGetAllElements } = useGetAllElements();
 
 
   async function handleAddStickyNote(note) {
@@ -85,6 +85,7 @@ export function StickyNotesProvider({ children }) {
         handleAddStickyNote,
         handleUpdateStickyNote,
         handleDeleteStickyNote,
+        setStickyNotes
       }}
     >
       {children}

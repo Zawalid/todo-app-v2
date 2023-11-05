@@ -52,7 +52,7 @@ export function TrashProvider({ children, trash, setTrash }) {
   async function deleteItemFromTrash(type, itemId) {
     setTrash((trash) => {
       const newTrash = { ...trash };
-      newTrash[type] = newTrash[type].filter((el) => JSON.parse(el).id !== itemId)
+      newTrash[type] = newTrash[type].filter((el) => JSON.parse(el).id !== itemId);
       return newTrash;
     });
     setIsUpdated(true);
@@ -121,15 +121,15 @@ export function TrashProvider({ children, trash, setTrash }) {
 
   // update trash in database
   useEffect(() => {
-    if ( isUpdated) {
+    if (isUpdated) {
       const newTrash = { ...trash };
       remove$Properties(newTrash);
-      console.log(newTrash);
       databases.updateDocument(DATABASE_ID, TRASH_COLLECTION_ID, trash.$id, newTrash);
       setIsUpdated(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trash]);
+  
   return (
     <TrashContext.Provider
       value={{

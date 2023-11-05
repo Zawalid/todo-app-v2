@@ -3,7 +3,7 @@ import { databases, appWriteConfig } from '../AppWrite';
 import { ID } from 'appwrite';
 import { remove$Properties } from '../utils/remove$Properties';
 import { useDelete } from '../hooks/useDelete';
-import { useGet } from '../hooks/useGet';
+import { useGetAllElements } from '../hooks/useGetAllElements';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 const LISTS_COLLECTION_ID = '65422c65a17f95378d53';
@@ -12,7 +12,7 @@ export const ListsContext = createContext();
 
 export function ListsProvider({ children, lists, setLists }) {
   const { handleDeleteElement } = useDelete();
-  const { handleGetAllElements } = useGet();
+  const { handleGetAllElements } = useGetAllElements();
 
 
   async function handleAddList(title, color, list) {
@@ -80,6 +80,7 @@ export function ListsProvider({ children, lists, setLists }) {
         handleRenameList,
         handleChangeListColor,
         handleAddTaskToList,
+        setLists
       }}
     >
       {children}

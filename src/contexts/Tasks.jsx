@@ -5,7 +5,7 @@ import { checkIfToday, checkIfTomorrow, isDateInCurrentWeek } from '../utils/Mom
 import { remove$Properties } from '../utils/remove$Properties';
 import { useLists } from '../hooks/useLists';
 import { useDelete } from '../hooks/useDelete';
-import { useGet } from '../hooks/useGet';
+import { useGetAllElements } from '../hooks/useGetAllElements';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 const TASKS_COLLECTION_ID = appWriteConfig.tasksCollectionId;
@@ -106,7 +106,7 @@ export function TasksProvider({ children }) {
   const addNewTaskReference = useRef(null);
   const { lists, handleAddTaskToList, handleUpdateList } = useLists();
   const { handleDeleteElement } = useDelete();
-  const { handleGetAllElements } = useGet();
+  const { handleGetAllElements } = useGetAllElements();
 
   const todayTasks = tasks?.filter((task) => checkIfToday(task.dueDate));
   const tomorrowTasks = tasks?.filter((task) => checkIfTomorrow(task.dueDate));
@@ -189,16 +189,17 @@ export function TasksProvider({ children }) {
         tomorrowTasks,
         thisWeekTasks,
         upcomingTasks,
+        isTaskOpen,
+        isAddingTask,
+        addNewTaskReference,
         handleAddTask,
         handleUpdateTask,
         handleDeleteTask,
         handleCompleteTask,
         handleClearAllTasks,
         handleOpenTask,
-        isTaskOpen,
         setIsTaskOpen,
-        isAddingTask,
-        addNewTaskReference,
+        setTasks,
       }}
     >
       {children}

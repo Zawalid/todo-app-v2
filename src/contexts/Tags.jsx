@@ -2,7 +2,7 @@ import { createContext, useEffect, useState } from 'react';
 import { databases, appWriteConfig } from '../AppWrite';
 import { ID } from 'appwrite';
 import { useDelete } from '../hooks/useDelete';
-import { useGet } from '../hooks/useGet';
+import { useGetAllElements } from '../hooks/useGetAllElements';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 const TAGS_COLLECTION_ID = appWriteConfig.tagsCollectionId;
@@ -20,7 +20,7 @@ export function TagsProvider({ children }) {
     // },
   ]);
   const { handleDeleteElement } = useDelete();
-  const { handleGetAllElements } = useGet();
+  const { handleGetAllElements } = useGetAllElements();
 
   async function handleAddTag(title, bgColor, textColor) {
     const response = await databases.createDocument(DATABASE_ID, TAGS_COLLECTION_ID, ID.unique(), {
@@ -44,6 +44,7 @@ export function TagsProvider({ children }) {
         tags,
         handleAddTag,
         handleDeleteTag,
+        setTags
       }}
     >
       {children}

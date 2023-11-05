@@ -1,12 +1,12 @@
 import { appWriteConfig, databases } from '../AppWrite';
-import { useGet } from './useGet';
+import { useGetAllElements } from './useGetAllElements';
 import { useTrash } from './useTrash';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 
 export function useDelete() {
   const { handleAddToTrash } = useTrash();
-  const { handleGetAllElements } = useGet();
+  const { handleGetAllElements } = useGetAllElements();
 
   async function handleDeleteElement(
     id,
