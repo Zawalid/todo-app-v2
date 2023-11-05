@@ -162,9 +162,9 @@ export function DisplayedTasks({ onAdd, condition, activeTab }) {
         <ConfirmationModal
           sentence='Are you sure you want to clear all tasks?'
           confirmText='Clear All'
-          onConfirm={async () => {
-            await handleClearAllTasks(condition, filtersConditions[filter], deletePermanently);
+          onConfirm={() => {
             setIsClearAllModalOpen(false);
+            handleClearAllTasks(condition, filtersConditions[filter], deletePermanently);
           }}
           onCancel={() => setIsClearAllModalOpen(false)}
           element='Tasks'

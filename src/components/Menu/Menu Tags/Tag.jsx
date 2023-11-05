@@ -27,9 +27,9 @@ export function Tag({ tag, showDeleteButton, customClassName, onDeleteTag }) {
         <ConfirmationModal
           sentence={`Are you sure you want to delete this tag ? `}
           confirmText={'Delete'}
-          onConfirm={async () => {
-            await handleDeleteTag(tag.$id);
+          onConfirm={ () => {
             setIsConfirmationModalOpen(false);
+            handleDeleteTag(tag.$id);
           }}
           onCancel={() => setIsConfirmationModalOpen(false)}
           element='Tag'

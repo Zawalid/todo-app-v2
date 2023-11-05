@@ -23,6 +23,7 @@ export const TrashContext = createContext();
 
 export function TrashProvider({ children, trash, setTrash }) {
   const [currentTab, setCurrentTab] = useState('tasks');
+  const [isUpdated, setIsUpdated] = useState(false);
 
   async function createTrash() {
     const response = await databases.createDocument(
@@ -33,15 +34,14 @@ export function TrashProvider({ children, trash, setTrash }) {
     );
     setTrash(response);
   }
-  async function handleUpdateTrash(data) {
-    remove$Properties(data);
-    await databases.updateDocument(DATABASE_ID, TRASH_COLLECTION_ID, trash.$id, data);
-    await getTrash();
-  }
+
   async function handleAddToTrash(type, item) {
-    const newTrash = { ...trash };
-    newTrash[type] = [...newTrash[type], JSON.stringify(item)];
-    await handleUpdateTrash(newTrash);
+    setTrash((trash) => {
+      const newTrash = { ...trash };
+      newTrash[type] = [...trash[type], JSON.stringify(item)];
+      return newTrash;
+    });
+    setIsUpdated(true);
   }
 
   // To delete a (task, list, tag, stickyNote) permanently:
@@ -50,19 +50,19 @@ export function TrashProvider({ children, trash, setTrash }) {
   }
   // To delete an item from trash:
   async function deleteItemFromTrash(type, itemId) {
-    const newTrash = { ...trash };
-    (newTrash[type] = newTrash[type]
-      .map((el) => JSON.parse(el))
-      .filter((i) => i.id !== itemId)
-      .map((el) => JSON.stringify(el))),
-      await handleUpdateTrash(newTrash);
+    setTrash((trash) => {
+      const newTrash = { ...trash };
+      newTrash[type] = newTrash[type].filter((el) => JSON.parse(el).id !== itemId)
+      return newTrash;
+    });
+    setIsUpdated(true);
   }
   // To delete an item from trash and the corresponding element permanently:
   async function handleDeleteFromTrash(type, itemId) {
     // Delete the element permanently
     await deleteElement(type, itemId);
     // Delete the element from trash
-    await deleteItemFromTrash(type, itemId);
+    deleteItemFromTrash(type, itemId);
   }
   // To update an element (task, list, tag, stickyNote) from trash (isTrashed: true)
   async function restoreElement(type, itemId) {
@@ -75,46 +75,61 @@ export function TrashProvider({ children, trash, setTrash }) {
     // Restore the element
     await restoreElement(type, itemId);
     // Delete the element from trash
-    await deleteItemFromTrash(type, itemId);
+    deleteItemFromTrash(type, itemId);
   }
 
   async function handleEmptyType(type) {
     // Delete all elements of a type permanently
     trash[type].forEach(async (item) => {
-      const { id } = JSON.parse(item);
-      await deleteElement(type, id);
+      await deleteElement(type, JSON.parse(item).id);
     });
     // Delete all elements of a type from trash
-    const newTrash = { ...trash, [type]: [] };
-    await handleUpdateTrash(newTrash);
+    setTrash((trash) => {
+      const newTrash = { ...trash, [type]: [] };
+      return newTrash;
+    });
+    setIsUpdated(true);
   }
   async function handleEmptyTrash() {
     // Delete all elements from trash permanently
     Object.keys(collectionsIds).forEach(async (type) => {
       trash[type].forEach(async (item) => {
-        const { id } = JSON.parse(item);
-        await deleteElement(type, id);
+        await deleteElement(type, JSON.parse(item).id);
       });
     });
     // Delete all elements from trash
-    await handleUpdateTrash({
+    setTrash({
+      ...trash,
       tasks: [],
       lists: [],
       tags: [],
       stickyNotes: [],
     });
+    setIsUpdated(true);
   }
 
-  async function getTrash() {
-    const response = await databases.listDocuments(DATABASE_ID, TRASH_COLLECTION_ID);
-    setTrash(response.documents[0]);
-  }
-
+  // get trash from database
   useEffect(() => {
+    async function getTrash() {
+      const response = await databases.listDocuments(DATABASE_ID, TRASH_COLLECTION_ID);
+      const trash = response.documents[0];
+      setTrash(trash);
+    }
     getTrash();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // update trash in database
+  useEffect(() => {
+    if ( isUpdated) {
+      const newTrash = { ...trash };
+      remove$Properties(newTrash);
+      console.log(newTrash);
+      databases.updateDocument(DATABASE_ID, TRASH_COLLECTION_ID, trash.$id, newTrash);
+      setIsUpdated(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [trash]);
   return (
     <TrashContext.Provider
       value={{

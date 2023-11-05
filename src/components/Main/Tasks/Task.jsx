@@ -1,6 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Tag } from '../../Menu/Menu Tags/Tag';
-import { checkIfToday, checkIfTomorrow, checkIfYesterday, isTaskOverdue } from '../../../utils/Moment';
+import {
+  checkIfToday,
+  checkIfTomorrow,
+  checkIfYesterday,
+  isTaskOverdue,
+} from '../../../utils/Moment';
 import Tippy from '@tippyjs/react';
 import completedSoundFile from '../../../assets/completed.mp3';
 import { useTasks } from '../../../hooks/useTasks';
@@ -10,11 +15,11 @@ import { useTags } from '../../../hooks/useTags';
 const completedSound = new Audio(completedSoundFile);
 
 export function Task({ task }) {
-  const {lists} = useLists()
+  const { lists } = useLists();
   const [checked, setChecked] = useState(task.isCompleted);
   const isPassed = isTaskOverdue(task.dueDate);
   const { handleOpenTask, handleCompleteTask } = useTasks();
-  const {tags} = useTags()
+  const { tags } = useTags();
 
   const listName = useMemo(
     () => lists.find((l) => l?.$id === task.listId)?.title,
@@ -25,7 +30,7 @@ export function Task({ task }) {
     [task.listId, lists],
   );
   useEffect(() => {
-    handleCompleteTask(task.$id, task, checked);
+    task.isCompleted !== checked && handleCompleteTask(task.$id, task, checked);
     // eslint-disable-next-line
   }, [checked]);
 

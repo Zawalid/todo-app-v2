@@ -155,28 +155,24 @@ export function TasksProvider({ children }) {
   }
   async function handleClearAllTasks(condition1, condition2, deletePermanently) {
     const deletedTasks = tasks.filter((task) => condition1(task) && condition2(task));
-    await Promise.all(
-      deletedTasks.map(async (task) => {
-        await handleDeleteTask(task.$id, null, deletePermanently);
-      }),
-    );
-    await Promise.all(
-      lists.map(async (list) => {
-        const newTasks = list.tasks.filter(
-          (taskId) => !deletedTasks.map((task) => task.$id).includes(taskId),
-        );
-        await handleUpdateList(list.$id, 'tasks', newTasks);
-      }),
-    );
+    deletedTasks.forEach(async (task) => {
+      await handleDeleteTask(task.$id, null, deletePermanently);
+    }),
+      await Promise.all(
+        lists.map(async (list) => {
+          const newTasks = list.tasks.filter(
+            (taskId) => !deletedTasks.map((task) => task.$id).includes(taskId),
+          );
+          await handleUpdateList(list.$id, 'tasks', newTasks);
+        }),
+      );
   }
   async function handleOpenTask(id) {
-    setCurrentTask(null);
-    setIsTaskOpen(false);
-    if (id) {
+    if (id && currentTask?.$id !== id) {
       const response = await databases.getDocument(DATABASE_ID, TASKS_COLLECTION_ID, id);
       setCurrentTask(response);
-      setIsTaskOpen(true);
     }
+    id && setIsTaskOpen(true);
   }
 
   useEffect(() => {

@@ -22,7 +22,7 @@ export function TaskInfo() {
   const [isSelectTagOpen, setIsSelectTagOpen] = useState(false);
   const [isChanged, setIsChanged] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [deletePermanently, setDeletePermanently] = useState(false); 
+  const [deletePermanently, setDeletePermanently] = useState(false);
   const tagsDropDown = useRef(null);
   const tagsDropDownToggler = useRef(null);
 
@@ -221,13 +221,13 @@ export function TaskInfo() {
           </div>
         </>
       )}
-       {isDeleteModalOpen && (
+      {isDeleteModalOpen && (
         <ConfirmationModal
           sentence='Are you sure you want to delete this task?'
           confirmText='Delete'
-          onConfirm={async () => {
-            await handleDeleteTask(currentTask.$id, taskListId,deletePermanently);
+          onConfirm={() => {
             setIsDeleteModalOpen(false);
+            handleDeleteTask(currentTask.$id, taskListId, deletePermanently);
             setIsTaskOpen(false);
           }}
           onCancel={() => setIsDeleteModalOpen(false)}

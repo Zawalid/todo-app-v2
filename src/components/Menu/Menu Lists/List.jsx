@@ -115,9 +115,9 @@ export function List({ list }) {
         <ConfirmationModal
           sentence='Are you sure you want to delete this list?'
           confirmText='Delete'
-          onConfirm={async () => {
-            await handleDeleteList($id);
+          onConfirm={ () => {
             setIsDeleteModalOpen(false);
+            handleDeleteList($id);
             path.replace(/%20/g, ' ') === `/${title}` && navigator('/');
             // To delete all the tasks of the deleted list
             // const tasksToDelete = tasks.filter((task) => task.listId === $id);

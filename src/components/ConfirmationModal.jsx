@@ -42,7 +42,7 @@ export function ConfirmationModal({
             className='rounded-lg bg-red-500 px-4 py-2 text-sm font-semibold text-background-secondary transition-colors duration-300 hover:bg-red-600'
             onClick={() => {
               onConfirm();
-              setChecked(false);
+              setChecked && setChecked(false);
             }}
           >
             {confirmText}
