@@ -5,6 +5,7 @@ import { useTags } from '../../../hooks/useTags';
 export function Tag({ tag, showDeleteButton, customClassName, onDeleteTag }) {
   const { handleDeleteTag } = useTags();
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
+  const [deletePermanently, setDeletePermanently] = useState(false);
   return (
     <>
       <li
@@ -26,12 +27,14 @@ export function Tag({ tag, showDeleteButton, customClassName, onDeleteTag }) {
         <ConfirmationModal
           sentence={`Are you sure you want to delete this tag ? `}
           confirmText={'Delete'}
-          onConfirm={() => {
-            handleDeleteTag(tag.$id);
+          onConfirm={async () => {
+            await handleDeleteTag(tag.$id);
             setIsConfirmationModalOpen(false);
           }}
           onCancel={() => setIsConfirmationModalOpen(false)}
           element='Tag'
+          checked={deletePermanently}
+          setChecked={setDeletePermanently}
         />
       )}
     </>

@@ -2,7 +2,8 @@ import { createContext, useEffect, useState } from 'react';
 import { databases, appWriteConfig } from '../AppWrite';
 import { ID } from 'appwrite';
 import { remove$Properties } from '../utils/remove$Properties';
-import { useTrash } from '../hooks/useTrash';
+import { useDelete } from '../hooks/useDelete';
+import { useGet } from '../hooks/useGet';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 const STICKY_NOTES_COLLECTION_ID = appWriteConfig.stickyNotesCollectionId;
@@ -36,7 +37,9 @@ export function StickyNotesProvider({ children }) {
   const [currentNote, setCurrentNote] = useState(null);
   const [isStickyNoteOpened, setIsStickyNoteOpened] = useState(false);
   const [isStickyNoteEditorOpen, setIsStickyNoteEditorOpen] = useState(false);
-  const { handleAddToTrash } = useTrash();
+  const { handleDeleteElement } = useDelete();
+  const { handleGetAllElements } = useGet();
+
 
   async function handleAddStickyNote(note) {
     const response = await databases.createDocument(
@@ -52,22 +55,22 @@ export function StickyNotesProvider({ children }) {
     const updatedNote = { ...note };
     remove$Properties(updatedNote);
     await databases.updateDocument(DATABASE_ID, STICKY_NOTES_COLLECTION_ID, id, updatedNote);
-    await handleGetAllStickyNotes();
+    await handleGetAllElements(STICKY_NOTES_COLLECTION_ID,setStickyNotes);
   }
-  async function handleDeleteStickyNote(id) {
-    await databases.deleteDocument(DATABASE_ID, STICKY_NOTES_COLLECTION_ID, id);
-    setStickyNotes((notes) => notes.filter((note) => note.$id !== id));
-    handleAddToTrash('stickyNotes', {
+  async function handleDeleteStickyNote(id,deletePermanently) {
+    handleDeleteElement(
       id,
-      title: stickyNotes.find((note) => note.$id === id).title,
-    });
+      STICKY_NOTES_COLLECTION_ID,
+      deletePermanently,
+      'stickyNotes',
+      stickyNotes,
+      setStickyNotes,
+    );
   }
-  async function handleGetAllStickyNotes() {
-    const response = await databases.listDocuments(DATABASE_ID, STICKY_NOTES_COLLECTION_ID);
-    setStickyNotes(response.documents);
-  }
+
   useEffect(() => {
-    handleGetAllStickyNotes();
+    handleGetAllElements(STICKY_NOTES_COLLECTION_ID,setStickyNotes);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <StickyNotesContext.Provider

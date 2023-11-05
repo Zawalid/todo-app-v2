@@ -40,13 +40,19 @@ export function ConfirmationModal({
         <div className='flex items-center  justify-end gap-3 border-t pt-3'>
           <button
             className='rounded-lg bg-red-500 px-4 py-2 text-sm font-semibold text-background-secondary transition-colors duration-300 hover:bg-red-600'
-            onClick={onConfirm}
+            onClick={() => {
+              onConfirm();
+              setChecked(false);
+            }}
           >
             {confirmText}
           </button>
           <button
             className='rounded-lg bg-background-secondary px-4 py-2 text-sm font-semibold text-text-secondary'
-            onClick={onCancel}
+            onClick={() => {
+              onCancel();
+              setChecked(false);
+            }}
           >
             Cancel
           </button>

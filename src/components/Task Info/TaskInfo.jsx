@@ -229,7 +229,6 @@ export function TaskInfo() {
             await handleDeleteTask(currentTask.$id, taskListId,deletePermanently);
             setIsDeleteModalOpen(false);
             setIsTaskOpen(false);
-            setDeletePermanently(false)
           }}
           onCancel={() => setIsDeleteModalOpen(false)}
           element='Task'

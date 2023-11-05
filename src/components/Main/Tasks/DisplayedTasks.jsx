@@ -20,13 +20,14 @@ const filtersConditions = {
 
 export function DisplayedTasks({ onAdd, condition, activeTab }) {
   const { tasks, handleClearAllTasks } = useTasks();
+  const [deletePermanently, setDeletePermanently] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const filterParam = searchParams.get('filter');
   const sortParam = searchParams.get('sort');
   const dirParam = searchParams.get('dir');
 
-  const [filter, setFilter] = useState(filterParam || !filtersConditions[filterParam] || 'all');
+  const [filter, setFilter] = useState(filterParam || (!filtersConditions[filterParam] && 'all'));
   const [filteredTasks, setFilteredTasks] = useState([]);
   const [isClearAllModalOpen, setIsClearAllModalOpen] = useState(false);
   const [sortKey, setSortKey] = useState(sortParam || 'cDate');
@@ -136,8 +137,8 @@ export function DisplayedTasks({ onAdd, condition, activeTab }) {
           {filteredTasks.filter((task) => condition(task)).length === 0 && (
             <div className='absolute top-1/2 flex w-full flex-col items-center justify-center gap-2'>
               <h2 className='text-2xl font-semibold text-text-secondary'>
-                You don&apos;t have any{' '}
-                {filter.includes('Priority') ? filter.replace('Priority', ' priority') : filter}{' '}
+                You don&apos;t have any
+                {filter?.includes('Priority') ? filter?.replace('Priority', ' priority') : filter}
                 tasks in this list
               </h2>
             </div>
@@ -162,11 +163,13 @@ export function DisplayedTasks({ onAdd, condition, activeTab }) {
           sentence='Are you sure you want to clear all tasks?'
           confirmText='Clear All'
           onConfirm={async () => {
+            await handleClearAllTasks(condition, filtersConditions[filter], deletePermanently);
             setIsClearAllModalOpen(false);
-            await handleClearAllTasks(condition, filtersConditions[filter]);
           }}
           onCancel={() => setIsClearAllModalOpen(false)}
           element='Tasks'
+          checked={deletePermanently}
+          setChecked={setDeletePermanently}
         />
       )}
     </div>

@@ -2,7 +2,8 @@ import { createContext, useEffect } from 'react';
 import { databases, appWriteConfig } from '../AppWrite';
 import { ID } from 'appwrite';
 import { remove$Properties } from '../utils/remove$Properties';
-import { useTrash } from '../hooks/useTrash';
+import { useDelete } from '../hooks/useDelete';
+import { useGet } from '../hooks/useGet';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 const LISTS_COLLECTION_ID = '65422c65a17f95378d53';
@@ -10,7 +11,9 @@ const LISTS_COLLECTION_ID = '65422c65a17f95378d53';
 export const ListsContext = createContext();
 
 export function ListsProvider({ children, lists, setLists }) {
-  const { handleAddToTrash } = useTrash();
+  const { handleDeleteElement } = useDelete();
+  const { handleGetAllElements } = useGet();
+
 
   async function handleAddList(title, color, list) {
     const newList = list
@@ -37,7 +40,7 @@ export function ListsProvider({ children, lists, setLists }) {
     remove$Properties(updatedList);
 
     await databases.updateDocument(DATABASE_ID, LISTS_COLLECTION_ID, id, updatedList);
-    await handleGetAllLists();
+    await handleGetAllElements(LISTS_COLLECTION_ID,setLists);
   }
   async function handleRenameList(id, title) {
     handleUpdateList(id, 'title', title);
@@ -50,21 +53,20 @@ export function ListsProvider({ children, lists, setLists }) {
     const newTasks = [...list.tasks, taskId];
     handleUpdateList(listId, 'tasks', newTasks);
   }
-  async function handleDeleteList(id) {
-    setLists((Lists) => Lists.filter((list) => list.$id !== id));
-    await databases.deleteDocument(DATABASE_ID, LISTS_COLLECTION_ID, id);
-    handleAddToTrash( 'lists', {
+  async function handleDeleteList(id, deletePermanently) {
+    handleDeleteElement(
       id,
-      title : lists.find((list) => list.$id === id).title,
-    });
-  }
-  async function handleGetAllLists() {
-    const response = await databases.listDocuments(DATABASE_ID, LISTS_COLLECTION_ID);
-    setLists(response.documents);
+      LISTS_COLLECTION_ID,
+      deletePermanently,
+      'lists',
+      lists,
+      setLists,
+    );
   }
 
+
   useEffect(() => {
-    handleGetAllLists();
+    handleGetAllElements(LISTS_COLLECTION_ID,setLists);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

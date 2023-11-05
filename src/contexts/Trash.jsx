@@ -2,10 +2,6 @@ import { createContext, useEffect, useState } from 'react';
 import { databases, appWriteConfig } from '../AppWrite';
 import { ID } from 'appwrite';
 import { remove$Properties } from '../utils/remove$Properties';
-import { useTasks } from '../hooks/useTasks';
-import { useLists } from '../hooks/useLists';
-import { useStickyNotes } from '../hooks/useStickyNotes';
-import { useTags } from '../hooks/useTags';
 
 const {
   databaseId: DATABASE_ID,
@@ -15,6 +11,13 @@ const {
   tagsCollectionId,
   stickyNotesCollectionId,
 } = appWriteConfig;
+
+const collectionsIds = {
+  tasks: tasksCollectionId,
+  lists: listsCollectionId,
+  tags: tagsCollectionId,
+  stickyNotes: stickyNotesCollectionId,
+};
 
 export const TrashContext = createContext();
 
@@ -42,8 +45,8 @@ export function TrashProvider({ children, trash, setTrash }) {
   }
 
   // To delete a (task, list, tag, stickyNote) permanently:
-  async function deleteElement(collectionId, itemId) {
-    await databases.deleteDocument(DATABASE_ID, collectionId, itemId);
+  async function deleteElement(type, itemId) {
+    await databases.deleteDocument(DATABASE_ID, collectionsIds[type], itemId);
   }
   // To delete an item from trash:
   async function deleteItemFromTrash(type, itemId) {
@@ -57,55 +60,43 @@ export function TrashProvider({ children, trash, setTrash }) {
   // To delete an item from trash and the corresponding element permanently:
   async function handleDeleteFromTrash(type, itemId) {
     // Delete the element permanently
-    switch (type) {
-      case 'tasks':
-        await deleteElement(tasksCollectionId, itemId);
-        break;
-      case 'lists':
-        await deleteElement(listsCollectionId, itemId);
-        break;
-      case 'tags':
-        await deleteElement(tagsCollectionId, itemId);
-        break;
-      case 'stickyNotes':
-        await deleteElement(stickyNotesCollectionId, itemId);
-        break;
-    }
+    await deleteElement(type, itemId);
     // Delete the element from trash
     await deleteItemFromTrash(type, itemId);
   }
   // To update an element (task, list, tag, stickyNote) from trash (isTrashed: true)
-  async function restoreElement(collectionId, itemId) {
-    await databases.updateDocument(DATABASE_ID, collectionId, itemId, {
+  async function restoreElement(type, itemId) {
+    await databases.updateDocument(DATABASE_ID, collectionsIds[type], itemId, {
       isTrashed: false,
     });
   }
   // To delete an item from trash and restore the corresponding element:
   async function handleRestoreFromTrash(type, itemId) {
-    console.log(itemId)
     // Restore the element
-    switch (type) {
-      case 'tasks':
-        await restoreElement(tasksCollectionId, itemId);
-        break;
-      case 'lists':
-        await restoreElement(listsCollectionId, itemId);
-        break;
-      case 'tags':
-        await restoreElement(tagsCollectionId, itemId);
-        break;
-      case 'stickyNotes':
-        await restoreElement(stickyNotesCollectionId, itemId);
-        break;
-    }
+    await restoreElement(type, itemId);
     // Delete the element from trash
     await deleteItemFromTrash(type, itemId);
   }
+
   async function handleEmptyType(type) {
+    // Delete all elements of a type permanently
+    trash[type].forEach(async (item) => {
+      const { id } = JSON.parse(item);
+      await deleteElement(type, id);
+    });
+    // Delete all elements of a type from trash
     const newTrash = { ...trash, [type]: [] };
     await handleUpdateTrash(newTrash);
   }
   async function handleEmptyTrash() {
+    // Delete all elements from trash permanently
+    Object.keys(collectionsIds).forEach(async (type) => {
+      trash[type].forEach(async (item) => {
+        const { id } = JSON.parse(item);
+        await deleteElement(type, id);
+      });
+    });
+    // Delete all elements from trash
     await handleUpdateTrash({
       tasks: [],
       lists: [],
@@ -121,6 +112,7 @@ export function TrashProvider({ children, trash, setTrash }) {
 
   useEffect(() => {
     getTrash();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

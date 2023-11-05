@@ -1,10 +1,11 @@
 import { createContext, useEffect, useRef, useState } from 'react';
 import { databases, appWriteConfig } from '../AppWrite';
-import { ID, Query } from 'appwrite';
+import { ID } from 'appwrite';
 import { checkIfToday, checkIfTomorrow, isDateInCurrentWeek } from '../utils/Moment';
 import { remove$Properties } from '../utils/remove$Properties';
 import { useLists } from '../hooks/useLists';
-import { useTrash } from '../hooks/useTrash';
+import { useDelete } from '../hooks/useDelete';
+import { useGet } from '../hooks/useGet';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 const TASKS_COLLECTION_ID = appWriteConfig.tasksCollectionId;
@@ -104,7 +105,8 @@ export function TasksProvider({ children }) {
   const [isAddingTask, setIsAddingTask] = useState(false);
   const addNewTaskReference = useRef(null);
   const { lists, handleAddTaskToList, handleUpdateList } = useLists();
-  const { handleAddToTrash } = useTrash();
+  const { handleDeleteElement } = useDelete();
+  const { handleGetAllElements } = useGet();
 
   const todayTasks = tasks?.filter((task) => checkIfToday(task.dueDate));
   const tomorrowTasks = tasks?.filter((task) => checkIfTomorrow(task.dueDate));
@@ -137,25 +139,13 @@ export function TasksProvider({ children }) {
     remove$Properties(updatedTask);
     await databases.updateDocument(DATABASE_ID, TASKS_COLLECTION_ID, id, updatedTask);
 
-    await handleGetAllTasks();
+    await handleGetAllElements(TASKS_COLLECTION_ID, setTasks);
   }
   async function handleCompleteTask(id, task, isCompleted) {
     handleUpdateTask(id, task, isCompleted);
   }
   async function handleDeleteTask(id, listId, deletePermanently) {
-    if (deletePermanently) {
-      await databases.deleteDocument(DATABASE_ID, TASKS_COLLECTION_ID, id);
-      setTasks((tasks) => tasks.filter((task) => task.$id !== id));
-    } else {
-      await databases.updateDocument(DATABASE_ID, TASKS_COLLECTION_ID, id, {
-        isTrashed: true,
-      });
-      handleAddToTrash('tasks', {
-        id,
-        title: tasks.find((task) => task.$id === id).title,
-      });
-    }
-    handleGetAllTasks();
+    await handleDeleteElement(id, TASKS_COLLECTION_ID, deletePermanently, 'tasks', tasks, setTasks);
     // Remove the deleted task from the list it was in
     if (listId === 'none') return;
     const list = lists.find((list) => list.$id === listId);
@@ -163,11 +153,11 @@ export function TasksProvider({ children }) {
     const newTasks = list.tasks.filter((taskId) => taskId !== id);
     await handleUpdateList(listId, 'tasks', newTasks);
   }
-  async function handleClearAllTasks(condition1, condition2) {
+  async function handleClearAllTasks(condition1, condition2, deletePermanently) {
     const deletedTasks = tasks.filter((task) => condition1(task) && condition2(task));
     await Promise.all(
       deletedTasks.map(async (task) => {
-        await handleDeleteTask(task.$id);
+        await handleDeleteTask(task.$id, null, deletePermanently);
       }),
     );
     await Promise.all(
@@ -188,15 +178,10 @@ export function TasksProvider({ children }) {
       setIsTaskOpen(true);
     }
   }
-  async function handleGetAllTasks() {
-    const response = await databases.listDocuments(DATABASE_ID, TASKS_COLLECTION_ID, [
-      Query.equal('isTrashed', [false]),
-    ]);
-    setTasks(response.documents);
-  }
 
   useEffect(() => {
-    handleGetAllTasks();
+    handleGetAllElements(TASKS_COLLECTION_ID, setTasks);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

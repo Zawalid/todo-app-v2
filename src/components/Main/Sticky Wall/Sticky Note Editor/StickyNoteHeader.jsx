@@ -13,6 +13,7 @@ export function StickyNoteHeader({
   isChanged,
 }) {
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
+  const [deletePermanently, setDeletePermanently] = useState(false);
   return (
     <div className='flex items-center justify-between border-b border-background-tertiary  p-3'>
       <div>
@@ -72,6 +73,8 @@ export function StickyNoteHeader({
           }}
           onCancel={() => setIsConfirmationModalOpen(false)}
           element='Sticky Note'
+          checked={deletePermanently}
+          setChecked={setDeletePermanently}
         />
       )}
     </div>

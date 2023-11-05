@@ -16,6 +16,7 @@ export function List({ list }) {
   const [isNewTitleTaken, , setTitle] = useIsTitleTaken(lists, $id, title);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [listColor, setListColor] = useState(color);
+  const [deletePermanently, setDeletePermanently] = useState(false); 
   const listActions = useRef(null);
   const newListTitle = useRef(null);
   const navigator = useNavigate();
@@ -115,7 +116,7 @@ export function List({ list }) {
           sentence='Are you sure you want to delete this list?'
           confirmText='Delete'
           onConfirm={async () => {
-            handleDeleteList($id);
+            await handleDeleteList($id);
             setIsDeleteModalOpen(false);
             path.replace(/%20/g, ' ') === `/${title}` && navigator('/');
             // To delete all the tasks of the deleted list
@@ -125,6 +126,8 @@ export function List({ list }) {
           }}
           onCancel={() => setIsDeleteModalOpen(false)}
           element='List'
+          checked={deletePermanently}
+          setChecked={setDeletePermanently}
         />
       )}
     </>
