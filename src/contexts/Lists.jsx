@@ -18,6 +18,7 @@ export function ListsProvider({ children, lists, setLists }) {
   const { handleRestoreFromTrash } = useTrash();
 
   async function handleAddList(title, color, list) {
+    const toastId = toast.loading('Deleting list...');
     try {
       const newList = list
         ? list
@@ -32,10 +33,10 @@ export function ListsProvider({ children, lists, setLists }) {
         ID.unique(),
         newList,
       );
-      toast.success('List added successfully');
+      toast.success('List has been successfully added.', { id: toastId });
       setLists((lists) => [...lists, response]);
     } catch (err) {
-      toast.error('Failed to add list!');
+      toast.error('Failed to add the list. Please try again.', { id: toastId });
     }
   }
   async function handleUpdateList(id, property, value) {
@@ -61,6 +62,7 @@ export function ListsProvider({ children, lists, setLists }) {
     handleUpdateList(listId, 'tasks', newTasks);
   }
   async function handleDeleteList(id, deletePermanently) {
+    const toastId = toast.loading('Deleting list...');
     try {
       await handleDeleteElement(
         id,
@@ -70,19 +72,20 @@ export function ListsProvider({ children, lists, setLists }) {
         lists,
         setLists,
       );
-      toast.success('List deleted successfully!', {
+      toast.success('List has been successfully deleted.', {
+        id: toastId,
         action: deletePermanently
-        ? null
-        :{
-          label: 'Undo',
-          onClick: async () => {
-            await handleRestoreFromTrash('lists', id, true);
-            await handleGetAllElements(LISTS_COLLECTION_ID, setLists);
-          },
-        },
+          ? null
+          : {
+              label: 'Undo',
+              onClick: async () => {
+                await handleRestoreFromTrash('lists', id, true);
+                await handleGetAllElements(LISTS_COLLECTION_ID, setLists);
+              },
+            },
       });
     } catch (err) {
-      toast.error('Failed to delete list!');
+      toast.error('Failed to delete the list. Please try again.', { id: toastId });
     }
   }
 

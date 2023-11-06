@@ -109,6 +109,7 @@ export function DisplayedTasks({ onAdd, condition, activeTab }) {
                 onClearAll={() => {
                   setIsClearAllModalOpen(true);
                   whichDelete.current = 'clear';
+                  setIsDeleteMultipleModalOpen(false);
                 }}
                 sortKey={sortKey}
                 sortDirection={sortDirection}
@@ -194,10 +195,16 @@ export function DisplayedTasks({ onAdd, condition, activeTab }) {
                 } `
               : 'clear all tasks?'
           } `}
-          confirmText='Clear All '
+          confirmText={whichDelete.current === 'selected' ? 'Delete' : 'Clear All'}
           onConfirm={() => {
             setIsClearAllModalOpen(false);
-            handleClearAllTasks(condition, filtersConditions[filter], deletePermanently);
+            handleClearAllTasks(
+              condition,
+              filtersConditions[filter],
+              deletePermanently,
+              whichDelete.current === 'selected',
+            );
+            whichDelete.current === 'selected' && setIsSelecting(false);
           }}
           onCancel={() => setIsClearAllModalOpen(false)}
           element='Tasks'

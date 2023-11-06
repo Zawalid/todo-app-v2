@@ -44,6 +44,7 @@ export function StickyNotesProvider({ children }) {
   const {handleRestoreFromTrash } = useTrash();
 
   async function handleAddStickyNote(note) {
+    const toastId = toast.loading('Adding sticky note...')
     try {
       const response = await databases.createDocument(
         DATABASE_ID,
@@ -51,25 +52,27 @@ export function StickyNotesProvider({ children }) {
         ID.unique(),
         note,
       );
-      toast.success('Sticky note added successfully');
+      toast.success('Sticky note has been successfully added.',{id : toastId});
       setStickyNotes((notes) => [...notes, response]);
     } catch (err) {
-      toast.error('Failed to add sticky note!');
+      toast.error('Failed to add the sticky note. Please try again.',{id : toastId});
     }
   }
   async function handleUpdateStickyNote(id, note) {
+    const toastId = toast.loading('Updating sticky note...')
     try {
       const updatedNote = { ...note };
       remove$Properties(updatedNote);
       await databases.updateDocument(DATABASE_ID, STICKY_NOTES_COLLECTION_ID, id, updatedNote);
-      toast.success('Sticky note updated successfully');
+      toast.success('Sticky note has been successfully updated.',{id : toastId});
     } catch (err) {
-      toast.error('Failed to update sticky note!');
+      toast.error('Failed to update the sticky note. Please try again.',{id : toastId});
     } finally {
       await handleGetAllElements(STICKY_NOTES_COLLECTION_ID, setStickyNotes);
     }
   }
   async function handleDeleteStickyNote(id, deletePermanently) {
+    const toastId = toast.loading('Deleting sticky note...')
     try {
       await handleDeleteElement(
         id,
@@ -79,7 +82,8 @@ export function StickyNotesProvider({ children }) {
         stickyNotes,
         setStickyNotes,
       );
-      toast.success('Sticky note deleted successfully!', {
+      toast.success('Sticky note has been successfully deleted.', {
+        id : toastId,
         action: deletePermanently
         ? null
         :{
@@ -91,7 +95,7 @@ export function StickyNotesProvider({ children }) {
         },
       });
     } catch (err) {
-      toast.error('Failed to delete sticky note!');
+      toast.error('Failed to delete the sticky note. Please try again.',{id : toastId});
     }
   }
 

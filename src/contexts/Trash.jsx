@@ -115,15 +115,15 @@ export function TrashProvider({ children }) {
   }
   // To delete an item from trash and the corresponding element permanently:
   async function handleDeleteFromTrash(type, itemId) {
-    const element = formatItemName(type,true);
+    const element = formatItemName(type, true);
     try {
       // Delete the element permanently
       await deleteElement(type, itemId);
       // Delete the element from trash
       await deleteItem(type, itemId);
-      toast.success(` ${element} deleted permanently`);
+      toast.success(` ${element} has been deleted permanently.`);
     } catch (err) {
-      toast.error(`Failed to delete ${element}!`);
+      toast.error(`Failed to delete ${element}!. Please try again.`);
     }
   }
   // --- Restoration ---
@@ -136,13 +136,15 @@ export function TrashProvider({ children }) {
   // To delete an item from trash and restore the corresponding element:
   async function handleRestoreFromTrash(type, itemId, isUndo, updateFunction) {
     const element = formatItemName(type, true);
+    const toastId = isUndo ? null : toast.loading(`Restoring ${element}...`);
     try {
       // Restore the element
       await restoreElement(type, itemId);
       // Delete the element from trash
       await deleteItem(type, itemId);
       isUndo ||
-        toast.success(`${element} restored successfully`, {
+        toast.success(`${element} has been successfully restored.`, {
+          id: toastId,
           action: {
             label: 'Undo',
             onClick: async () => {
@@ -157,15 +159,13 @@ export function TrashProvider({ children }) {
           },
         });
     } catch (err) {
-      toast.error(`Failed to restore ${element}!`);
+      toast.error(`Failed to restore ${element}. Please try again`, { id: toastId });
     }
   }
-
-
   // --- Emptying ---
   async function handleEmptyType(type) {
     const element = formatItemName(type);
-    const id = toast.loading(`Emptying ${element}...`);
+    const toastId = toast.loading(`Emptying ${element}...`);
     try {
       // Delete all elements of a type permanently
       for (const item of trash[type]) {
@@ -173,13 +173,13 @@ export function TrashProvider({ children }) {
       }
       // Delete all elements of a type from trash
       dispatch({ type: 'EMPTY_TYPE', payload: type });
-      toast.success(`${element} emptied successfully`, { id });
+      toast.success(`${element} have been successfully emptied.`, { id: toastId });
     } catch (err) {
-      toast.error(`Failed to empty ${element}!`, { id });
+      toast.error(`Failed to empty ${element}. Please try again`, { id: toastId });
     }
   }
   async function handleEmptyTrash() {
-    const id = toast.loading(`Emptying trash...`);
+    const toastId = toast.loading(`Emptying trash...`);
     try {
       // Delete all elements from trash permanently
       for (const type of Object.keys(collectionsIds)) {
@@ -190,10 +190,10 @@ export function TrashProvider({ children }) {
       }
       // Delete all elements from trash
       dispatch({ type: 'EMPTY_TRASH' });
-      toast.success('Trash emptied successfully', { id });
+      toast.success('Trash has been successfully emptied.', { id: toastId });
     } catch (err) {
       console.log(err);
-      toast.error('Failed to empty trash!', { id });
+      toast.error('Failed to empty trash!. Please try again', { id: toastId });
     }
   }
   // get trash from database

@@ -21,7 +21,7 @@ export function AddTask({ onAdd }) {
       <input
         type='text'
         className='w-full rounded-lg bg-transparent  p-2  text-sm text-text-tertiary placeholder:text-text-tertiary focus:outline-none'
-        placeholder={isAddingTask ? 'Adding Task...' : 'Add New Task'}
+        placeholder='Add New Task'
         ref={addNewTaskReference}
         value={value}
         disabled={isAddingTask}

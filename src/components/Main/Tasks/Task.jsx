@@ -183,7 +183,7 @@ export function Task({ task, isSelecting }) {
               setIsSelected(!isSelected);
               setSelectedTasks((prev) => {
                 if (isSelected) return prev.filter((id) => id !== task.$id);
-                else return [...prev, task.$id];
+                else return [...prev, { $id: task.$id, title: task.title }];
               });
             }}
           >

@@ -16,125 +16,125 @@ export const TasksContext = createContext();
 
 export function TasksProvider({ children }) {
   const [tasks, setTasks] = useState([
-    {
-      title: 'idk',
-      note: '',
-      dueDate: '',
-      listId: '65424b5a69fab6f186d2',
-      subtasks: [],
-      isCompleted: false,
-      tagsIds: [],
-      priority: 0,
-      index: 2,
-      $id: '65419d00b10b220d3f93',
-      $createdAt: '2023-11-01T00:34:08.726+00:00',
-      $updatedAt: '2023-11-01T00:34:08.726+00:00',
-      $permissions: [],
-      $databaseId: '654169b1a5c05d9c1e7e',
-      $collectionId: '65416a6c8f0a546d8b4b',
-    },
-    {
-      title: 'maybe',
-      note: '',
-      dueDate: '',
-      listId: '65424b5a69fab6f186d2',
-      subtasks: [],
-      isCompleted: false,
-      tagsIds: [],
-      priority: 0,
-      index: 3,
-      $id: '65419d4fbf5731854f09',
-      $createdAt: '2023-11-01T00:35:27.784+00:00',
-      $updatedAt: '2023-11-01T00:35:27.784+00:00',
-      $permissions: [],
-      $databaseId: '654169b1a5c05d9c1e7e',
-      $collectionId: '65416a6c8f0a546d8b4b',
-    },
-    {
-      title: 'hey',
-      note: '',
-      dueDate: '',
-      listId: 'none',
-      subtasks: [],
-      isCompleted: false,
-      tagsIds: [],
-      priority: 0,
-      index: 4,
-      $id: '65419d80e7066538faa7',
-      $createdAt: '2023-11-01T00:36:16.947+00:00',
-      $updatedAt: '2023-11-01T00:36:16.947+00:00',
-      $permissions: [],
-      $databaseId: '654169b1a5c05d9c1e7e',
-      $collectionId: '65416a6c8f0a546d8b4b',
-    },
-    {
-      title: 'today',
-      note: '',
-      dueDate: '2023-11-02',
-      listId: 'none',
-      subtasks: [],
-      isCompleted: false,
-      tagsIds: [],
-      priority: 0,
-      index: 5,
-      $id: '65419d89d260193sab4a5',
-      $createdAt: '2023-11-01T00:36:25.862+00:00',
-      $updatedAt: '2023-11-01T00:50:37.255+00:00',
-      $permissions: [],
-      $databaseId: '654169b1a5c05d9c1e7e',
-      $collectionId: '65416a6c8f0a546d8b4b',
-    },
-    {
-      title: 'tomorrow',
-      note: '',
-      dueDate: '2023-11-02',
-      listId: 'none',
-      subtasks: [],
-      isCompleted: false,
-      tagsIds: [],
-      priority: 0,
-      index: 6,
-      $id: '65419deec89deeef4e5a4',
-      $createdAt: '2023-11-01T00:38:06.823+00:00',
-      $updatedAt: '2023-11-01T00:38:06.823+00:00',
-      $permissions: [],
-      $databaseId: '654169b1a5c05d9c1e7e',
-      $collectionId: '65416a6c8f0a546d8b4b',
-    },
-    {
-      title: 'today',
-      note: '',
-      dueDate: '2023-11-02',
-      listId: 'none',
-      subtasks: [],
-      isCompleted: false,
-      tagsIds: [],
-      priority: 0,
-      index: 5,
-      $id: '65419d89d260193ab4a5',
-      $createdAt: '2023-11-01T00:36:25.862+00:00',
-      $updatedAt: '2023-11-01T00:50:37.255+00:00',
-      $permissions: [],
-      $databaseId: '654169b1a5c05d9c1e7e',
-      $collectionId: '65416a6c8f0a546d8b4b',
-    },
-    {
-      title: 'tomorrow',
-      note: '',
-      dueDate: '2023-11-02',
-      listId: 'none',
-      subtasks: [],
-      isCompleted: false,
-      tagsIds: [],
-      priority: 0,
-      index: 6,
-      $id: '65419deec89deef4e5a4',
-      $createdAt: '2023-11-01T00:38:06.823+00:00',
-      $updatedAt: '2023-11-01T00:38:06.823+00:00',
-      $permissions: [],
-      $databaseId: '654169b1a5c05d9c1e7e',
-      $collectionId: '65416a6c8f0a546d8b4b',
-    },
+    // {
+    //   title: 'idk',
+    //   note: '',
+    //   dueDate: '',
+    //   listId: '65424b5a69fab6f186d2',
+    //   subtasks: [],
+    //   isCompleted: false,
+    //   tagsIds: [],
+    //   priority: 0,
+    //   index: 2,
+    //   $id: '65419d00b10b220d3f93',
+    //   $createdAt: '2023-11-01T00:34:08.726+00:00',
+    //   $updatedAt: '2023-11-01T00:34:08.726+00:00',
+    //   $permissions: [],
+    //   $databaseId: '654169b1a5c05d9c1e7e',
+    //   $collectionId: '65416a6c8f0a546d8b4b',
+    // },
+    // {
+    //   title: 'maybe',
+    //   note: '',
+    //   dueDate: '',
+    //   listId: '65424b5a69fab6f186d2',
+    //   subtasks: [],
+    //   isCompleted: false,
+    //   tagsIds: [],
+    //   priority: 0,
+    //   index: 3,
+    //   $id: '65419d4fbf5731854f09',
+    //   $createdAt: '2023-11-01T00:35:27.784+00:00',
+    //   $updatedAt: '2023-11-01T00:35:27.784+00:00',
+    //   $permissions: [],
+    //   $databaseId: '654169b1a5c05d9c1e7e',
+    //   $collectionId: '65416a6c8f0a546d8b4b',
+    // },
+    // {
+    //   title: 'hey',
+    //   note: '',
+    //   dueDate: '',
+    //   listId: 'none',
+    //   subtasks: [],
+    //   isCompleted: false,
+    //   tagsIds: [],
+    //   priority: 0,
+    //   index: 4,
+    //   $id: '65419d80e7066538faa7',
+    //   $createdAt: '2023-11-01T00:36:16.947+00:00',
+    //   $updatedAt: '2023-11-01T00:36:16.947+00:00',
+    //   $permissions: [],
+    //   $databaseId: '654169b1a5c05d9c1e7e',
+    //   $collectionId: '65416a6c8f0a546d8b4b',
+    // },
+    // {
+    //   title: 'today',
+    //   note: '',
+    //   dueDate: '2023-11-02',
+    //   listId: 'none',
+    //   subtasks: [],
+    //   isCompleted: false,
+    //   tagsIds: [],
+    //   priority: 0,
+    //   index: 5,
+    //   $id: '65419d89d260193sab4a5',
+    //   $createdAt: '2023-11-01T00:36:25.862+00:00',
+    //   $updatedAt: '2023-11-01T00:50:37.255+00:00',
+    //   $permissions: [],
+    //   $databaseId: '654169b1a5c05d9c1e7e',
+    //   $collectionId: '65416a6c8f0a546d8b4b',
+    // },
+    // {
+    //   title: 'tomorrow',
+    //   note: '',
+    //   dueDate: '2023-11-02',
+    //   listId: 'none',
+    //   subtasks: [],
+    //   isCompleted: false,
+    //   tagsIds: [],
+    //   priority: 0,
+    //   index: 6,
+    //   $id: '65419deec89deeef4e5a4',
+    //   $createdAt: '2023-11-01T00:38:06.823+00:00',
+    //   $updatedAt: '2023-11-01T00:38:06.823+00:00',
+    //   $permissions: [],
+    //   $databaseId: '654169b1a5c05d9c1e7e',
+    //   $collectionId: '65416a6c8f0a546d8b4b',
+    // },
+    // {
+    //   title: 'today',
+    //   note: '',
+    //   dueDate: '2023-11-02',
+    //   listId: 'none',
+    //   subtasks: [],
+    //   isCompleted: false,
+    //   tagsIds: [],
+    //   priority: 0,
+    //   index: 5,
+    //   $id: '65419d89d260193ab4a5',
+    //   $createdAt: '2023-11-01T00:36:25.862+00:00',
+    //   $updatedAt: '2023-11-01T00:50:37.255+00:00',
+    //   $permissions: [],
+    //   $databaseId: '654169b1a5c05d9c1e7e',
+    //   $collectionId: '65416a6c8f0a546d8b4b',
+    // },
+    // {
+    //   title: 'tomorrow',
+    //   note: '',
+    //   dueDate: '2023-11-02',
+    //   listId: 'none',
+    //   subtasks: [],
+    //   isCompleted: false,
+    //   tagsIds: [],
+    //   priority: 0,
+    //   index: 6,
+    //   $id: '65419deec89deef4e5a4',
+    //   $createdAt: '2023-11-01T00:38:06.823+00:00',
+    //   $updatedAt: '2023-11-01T00:38:06.823+00:00',
+    //   $permissions: [],
+    //   $databaseId: '654169b1a5c05d9c1e7e',
+    //   $collectionId: '65416a6c8f0a546d8b4b',
+    // },
   ]);
   const [currentTask, setCurrentTask] = useState(null);
   const [isTaskOpen, setIsTaskOpen] = useState(false);
@@ -159,6 +159,7 @@ export function TasksProvider({ children }) {
   ];
 
   async function handleAddTask(task, listId) {
+    const toastId = toast.loading('Adding task...');
     try {
       setIsAddingTask(true);
       const response = await databases.createDocument(
@@ -167,25 +168,26 @@ export function TasksProvider({ children }) {
         ID.unique(),
         task,
       );
-      toast.success('Task added successfully!');
+      toast.success('Task added successfully!', { id: toastId });
       setTasks((tasks) => [...tasks, response]);
       if (listId) {
         handleAddTaskToList(listId, response.$id);
       }
     } catch (err) {
-      toast.error('Failed to add task!');
+      toast.error('Failed to add task!', { id: toastId });
     } finally {
       setIsAddingTask(false);
     }
   }
   async function handleUpdateTask(id, task, isCompleted) {
+    const toastId = toast.loading('Updating task...');
     try {
       const updatedTask = isCompleted ? { ...task, isCompleted } : { ...task };
       remove$Properties(updatedTask);
       await databases.updateDocument(DATABASE_ID, TASKS_COLLECTION_ID, id, updatedTask);
-      isCompleted ?? toast.success('Task updated successfully!');
+      isCompleted ?? toast.success('Task updated successfully!', { id: toastId });
     } catch (err) {
-      toast.error('Failed to update task!');
+      toast.error('Failed to update task!', { id: toastId });
     } finally {
       await handleGetAllElements(TASKS_COLLECTION_ID, setTasks);
     }
@@ -194,6 +196,7 @@ export function TasksProvider({ children }) {
     handleUpdateTask(id, task, isCompleted);
   }
   async function handleDeleteTask(id, listId, deletePermanently, isClearing) {
+    const toastId = toast.loading('Deleting task...');
     try {
       await handleDeleteElement(
         id,
@@ -204,7 +207,8 @@ export function TasksProvider({ children }) {
         setTasks,
       );
       if (!isClearing) {
-        toast.success('Task deleted successfully!', {
+        toast.success(getDeletionMessage('success', true), {
+          id: toastId,
           action: deletePermanently
             ? null
             : {
@@ -216,7 +220,7 @@ export function TasksProvider({ children }) {
         });
       }
     } catch (err) {
-      !isClearing && toast.error('Failed to delete task!');
+      !isClearing && toast.error(getDeletionMessage('error', true), { id: toastId });
     }
     // Remove the deleted task from the list it was in
     if (listId === 'none') return;
@@ -225,10 +229,15 @@ export function TasksProvider({ children }) {
     const newTasks = list.tasks.filter((taskId) => taskId !== id);
     await handleUpdateList(listId, 'tasks', newTasks);
   }
-  async function handleClearAllTasks(condition1, condition2, deletePermanently) {
-    const id = toast.loading('Clearing tasks...');
+  async function handleClearAllTasks(condition1, condition2, deletePermanently, isSelectedTasks) {
+    const id =
+      isSelectedTasks && selectedTasks.length > 1
+        ? toast.loading(`Deleting ${selectedTasks.length} tasks...`)
+        : toast.loading('Clearing all tasks...');
     try {
-      const deletedTasks = tasks.filter((task) => condition1(task) && condition2(task));
+      const deletedTasks = isSelectedTasks
+        ? selectedTasks
+        : tasks.filter((task) => condition1(task) && condition2(task));
       deletedTasks.forEach(async (task) => {
         await handleDeleteTask(task.$id, null, deletePermanently, true);
       });
@@ -241,21 +250,31 @@ export function TasksProvider({ children }) {
           await handleUpdateList(list.$id, 'tasks', newTasks);
         }),
       );
-      toast.success('Tasks cleared successfully!', {
-        id,
-        action: {
-          label: 'Undo',
-          onClick: () => {
-            undoDelete(async () => {
-              for (const task of deletedTasks) {
-                await handleRestoreFromTrash('tasks', task.$id, true);
-              }
-            });
+      toast.success(
+        isSelectedTasks
+          ? getDeletionMessage('success', false, true, selectedTasks.length)
+          : getDeletionMessage('success', false, false),
+        {
+          id,
+          action: {
+            label: 'Undo',
+            onClick: () => {
+              undoDelete(async () => {
+                for (const task of deletedTasks) {
+                  await handleRestoreFromTrash('tasks', task.$id, true);
+                }
+              });
+            },
           },
         },
-      });
+      );
     } catch (err) {
-      toast.error('Failed to clear tasks!', { id });
+      toast.error(
+        isSelectedTasks
+          ? getDeletionMessage('error', false, true, selectedTasks.length)
+          : getDeletionMessage('error', false, false),
+        { id },
+      );
     }
   }
   async function handleOpenTask(id) {
@@ -271,7 +290,7 @@ export function TasksProvider({ children }) {
   }
 
   useEffect(() => {
-    // handleGetAllElements(TASKS_COLLECTION_ID, setTasks);
+    handleGetAllElements(TASKS_COLLECTION_ID, setTasks);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -302,4 +321,18 @@ export function TasksProvider({ children }) {
       {children}
     </TasksContext.Provider>
   );
+}
+
+function getDeletionMessage(status, singular, selected, number) {
+  if (status === 'success') {
+    if ((selected && number === 1) || singular) return `Task has been successfully deleted.`;
+    if (selected && number > 1) return `${number} tasks have been successfully deleted`;
+    return `All tasks have been successfully cleared.`;
+  }
+  if (status === 'error') {
+    if ((selected && number === 1) || singular)
+      return `Failed to delete the task. Please try again.`;
+    if (selected && number > 1) return `Failed to delete the tasks. Please try again.`;
+    return `Failed to clear all tasks. Please try again.`;
+  }
 }

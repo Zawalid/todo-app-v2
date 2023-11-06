@@ -26,6 +26,7 @@ export function TagsProvider({ children }) {
   const { handleRestoreFromTrash } = useTrash();
 
   async function handleAddTag(title, bgColor, textColor) {
+    const toastId = toast.loading('Adding tag...');
     try {
       const response = await databases.createDocument(
         DATABASE_ID,
@@ -37,16 +38,18 @@ export function TagsProvider({ children }) {
           textColor,
         },
       );
-      toast.success('Tag added successfully');
+      toast.success('Tag has been successfully added.', { id: toastId });
       setTags((notes) => [...notes, response]);
     } catch (err) {
-      toast.error('Failed to add tag!');
+      toast.error('Failed to add the tag. Please try again.', { id: toastId });
     }
   }
   async function handleDeleteTag(id, deletePermanently) {
+    const toastId = toast.loading('Deleting tag...');
     try {
       await handleDeleteElement(id, TAGS_COLLECTION_ID, deletePermanently, 'tags', tags, setTags);
-      toast.success('Tag deleted successfully', {
+      toast.success('Tag has been successfully deleted.', {
+        id: toastId,
         action: deletePermanently
           ? null
           : {
@@ -58,7 +61,7 @@ export function TagsProvider({ children }) {
             },
       });
     } catch (err) {
-      toast.error('Failed to delete tag!');
+      toast.error('Failed to delete the tag. Please try again.', { id: toastId });
     }
   }
 

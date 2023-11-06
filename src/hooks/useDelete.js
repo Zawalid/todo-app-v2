@@ -16,19 +16,24 @@ export function useDelete() {
     elements,
     setElements,
   ) {
-    if (deletePermanently) {
-      setElements((elements) => elements.filter((element) => element.$id !== id));
-      await databases.deleteDocument(DATABASE_ID, collectionId, id);
-    } else {
-      await handleAddToTrash(elementsName, {
-        id,
-        title: elements.find((element) => element.$id === id).title,
-      });
-      await databases.updateDocument(DATABASE_ID, collectionId, id, {
-        isTrashed: true,
-      });
+    try {
+      if (deletePermanently) {
+        setElements((elements) => elements.filter((element) => element.$id !== id));
+        await databases.deleteDocument(DATABASE_ID, collectionId, id);
+      } else {
+        await handleAddToTrash(elementsName, {
+          id,
+          title: elements.find((element) => element.$id === id).title,
+        });
+        await databases.updateDocument(DATABASE_ID, collectionId, id, {
+          isTrashed: true,
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    } finally {
+      await handleGetAllElements(collectionId, setElements);
     }
-    await handleGetAllElements(collectionId, setElements);
   }
   return { handleDeleteElement };
 }
