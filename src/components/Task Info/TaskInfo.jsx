@@ -127,7 +127,6 @@ export function TaskInfo() {
     });
   }
   function handleDeleteTagFromTask(tagId) {
-    console.log(tagId);
     setTaskTagsIds((prev) => prev.filter((id) => id !== tagId));
   }
   function handleSaveChanges() {

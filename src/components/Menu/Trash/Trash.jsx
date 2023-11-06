@@ -23,7 +23,6 @@ export function Trash({ onClose }) {
   const trashLength = useMemo(
     () =>
       Object.keys(trash)
-        .filter((item) => !item.startsWith('$') && item !== 'owner')
         .map((key) => trash[key].length)
         .reduce((acc, cur) => acc + cur, 0),
     [trash],
@@ -57,7 +56,7 @@ export function Trash({ onClose }) {
                   setCurrentItem(JSON.parse(item));
                   whichDelete.current = 'item';
                 }}
-                onRestore={async() => {
+                onRestore={async () => {
                   await handleRestoreFromTrash(currentTab, JSON.parse(item).id);
                   handleRestoreElement(currentTab);
                 }}

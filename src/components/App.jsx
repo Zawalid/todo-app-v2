@@ -56,17 +56,17 @@ export default function App() {
       $collectionId: '65422c65a17f95378d53',
     },
   ]);
-  const [trash, setTrash] = useState({
-    tasks: [],
-    lists: [],
-    tags: [],
-    stickyNotes: [],
-  });
+  // const [trash, setTrash] = useState({
+  //   tasks: [],
+  //   lists: [],
+  //   tags: [],
+  //   stickyNotes: [],
+  // });
 
   const listsTitles = lists.map((list) => list.title);
 
   return (
-    <TrashProvider trash={trash} setTrash={setTrash}>
+    <TrashProvider >
       <ListsProvider lists={lists} setLists={setLists}>
         <TasksProvider>
           <StickyNotesProvider>

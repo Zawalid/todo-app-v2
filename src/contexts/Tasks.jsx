@@ -146,7 +146,7 @@ export function TasksProvider({ children }) {
       const updatedTask = isCompleted ? { ...task, isCompleted } : { ...task };
       remove$Properties(updatedTask);
       await databases.updateDocument(DATABASE_ID, TASKS_COLLECTION_ID, id, updatedTask);
-      toast.success('Task updated successfully!');
+      isCompleted ?? toast.success('Task updated successfully!');
     } catch (err) {
       toast.error('Failed to update task!');
     } finally {
