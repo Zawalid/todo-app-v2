@@ -42,5 +42,38 @@ input[type='checkbox'].subtask {
 }
 
 .full_screen {
-  @apply absolute  max-h-full z-10 h-full  w-full !important;
+  @apply absolute  z-10 h-full max-h-full  w-full !important;
+}
+
+.sonner-toast:not([data-type='loading']) [data-icon] {
+  height: 100%;
+  position: absolute;
+  left: 0;
+  width: 30px;
+  justify-content: center;
+  color: white;
+  border-radius: 8px 0 0 8px;
+}
+.sonner-toast[data-type='success'] [data-icon] {
+  background-color: limegreen;
+}
+.sonner-toast[data-type='error'] [data-icon] {
+  background-color: #ff0000;
+}
+
+.sonner-toast:not([data-type='loading']) [data-content] {
+  margin-left: 20px;
+}
+.sonner-toast[data-type='success'] [data-content] {
+  color: limegreen;
+}
+.sonner-toast[data-type='error'] [data-content] {
+  color: #ff0000;
+}
+.sonner-toast [data-close-button] {
+  left: 90%;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #f4f4f4;
+  color: #444444;
 }
