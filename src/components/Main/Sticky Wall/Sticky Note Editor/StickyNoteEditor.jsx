@@ -52,8 +52,8 @@ export function StickyNoteEditor({ currentNote, onBack }) {
     });
     onBack();
   }
-  function handleDeleteNote() {
-    handleDeleteStickyNote(currentNote.$id);
+  function handleDeleteNote(deletePermanently) {
+    handleDeleteStickyNote(currentNote.$id,deletePermanently);
     onBack();
   }
   function isElementEmpty(htmlElement) {

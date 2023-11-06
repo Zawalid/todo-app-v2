@@ -1,3 +1,5 @@
+import { CheckBox } from './CheckBox';
+
 export function ConfirmationModal({
   sentence,
   confirmText,
@@ -22,16 +24,7 @@ export function ConfirmationModal({
         <h4 className=' text-s font-semibold text-text-secondary'>{sentence}</h4>
         {!isTrash && (
           <div className=' flex items-center gap-3'>
-            <div className='relative'>
-              <input
-                type='checkbox'
-                id='permanent'
-                className='task peer'
-                checked={checked}
-                onChange={() => setChecked(!checked)}
-              />
-              <i className='fas fa-check pointer-events-none  absolute left-1  top-1 hidden h-4 w-4 text-sm text-white peer-checked:block'></i>
-            </div>
+            <CheckBox checked={checked} onChange={() => setChecked(!checked)} />
             <label htmlFor='permanent' className='mb-[3px] text-sm text-text-tertiary'>
               Delete permanently
             </label>

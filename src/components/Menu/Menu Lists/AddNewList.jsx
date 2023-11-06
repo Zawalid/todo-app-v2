@@ -39,7 +39,6 @@ export function AddNewList({ reference, isOpen }) {
 
   function handleAdd() {
     const untitledNumber = getTheUntitledNumber(untitledListsNumber);
-    console.log(untitledNumber);
     const title = value ? value : `Untitled ${untitledNumber > 0 ? `(${untitledNumber})` : ''}`;
     handleAddList(title.trim(), color);
     setValue('');

@@ -7,6 +7,7 @@ import { useLists } from '../hooks/useLists';
 import { useDelete } from '../hooks/useDelete';
 import { useGetAllElements } from '../hooks/useGetAllElements';
 import { toast } from 'sonner';
+import { useTrash } from '../hooks/useTrash';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 const TASKS_COLLECTION_ID = appWriteConfig.tasksCollectionId;
@@ -15,99 +16,135 @@ export const TasksContext = createContext();
 
 export function TasksProvider({ children }) {
   const [tasks, setTasks] = useState([
-    // {
-    //   title: 'idk',
-    //   note: '',
-    //   dueDate: '',
-    //   listId: '65424b5a69fab6f186d2',
-    //   subtasks: [],
-    //   isCompleted: false,
-    //   tagsIds: [],
-    //   priority: 0,
-    //   index: 2,
-    //   $id: '65419d00b10b220d3f93',
-    //   $createdAt: '2023-11-01T00:34:08.726+00:00',
-    //   $updatedAt: '2023-11-01T00:34:08.726+00:00',
-    //   $permissions: [],
-    //   $databaseId: '654169b1a5c05d9c1e7e',
-    //   $collectionId: '65416a6c8f0a546d8b4b',
-    // },
-    // {
-    //   title: 'maybe',
-    //   note: '',
-    //   dueDate: '',
-    //   listId: '65424b5a69fab6f186d2',
-    //   subtasks: [],
-    //   isCompleted: false,
-    //   tagsIds: [],
-    //   priority: 0,
-    //   index: 3,
-    //   $id: '65419d4fbf5731854f09',
-    //   $createdAt: '2023-11-01T00:35:27.784+00:00',
-    //   $updatedAt: '2023-11-01T00:35:27.784+00:00',
-    //   $permissions: [],
-    //   $databaseId: '654169b1a5c05d9c1e7e',
-    //   $collectionId: '65416a6c8f0a546d8b4b',
-    // },
-    // {
-    //   title: 'hey',
-    //   note: '',
-    //   dueDate: '',
-    //   listId: 'none',
-    //   subtasks: [],
-    //   isCompleted: false,
-    //   tagsIds: [],
-    //   priority: 0,
-    //   index: 4,
-    //   $id: '65419d80e7066538faa7',
-    //   $createdAt: '2023-11-01T00:36:16.947+00:00',
-    //   $updatedAt: '2023-11-01T00:36:16.947+00:00',
-    //   $permissions: [],
-    //   $databaseId: '654169b1a5c05d9c1e7e',
-    //   $collectionId: '65416a6c8f0a546d8b4b',
-    // },
-    // {
-    //   title: 'today',
-    //   note: '',
-    //   dueDate: '2023-11-02',
-    //   listId: 'none',
-    //   subtasks: [],
-    //   isCompleted: false,
-    //   tagsIds: [],
-    //   priority: 0,
-    //   index: 5,
-    //   $id: '65419d89d260193ab4a5',
-    //   $createdAt: '2023-11-01T00:36:25.862+00:00',
-    //   $updatedAt: '2023-11-01T00:50:37.255+00:00',
-    //   $permissions: [],
-    //   $databaseId: '654169b1a5c05d9c1e7e',
-    //   $collectionId: '65416a6c8f0a546d8b4b',
-    // },
-    // {
-    //   title: 'tomorrow',
-    //   note: '',
-    //   dueDate: '2023-11-02',
-    //   listId: 'none',
-    //   subtasks: [],
-    //   isCompleted: false,
-    //   tagsIds: [],
-    //   priority: 0,
-    //   index: 6,
-    //   $id: '65419deec89deef4e5a4',
-    //   $createdAt: '2023-11-01T00:38:06.823+00:00',
-    //   $updatedAt: '2023-11-01T00:38:06.823+00:00',
-    //   $permissions: [],
-    //   $databaseId: '654169b1a5c05d9c1e7e',
-    //   $collectionId: '65416a6c8f0a546d8b4b',
-    // },
+    {
+      title: 'idk',
+      note: '',
+      dueDate: '',
+      listId: '65424b5a69fab6f186d2',
+      subtasks: [],
+      isCompleted: false,
+      tagsIds: [],
+      priority: 0,
+      index: 2,
+      $id: '65419d00b10b220d3f93',
+      $createdAt: '2023-11-01T00:34:08.726+00:00',
+      $updatedAt: '2023-11-01T00:34:08.726+00:00',
+      $permissions: [],
+      $databaseId: '654169b1a5c05d9c1e7e',
+      $collectionId: '65416a6c8f0a546d8b4b',
+    },
+    {
+      title: 'maybe',
+      note: '',
+      dueDate: '',
+      listId: '65424b5a69fab6f186d2',
+      subtasks: [],
+      isCompleted: false,
+      tagsIds: [],
+      priority: 0,
+      index: 3,
+      $id: '65419d4fbf5731854f09',
+      $createdAt: '2023-11-01T00:35:27.784+00:00',
+      $updatedAt: '2023-11-01T00:35:27.784+00:00',
+      $permissions: [],
+      $databaseId: '654169b1a5c05d9c1e7e',
+      $collectionId: '65416a6c8f0a546d8b4b',
+    },
+    {
+      title: 'hey',
+      note: '',
+      dueDate: '',
+      listId: 'none',
+      subtasks: [],
+      isCompleted: false,
+      tagsIds: [],
+      priority: 0,
+      index: 4,
+      $id: '65419d80e7066538faa7',
+      $createdAt: '2023-11-01T00:36:16.947+00:00',
+      $updatedAt: '2023-11-01T00:36:16.947+00:00',
+      $permissions: [],
+      $databaseId: '654169b1a5c05d9c1e7e',
+      $collectionId: '65416a6c8f0a546d8b4b',
+    },
+    {
+      title: 'today',
+      note: '',
+      dueDate: '2023-11-02',
+      listId: 'none',
+      subtasks: [],
+      isCompleted: false,
+      tagsIds: [],
+      priority: 0,
+      index: 5,
+      $id: '65419d89d260193sab4a5',
+      $createdAt: '2023-11-01T00:36:25.862+00:00',
+      $updatedAt: '2023-11-01T00:50:37.255+00:00',
+      $permissions: [],
+      $databaseId: '654169b1a5c05d9c1e7e',
+      $collectionId: '65416a6c8f0a546d8b4b',
+    },
+    {
+      title: 'tomorrow',
+      note: '',
+      dueDate: '2023-11-02',
+      listId: 'none',
+      subtasks: [],
+      isCompleted: false,
+      tagsIds: [],
+      priority: 0,
+      index: 6,
+      $id: '65419deec89deeef4e5a4',
+      $createdAt: '2023-11-01T00:38:06.823+00:00',
+      $updatedAt: '2023-11-01T00:38:06.823+00:00',
+      $permissions: [],
+      $databaseId: '654169b1a5c05d9c1e7e',
+      $collectionId: '65416a6c8f0a546d8b4b',
+    },
+    {
+      title: 'today',
+      note: '',
+      dueDate: '2023-11-02',
+      listId: 'none',
+      subtasks: [],
+      isCompleted: false,
+      tagsIds: [],
+      priority: 0,
+      index: 5,
+      $id: '65419d89d260193ab4a5',
+      $createdAt: '2023-11-01T00:36:25.862+00:00',
+      $updatedAt: '2023-11-01T00:50:37.255+00:00',
+      $permissions: [],
+      $databaseId: '654169b1a5c05d9c1e7e',
+      $collectionId: '65416a6c8f0a546d8b4b',
+    },
+    {
+      title: 'tomorrow',
+      note: '',
+      dueDate: '2023-11-02',
+      listId: 'none',
+      subtasks: [],
+      isCompleted: false,
+      tagsIds: [],
+      priority: 0,
+      index: 6,
+      $id: '65419deec89deef4e5a4',
+      $createdAt: '2023-11-01T00:38:06.823+00:00',
+      $updatedAt: '2023-11-01T00:38:06.823+00:00',
+      $permissions: [],
+      $databaseId: '654169b1a5c05d9c1e7e',
+      $collectionId: '65416a6c8f0a546d8b4b',
+    },
   ]);
   const [currentTask, setCurrentTask] = useState(null);
   const [isTaskOpen, setIsTaskOpen] = useState(false);
   const [isAddingTask, setIsAddingTask] = useState(false);
+  const [selectedTasks, setSelectedTasks] = useState([]);
   const addNewTaskReference = useRef(null);
   const { lists, handleAddTaskToList, handleUpdateList } = useLists();
   const { handleDeleteElement } = useDelete();
   const { handleGetAllElements } = useGetAllElements();
+  const { handleRestoreFromTrash } = useTrash();
 
   const todayTasks = tasks?.filter((task) => checkIfToday(task.dueDate));
   const tomorrowTasks = tasks?.filter((task) => checkIfTomorrow(task.dueDate));
@@ -167,7 +204,16 @@ export function TasksProvider({ children }) {
         setTasks,
       );
       if (!isClearing) {
-        toast.success('Task deleted successfully!');
+        toast.success('Task deleted successfully!', {
+          action: deletePermanently
+            ? null
+            : {
+                label: 'Undo',
+                onClick: () => {
+                  undoDelete(async () => handleRestoreFromTrash('tasks', id, true));
+                },
+              },
+        });
       }
     } catch (err) {
       !isClearing && toast.error('Failed to delete task!');
@@ -195,7 +241,19 @@ export function TasksProvider({ children }) {
           await handleUpdateList(list.$id, 'tasks', newTasks);
         }),
       );
-      toast.success('Tasks cleared successfully!', { id });
+      toast.success('Tasks cleared successfully!', {
+        id,
+        action: {
+          label: 'Undo',
+          onClick: () => {
+            undoDelete(async () => {
+              for (const task of deletedTasks) {
+                await handleRestoreFromTrash('tasks', task.$id, true);
+              }
+            });
+          },
+        },
+      });
     } catch (err) {
       toast.error('Failed to clear tasks!', { id });
     }
@@ -207,9 +265,13 @@ export function TasksProvider({ children }) {
     }
     id && setIsTaskOpen(true);
   }
+  async function undoDelete(fn) {
+    await fn();
+    await handleGetAllElements(TASKS_COLLECTION_ID, setTasks);
+  }
 
   useEffect(() => {
-    handleGetAllElements(TASKS_COLLECTION_ID, setTasks);
+    // handleGetAllElements(TASKS_COLLECTION_ID, setTasks);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -222,6 +284,7 @@ export function TasksProvider({ children }) {
         tomorrowTasks,
         thisWeekTasks,
         upcomingTasks,
+        selectedTasks,
         isTaskOpen,
         isAddingTask,
         addNewTaskReference,
@@ -233,6 +296,7 @@ export function TasksProvider({ children }) {
         handleOpenTask,
         setIsTaskOpen,
         setTasks,
+        setSelectedTasks,
       }}
     >
       {children}

@@ -45,6 +45,7 @@ function reducer(state, action) {
         ...state,
         isUpdated: true,
         trash: {
+          ...state.trash,
           [action.payload.type]: [
             ...state.trash[action.payload.type],
             JSON.stringify(action.payload.item),
@@ -56,6 +57,7 @@ function reducer(state, action) {
         ...state,
         isUpdated: true,
         trash: {
+          ...state.trash,
           [action.payload.type]: state.trash[action.payload.type].filter(
             (el) => JSON.parse(el).id !== action.payload.itemId,
           ),
@@ -65,7 +67,7 @@ function reducer(state, action) {
       return {
         ...state,
         isUpdated: true,
-        trash: { [action.payload]: [] },
+        trash: { ...state.trash, [action.payload]: [] },
       };
     case 'EMPTY_TRASH':
       return {
@@ -88,6 +90,7 @@ export function TrashProvider({ children }) {
   const [currentTab, setCurrentTab] = useState('tasks');
   const [{ trash, isUpdated, $id }, dispatch] = useReducer(reducer, initialState);
 
+  // --- Creation ---
   async function createTrash() {
     const response = await databases.createDocument(
       DATABASE_ID,
@@ -101,6 +104,7 @@ export function TrashProvider({ children }) {
     dispatch({ type: 'ADD_TO_TRASH', payload: { type, item } });
   }
 
+  // --- Deletion ---
   // To delete a (task, list, tag, stickyNote) permanently:
   async function deleteElement(type, itemId) {
     await databases.deleteDocument(DATABASE_ID, collectionsIds[type], itemId);
@@ -111,36 +115,56 @@ export function TrashProvider({ children }) {
   }
   // To delete an item from trash and the corresponding element permanently:
   async function handleDeleteFromTrash(type, itemId) {
-    // Delete the element permanently
-    await deleteElement(type, itemId);
-    // Delete the element from trash
-    deleteItem(type, itemId);
+    const element = formatItemName(type,true);
+    try {
+      // Delete the element permanently
+      await deleteElement(type, itemId);
+      // Delete the element from trash
+      await deleteItem(type, itemId);
+      toast.success(` ${element} deleted permanently`);
+    } catch (err) {
+      toast.error(`Failed to delete ${element}!`);
+    }
   }
+  // --- Restoration ---
   // To update an element (task, list, tag, stickyNote) from trash (isTrashed: true)
-  async function restoreElement(type, itemId) {
+  async function restoreElement(type, itemId, revert) {
     await databases.updateDocument(DATABASE_ID, collectionsIds[type], itemId, {
-      isTrashed: false,
+      isTrashed: revert ? true : false,
     });
   }
   // To delete an item from trash and restore the corresponding element:
-  async function handleRestoreFromTrash(type, itemId) {
-    // Restore the element
-    const element =
-      type === 'stickyNotes'
-        ? 'Sticky note'
-        : type[0].toUpperCase() + type.slice(1, type.length - 1);
+  async function handleRestoreFromTrash(type, itemId, isUndo, updateFunction) {
+    const element = formatItemName(type, true);
     try {
+      // Restore the element
       await restoreElement(type, itemId);
-      toast.success(`${element} restored successfully`);
+      // Delete the element from trash
+      await deleteItem(type, itemId);
+      isUndo ||
+        toast.success(`${element} restored successfully`, {
+          action: {
+            label: 'Undo',
+            onClick: async () => {
+              await handleAddToTrash(
+                type,
+                JSON.parse(trash[type].find((el) => JSON.parse(el).id === itemId)),
+              );
+              // Revert the restore operation (isTrashed: true)
+              await restoreElement(type, itemId, true);
+              updateFunction(type);
+            },
+          },
+        });
     } catch (err) {
       toast.error(`Failed to restore ${element}!`);
     }
-    // Delete the element from trash
-    deleteItem(type, itemId);
   }
 
+
+  // --- Emptying ---
   async function handleEmptyType(type) {
-    const element = type === 'stickyNotes' ? 'Sticky notes' : type[0].toUpperCase() + type.slice(1);
+    const element = formatItemName(type);
     const id = toast.loading(`Emptying ${element}...`);
     try {
       // Delete all elements of a type permanently
@@ -219,4 +243,10 @@ export function TrashProvider({ children }) {
       {children}
     </TrashContext.Provider>
   );
+}
+
+function formatItemName(type, singular) {
+  return type === 'stickyNotes'
+    ? 'Sticky notes'
+    : type[0].toUpperCase() + type.slice(1, type.length - (singular ? 1 : 0));
 }

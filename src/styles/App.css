@@ -79,3 +79,9 @@ input[type='checkbox'].subtask {
   background-color: #f4f4f4;
   color: #444444;
 }
+.sonner-toast [data-button] {
+  background-color: #f4f4f4;
+  color: #444444;
+  font-weight: 500;
+  box-shadow: -1px 1px 1px 0px #e5e5e5b0;
+}

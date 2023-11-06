@@ -4,6 +4,7 @@ import { ID } from 'appwrite';
 import { useDelete } from '../hooks/useDelete';
 import { useGetAllElements } from '../hooks/useGetAllElements';
 import { toast } from 'sonner';
+import { useTrash } from '../hooks/useTrash';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 const TAGS_COLLECTION_ID = appWriteConfig.tagsCollectionId;
@@ -22,6 +23,7 @@ export function TagsProvider({ children }) {
   ]);
   const { handleDeleteElement } = useDelete();
   const { handleGetAllElements } = useGetAllElements();
+  const { handleRestoreFromTrash } = useTrash();
 
   async function handleAddTag(title, bgColor, textColor) {
     try {
@@ -44,7 +46,17 @@ export function TagsProvider({ children }) {
   async function handleDeleteTag(id, deletePermanently) {
     try {
       await handleDeleteElement(id, TAGS_COLLECTION_ID, deletePermanently, 'tags', tags, setTags);
-      toast.success('Tag deleted successfully');
+      toast.success('Tag deleted successfully', {
+        action: deletePermanently
+          ? null
+          : {
+              label: 'Undo',
+              onClick: async () => {
+                await handleRestoreFromTrash('tags', id, true);
+                await handleGetAllElements(TAGS_COLLECTION_ID, setTags);
+              },
+            },
+      });
     } catch (err) {
       toast.error('Failed to delete tag!');
     }

@@ -68,7 +68,7 @@ export function StickyNoteHeader({
           sentence='Are you sure you want to delete this sticky note?'
           confirmText='Delete'
           onConfirm={() => {
-            onDelete();
+            onDelete(deletePermanently);
             setIsConfirmationModalOpen(false);
           }}
           onCancel={() => setIsConfirmationModalOpen(false)}

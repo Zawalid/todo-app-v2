@@ -29,7 +29,7 @@ export function Tag({ tag, showDeleteButton, customClassName, onDeleteTag }) {
           confirmText={'Delete'}
           onConfirm={ () => {
             setIsConfirmationModalOpen(false);
-            handleDeleteTag(tag.$id);
+            handleDeleteTag(tag.$id,deletePermanently);
           }}
           onCancel={() => setIsConfirmationModalOpen(false)}
           element='Tag'

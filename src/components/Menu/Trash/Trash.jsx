@@ -56,7 +56,12 @@ export function Trash({ onClose }) {
                   whichDelete.current = 'item';
                 }}
                 onRestore={async () => {
-                  await handleRestoreFromTrash(currentTab, JSON.parse(item).id);
+                  await handleRestoreFromTrash(
+                    currentTab,
+                    JSON.parse(item).id,
+                    null,
+                    handleRestoreElement,
+                  );
                   handleRestoreElement(currentTab);
                 }}
               />

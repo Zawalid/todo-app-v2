@@ -5,6 +5,7 @@ import { remove$Properties } from '../utils/remove$Properties';
 import { useDelete } from '../hooks/useDelete';
 import { useGetAllElements } from '../hooks/useGetAllElements';
 import { toast } from 'sonner';
+import { useTrash } from '../hooks/useTrash';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 const LISTS_COLLECTION_ID = '65422c65a17f95378d53';
@@ -14,6 +15,7 @@ export const ListsContext = createContext();
 export function ListsProvider({ children, lists, setLists }) {
   const { handleDeleteElement } = useDelete();
   const { handleGetAllElements } = useGetAllElements();
+  const { handleRestoreFromTrash } = useTrash();
 
   async function handleAddList(title, color, list) {
     try {
@@ -68,7 +70,17 @@ export function ListsProvider({ children, lists, setLists }) {
         lists,
         setLists,
       );
-      toast.success('List deleted successfully!');
+      toast.success('List deleted successfully!', {
+        action: deletePermanently
+        ? null
+        :{
+          label: 'Undo',
+          onClick: async () => {
+            await handleRestoreFromTrash('lists', id, true);
+            await handleGetAllElements(LISTS_COLLECTION_ID, setLists);
+          },
+        },
+      });
     } catch (err) {
       toast.error('Failed to delete list!');
     }

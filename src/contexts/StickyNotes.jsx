@@ -5,6 +5,7 @@ import { remove$Properties } from '../utils/remove$Properties';
 import { useDelete } from '../hooks/useDelete';
 import { useGetAllElements } from '../hooks/useGetAllElements';
 import { toast } from 'sonner';
+import { useTrash } from '../hooks/useTrash';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 const STICKY_NOTES_COLLECTION_ID = appWriteConfig.stickyNotesCollectionId;
@@ -40,6 +41,7 @@ export function StickyNotesProvider({ children }) {
   const [isStickyNoteEditorOpen, setIsStickyNoteEditorOpen] = useState(false);
   const { handleDeleteElement } = useDelete();
   const { handleGetAllElements } = useGetAllElements();
+  const {handleRestoreFromTrash } = useTrash();
 
   async function handleAddStickyNote(note) {
     try {
@@ -77,7 +79,17 @@ export function StickyNotesProvider({ children }) {
         stickyNotes,
         setStickyNotes,
       );
-      toast.success('Sticky note deleted successfully!');
+      toast.success('Sticky note deleted successfully!', {
+        action: deletePermanently
+        ? null
+        :{
+          label: 'Undo',
+          onClick: async () => {
+            await handleRestoreFromTrash('stickyNotes', id, true);
+            await handleGetAllElements(STICKY_NOTES_COLLECTION_ID, setStickyNotes);
+          },
+        },
+      });
     } catch (err) {
       toast.error('Failed to delete sticky note!');
     }

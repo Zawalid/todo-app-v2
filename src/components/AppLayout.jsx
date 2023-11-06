@@ -10,7 +10,6 @@ export default function AppLayout() {
     <>
       <Toaster
         position='top-right'
-        closeButton={true}
         loadingIcon={
           <i className='fa-solid fa-spinner animate-spin text-lg text-text-secondary'></i>
         }

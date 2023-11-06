@@ -2,7 +2,7 @@ import Tippy from '@tippyjs/react';
 import { AddTask } from './AddTask';
 import { Task } from './Task';
 import { TasksActions } from './TasksActions/TasksActions';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { isTaskOverdue } from '../../../utils/Moment';
 import { ConfirmationModal } from '../../ConfirmationModal';
 import { useSearchParams } from 'react-router-dom';
@@ -19,9 +19,12 @@ const filtersConditions = {
 };
 
 export function DisplayedTasks({ onAdd, condition, activeTab }) {
-  const { tasks, handleClearAllTasks } = useTasks();
+  const { tasks, handleClearAllTasks, selectedTasks } = useTasks();
   const [deletePermanently, setDeletePermanently] = useState(false);
+  const [isSelecting, setIsSelecting] = useState(false);
+  const [isDeleteMultipleModalOpen, setIsDeleteMultipleModalOpen] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
+  const whichDelete = useRef(null);
 
   const filterParam = searchParams.get('filter');
   const sortParam = searchParams.get('sort');
@@ -68,6 +71,16 @@ export function DisplayedTasks({ onAdd, condition, activeTab }) {
     );
   }, [tasks, filter, condition]);
 
+  useEffect(() => {
+    selectedTasks.length > 0
+      ? setIsDeleteMultipleModalOpen(true)
+      : setIsDeleteMultipleModalOpen(false);
+  }, [selectedTasks]);
+
+  useEffect(() => {
+    !isDeleteMultipleModalOpen && setIsSelecting(false);
+  }, [isDeleteMultipleModalOpen]);
+
   return (
     <div className='relative flex h-full flex-col overflow-auto'>
       <div className='flex items-center gap-2'>
@@ -75,37 +88,51 @@ export function DisplayedTasks({ onAdd, condition, activeTab }) {
           <i className='fa-solid fa-plus text-xl text-text-tertiary'></i>
           <AddTask onAdd={onAdd} />
         </div>
-        <Tippy
-          content={
-            <TasksActions
-              filter={filter}
-              onSelect={(e) => {
-                setFilter(e.target.value);
-                setSearchParams({ filter: e.target.value });
-              }}
-              onClearAll={() => setIsClearAllModalOpen(true)}
-              sortKey={sortKey}
-              sortDirection={sortDirection}
-              setSortDirection={setSortDirection}
-              setSortKey={setSortKey}
-              tasksLength={filteredTasks.length}
-            />
-          }
-          className=' rounded-lg  bg-background-primary shadow-md'
-          trigger='click'
-          interactive={true}
-          arrow={false}
-          placement='bottom'
-          maxWidth='auto'
-        >
-          <button className='h-8 w-8  rounded-full bg-background-secondary text-text-tertiary'>
-            <i className='fa-solid fa-ellipsis-v text-xl'></i>
+        <div className='flex gap-3'>
+          <button
+            className='h-8 w-8 rounded-full bg-background-primary text-text-tertiary transition-colors duration-300 hover:bg-background-secondary'
+            onClick={() => {
+              setIsSelecting(!isSelecting);
+              setIsDeleteMultipleModalOpen(false);
+            }}
+          >
+            <i className='fa-solid fa-check-double text-lg'></i>{' '}
           </button>
-        </Tippy>
+          <Tippy
+            content={
+              <TasksActions
+                filter={filter}
+                onSelect={(e) => {
+                  setFilter(e.target.value);
+                  setSearchParams({ filter: e.target.value });
+                }}
+                onClearAll={() => {
+                  setIsClearAllModalOpen(true);
+                  whichDelete.current = 'clear';
+                }}
+                sortKey={sortKey}
+                sortDirection={sortDirection}
+                setSortDirection={setSortDirection}
+                setSortKey={setSortKey}
+                tasksLength={filteredTasks.length}
+              />
+            }
+            className=' rounded-lg  bg-background-primary shadow-md'
+            trigger='click'
+            interactive={true}
+            arrow={false}
+            placement='bottom'
+            maxWidth='auto'
+          >
+            <button className='h-8 w-8 rounded-full bg-background-primary text-text-tertiary transition-colors duration-300 hover:bg-background-secondary'>
+              <i className='fa-solid fa-ellipsis-v text-xl'></i>
+            </button>
+          </Tippy>
+        </div>
       </div>
       {tasks.filter((task) => condition(task)).length > 0 && (
         <>
-          <ul className='mt-3 space-y-2 overflow-y-auto'>
+          <ul className='mt-3 h-full space-y-2 overflow-y-auto pr-3'>
             {[...filteredTasks]
               .filter((task) => condition(task))
               .sort((a, b) => {
@@ -131,7 +158,7 @@ export function DisplayedTasks({ onAdd, condition, activeTab }) {
                 }
               })
               .map((task) => (
-                <Task key={task.$id} task={task} />
+                <Task key={task.$id} task={task} isSelecting={isSelecting} />
               ))}
           </ul>
           {filteredTasks.filter((task) => condition(task)).length === 0 && (
@@ -160,8 +187,14 @@ export function DisplayedTasks({ onAdd, condition, activeTab }) {
 
       {isClearAllModalOpen && (
         <ConfirmationModal
-          sentence='Are you sure you want to clear all tasks?'
-          confirmText='Clear All'
+          sentence={`Are you sure you want to ${
+            whichDelete.current === 'selected'
+              ? `delete ${
+                  selectedTasks.length > 1 ? `${selectedTasks.length} tasks` : 'this task'
+                } `
+              : 'clear all tasks?'
+          } `}
+          confirmText='Clear All '
           onConfirm={() => {
             setIsClearAllModalOpen(false);
             handleClearAllTasks(condition, filtersConditions[filter], deletePermanently);
@@ -172,6 +205,46 @@ export function DisplayedTasks({ onAdd, condition, activeTab }) {
           setChecked={setDeletePermanently}
         />
       )}
+      <MultipleDeletions
+        isOpen={isDeleteMultipleModalOpen}
+        onConfirm={() => {
+          setIsClearAllModalOpen(true);
+          whichDelete.current = 'selected';
+        }}
+        onClose={() => setIsDeleteMultipleModalOpen(false)}
+        selectedTasksNumber={selectedTasks.length}
+      />
+    </div>
+  );
+}
+
+function MultipleDeletions({ isOpen, onConfirm, onClose, selectedTasksNumber }) {
+  return (
+    <div
+      className={`fixed left-1/2 flex w-[500px] -translate-x-1/2 items-center justify-between rounded-lg border bg-background-primary px-8 py-4 shadow-lg transition-[bottom] duration-500 ${
+        isOpen ? 'bottom-3' : '-bottom-[100px]'
+      }`}
+    >
+      <h2 className='font-semibold text-text-secondary'>
+        <span className='mr-2  rounded-md bg-text-secondary px-2 py-1 text-lg text-white '>
+          {selectedTasksNumber}
+        </span>
+        {selectedTasksNumber === 1 ? ' Task' : ' Tasks'} selected
+      </h2>
+      <div className='flex items-center  gap-3 '>
+        <button
+          className='rounded-lg bg-background-secondary px-4 py-2 text-sm font-semibold text-text-secondary'
+          onClick={onClose}
+        >
+          Cancel
+        </button>
+        <button
+          className='rounded-lg bg-red-500 px-4 py-2 text-sm font-semibold text-background-secondary transition-colors duration-300 hover:bg-red-600'
+          onClick={onConfirm}
+        >
+          Delete
+        </button>
+      </div>
     </div>
   );
 }

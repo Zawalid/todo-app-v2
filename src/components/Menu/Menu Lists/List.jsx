@@ -117,7 +117,7 @@ export function List({ list }) {
           confirmText='Delete'
           onConfirm={ () => {
             setIsDeleteModalOpen(false);
-            handleDeleteList($id);
+            handleDeleteList($id,deletePermanently);
             path.replace(/%20/g, ' ') === `/${title}` && navigator('/');
             // To delete all the tasks of the deleted list
             // const tasksToDelete = tasks.filter((task) => task.listId === $id);

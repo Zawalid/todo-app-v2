@@ -11,15 +11,17 @@ import completedSoundFile from '../../../assets/completed.mp3';
 import { useTasks } from '../../../hooks/useTasks';
 import { useLists } from '../../../hooks/useLists';
 import { useTags } from '../../../hooks/useTags';
+import { CheckBox } from '../../CheckBox';
 
 const completedSound = new Audio(completedSoundFile);
 
-export function Task({ task }) {
-  const { lists } = useLists();
+export function Task({ task, isSelecting }) {
   const [checked, setChecked] = useState(task.isCompleted);
-  const isPassed = isTaskOverdue(task.dueDate);
-  const { handleOpenTask, handleCompleteTask } = useTasks();
+  const [isSelected, setIsSelected] = useState(false);
+  const { lists } = useLists();
+  const { handleOpenTask, handleCompleteTask, setSelectedTasks } = useTasks();
   const { tags } = useTags();
+  const isPassed = isTaskOverdue(task.dueDate);
 
   const listName = useMemo(
     () => lists.find((l) => l?.$id === task.listId)?.title,
@@ -34,25 +36,30 @@ export function Task({ task }) {
     // eslint-disable-next-line
   }, [checked]);
 
+  useEffect(() => {
+    if (!isSelecting) {
+      setIsSelected(false);
+      setSelectedTasks([]);
+    }
+    // eslint-disable-next-line
+  }, [isSelecting]);
+
   return (
     <li
       className={
-        'flex items-center justify-between gap-3 rounded-lg  border-b border-background-tertiary   px-5 py-2 transition-colors duration-500 ' +
-        (checked ? 'bg-background-tertiary ' : 'bg-slate-50 ')
+        'flex items-center justify-between gap-3 rounded-lg  border-b border-background-tertiary   px-5 py-2 transition-all duration-500   ' +
+        (checked ? 'bg-background-tertiary ' : 'bg-slate-50 ') +
+        (isSelected ? ' translate-y-1 border-x border-x-text-tertiary' : '')
       }
     >
-      <div className='relative'>
-        <input
-          type='checkbox'
-          className='task peer'
-          checked={checked}
-          onChange={(e) => {
-            setChecked(!checked);
-            e.target.checked && completedSound.play();
-          }}
-        />
-        <i className='fas fa-check pointer-events-none  absolute left-1  top-1 hidden h-4 w-4 text-sm text-white peer-checked:block'></i>
-      </div>
+      <CheckBox
+        checked={checked}
+        onChange={(e) => {
+          setChecked(!checked);
+          e.target.checked && completedSound.play();
+        }}
+      />
+
       <div className='flex-1'>
         <span
           className={'text-sm font-medium text-text-secondary ' + (checked ? 'line-through' : '')}
@@ -147,26 +154,49 @@ export function Task({ task }) {
           </div>
         )}
       </div>
-      {isPassed && !checked && (
-        <Tippy
-          content={<span className='  font-semibold text-text-error'>This task is overdue !</span>}
-          placement='top'
-          className='bg-background-primary text-center shadow-md'
-          arrow={false}
-          animation='fade'
+      <div className='flex gap-3'>
+        {isPassed && !checked && (
+          <Tippy
+            content={
+              <span className='  font-semibold text-text-error'>This task is overdue !</span>
+            }
+            placement='top'
+            className='bg-background-primary text-center shadow-md'
+            arrow={false}
+            animation='fade'
+          >
+            <button>
+              <i className='fa-solid  fa-triangle-exclamation text-lg text-text-error'></i>
+            </button>
+          </Tippy>
+        )}
+        <button
+          className='rounded-sm px-2 py-1 transition-colors duration-300 hover:bg-background-primary'
+          onClick={() => handleOpenTask(task.$id)}
         >
-          <button>
-            <i className='fa-solid  fa-triangle-exclamation text-lg text-text-error'></i>
+          <i className='fa-solid fa-chevron-right cursor-pointer text-text-tertiary'></i>
+        </button>
+        {isSelecting && (
+          <button
+            className='border-l-2 pl-4'
+            onClick={() => {
+              setIsSelected(!isSelected);
+              setSelectedTasks((prev) => {
+                if (isSelected) return prev.filter((id) => id !== task.$id);
+                else return [...prev, task.$id];
+              });
+            }}
+          >
+            {
+              <i
+                className={`fa-${isSelected ? 'solid' : 'regular'} ${
+                  isSelected ? 'fa-circle-check' : 'fa-circle'
+                } text-lg text-text-tertiary`}
+              ></i>
+            }
           </button>
-        </Tippy>
-      )}
-
-      <button
-        className='rounded-sm px-2 py-1 transition-colors duration-300 hover:bg-background-primary'
-        onClick={() => handleOpenTask(task.$id)}
-      >
-        <i className='fa-solid fa-chevron-right cursor-pointer text-text-tertiary'></i>
-      </button>
+        )}
+      </div>
     </li>
   );
 }
