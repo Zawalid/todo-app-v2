@@ -16,14 +16,13 @@ export function Trash({ onClose }) {
     setCurrentTab,
   } = useTrash();
   const { handleRestoreElement } = useRestoreElement();
-
   const [currentItem, setCurrentItem] = useState(null);
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const whichDelete = useRef(null);
   const trashLength = useMemo(
     () =>
       Object.keys(trash)
-        .map((key) => trash[key].length)
+        .map((key) => trash[key]?.length)
         .reduce((acc, cur) => acc + cur, 0),
     [trash],
   );
@@ -46,8 +45,8 @@ export function Trash({ onClose }) {
         </div>
         <Tabs />
         <ul className='flex h-[170px] flex-1 flex-col gap-2 overflow-auto py-5'>
-          {trash[currentTab].length > 0 &&
-            trash[currentTab].map((item) => (
+          {trash[currentTab]?.length > 0 &&
+            trash[currentTab]?.map((item) => (
               <Item
                 key={JSON.parse(item).id}
                 title={JSON.parse(item).title}
@@ -62,7 +61,7 @@ export function Trash({ onClose }) {
                 }}
               />
             ))}
-          {trash[currentTab].length === 0 && (
+          {trash[currentTab]?.length === 0 && (
             <div className='grid h-full place-content-center justify-items-center '>
               <img src={trashIcon} alt='trash' className='w-20' />
               <span className='text-center text-sm font-bold text-text-tertiary'>
@@ -105,7 +104,7 @@ export function Trash({ onClose }) {
           <button
             className={
               'rounded-lg bg-text-error px-4 py-1 text-sm text-white ' +
-              (trash[currentTab].length === 0 ? 'cursor-not-allowed opacity-50' : '')
+              (trash[currentTab]?.length === 0 ? 'cursor-not-allowed opacity-50' : '')
             }
             onClick={() => {
               if (trash[currentTab].length === 0) return;

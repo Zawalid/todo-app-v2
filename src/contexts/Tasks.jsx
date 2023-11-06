@@ -180,8 +180,8 @@ export function TasksProvider({ children }) {
     await handleUpdateList(listId, 'tasks', newTasks);
   }
   async function handleClearAllTasks(condition1, condition2, deletePermanently) {
+    const id = toast.loading('Clearing tasks...');
     try {
-      const toastId = toast.loading('Clearing tasks...');
       const deletedTasks = tasks.filter((task) => condition1(task) && condition2(task));
       deletedTasks.forEach(async (task) => {
         await handleDeleteTask(task.$id, null, deletePermanently, true);
@@ -195,12 +195,9 @@ export function TasksProvider({ children }) {
           await handleUpdateList(list.$id, 'tasks', newTasks);
         }),
       );
-      toast.success('Tasks cleared successfully!', {
-        id: toastId,
-        duration: 10000,
-      });
+      toast.success('Tasks cleared successfully!', { id });
     } catch (err) {
-      toast.error('Failed to clear tasks!');
+      toast.error('Failed to clear tasks!', { id });
     }
   }
   async function handleOpenTask(id) {

@@ -1,10 +1,14 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Colors } from '../../Colors';
 import { useIsTitleTaken } from '../../../hooks/useIsTitleTaken';
 import { useLists } from '../../../hooks/useLists';
 
-export function AddNewList({ reference, isOpen, untitledTasksNumber }) {
+export function AddNewList({ reference, isOpen }) {
   const { lists, handleAddList } = useLists();
+  const untitledListsNumber = useMemo(
+    () => lists.filter((l) => l.title.startsWith('Untitled')).map((l) => l.title),
+    [lists],
+  );
 
   const [value, setValue] = useState('');
   const [color, setColor] = useState('#ff6b6b');
@@ -34,7 +38,8 @@ export function AddNewList({ reference, isOpen, untitledTasksNumber }) {
   }, [value, color, isOpen]);
 
   function handleAdd() {
-    const untitledNumber = value || untitledTasksNumber.current++;
+    const untitledNumber = getTheUntitledNumber(untitledListsNumber);
+    console.log(untitledNumber);
     const title = value ? value : `Untitled ${untitledNumber > 0 ? `(${untitledNumber})` : ''}`;
     handleAddList(title.trim(), color);
     setValue('');
@@ -75,4 +80,22 @@ export function AddNewList({ reference, isOpen, untitledTasksNumber }) {
       </div>
     </div>
   );
+}
+
+function getTheUntitledNumber(untitledLists) {
+  // Extract the numbers from the untitled lists (e.g. Untitled (1) => 1)
+  const untitledNumber = untitledLists.map((l) => {
+    const number = l.match(/\d+/g);
+    return number ? +number[0] : 0;
+  });
+  // Sort the numbers in ascending order
+  untitledNumber.sort((a, b) => a - b);
+  // Get the last number
+  const lastNumber = untitledNumber.at(-1);
+  // Create an array of numbers from 0 to the last number
+  const allNumbers = Array.from({ length: lastNumber }, (_, i) => i);
+  // Find the missing numbers
+  const missingNumbers = allNumbers.filter((n) => !untitledNumber.includes(n));
+  // Return the first missing number or the last number + 1 if there are no missing numbers
+  return missingNumbers.shift() ?? lastNumber + 1;
 }

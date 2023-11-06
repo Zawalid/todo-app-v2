@@ -141,9 +141,9 @@ export function TrashProvider({ children }) {
 
   async function handleEmptyType(type) {
     const element = type === 'stickyNotes' ? 'Sticky notes' : type[0].toUpperCase() + type.slice(1);
+    const id = toast.loading(`Emptying ${element}...`);
     try {
       // Delete all elements of a type permanently
-      const id = toast.loading(`Emptying ${element}...`);
       for (const item of trash[type]) {
         await deleteElement(type, JSON.parse(item).id);
       }
@@ -151,13 +151,13 @@ export function TrashProvider({ children }) {
       dispatch({ type: 'EMPTY_TYPE', payload: type });
       toast.success(`${element} emptied successfully`, { id });
     } catch (err) {
-      toast.error(`Failed to empty ${element}!`);
+      toast.error(`Failed to empty ${element}!`, { id });
     }
   }
   async function handleEmptyTrash() {
+    const id = toast.loading(`Emptying trash...`);
     try {
       // Delete all elements from trash permanently
-      const id = toast.loading(`Emptying trash...`);
       for (const type of Object.keys(collectionsIds)) {
         const trashItems = trash[type];
         for (const item of trashItems) {
@@ -168,10 +168,10 @@ export function TrashProvider({ children }) {
       dispatch({ type: 'EMPTY_TRASH' });
       toast.success('Trash emptied successfully', { id });
     } catch (err) {
-      toast.error('Failed to empty trash!');
+      console.log(err);
+      toast.error('Failed to empty trash!', { id });
     }
   }
-
   // get trash from database
   useEffect(() => {
     async function getTrash() {

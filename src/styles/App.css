@@ -46,13 +46,17 @@ input[type='checkbox'].subtask {
 }
 
 .sonner-toast:not([data-type='loading']) [data-icon] {
-  height: 100%;
+  height: calc(100% + 1px);
   position: absolute;
   left: 0;
-  width: 30px;
+  width: 45px;
   justify-content: center;
   color: white;
   border-radius: 8px 0 0 8px;
+}
+.sonner-toast:not([data-type='loading']) [data-icon] svg {
+  width: 25px;
+  height: 25px;
 }
 .sonner-toast[data-type='success'] [data-icon] {
   background-color: limegreen;
@@ -61,15 +65,13 @@ input[type='checkbox'].subtask {
   background-color: #ff0000;
 }
 
+.sonner-toast [data-content] {
+  color: #444444;
+}
 .sonner-toast:not([data-type='loading']) [data-content] {
-  margin-left: 20px;
+  margin-left: 40px;
 }
-.sonner-toast[data-type='success'] [data-content] {
-  color: limegreen;
-}
-.sonner-toast[data-type='error'] [data-content] {
-  color: #ff0000;
-}
+
 .sonner-toast [data-close-button] {
   left: 90%;
   top: 50%;

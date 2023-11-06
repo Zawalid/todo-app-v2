@@ -56,17 +56,11 @@ export default function App() {
       $collectionId: '65422c65a17f95378d53',
     },
   ]);
-  // const [trash, setTrash] = useState({
-  //   tasks: [],
-  //   lists: [],
-  //   tags: [],
-  //   stickyNotes: [],
-  // });
 
   const listsTitles = lists.map((list) => list.title);
 
   return (
-    <TrashProvider >
+    <TrashProvider>
       <ListsProvider lists={lists} setLists={setLists}>
         <TasksProvider>
           <StickyNotesProvider>
@@ -74,12 +68,13 @@ export default function App() {
               <BrowserRouter>
                 <Routes>
                   <Route path='/' element={<AppLayout />} />
-                  {['all', 'today', 'stickyWall', 'upcoming', ...listsTitles].map((tab) => (
-                    <Route path={`/${tab}`} element={<AppLayout />} key={tab}>
-                      <Route path='trash' element={<AppLayout />} />
-                    </Route>
-                  ))}
-                  <Route path='search' element={<AppLayout />} />
+                  {['all', 'today', 'stickyWall', 'search', 'upcoming', ...listsTitles].map(
+                    (tab) => (
+                      <Route path={`/${tab}`} element={<AppLayout />} key={tab}>
+                        <Route path='trash' element={<AppLayout />} />
+                      </Route>
+                    ),
+                  )}
                   <Route path='*' element={<NotFound />} />
                 </Routes>
               </BrowserRouter>

@@ -8,7 +8,6 @@ export function MenuLists() {
   const [isAddNewListOpen, setIsAddNewListOpen] = useState(false);
   const addNewListContainer = useRef(null);
   const addNewListToggler = useRef(null);
-  const untitledTasksNumber = useRef(0);
 
   useEffect(() => {
     function handleClickOutside(e) {
@@ -47,7 +46,6 @@ export function MenuLists() {
         <AddNewList
           reference={addNewListContainer}
           isOpen={isAddNewListOpen}
-          untitledTasksNumber={untitledTasksNumber}
         />
       )}
     </div>
