@@ -6,6 +6,7 @@ import { remove$Properties } from '../utils/remove$Properties';
 import { useLists } from '../hooks/useLists';
 import { useDelete } from '../hooks/useDelete';
 import { useGetAllElements } from '../hooks/useGetAllElements';
+import { toast } from 'sonner';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 const TASKS_COLLECTION_ID = appWriteConfig.tasksCollectionId;
@@ -121,31 +122,56 @@ export function TasksProvider({ children }) {
   ];
 
   async function handleAddTask(task, listId) {
-    setIsAddingTask(true);
-    const response = await databases.createDocument(
-      DATABASE_ID,
-      TASKS_COLLECTION_ID,
-      ID.unique(),
-      task,
-    );
-    setTasks((tasks) => [...tasks, response]);
-    setIsAddingTask(false);
-    if (listId) {
-      handleAddTaskToList(listId, response.$id);
+    try {
+      setIsAddingTask(true);
+      const response = await databases.createDocument(
+        DATABASE_ID,
+        TASKS_COLLECTION_ID,
+        ID.unique(),
+        task,
+      );
+      toast.success('Task added successfully!');
+      setTasks((tasks) => [...tasks, response]);
+      if (listId) {
+        handleAddTaskToList(listId, response.$id);
+      }
+    } catch (err) {
+      toast.error('Failed to add task!');
+    } finally {
+      setIsAddingTask(false);
     }
   }
   async function handleUpdateTask(id, task, isCompleted) {
-    const updatedTask = isCompleted ? { ...task, isCompleted } : { ...task };
-    remove$Properties(updatedTask);
-    await databases.updateDocument(DATABASE_ID, TASKS_COLLECTION_ID, id, updatedTask);
-
-    await handleGetAllElements(TASKS_COLLECTION_ID, setTasks);
+    try {
+      const updatedTask = isCompleted ? { ...task, isCompleted } : { ...task };
+      remove$Properties(updatedTask);
+      await databases.updateDocument(DATABASE_ID, TASKS_COLLECTION_ID, id, updatedTask);
+      toast.success('Task updated successfully!');
+    } catch (err) {
+      toast.error('Failed to update task!');
+    } finally {
+      await handleGetAllElements(TASKS_COLLECTION_ID, setTasks);
+    }
   }
   async function handleCompleteTask(id, task, isCompleted) {
     handleUpdateTask(id, task, isCompleted);
   }
-  async function handleDeleteTask(id, listId, deletePermanently) {
-    await handleDeleteElement(id, TASKS_COLLECTION_ID, deletePermanently, 'tasks', tasks, setTasks);
+  async function handleDeleteTask(id, listId, deletePermanently, isClearing) {
+    try {
+      await handleDeleteElement(
+        id,
+        TASKS_COLLECTION_ID,
+        deletePermanently,
+        'tasks',
+        tasks,
+        setTasks,
+      );
+      if (!isClearing) {
+        toast.success('Task deleted successfully!');
+      }
+    } catch (err) {
+      !isClearing && toast.error('Failed to delete task!');
+    }
     // Remove the deleted task from the list it was in
     if (listId === 'none') return;
     const list = lists.find((list) => list.$id === listId);
@@ -154,10 +180,13 @@ export function TasksProvider({ children }) {
     await handleUpdateList(listId, 'tasks', newTasks);
   }
   async function handleClearAllTasks(condition1, condition2, deletePermanently) {
-    const deletedTasks = tasks.filter((task) => condition1(task) && condition2(task));
-    deletedTasks.forEach(async (task) => {
-      await handleDeleteTask(task.$id, null, deletePermanently);
-    }),
+    try {
+      const toastId = toast.loading('Clearing tasks...');
+      const deletedTasks = tasks.filter((task) => condition1(task) && condition2(task));
+      deletedTasks.forEach(async (task) => {
+        await handleDeleteTask(task.$id, null, deletePermanently, true);
+      });
+
       await Promise.all(
         lists.map(async (list) => {
           const newTasks = list.tasks.filter(
@@ -166,6 +195,13 @@ export function TasksProvider({ children }) {
           await handleUpdateList(list.$id, 'tasks', newTasks);
         }),
       );
+      toast.success('Tasks cleared successfully!', {
+        id: toastId,
+        duration: 10000,
+      });
+    } catch (err) {
+      toast.error('Failed to clear tasks!');
+    }
   }
   async function handleOpenTask(id) {
     if (id && currentTask?.$id !== id) {

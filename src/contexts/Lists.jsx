@@ -4,6 +4,7 @@ import { ID } from 'appwrite';
 import { remove$Properties } from '../utils/remove$Properties';
 import { useDelete } from '../hooks/useDelete';
 import { useGetAllElements } from '../hooks/useGetAllElements';
+import { toast } from 'sonner';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 const LISTS_COLLECTION_ID = '65422c65a17f95378d53';
@@ -14,22 +15,26 @@ export function ListsProvider({ children, lists, setLists }) {
   const { handleDeleteElement } = useDelete();
   const { handleGetAllElements } = useGetAllElements();
 
-
   async function handleAddList(title, color, list) {
-    const newList = list
-      ? list
-      : {
-          title,
-          color,
-          tasks: [],
-        };
-    const response = await databases.createDocument(
-      DATABASE_ID,
-      LISTS_COLLECTION_ID,
-      ID.unique(),
-      newList,
-    );
-    setLists((lists) => [...lists, response]);
+    try {
+      const newList = list
+        ? list
+        : {
+            title,
+            color,
+            tasks: [],
+          };
+      const response = await databases.createDocument(
+        DATABASE_ID,
+        LISTS_COLLECTION_ID,
+        ID.unique(),
+        newList,
+      );
+      toast.success('List added successfully');
+      setLists((lists) => [...lists, response]);
+    } catch (err) {
+      toast.error('Failed to add list!');
+    }
   }
   async function handleUpdateList(id, property, value) {
     const list = lists.find((list) => list.$id === id);
@@ -40,7 +45,7 @@ export function ListsProvider({ children, lists, setLists }) {
     remove$Properties(updatedList);
 
     await databases.updateDocument(DATABASE_ID, LISTS_COLLECTION_ID, id, updatedList);
-    await handleGetAllElements(LISTS_COLLECTION_ID,setLists);
+    await handleGetAllElements(LISTS_COLLECTION_ID, setLists);
   }
   async function handleRenameList(id, title) {
     handleUpdateList(id, 'title', title);
@@ -54,19 +59,23 @@ export function ListsProvider({ children, lists, setLists }) {
     handleUpdateList(listId, 'tasks', newTasks);
   }
   async function handleDeleteList(id, deletePermanently) {
-    handleDeleteElement(
-      id,
-      LISTS_COLLECTION_ID,
-      deletePermanently,
-      'lists',
-      lists,
-      setLists,
-    );
+    try {
+      await handleDeleteElement(
+        id,
+        LISTS_COLLECTION_ID,
+        deletePermanently,
+        'lists',
+        lists,
+        setLists,
+      );
+      toast.success('List deleted successfully!');
+    } catch (err) {
+      toast.error('Failed to delete list!');
+    }
   }
 
-
   useEffect(() => {
-    handleGetAllElements(LISTS_COLLECTION_ID,setLists);
+    handleGetAllElements(LISTS_COLLECTION_ID, setLists);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -80,7 +89,7 @@ export function ListsProvider({ children, lists, setLists }) {
         handleRenameList,
         handleChangeListColor,
         handleAddTaskToList,
-        setLists
+        setLists,
       }}
     >
       {children}

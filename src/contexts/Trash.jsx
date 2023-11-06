@@ -2,6 +2,7 @@ import { createContext, useEffect, useState } from 'react';
 import { databases, appWriteConfig } from '../AppWrite';
 import { ID } from 'appwrite';
 import { remove$Properties } from '../utils/remove$Properties';
+import { toast } from 'sonner';
 
 const {
   databaseId: DATABASE_ID,
@@ -73,39 +74,59 @@ export function TrashProvider({ children, trash, setTrash }) {
   // To delete an item from trash and restore the corresponding element:
   async function handleRestoreFromTrash(type, itemId) {
     // Restore the element
-    await restoreElement(type, itemId);
+    const element =
+      type === 'stickyNotes'
+        ? 'Sticky note'
+        : type[0].toUpperCase() + type.slice(1, type.length - 1);
+    try {
+      await restoreElement(type, itemId);
+      toast.success(`${element} restored successfully`);
+    } catch (err) {
+      toast.error(`Failed to restore ${element}!`);
+    }
     // Delete the element from trash
     deleteItemFromTrash(type, itemId);
   }
 
   async function handleEmptyType(type) {
-    // Delete all elements of a type permanently
-    trash[type].forEach(async (item) => {
-      await deleteElement(type, JSON.parse(item).id);
-    });
-    // Delete all elements of a type from trash
-    setTrash((trash) => {
-      const newTrash = { ...trash, [type]: [] };
-      return newTrash;
-    });
-    setIsUpdated(true);
-  }
-  async function handleEmptyTrash() {
-    // Delete all elements from trash permanently
-    Object.keys(collectionsIds).forEach(async (type) => {
+    const element = type === 'stickyNotes' ? 'Sticky notes' : type[0].toUpperCase() + type.slice(1);
+    try {
+      // Delete all elements of a type permanently
       trash[type].forEach(async (item) => {
         await deleteElement(type, JSON.parse(item).id);
       });
-    });
-    // Delete all elements from trash
-    setTrash({
-      ...trash,
-      tasks: [],
-      lists: [],
-      tags: [],
-      stickyNotes: [],
-    });
-    setIsUpdated(true);
+      toast.success(`${element} emptied successfully`);
+      // Delete all elements of a type from trash
+      setTrash((trash) => {
+        const newTrash = { ...trash, [type]: [] };
+        return newTrash;
+      });
+      setIsUpdated(true);
+    } catch (err) {
+      toast.error(`Failed to empty ${element}!`);
+    }
+  }
+  async function handleEmptyTrash() {
+    try {
+      // Delete all elements from trash permanently
+      Object.keys(collectionsIds).forEach(async (type) => {
+        trash[type].forEach(async (item) => {
+          await deleteElement(type, JSON.parse(item).id);
+        });
+      });
+      toast.success('Trash emptied successfully');
+      // Delete all elements from trash
+      setTrash({
+        ...trash,
+        tasks: [],
+        lists: [],
+        tags: [],
+        stickyNotes: [],
+      });
+      setIsUpdated(true);
+    } catch (err) {
+      toast.error('Failed to empty trash!');
+    }
   }
 
   // get trash from database
@@ -129,7 +150,7 @@ export function TrashProvider({ children, trash, setTrash }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trash]);
-  
+
   return (
     <TrashContext.Provider
       value={{

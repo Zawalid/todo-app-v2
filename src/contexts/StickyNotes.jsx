@@ -4,6 +4,7 @@ import { ID } from 'appwrite';
 import { remove$Properties } from '../utils/remove$Properties';
 import { useDelete } from '../hooks/useDelete';
 import { useGetAllElements } from '../hooks/useGetAllElements';
+import { toast } from 'sonner';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 const STICKY_NOTES_COLLECTION_ID = appWriteConfig.stickyNotesCollectionId;
@@ -40,36 +41,50 @@ export function StickyNotesProvider({ children }) {
   const { handleDeleteElement } = useDelete();
   const { handleGetAllElements } = useGetAllElements();
 
-
   async function handleAddStickyNote(note) {
-    const response = await databases.createDocument(
-      DATABASE_ID,
-      STICKY_NOTES_COLLECTION_ID,
-      ID.unique(),
-      note,
-    );
-    setStickyNotes((notes) => [...notes, response]);
+    try {
+      const response = await databases.createDocument(
+        DATABASE_ID,
+        STICKY_NOTES_COLLECTION_ID,
+        ID.unique(),
+        note,
+      );
+      toast.success('Sticky note added successfully');
+      setStickyNotes((notes) => [...notes, response]);
+    } catch (err) {
+      toast.error('Failed to add sticky note!');
+    }
   }
   async function handleUpdateStickyNote(id, note) {
-    console.log(777);
-    const updatedNote = { ...note };
-    remove$Properties(updatedNote);
-    await databases.updateDocument(DATABASE_ID, STICKY_NOTES_COLLECTION_ID, id, updatedNote);
-    await handleGetAllElements(STICKY_NOTES_COLLECTION_ID,setStickyNotes);
+    try {
+      const updatedNote = { ...note };
+      remove$Properties(updatedNote);
+      await databases.updateDocument(DATABASE_ID, STICKY_NOTES_COLLECTION_ID, id, updatedNote);
+      toast.success('Sticky note updated successfully');
+    } catch (err) {
+      toast.error('Failed to update sticky note!');
+    } finally {
+      await handleGetAllElements(STICKY_NOTES_COLLECTION_ID, setStickyNotes);
+    }
   }
-  async function handleDeleteStickyNote(id,deletePermanently) {
-    handleDeleteElement(
-      id,
-      STICKY_NOTES_COLLECTION_ID,
-      deletePermanently,
-      'stickyNotes',
-      stickyNotes,
-      setStickyNotes,
-    );
+  async function handleDeleteStickyNote(id, deletePermanently) {
+    try {
+      await handleDeleteElement(
+        id,
+        STICKY_NOTES_COLLECTION_ID,
+        deletePermanently,
+        'stickyNotes',
+        stickyNotes,
+        setStickyNotes,
+      );
+      toast.success('Sticky note deleted successfully!');
+    } catch (err) {
+      toast.error('Failed to delete sticky note!');
+    }
   }
 
   useEffect(() => {
-    handleGetAllElements(STICKY_NOTES_COLLECTION_ID,setStickyNotes);
+    handleGetAllElements(STICKY_NOTES_COLLECTION_ID, setStickyNotes);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
@@ -85,7 +100,7 @@ export function StickyNotesProvider({ children }) {
         handleAddStickyNote,
         handleUpdateStickyNote,
         handleDeleteStickyNote,
-        setStickyNotes
+        setStickyNotes,
       }}
     >
       {children}

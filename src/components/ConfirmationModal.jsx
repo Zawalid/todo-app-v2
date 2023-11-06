@@ -51,7 +51,7 @@ export function ConfirmationModal({
             className='rounded-lg bg-background-secondary px-4 py-2 text-sm font-semibold text-text-secondary'
             onClick={() => {
               onCancel();
-              setChecked(false);
+              setChecked && setChecked(false);
             }}
           >
             Cancel
