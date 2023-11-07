@@ -293,6 +293,7 @@ export function TasksProvider({ children }) {
     await handleGetAllElements(TASKS_COLLECTION_ID, setTasks);
   }
 
+
   useEffect(() => {
     handleGetAllElements(TASKS_COLLECTION_ID, setTasks);
     // eslint-disable-next-line react-hooks/exhaustive-deps
