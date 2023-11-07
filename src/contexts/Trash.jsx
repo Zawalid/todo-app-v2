@@ -165,7 +165,7 @@ export function TrashProvider({ children }) {
   // --- Emptying ---
   async function handleEmptyType(type) {
     const element = formatItemName(type);
-    const toastId = toast.loading(`Emptying ${element}...`);
+    const toastId = toast.loading(`Emptying ${element} from trash...`);
     try {
       // Delete all elements of a type permanently
       for (const item of trash[type]) {

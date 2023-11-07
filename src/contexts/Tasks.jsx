@@ -196,7 +196,7 @@ export function TasksProvider({ children }) {
     handleUpdateTask(id, task, isCompleted);
   }
   async function handleDeleteTask(id, listId, deletePermanently, isClearing) {
-    const toastId = toast.loading('Deleting task...');
+    const toastId = isClearing ? null : toast.loading('Deleting task...');
     try {
       await handleDeleteElement(
         id,
@@ -233,6 +233,8 @@ export function TasksProvider({ children }) {
     const id =
       isSelectedTasks && selectedTasks.length > 1
         ? toast.loading(`Deleting ${selectedTasks.length} tasks...`)
+        : isSelectedTasks && selectedTasks.length === 1
+        ? toast.loading(`Deleting task...`)
         : toast.loading('Clearing all tasks...');
     try {
       const deletedTasks = isSelectedTasks
@@ -256,16 +258,18 @@ export function TasksProvider({ children }) {
           : getDeletionMessage('success', false, false),
         {
           id,
-          action: {
-            label: 'Undo',
-            onClick: () => {
-              undoDelete(async () => {
-                for (const task of deletedTasks) {
-                  await handleRestoreFromTrash('tasks', task.$id, true);
-                }
-              });
-            },
-          },
+          action: deletePermanently
+            ? null
+            : {
+                label: 'Undo',
+                onClick: () => {
+                  undoDelete(async () => {
+                    for (const task of deletedTasks) {
+                      await handleRestoreFromTrash('tasks', task.$id, true);
+                    }
+                  });
+                },
+              },
         },
       );
     } catch (err) {
