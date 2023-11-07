@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import CustomTippy from '../../CustomTippy';
-import { ConfirmationModal } from '../../../ConfirmationModal';
+import CustomTippy from '../../../Common/CustomTippy';
+import { ConfirmationModal } from '../../../Common/ConfirmationModal';
 
 export function StickyNoteHeader({
   title,

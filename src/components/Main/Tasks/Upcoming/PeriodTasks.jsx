@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Task } from './Task';
-import { AddTask } from './AddTask';
-import { useTasks } from '../../../hooks/useTasks';
+import { Task } from '../Task';
+import { AddTask } from '../AddTask';
+import { useTasks } from '../../../../hooks/useTasks';
 
 export function PeriodTasks({ title, period, parentRef, isToday }) {
   const [isFullScreen, setIsFullScreen] = useState(false);

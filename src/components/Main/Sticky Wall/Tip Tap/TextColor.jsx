@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ColorPicker } from './ColorPicker';
-import CustomTippy from '../../CustomTippy';
+import CustomTippy from '../../../Common/CustomTippy';
 
 export function TextColor({ editor }) {
   const [color, setColor] = useState('#444');

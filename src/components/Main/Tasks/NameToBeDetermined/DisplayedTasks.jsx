@@ -1,12 +1,12 @@
 import Tippy from '@tippyjs/react';
-import { AddTask } from './AddTask';
-import { Task } from './Task';
+import { AddTask } from '../AddTask';
+import { Task } from '../Task';
 import { TasksActions } from './TasksActions/TasksActions';
 import { useEffect, useRef, useState } from 'react';
-import { isTaskOverdue } from '../../../utils/Moment';
-import { ConfirmationModal } from '../../ConfirmationModal';
+import { isTaskOverdue } from '../../../../utils/Moment';
+import { ConfirmationModal } from '../../../Common/ConfirmationModal';
 import { useSearchParams } from 'react-router-dom';
-import { useTasks } from '../../../hooks/useTasks';
+import { useTasks } from '../../../../hooks/useTasks';
 import { MultipleDeletionsModal } from './MultipleDeletionsModal';
 
 const filtersConditions = {

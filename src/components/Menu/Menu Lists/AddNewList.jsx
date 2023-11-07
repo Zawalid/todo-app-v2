@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Colors } from '../../Colors';
+import { Colors } from '../../Common/Colors';
 import { useIsTitleTaken } from '../../../hooks/useIsTitleTaken';
 import { useLists } from '../../../hooks/useLists';
 

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import CustomTippy from '../../CustomTippy';
+import CustomTippy from '../../../Common/CustomTippy';
 
 function Colors({ onClick }) {
   const colors = [

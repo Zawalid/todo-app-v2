@@ -1,5 +1,5 @@
-import { Colors } from '../../../Colors';
-import CustomTippy from '../../CustomTippy';
+import { Colors } from '../../../Common/Colors';
+import CustomTippy from '../../../Common/CustomTippy';
 import { useColorPicker } from './useColorPicker';
 
 export function BackgroundColorPicker({ onChange }) {

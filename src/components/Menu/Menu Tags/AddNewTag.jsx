@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Colors } from '../../Colors';
+import { Colors } from '../../Common/Colors';
 import { useTags } from '../../../hooks/useTags';
 
 export function AddNewTag({ reference, isOpen }) {

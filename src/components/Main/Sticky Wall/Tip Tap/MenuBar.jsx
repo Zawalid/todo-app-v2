@@ -1,4 +1,4 @@
-import CustomTippy from '../../CustomTippy';
+import CustomTippy from '../../../Common/CustomTippy';
 import { AddLink } from './AddLink';
 import { Highlighter } from './Highlighter';
 import { TextColor } from './TextColor';

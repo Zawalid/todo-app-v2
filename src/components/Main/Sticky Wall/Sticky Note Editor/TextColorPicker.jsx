@@ -1,4 +1,4 @@
-import CustomTippy from '../../CustomTippy';
+import CustomTippy from '../../../Common/CustomTippy';
 import { useColorPicker } from './useColorPicker';
 
 export function TextColorPicker({ onChange }) {

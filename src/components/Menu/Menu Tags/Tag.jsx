@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ConfirmationModal } from '../../ConfirmationModal';
+import { ConfirmationModal } from '../../Common/ConfirmationModal';
 import { useTags } from '../../../hooks/useTags';
 
 export function Tag({ tag, showDeleteButton, customClassName, onDeleteTag }) {

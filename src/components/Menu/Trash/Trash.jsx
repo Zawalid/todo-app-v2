@@ -1,6 +1,6 @@
 import { Tabs } from './Tabs';
 import { useMemo, useRef, useState } from 'react';
-import { ConfirmationModal } from '../../ConfirmationModal';
+import { ConfirmationModal } from '../../Common/ConfirmationModal';
 import trashIcon from '../../../assets/trash.png';
 import { Item } from './Item';
 import { useTrash } from '../../../hooks/useTrash';

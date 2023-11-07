@@ -1,6 +1,6 @@
-import { Tag } from '../Menu/Menu Tags/Tag';
+import { Tag } from '../../Menu/Menu Tags/Tag';
 import { TagsDropDown } from './TagsDropDown';
-import { useTags } from '../../hooks/useTags';
+import { useTags } from '../../../hooks/useTags';
 
 export function TaskTags({
   taskTagsIds,

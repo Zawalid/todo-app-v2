@@ -1,5 +1,5 @@
-import { useTags } from '../../hooks/useTags';
-import { Tag } from '../Menu/Menu Tags/Tag';
+import { useTags } from '../../../hooks/useTags';
+import { Tag } from '../../Menu/Menu Tags/Tag';
 
 export function TagsDropDown({ reference }) {
   const { tags } = useTags();

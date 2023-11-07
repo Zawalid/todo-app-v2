@@ -11,7 +11,7 @@ import completedSoundFile from '../../../assets/completed.mp3';
 import { useTasks } from '../../../hooks/useTasks';
 import { useLists } from '../../../hooks/useLists';
 import { useTags } from '../../../hooks/useTags';
-import { CheckBox } from '../../CheckBox';
+import { CheckBox } from '../../Common/CheckBox';
 
 const completedSound = new Audio(completedSoundFile);
 

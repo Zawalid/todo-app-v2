@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { NavLink, useHref, useNavigate } from 'react-router-dom';
 import { ListAction } from './ListAction';
-import { ConfirmationModal } from '../../ConfirmationModal';
+import { ConfirmationModal } from '../../Common/ConfirmationModal';
 import { useIsTitleTaken } from '../../../hooks/useIsTitleTaken';
 import { useLists } from '../../../hooks/useLists';
 // import { useTasks } from '../../../hooks/useTasks';
