@@ -16,125 +16,136 @@ export const TasksContext = createContext();
 
 export function TasksProvider({ children }) {
   const [tasks, setTasks] = useState([
-    // {
-    //   title: 'idk',
-    //   note: '',
-    //   dueDate: '',
-    //   listId: '65424b5a69fab6f186d2',
-    //   subtasks: [],
-    //   isCompleted: false,
-    //   tagsIds: [],
-    //   priority: 0,
-    //   index: 2,
-    //   $id: '65419d00b10b220d3f93',
-    //   $createdAt: '2023-11-01T00:34:08.726+00:00',
-    //   $updatedAt: '2023-11-01T00:34:08.726+00:00',
-    //   $permissions: [],
-    //   $databaseId: '654169b1a5c05d9c1e7e',
-    //   $collectionId: '65416a6c8f0a546d8b4b',
-    // },
-    // {
-    //   title: 'maybe',
-    //   note: '',
-    //   dueDate: '',
-    //   listId: '65424b5a69fab6f186d2',
-    //   subtasks: [],
-    //   isCompleted: false,
-    //   tagsIds: [],
-    //   priority: 0,
-    //   index: 3,
-    //   $id: '65419d4fbf5731854f09',
-    //   $createdAt: '2023-11-01T00:35:27.784+00:00',
-    //   $updatedAt: '2023-11-01T00:35:27.784+00:00',
-    //   $permissions: [],
-    //   $databaseId: '654169b1a5c05d9c1e7e',
-    //   $collectionId: '65416a6c8f0a546d8b4b',
-    // },
-    // {
-    //   title: 'hey',
-    //   note: '',
-    //   dueDate: '',
-    //   listId: 'none',
-    //   subtasks: [],
-    //   isCompleted: false,
-    //   tagsIds: [],
-    //   priority: 0,
-    //   index: 4,
-    //   $id: '65419d80e7066538faa7',
-    //   $createdAt: '2023-11-01T00:36:16.947+00:00',
-    //   $updatedAt: '2023-11-01T00:36:16.947+00:00',
-    //   $permissions: [],
-    //   $databaseId: '654169b1a5c05d9c1e7e',
-    //   $collectionId: '65416a6c8f0a546d8b4b',
-    // },
-    // {
-    //   title: 'today',
-    //   note: '',
-    //   dueDate: '2023-11-02',
-    //   listId: 'none',
-    //   subtasks: [],
-    //   isCompleted: false,
-    //   tagsIds: [],
-    //   priority: 0,
-    //   index: 5,
-    //   $id: '65419d89d260193sab4a5',
-    //   $createdAt: '2023-11-01T00:36:25.862+00:00',
-    //   $updatedAt: '2023-11-01T00:50:37.255+00:00',
-    //   $permissions: [],
-    //   $databaseId: '654169b1a5c05d9c1e7e',
-    //   $collectionId: '65416a6c8f0a546d8b4b',
-    // },
-    // {
-    //   title: 'tomorrow',
-    //   note: '',
-    //   dueDate: '2023-11-02',
-    //   listId: 'none',
-    //   subtasks: [],
-    //   isCompleted: false,
-    //   tagsIds: [],
-    //   priority: 0,
-    //   index: 6,
-    //   $id: '65419deec89deeef4e5a4',
-    //   $createdAt: '2023-11-01T00:38:06.823+00:00',
-    //   $updatedAt: '2023-11-01T00:38:06.823+00:00',
-    //   $permissions: [],
-    //   $databaseId: '654169b1a5c05d9c1e7e',
-    //   $collectionId: '65416a6c8f0a546d8b4b',
-    // },
-    // {
-    //   title: 'today',
-    //   note: '',
-    //   dueDate: '2023-11-02',
-    //   listId: 'none',
-    //   subtasks: [],
-    //   isCompleted: false,
-    //   tagsIds: [],
-    //   priority: 0,
-    //   index: 5,
-    //   $id: '65419d89d260193ab4a5',
-    //   $createdAt: '2023-11-01T00:36:25.862+00:00',
-    //   $updatedAt: '2023-11-01T00:50:37.255+00:00',
-    //   $permissions: [],
-    //   $databaseId: '654169b1a5c05d9c1e7e',
-    //   $collectionId: '65416a6c8f0a546d8b4b',
-    // },
-    // {
-    //   title: 'tomorrow',
-    //   note: '',
-    //   dueDate: '2023-11-02',
-    //   listId: 'none',
-    //   subtasks: [],
-    //   isCompleted: false,
-    //   tagsIds: [],
-    //   priority: 0,
-    //   index: 6,
-    //   $id: '65419deec89deef4e5a4',
-    //   $createdAt: '2023-11-01T00:38:06.823+00:00',
-    //   $updatedAt: '2023-11-01T00:38:06.823+00:00',
-    //   $permissions: [],
-    //   $databaseId: '654169b1a5c05d9c1e7e',
-    //   $collectionId: '65416a6c8f0a546d8b4b',
-    // },
+    {
+      title: 'idk',
+      note: '',
+      dueDate: '',
+      listId: '65424b5a69fab6f186d2',
+      subtasks: [],
+      isCompleted: false,
+      tagsIds: [],
+      priority: 0,
+      index: 2,
+      $id: '65419d00b10b220d3f93',
+      $createdAt: '2023-11-01T00:34:08.726+00:00',
+    },
+    {
+      title: 'maybe',
+      note: '',
+      dueDate: '',
+      listId: '65424b5a69fab6f186d2',
+      subtasks: [],
+      isCompleted: false,
+      tagsIds: [],
+      priority: 0,
+      index: 3,
+      $id: '65419d4fbf5731854f09',
+      $createdAt: '2023-11-01T00:35:27.784+00:00',
+    },
+    {
+      title: 'hey',
+      note: '',
+      dueDate: '',
+      listId: 'none',
+      subtasks: [],
+      isCompleted: false,
+      tagsIds: [],
+      priority: 0,
+      index: 4,
+      $id: '65419d80e7066538faa7',
+      $createdAt: '2023-11-01T00:36:16.947+00:00',
+    },
+    {
+      title: 'today',
+      note: '',
+      dueDate: '2023-11-02',
+      listId: 'none',
+      subtasks: [],
+      isCompleted: false,
+      tagsIds: [],
+      priority: 0,
+      index: 5,
+      $id: '65419d89d260193sab4a5',
+      $createdAt: '2023-11-01T00:36:25.862+00:00',
+    },
+    {
+      title: 'tomorrow',
+      note: '',
+      dueDate: '2023-11-02',
+      listId: 'none',
+      subtasks: [],
+      isCompleted: false,
+      tagsIds: [],
+      priority: 0,
+      index: 6,
+      $id: '65419deec89deeef4e5a4',
+      $createdAt: '2023-11-01T00:38:06.823+00:00',
+    },
+    {
+      title: 'today',
+      note: '',
+      dueDate: '2023-11-02',
+      listId: 'none',
+      subtasks: [],
+      isCompleted: false,
+      tagsIds: [],
+      priority: 0,
+      index: 5,
+      $id: '65419d89d260d193ab4a5',
+      $createdAt: '2023-11-01T00:36:25.862+00:00',
+    },
+    {
+      title: 'tomorrow',
+      note: '',
+      dueDate: '2023-11-02',
+      listId: 'none',
+      subtasks: [],
+      isCompleted: false,
+      tagsIds: [],
+      priority: 0,
+      index: 6,
+      $id: '65419deec89dqeef4e5a4',
+      $createdAt: '2023-11-01T00:38:06.823+00:00',
+    },
+    {
+      title: 'tomorrow',
+      note: '',
+      dueDate: '2023-11-02',
+      listId: 'none',
+      subtasks: [],
+      isCompleted: false,
+      tagsIds: [],
+      priority: 0,
+      index: 6,
+      $id: '65419deec89dweef4e5a4',
+      $createdAt: '2023-11-01T00:38:06.823+00:00',
+    },
+    {
+      title: 'tomorrow',
+      note: '',
+      dueDate: '2023-11-02',
+      listId: 'none',
+      subtasks: [],
+      isCompleted: false,
+      tagsIds: [],
+      priority: 0,
+      index: 6,
+      $id: '65419deec89deef4e5a4',
+      $createdAt: '2023-11-01T00:38:06.823+00:00',
+    },
+    {
+      title: 'tomorrow',
+      note: '',
+      dueDate: '2023-11-02',
+      listId: 'none',
+      subtasks: [],
+      isCompleted: false,
+      tagsIds: [],
+      priority: 0,
+      index: 6,
+      $id: '65419deec89desef4e5a4',
+      $createdAt: '2023-11-01T00:38:06.823+00:00',
+    },
   ]);
   const [currentTask, setCurrentTask] = useState(null);
   const [isTaskOpen, setIsTaskOpen] = useState(false);
@@ -168,13 +179,13 @@ export function TasksProvider({ children }) {
         ID.unique(),
         task,
       );
-      toast.success('Task added successfully!', { id: toastId });
+      toast.success('Task has been successfully added.', { id: toastId });
       setTasks((tasks) => [...tasks, response]);
       if (listId) {
         handleAddTaskToList(listId, response.$id);
       }
     } catch (err) {
-      toast.error('Failed to add task!', { id: toastId });
+      toast.error('Failed to add the task. Please try again.', { id: toastId });
     } finally {
       setIsAddingTask(false);
     }
@@ -185,9 +196,9 @@ export function TasksProvider({ children }) {
       const updatedTask = isCompleted ? { ...task, isCompleted } : { ...task };
       remove$Properties(updatedTask);
       await databases.updateDocument(DATABASE_ID, TASKS_COLLECTION_ID, id, updatedTask);
-      isCompleted ?? toast.success('Task updated successfully!', { id: toastId });
+      isCompleted ?? toast.success('Task has been successfully updated.', { id: toastId });
     } catch (err) {
-      toast.error('Failed to update task!', { id: toastId });
+      toast.error('Failed to update the task. Please try again.', { id: toastId });
     } finally {
       await handleGetAllElements(TASKS_COLLECTION_ID, setTasks);
     }
@@ -292,7 +303,6 @@ export function TasksProvider({ children }) {
     await fn();
     await handleGetAllElements(TASKS_COLLECTION_ID, setTasks);
   }
-
 
   useEffect(() => {
     handleGetAllElements(TASKS_COLLECTION_ID, setTasks);

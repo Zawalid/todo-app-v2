@@ -18,7 +18,7 @@ export function ListsProvider({ children, lists, setLists }) {
   const { handleRestoreFromTrash } = useTrash();
 
   async function handleAddList(title, color, list) {
-    const toastId = toast.loading('Deleting list...');
+    const toastId = toast.loading('Adding list...');
     try {
       const newList = list
         ? list

@@ -17,9 +17,8 @@ const completedSound = new Audio(completedSoundFile);
 
 export function Task({ task, isSelecting }) {
   const [checked, setChecked] = useState(task.isCompleted);
-  const [isSelected, setIsSelected] = useState(false);
   const { lists } = useLists();
-  const { handleOpenTask, handleCompleteTask, setSelectedTasks } = useTasks();
+  const { handleOpenTask, handleCompleteTask, setSelectedTasks, selectedTasks } = useTasks();
   const { tags } = useTags();
   const isPassed = isTaskOverdue(task.dueDate);
 
@@ -31,18 +30,17 @@ export function Task({ task, isSelecting }) {
     () => lists.find((l) => l?.$id === task.listId)?.color,
     [task.listId, lists],
   );
+  const isSelected = useMemo(
+    () => selectedTasks.some((t) => t.$id === task.$id),
+    [selectedTasks, task.$id],
+  );
+
   useEffect(() => {
     task.isCompleted !== checked && handleCompleteTask(task.$id, task, checked);
     // eslint-disable-next-line
   }, [checked]);
 
-  useEffect(() => {
-    if (!isSelecting) {
-      setIsSelected(false);
-      setSelectedTasks([]);
-    }
-    // eslint-disable-next-line
-  }, [isSelecting]);
+
 
   return (
     <li
@@ -180,20 +178,17 @@ export function Task({ task, isSelecting }) {
           <button
             className='border-l-2 pl-4'
             onClick={() => {
-              setIsSelected(!isSelected);
               setSelectedTasks((prev) => {
-                if (isSelected) return prev.filter((id) => id !== task.$id);
+                if (isSelected) return prev.filter((t) => t.$id !== task.$id);
                 else return [...prev, { $id: task.$id, title: task.title }];
               });
             }}
           >
-            {
-              <i
-                className={`fa-${isSelected ? 'solid' : 'regular'} ${
-                  isSelected ? 'fa-circle-check' : 'fa-circle'
-                } text-lg text-text-tertiary`}
-              ></i>
-            }
+            {isSelected ? (
+              <i className='fa-solid fa-circle-check text-lg text-text-tertiary'></i>
+            ) : (
+              <i className='fa-regular fa-circle text-lg text-text-tertiary'></i>
+            )}
           </button>
         )}
       </div>

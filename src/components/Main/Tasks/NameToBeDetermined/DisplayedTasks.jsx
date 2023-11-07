@@ -2,7 +2,7 @@ import Tippy from '@tippyjs/react';
 import { AddTask } from '../AddTask';
 import { Task } from '../Task';
 import { TasksActions } from './TasksActions/TasksActions';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import { isTaskOverdue } from '../../../../utils/Moment';
 import { ConfirmationModal } from '../../../Common/ConfirmationModal';
 import { useSearchParams } from 'react-router-dom';
@@ -20,11 +20,34 @@ const filtersConditions = {
   lowPriority: (task) => task.priority === '0',
 };
 
+const paginationState = {
+  currentPage: 1,
+  rowsPerPage: 10,
+  disabledButton: 'previous',
+};
+function paginationReducer(state, action) {
+  switch (action.type) {
+    case 'NEXT_PAGE':
+      return { ...state, currentPage: state.currentPage + 1 };
+    case 'PREVIOUS_PAGE':
+      return { ...state, currentPage: state.currentPage - 1 };
+    case 'CHANGE_ROWS_PER_PAGE':
+      return { ...state, rowsPerPage: action.payload, currentPage: 1 };
+    case 'DISABLE_BUTTON':
+      return { ...state, disabledButton: action.payload };
+    default:
+      throw new Error(
+        `Unknown action type: ${action.type}. Make sure to add the action type to the reducer.`,
+      );
+  }
+}
+
 export function DisplayedTasks({ onAdd, condition, activeTab }) {
   const { tasks, handleClearAllTasks, selectedTasks, setSelectedTasks } = useTasks();
   const [deletePermanently, setDeletePermanently] = useState(false);
   const [isSelecting, setIsSelecting] = useState(false);
   const [isDeleteMultipleModalOpen, setIsDeleteMultipleModalOpen] = useState(false);
+  const [isClearAllModalOpen, setIsClearAllModalOpen] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const whichDelete = useRef(null);
 
@@ -34,15 +57,21 @@ export function DisplayedTasks({ onAdd, condition, activeTab }) {
 
   const [filter, setFilter] = useState(filterParam || (!filtersConditions[filterParam] && 'all'));
   const [filteredTasks, setFilteredTasks] = useState([]);
-  const [isClearAllModalOpen, setIsClearAllModalOpen] = useState(false);
   const [sortKey, setSortKey] = useState(sortParam || 'cDate');
   const [sortDirection, setSortDirection] = useState(dirParam || 'asc');
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [disabledButton, setDisabledButton] = useState(null);
-  const totalPages = useRef(Math.ceil(filteredTasks.length / rowsPerPage));
+  const [pagination, dispatch] = useReducer(paginationReducer, paginationState);
 
+  // Responsible for resetting the filter, sortKey, sortDirection and searchParams when the user changes switch between tabs
+  // useEffect(() => {
+  //   setFilter('all');
+  //   setSortKey('cDate');
+  //   setSortDirection('asc');
+  //   setSearchParams('');
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [activeTab]);
+
+  // Responsible for setting the filter in the url when the user changes the filter
   useEffect(() => {
     filterParam && setFilter(filterParam);
     if (!filtersConditions[filterParam]) {
@@ -51,72 +80,38 @@ export function DisplayedTasks({ onAdd, condition, activeTab }) {
     }
   }, [filterParam, setSearchParams]);
 
+  // Responsible for setting the sortKey and sortDirection in the url when the user changes the sortKey or sortDirection
   useEffect(() => {
     const sortKeys = ['cDate', 'dDate', 'title', 'priority'];
     if ((sortKey === 'cDate' && sortDirection === 'asc') || !sortKeys.includes(sortKey))
-      return setSearchParams(filter === 'all' ? '' : { filter });
-
-    sortKeys.includes(sortKey) &&
+      setSearchParams(filter === 'all' ? '' : { filter });
+    else {
       setSearchParams(
         filter === 'all'
           ? { sort: sortKey, dir: sortDirection }
           : { filter, sort: sortKey, dir: sortDirection },
       );
+    }
   }, [sortKey, sortDirection, setSearchParams, filter]);
 
-  useEffect(() => {
-    setFilter('all');
-    setSortKey('cDate');
-    setSortDirection('asc');
-    setSearchParams('');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab]);
-
+  // Responsible for filtering the tasks based on the selected filter
   useEffect(() => {
     setFilteredTasks(
       tasks.filter((task) => condition(task)).filter((task) => filtersConditions[filter]?.(task)),
     );
   }, [tasks, filter, condition]);
 
+  // Responsible for the display of the multiple deletions modal
   useEffect(() => {
-    selectedTasks.length > 0
+    selectedTasks.length > 0 && isSelecting
       ? setIsDeleteMultipleModalOpen(true)
       : setIsDeleteMultipleModalOpen(false);
-  }, [selectedTasks]);
+  }, [selectedTasks, isSelecting]);
 
+  // Responsible for resetting the selected tasks when the user closes the multiple deletions modal
   useEffect(() => {
-    if (!isDeleteMultipleModalOpen) {
-      setIsSelecting(false);
-      setSelectedTasks([]);
-    }
+    !isDeleteMultipleModalOpen && setSelectedTasks([]);
   }, [isDeleteMultipleModalOpen, setSelectedTasks]);
-
-  useEffect(() => {
-    currentPage * rowsPerPage >= filteredTasks.length && setDisabledButton('next');
-    currentPage === 1 && setDisabledButton('previous');
-    currentPage * rowsPerPage >= filteredTasks.length &&
-      currentPage === 1 &&
-      setDisabledButton('both');
-
-    return () => setDisabledButton(null);
-  }, [currentPage, rowsPerPage, filteredTasks]);
-
-  useEffect(() => {
-    totalPages.current = Math.ceil(filteredTasks.length / rowsPerPage);
-    currentPage > totalPages.current && handlePreviousPage();
-    /* eslint-disable-next-line */
-  }, [filteredTasks, rowsPerPage, currentPage]);
-
-  function handleNextPage() {
-    currentPage * rowsPerPage >= filteredTasks.length || setCurrentPage(currentPage + 1);
-  }
-  function handlePreviousPage() {
-    currentPage === 1 || setCurrentPage(currentPage - 1);
-  }
-  function handleRowsPerPageChange(e) {
-    setRowsPerPage(e.target.value);
-    setCurrentPage(1);
-  }
 
   return (
     <div className='relative flex h-full flex-col overflow-auto'>
@@ -195,16 +190,19 @@ export function DisplayedTasks({ onAdd, condition, activeTab }) {
                     : b.title.localeCompare(a.title);
                 }
               })
-              .slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage)
+              .slice(
+                (pagination.currentPage - 1) * pagination.rowsPerPage,
+                pagination.currentPage * pagination.rowsPerPage,
+              )
               .map((task) => (
                 <Task key={task.$id} task={task} isSelecting={isSelecting} />
               ))}
           </ul>
           {filteredTasks.filter((task) => condition(task)).length === 0 && (
             <div className='absolute top-1/2 flex w-full flex-col items-center justify-center gap-2'>
-              <h2 className='text-2xl font-semibold text-text-secondary'>
-                You don&apos;t have any
-                {filter?.includes('Priority') ? filter?.replace('Priority', ' priority') : filter}
+              <h2 className='text-2xl text-center font-semibold text-text-secondary'>
+                You don&apos;t have any{' '}
+                {filter?.includes('Priority') ? filter?.replace('Priority', ' priority') : filter}{' '}
                 tasks in this list
               </h2>
             </div>
@@ -259,18 +257,19 @@ export function DisplayedTasks({ onAdd, condition, activeTab }) {
           setIsClearAllModalOpen(true);
           whichDelete.current = 'selected';
         }}
-        onClose={() => setIsDeleteMultipleModalOpen(false)}
+        onClose={() => {
+          setIsDeleteMultipleModalOpen(false);
+          setIsSelecting(false);
+        }}
         selectedTasksNumber={selectedTasks.length}
       />
-      <Pagination
-        currentPage={currentPage}
-        onNextPage={handleNextPage}
-        onPreviousPage={handlePreviousPage}
-        rowsPerPage={rowsPerPage}
-        tasksLength={filteredTasks.length}
-        onChangeRowsPerPage={handleRowsPerPageChange}
-        disabledButton={disabledButton}
-      />
+      {filteredTasks.filter((task) => condition(task)).length > 0 && (
+        <Pagination
+          pagination={pagination}
+          tasksLength={filteredTasks.length}
+          dispatch={dispatch}
+        />
+      )}
     </div>
   );
 }

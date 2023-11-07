@@ -1,12 +1,33 @@
-export function Pagination({
-  currentPage,
-  onNextPage,
-  onPreviousPage,
-  rowsPerPage,
-  tasksLength,
-  onChangeRowsPerPage,
-  disabledButton,
-}) {
+import { useCallback, useEffect, useRef } from 'react';
+
+export function Pagination({ pagination, tasksLength, dispatch }) {
+  const { currentPage, rowsPerPage, disabledButton } = pagination;
+  const totalPages = useRef(Math.ceil(tasksLength / rowsPerPage));
+
+  function handleNextPage() {
+    currentPage * rowsPerPage >= tasksLength ||
+      dispatch({ type: 'NEXT_PAGE', payload: currentPage + 1 });
+  }
+  const handlePreviousPage = useCallback(() => {
+    currentPage === 1 || dispatch({ type: 'PREVIOUS_PAGE', payload: currentPage - 1 });
+  }, [currentPage, dispatch]);
+
+  // Responsible for disabling the pagination buttons when the user reaches the first or last page
+  useEffect(() => {
+    if (currentPage * rowsPerPage >= tasksLength)
+      dispatch({ type: 'DISABLE_BUTTON', payload: 'next' });
+    if (currentPage === 1) dispatch({ type: 'DISABLE_BUTTON', payload: 'previous' });
+    if (currentPage * rowsPerPage >= tasksLength && currentPage === 1)
+      dispatch({ type: 'DISABLE_BUTTON', payload: 'both' });
+  }, [currentPage, rowsPerPage, tasksLength, dispatch]);
+
+  useEffect(() => {
+    totalPages.current = Math.ceil(tasksLength / rowsPerPage);
+    currentPage > totalPages.current && handlePreviousPage();
+
+    return () => dispatch({ type: 'DISABLE_BUTTON', payload: 'none' });
+  }, [tasksLength, rowsPerPage, currentPage, handlePreviousPage, dispatch]);
+
   return (
     <div className='mt-4 flex flex-wrap items-center justify-between gap-3'>
       <div className='flex items-center  gap-2'>
@@ -15,7 +36,7 @@ export function Pagination({
           className=' cursor-pointer rounded-lg bg-background-secondary  px-3  py-1.5
             text-sm text-text-tertiary focus:outline-none'
           value={rowsPerPage}
-          onChange={onChangeRowsPerPage}
+          onChange={(e) => dispatch({ type: 'CHANGE_ROWS_PER_PAGE', payload: +e.target.value })}
         >
           <option value='5'>5</option>
           <option value='10'>10</option>
@@ -33,12 +54,12 @@ export function Pagination({
 
       <div className='flex items-center'>
         <button
-          className={`pagination-button rounded-l-lg ${
+          className={`pagination-button  rounded-l-lg ${
             disabledButton === 'previous' || disabledButton === 'both'
-              ? 'cursor-not-allowed opacity-50'
+              ? 'cursor-not-allowed text-opacity-30'
               : 'hover:bg-background-tertiary  '
           }`}
-          onClick={onPreviousPage}
+          onClick={handlePreviousPage}
         >
           Previous
         </button>
@@ -46,10 +67,10 @@ export function Pagination({
         <button
           className={`pagination-button rounded-r-lg ${
             disabledButton === 'next' || disabledButton === 'both'
-              ? 'cursor-not-allowed opacity-50'
+              ? 'cursor-not-allowed text-opacity-30'
               : 'hover:bg-background-tertiary'
           }`}
-          onClick={onNextPage}
+          onClick={handleNextPage}
         >
           Next
         </button>
