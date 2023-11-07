@@ -8,6 +8,7 @@ import { ConfirmationModal } from '../../../Common/ConfirmationModal';
 import { useSearchParams } from 'react-router-dom';
 import { useTasks } from '../../../../hooks/useTasks';
 import { MultipleDeletionsModal } from './MultipleDeletionsModal';
+import { Pagination } from './Pagination';
 
 const filtersConditions = {
   all: () => true,
@@ -36,6 +37,11 @@ export function DisplayedTasks({ onAdd, condition, activeTab }) {
   const [isClearAllModalOpen, setIsClearAllModalOpen] = useState(false);
   const [sortKey, setSortKey] = useState(sortParam || 'cDate');
   const [sortDirection, setSortDirection] = useState(dirParam || 'asc');
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [disabledButton, setDisabledButton] = useState(null);
+  const totalPages = useRef(Math.ceil(filteredTasks.length / rowsPerPage));
 
   useEffect(() => {
     filterParam && setFilter(filterParam);
@@ -83,7 +89,34 @@ export function DisplayedTasks({ onAdd, condition, activeTab }) {
       setIsSelecting(false);
       setSelectedTasks([]);
     }
-  }, [isDeleteMultipleModalOpen,setSelectedTasks]);
+  }, [isDeleteMultipleModalOpen, setSelectedTasks]);
+
+  useEffect(() => {
+    currentPage * rowsPerPage >= filteredTasks.length && setDisabledButton('next');
+    currentPage === 1 && setDisabledButton('previous');
+    currentPage * rowsPerPage >= filteredTasks.length &&
+      currentPage === 1 &&
+      setDisabledButton('both');
+
+    return () => setDisabledButton(null);
+  }, [currentPage, rowsPerPage, filteredTasks]);
+
+  useEffect(() => {
+    totalPages.current = Math.ceil(filteredTasks.length / rowsPerPage);
+    currentPage > totalPages.current && handlePreviousPage();
+    /* eslint-disable-next-line */
+  }, [filteredTasks, rowsPerPage, currentPage]);
+
+  function handleNextPage() {
+    currentPage * rowsPerPage >= filteredTasks.length || setCurrentPage(currentPage + 1);
+  }
+  function handlePreviousPage() {
+    currentPage === 1 || setCurrentPage(currentPage - 1);
+  }
+  function handleRowsPerPageChange(e) {
+    setRowsPerPage(e.target.value);
+    setCurrentPage(1);
+  }
 
   return (
     <div className='relative flex h-full flex-col overflow-auto'>
@@ -162,6 +195,7 @@ export function DisplayedTasks({ onAdd, condition, activeTab }) {
                     : b.title.localeCompare(a.title);
                 }
               })
+              .slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage)
               .map((task) => (
                 <Task key={task.$id} task={task} isSelecting={isSelecting} />
               ))}
@@ -228,8 +262,15 @@ export function DisplayedTasks({ onAdd, condition, activeTab }) {
         onClose={() => setIsDeleteMultipleModalOpen(false)}
         selectedTasksNumber={selectedTasks.length}
       />
+      <Pagination
+        currentPage={currentPage}
+        onNextPage={handleNextPage}
+        onPreviousPage={handlePreviousPage}
+        rowsPerPage={rowsPerPage}
+        tasksLength={filteredTasks.length}
+        onChangeRowsPerPage={handleRowsPerPageChange}
+        disabledButton={disabledButton}
+      />
     </div>
   );
 }
-
-

@@ -180,7 +180,7 @@ export function TasksProvider({ children }) {
     }
   }
   async function handleUpdateTask(id, task, isCompleted) {
-    const toastId = toast.loading('Updating task...');
+    const toastId = isCompleted ?? toast.loading('Updating task...');
     try {
       const updatedTask = isCompleted ? { ...task, isCompleted } : { ...task };
       remove$Properties(updatedTask);
