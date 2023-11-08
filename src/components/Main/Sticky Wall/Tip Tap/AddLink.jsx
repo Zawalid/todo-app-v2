@@ -29,6 +29,7 @@ export const AddLink = ({ editor }) => {
             <input
               className='rounded-md bg-background-secondary px-2 py-1 text-text-secondary focus:outline-none'
               type='text'
+              name='url'
               placeholder='https://example.com'
               value={url}
               onChange={(e) => setUrl(e.target.value)}

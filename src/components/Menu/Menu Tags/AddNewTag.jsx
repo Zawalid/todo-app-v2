@@ -65,6 +65,7 @@ export function AddNewTag({ reference, isOpen }) {
             className='w-full rounded-lg p-2 text-sm  placeholder:text-white focus:outline-none'
             placeholder='Tag Name'
             style={{ backgroundColor: bgColor, color: textColor }}
+            name='tag'
             value={value}
             onChange={(e) => setValue(e.target.value)}
             ref={inputEl}

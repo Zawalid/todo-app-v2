@@ -22,6 +22,7 @@ export function AddTask({ onAdd }) {
         type='text'
         className='w-full rounded-lg bg-transparent  p-2  text-sm text-text-tertiary placeholder:text-text-tertiary focus:outline-none'
         placeholder='Add New Task'
+        name='task'
         ref={addNewTaskReference}
         value={value}
         disabled={isAddingTask}

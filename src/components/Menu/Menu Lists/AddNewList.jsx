@@ -59,6 +59,7 @@ export function AddNewList({ reference, isOpen }) {
             type='text'
             className='w-full rounded-lg bg-transparent p-2 text-sm text-text-secondary placeholder:text-text-tertiary focus:outline-none'
             placeholder='List Name'
+            name='list'
             value={value}
             onChange={(e) => {
               setValue(e.target.value);
