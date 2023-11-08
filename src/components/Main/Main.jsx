@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import { useHref, useNavigate } from 'react-router-dom';
+import { useHref } from 'react-router-dom';
 import { Title } from './Title';
 import { StickyWall } from './Sticky Wall/StickyWall';
 import { DisplayedTasks } from './Tasks/NameToBeDetermined/DisplayedTasks';
@@ -12,23 +12,11 @@ import { useLists } from '../../hooks/useLists';
 import { useStickyNotes } from '../../hooks/useStickyNotes';
 
 export function Main() {
-  const {
-    tasks,
-    handleAddTask,
-    todayTasks,
-    upcomingTasks,
-    addNewTaskReference,
-  } = useTasks();
-
+  const { tasks, handleAddTask, todayTasks, upcomingTasks, addNewTaskReference } = useTasks();
   const { lists } = useLists();
   const { stickyNotes, isStickyNoteOpened } = useStickyNotes();
   const { searchResults } = useSearch();
   const activeTab = useHref().split('/')[1];
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    activeTab === '' && navigate('/all');
-  }, [activeTab, navigate]);
 
   useEffect(() => {
     addNewTaskReference.current?.focus();

@@ -16,10 +16,13 @@ export function FilterTasks() {
         'lowPriority',
       ].includes(filter)
     )
-      setSearchParams((prev) => {
-        prev.delete('filter');
-        return prev;
-      });
+      setSearchParams(
+        (prev) => {
+          prev.delete('filter');
+          return prev;
+        },
+        { replace: true },
+      );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -36,8 +39,16 @@ export function FilterTasks() {
             sort: searchParams.get('sort'),
             direction: searchParams.get('direction'),
           };
-          if (filter === 'all') setSearchParams(searchParams.has('sort') ? sortParams : '');
-          else setSearchParams(searchParams.has('sort') ? { filter, ...sortParams } : { filter });
+          setSearchParams(
+            filter === 'all'
+              ? searchParams.has('sort')
+                ? sortParams
+                : ''
+              : searchParams.has('sort')
+              ? { filter, ...sortParams }
+              : { filter },
+            { replace: true },
+          );
         }}
       >
         <option value='all'>All</option>

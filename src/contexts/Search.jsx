@@ -9,8 +9,8 @@ export const SearchProvider = ({ children }) => {
   const [currentSearchTab, setCurrentSearchTab] = useState('all');
   const { tasks, todayTasks, upcomingTasks } = useTasks();
   const { stickyNotes } = useStickyNotes();
-  const [searchParams] = useSearchParams();
-  const searchQuery = searchParams.get('query');
+  const [searchParams,setSearchParams] = useSearchParams();
+  const searchQuery = searchParams.get('q');
 
   const searchSection =
     currentSearchTab === 'all'
@@ -36,6 +36,7 @@ export const SearchProvider = ({ children }) => {
         setCurrentSearchTab,
         searchResults,
         searchQuery,
+        setQuery : setSearchParams
       }}
     >
       {children}

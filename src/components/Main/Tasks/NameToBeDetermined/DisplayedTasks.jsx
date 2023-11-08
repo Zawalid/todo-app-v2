@@ -49,8 +49,8 @@ export function DisplayedTasks({ onAdd, condition, activeTab }) {
   const [isSelecting, setIsSelecting] = useState(false);
   const [isDeleteMultipleModalOpen, setIsDeleteMultipleModalOpen] = useState(false);
   const [isClearAllModalOpen, setIsClearAllModalOpen] = useState(false);
-  const [pagination, dispatch] = useReducer(paginationReducer, paginationState);
   const whichDelete = useRef(null);
+  const [pagination, dispatch] = useReducer(paginationReducer, paginationState);
   const [searchParams] = useSearchParams();
 
   const filter = searchParams.get('filter') || 'all';

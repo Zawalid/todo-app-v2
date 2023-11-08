@@ -23,11 +23,14 @@ function Button({ sortKey, title }) {
       !['cDate', 'dDate', 'priority', 'title'].includes(sort) ||
       (sort === 'cDate' && direction === 'asc')
     )
-      setSearchParams((prev) => {
-        prev.delete('sort');
-        prev.delete('direction');
-        return prev;
-      });
+      setSearchParams(
+        (prev) => {
+          prev.delete('sort');
+          prev.delete('direction');
+          return prev;
+        },
+        { replace: true },
+      );
   }, [sort, direction, setSearchParams]);
 
   return (
@@ -39,7 +42,9 @@ function Button({ sortKey, title }) {
           sort: sortKey,
           direction: direction === 'asc' ? 'desc' : 'asc',
         };
-        setSearchParams(searchParams.has('filter') ? { filter, ...sortParams } : sortParams);
+        setSearchParams(searchParams.has('filter') ? { filter, ...sortParams } : sortParams, {
+          replace: true,
+        });
       }}
     >
       <i
