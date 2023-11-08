@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import AppLayout from './AppLayout';
-import NotFound from './NotFound';
+import AppLayout from '../Pages/AppLayout';
+import NotFound from '../Pages/NotFound';
 import '../AppWrite';
 import { TasksProvider } from '../contexts/Tasks';
 import { ListsProvider } from '../contexts/Lists';
@@ -8,6 +8,9 @@ import { useState } from 'react';
 import { StickyNotesProvider } from '../contexts/StickyNotes';
 import { TagsProvider } from '../contexts/Tags';
 import { TrashProvider } from '../contexts/Trash';
+import HomePage from '../Pages/HomePage';
+import Login from '../Pages/Login';
+import SignUp from '../Pages/SignUp';
 
 export default function App() {
   const [lists, setLists] = useState([
@@ -67,14 +70,22 @@ export default function App() {
             <TagsProvider>
               <BrowserRouter>
                 <Routes>
-                  <Route path='/' element={<AppLayout />} />
-                  {['all', 'today', 'stickyWall', 'search', 'upcoming', ...listsTitles].map(
-                    (tab) => (
-                      <Route path={`/${tab}`} element={<AppLayout />} key={tab}>
-                        <Route path='trash' element={<AppLayout />} />
-                      </Route>
-                    ),
-                  )}
+                  <Route path='/' element={<HomePage />} />
+                  <Route path='app' element={<AppLayout />}>
+                    {[
+                      'all',
+                      'today',
+                      'stickyWall',
+                      'search',
+                      'trash',
+                      'upcoming',
+                      ...listsTitles,
+                    ].map((tab) => (
+                      <Route path={`${tab}`} element={<AppLayout />} key={tab} />
+                    ))}
+                  </Route>
+                  <Route path='login' element={<Login />} />
+                  <Route path='signup' element={<SignUp />} />
                   <Route path='*' element={<NotFound />} />
                 </Routes>
               </BrowserRouter>

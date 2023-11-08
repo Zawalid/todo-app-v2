@@ -3,20 +3,18 @@ import { MenuLists } from './Menu Lists/MenuLists';
 import { MenuTags } from './Menu Tags/MenuTags';
 import { MenuTasks } from './MenuTasks';
 import { Search } from './Search';
-import { Trash } from './Trash/Trash';
-import { useHref, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
+import { useTrash } from '../../hooks/useTrash';
 
 export function Menu() {
   const [isOpen, setIsOpen] = useState(false);
-  const path = useHref().split('/');
-  const [isTrashOpen, setIsTrashOpen] = useState(path.includes('trash'));
   const menu = useRef(null);
-  const navigate = useNavigate();
+  const { trashLength } = useTrash();
 
   return (
     <aside
       className={
-        'flex flex-col  rounded-l-xl  p-4  transition-[width]  duration-500   ' +
+        'flex flex-col rounded-l-xl p-4 transition-[width] duration-500  ' +
         (isOpen
           ? 'w-[22%] items-stretch bg-background-secondary '
           : 'w-0 items-center bg-background-primary  ')
@@ -36,32 +34,22 @@ export function Menu() {
               <i className='fa-solid fa-xmark cursor-pointer text-xl text-text-secondary'></i>
             </button>
           </div>
-          <div className='overflow-y-auto'>
+          <div className='mb-3 overflow-y-auto pr-3'>
             <Search />
             <MenuTasks />
             <MenuLists />
             <MenuTags />
           </div>
-          <div className=' mt-auto  pt-3'>
-            <button
-              className='mb-2 grid cursor-pointer grid-cols-[25px_auto] items-center text-sm'
-              onClick={() => {
-                setIsTrashOpen(true);
-                navigate('trash');
-              }}
-            >
-              <i className='fa-solid fa-trash-can text-text-tertiary'></i>
-              <span className='font-medium text-text-secondary'>Trash</span>
-            </button>
-          </div>
-          {isTrashOpen && (
-            <Trash
-              onClose={() => {
-                setIsTrashOpen(false);
-                navigate(path.filter((part) => part !== 'trash').join('/'));
-              }}
-            />
-          )}
+
+          <NavLink to='trash' className='menu_element  group mt-auto pt-3'>
+            <i className='fa-solid fa-trash-can text-text-tertiary'></i>
+            <span className='text-sm text-text-secondary transition-[font-weight] duration-100 group-hover:font-bold'>
+              Trash
+            </span>
+            <div className='count grid place-content-center rounded-sm bg-background-tertiary py-[1px] transition-colors  duration-300 group-hover:bg-background-primary'>
+              <span className='text-xs font-semibold text-text-secondary'>{trashLength}</span>
+            </div>
+          </NavLink>
         </>
       )}
     </aside>

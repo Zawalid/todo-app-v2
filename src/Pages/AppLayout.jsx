@@ -1,6 +1,6 @@
-import { TaskInfo } from './Task Info/TaskInfo';
-import { Menu } from './Menu/Menu';
-import { Main } from './Main/Main';
+import { TaskInfo } from '../components/Task Info/TaskInfo';
+import { Menu } from '../components/Menu/Menu';
+import { Main } from '../components/Main/Main';
 import '../styles/App.css';
 import { SearchProvider } from '../contexts/Search';
 import { Toaster } from 'sonner';

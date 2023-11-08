@@ -1,4 +1,4 @@
-import { createContext, useEffect, useReducer, useState } from 'react';
+import { createContext, useEffect, useMemo, useReducer, useState } from 'react';
 import { databases, appWriteConfig } from '../AppWrite';
 import { ID } from 'appwrite';
 import { remove$Properties } from '../utils/remove$Properties';
@@ -89,6 +89,13 @@ function reducer(state, action) {
 export function TrashProvider({ children }) {
   const [currentTab, setCurrentTab] = useState('tasks');
   const [{ trash, isUpdated, $id }, dispatch] = useReducer(reducer, initialState);
+  const trashLength = useMemo(
+    () =>
+      Object.keys(trash)
+        .map((key) => trash[key]?.length)
+        .reduce((acc, cur) => acc + cur, 0),
+    [trash],
+  );
 
   // --- Creation ---
   async function createTrash() {
@@ -231,6 +238,7 @@ export function TrashProvider({ children }) {
       value={{
         trash,
         currentTab,
+        trashLength,
         setCurrentTab,
         createTrash,
         handleAddToTrash,

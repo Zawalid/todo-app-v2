@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import { useHref } from 'react-router-dom';
+import { useHref, useNavigate } from 'react-router-dom';
 import { Title } from './Title';
 import { StickyWall } from './Sticky Wall/StickyWall';
 import { DisplayedTasks } from './Tasks/NameToBeDetermined/DisplayedTasks';
@@ -10,19 +10,29 @@ import { useTasks } from '../../hooks/useTasks';
 import { useSearch } from '../../hooks/useSearch';
 import { useLists } from '../../hooks/useLists';
 import { useStickyNotes } from '../../hooks/useStickyNotes';
+import { Trash } from './Trash/Trash';
+import { useTrash } from '../../hooks/useTrash';
 
 export function Main() {
   const { tasks, handleAddTask, todayTasks, upcomingTasks, addNewTaskReference } = useTasks();
   const { lists } = useLists();
   const { stickyNotes, isStickyNoteOpened } = useStickyNotes();
   const { searchResults } = useSearch();
-  const activeTab = useHref().split('/')[1];
+  const { trashLength } = useTrash();
+  const activeTab = useHref().split('/app/')[1];
+  const navigate = useNavigate();
+
+  // TODO : Fix this when you can
+  useEffect(() => {
+    !activeTab && navigate('/app/all');
+    //  eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     addNewTaskReference.current?.focus();
   }, [activeTab, addNewTaskReference]);
 
-  const listId = lists.find((list) => list.title === activeTab.replace('%20', ' '))?.$id;
+  const listId = lists.find((list) => list.title === activeTab?.replace('%20', ' '))?.$id;
 
   const title =
     activeTab === 'all'
@@ -35,7 +45,9 @@ export function Main() {
       ? 'Sticky Wall'
       : activeTab === 'search'
       ? 'Search Results'
-      : activeTab.replace(/%20/g, ' ');
+      : activeTab === 'trash'
+      ? 'Trash'
+      : activeTab?.replace(/%20/g, ' ');
 
   const count = useMemo(() => {
     if (activeTab === 'all') return tasks.length;
@@ -43,9 +55,20 @@ export function Main() {
     if (activeTab === 'upcoming') return upcomingTasks.length;
     if (activeTab === 'stickyWall') return stickyNotes.length;
     if (activeTab === 'search') return searchResults.length;
+    if (activeTab === 'trash') return trashLength;
     if (listId) return lists.find((list) => list.$id === listId)?.tasks.length;
     return 0;
-  }, [activeTab, tasks, listId, stickyNotes, lists, todayTasks, upcomingTasks, searchResults]);
+  }, [
+    activeTab,
+    tasks,
+    listId,
+    stickyNotes,
+    lists,
+    todayTasks,
+    upcomingTasks,
+    searchResults,
+    trashLength,
+  ]);
 
   const condition = (task) => {
     if (listId) return task.listId === listId;
@@ -57,7 +80,7 @@ export function Main() {
   return (
     <main className='flex flex-1 flex-col overflow-hidden rounded-xl bg-background-primary px-5 '>
       <Title title={title} count={count} />
-      {!['upcoming', 'stickyWall', 'search'].includes(activeTab) ? (
+      {!['upcoming', 'stickyWall', 'search', 'trash'].includes(activeTab) ? (
         <DisplayedTasks
           onAdd={(title) => {
             const dueDate = activeTab === 'today' && new Date().toISOString().split('T')[0];
@@ -80,6 +103,7 @@ export function Main() {
       {activeTab === 'upcoming' && <Upcoming />}
       {(activeTab === 'stickyWall' || isStickyNoteOpened) && <StickyWall />}
       {activeTab === 'search' && !isStickyNoteOpened && <SearchResults />}
+      {activeTab === 'trash' && !isStickyNoteOpened && <Trash />}
     </main>
   );
 }

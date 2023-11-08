@@ -1,16 +1,21 @@
 import { Task } from '../Tasks/Task';
 import noResults from '../../../assets/no_result.png';
 import { StickyNote } from '../Sticky Wall/StickyNote';
-import { Tabs } from './Tabs';
+import { Tabs } from '../../Common/Tabs';
 import { useSearch } from '../../../hooks/useSearch';
 import { useStickyNotes } from '../../../hooks/useStickyNotes';
 
 export function SearchResults() {
-  const { searchResults, currentSearchTab } = useSearch();
+  const { searchResults, currentSearchTab, setCurrentSearchTab } = useSearch();
   const { setCurrentNote, setIsStickyNoteOpened, setIsStickyNoteEditorOpen } = useStickyNotes();
+
   return (
-    <div className='relative flex h-full flex-col  overflow-auto'>
-      <Tabs />
+    <div className='relative flex h-full flex-col overflow-auto p-4'>
+      <Tabs
+        tabs={['All', 'Tasks', 'Upcoming', 'Sticky Wall']}
+        currentTab={currentSearchTab}
+        setCurrentTab={setCurrentSearchTab}
+      />
       {searchResults.length === 0 && (
         <div className='flex  h-full flex-col items-center justify-center gap-2'>
           <img src={noResults} alt='no result' className='w-[300px]' />

@@ -10,7 +10,7 @@ export function MenuTasks() {
       <h4 className='mb-4 mt-5  font-medium text-text-secondary'>Tasks</h4>
       <ul className='space-y-1'>
         <li>
-          <NavLink to='/all' className='menu_element  group'>
+          <NavLink to='all' className='menu_element  group'>
             <i className='fas fa-angles-right text-text-tertiary'></i>
             <span className='text-sm text-text-secondary transition-[font-weight] duration-100 group-hover:font-bold'>
               All Tasks
@@ -21,7 +21,7 @@ export function MenuTasks() {
           </NavLink>
         </li>
         <li>
-          <NavLink to='/upcoming' className='menu_element group'>
+          <NavLink to='upcoming' className='menu_element group'>
             <i className='fas fa-angles-right text-text-tertiary'></i>
             <span className='text-sm text-text-secondary transition-[font-weight] duration-100 group-hover:font-bold'>
               Upcoming
@@ -34,7 +34,7 @@ export function MenuTasks() {
           </NavLink>
         </li>
         <li>
-          <NavLink to='/today' className='menu_element  group'>
+          <NavLink to='today' className='menu_element  group'>
             <i className='fas fa-list-check text-text-tertiary'></i>
             <span className='text-sm text-text-secondary transition-[font-weight] duration-100 group-hover:font-bold'>
               Today
@@ -45,7 +45,7 @@ export function MenuTasks() {
           </NavLink>
         </li>
         <li>
-          <NavLink to='/stickyWall' className='menu_element group'>
+          <NavLink to='stickyWall' className='menu_element group'>
             <i className='fas fa-note-sticky text-text-tertiary'></i>
             <span className='text-sm text-text-secondary transition-[font-weight] duration-100 group-hover:font-bold'>
               Sticky Wall

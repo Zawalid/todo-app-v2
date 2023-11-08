@@ -58,7 +58,7 @@ export function List({ list }) {
     <>
       <li className='relative flex gap-1 pr-2 '>
         <NavLink
-          to={`/${title}`}
+          to={title}
           className='menu_element group flex-1  grid-cols-[30px_auto_35px] '
         >
           <div

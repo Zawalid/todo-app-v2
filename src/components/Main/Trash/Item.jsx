@@ -2,7 +2,7 @@ import Tippy from '@tippyjs/react';
 
 export function Item({ title, onDelete, onRestore }) {
   return (
-    <li className='flex items-center justify-between rounded-md bg-background-secondary px-2 py-1'>
+    <li className='flex items-center justify-between rounded-lg bg-background-secondary px-3 py-2'>
       <span className='text-sm font-medium text-text-secondary'>{title}</span>
       <div>
         <Tippy content='Restore'>
