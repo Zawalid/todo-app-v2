@@ -1,12 +1,19 @@
-export function FilterTasks({ filter, onSelect }) {
+import { useSearchParams } from 'react-router-dom';
+
+export function FilterTasks() {
+  const [searchParams, setSearchParams] = useSearchParams();
   return (
     <div className='relative flex-1'>
       <i className='fas fa-filter absolute left-3 top-2 text-text-tertiary '></i>
       <select
         className='w-full cursor-pointer rounded-lg bg-background-secondary py-1 pl-10 text-text-tertiary  focus:outline-none
         '
-        value={filter}
-        onChange={onSelect}
+        value={searchParams.get('filter') || 'all'}
+        onChange={(e) => {
+          const filter = e.target.value;
+          if (filter === 'all') setSearchParams('');
+          else setSearchParams({ filter });
+        }}
       >
         <option value='all'>All</option>
         <option value='completed'>Completed</option>

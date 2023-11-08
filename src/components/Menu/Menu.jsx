@@ -7,7 +7,7 @@ import { Trash } from './Trash/Trash';
 import { useHref, useNavigate } from 'react-router-dom';
 
 export function Menu() {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const path = useHref().split('/');
   const [isTrashOpen, setIsTrashOpen] = useState(path.includes('trash'));
   const menu = useRef(null);

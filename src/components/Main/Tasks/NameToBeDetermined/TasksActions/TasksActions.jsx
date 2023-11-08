@@ -3,8 +3,6 @@ import { FilterTasks } from './FilterTasks';
 import { SortTasks } from './SortTasks';
 
 export function TasksActions({
-  filter,
-  onSelect,
   onClearAll,
   sortKey,
   sortDirection,
@@ -38,7 +36,7 @@ export function TasksActions({
   return (
     <div className='mt-3 overflow-auto'>
       <div className='mb-3 flex  gap-3'>
-        <FilterTasks filter={filter} onSelect={onSelect} />
+        <FilterTasks />
         <button
           className={
             'flex-1 rounded-lg px-6 py-1 font-bold text-white transition-colors duration-300 ' +

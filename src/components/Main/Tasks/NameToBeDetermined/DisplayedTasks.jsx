@@ -48,19 +48,26 @@ export function DisplayedTasks({ onAdd, condition, activeTab }) {
   const [isSelecting, setIsSelecting] = useState(false);
   const [isDeleteMultipleModalOpen, setIsDeleteMultipleModalOpen] = useState(false);
   const [isClearAllModalOpen, setIsClearAllModalOpen] = useState(false);
-  const [searchParams, setSearchParams] = useSearchParams();
   const whichDelete = useRef(null);
 
-  const filterParam = searchParams.get('filter');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const filter = searchParams.get('filter') || 'all';
+
   const sortParam = searchParams.get('sort');
   const dirParam = searchParams.get('dir');
 
-  const [filter, setFilter] = useState(filterParam || (!filtersConditions[filterParam] && 'all'));
+  // const [filter, setFilter] = useState(() =>
+  //   filterParam && filtersConditions[filterParam] ? filterParam : 'all',
+  // );
   const [filteredTasks, setFilteredTasks] = useState([]);
   const [sortKey, setSortKey] = useState(sortParam || 'cDate');
   const [sortDirection, setSortDirection] = useState(dirParam || 'asc');
 
   const [pagination, dispatch] = useReducer(paginationReducer, paginationState);
+
+  useEffect(() => {
+    if (filter && (!filtersConditions[filter] || filter === 'all')) setSearchParams('');
+  }, [filter, setSearchParams]);
 
   // Responsible for resetting the filter, sortKey, sortDirection and searchParams when the user changes switch between tabs
   // useEffect(() => {
@@ -71,28 +78,43 @@ export function DisplayedTasks({ onAdd, condition, activeTab }) {
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, [activeTab]);
 
-  // Responsible for setting the filter in the url when the user changes the filter
-  useEffect(() => {
-    filterParam && setFilter(filterParam);
-    if (!filtersConditions[filterParam]) {
-      setFilter('all');
-      setSearchParams('');
-    }
-  }, [filterParam, setSearchParams]);
+  // Responsible for setting the filter,sortKey and sortDirection in the url when the user changes them
+  // useEffect(() => {
+  //   if (filterParam) {
+  //     filtersConditions[filterParam] ? setFilter(filterParam) : setFilter('all');
+  //   }
+  //   if (sortParam) {
+  //     ['cDate', 'dDate', 'title', 'priority'].includes(sortParam)
+  //       ? setSortKey(sortParam)
+  //       : setSortKey('cDate');
+  //   }
+  //   if (dirParam) {
+  //     ['asc', 'desc'].includes(dirParam) ? setSortDirection(dirParam) : setSortDirection('asc');
+  //   }
 
-  // Responsible for setting the sortKey and sortDirection in the url when the user changes the sortKey or sortDirection
-  useEffect(() => {
-    const sortKeys = ['cDate', 'dDate', 'title', 'priority'];
-    if ((sortKey === 'cDate' && sortDirection === 'asc') || !sortKeys.includes(sortKey))
-      setSearchParams(filter === 'all' ? '' : { filter });
-    else {
-      setSearchParams(
-        filter === 'all'
-          ? { sort: sortKey, dir: sortDirection }
-          : { filter, sort: sortKey, dir: sortDirection },
-      );
-    }
-  }, [sortKey, sortDirection, setSearchParams, filter]);
+  //   if (filterParam && sortParam && dirParam)
+  //     setSearchParams(
+  //       filter === 'all' && sortKey === 'cDate' && sortDirection === 'asc'
+  //         ? ''
+  //         : filter === 'all' && sortKey !== 'cDate' && sortDirection !== 'asc'
+  //         ? { sort: sortKey, dir: sortDirection }
+  //         : filter !== 'all' && sortKey === 'cDate' && sortDirection === 'asc'
+  //         ? { filter }
+  //         : { filter, sort: sortKey, dir: sortDirection },
+  //     );
+  //   // if (
+  //   //   (sortKey === 'cDate' && sortDirection === 'asc') ||
+  //   //   !['cDate', 'dDate', 'title', 'priority'].includes(sortKey)
+  //   // )
+  //   //   setSearchParams(filter === 'all' ? '' : { filter });
+  //   // else {
+  //   //   setSearchParams(
+  //   //     filter === 'all'
+  //   //       ? { sort: sortKey, dir: sortDirection }
+  //   //       : { filter, sort: sortKey, dir: sortDirection },
+  //   //   );
+  //   // }
+  // }, [setSearchParams, filterParam, sortParam, dirParam, filter, sortKey, sortDirection]);
 
   // Responsible for filtering the tasks based on the selected filter
   useEffect(() => {
@@ -102,6 +124,7 @@ export function DisplayedTasks({ onAdd, condition, activeTab }) {
   }, [tasks, filter, condition]);
 
   // Responsible for the display of the multiple deletions modal
+
   useEffect(() => {
     selectedTasks.length > 0 && isSelecting
       ? setIsDeleteMultipleModalOpen(true)
@@ -133,11 +156,6 @@ export function DisplayedTasks({ onAdd, condition, activeTab }) {
           <Tippy
             content={
               <TasksActions
-                filter={filter}
-                onSelect={(e) => {
-                  setFilter(e.target.value);
-                  setSearchParams({ filter: e.target.value });
-                }}
                 onClearAll={() => {
                   setIsClearAllModalOpen(true);
                   whichDelete.current = 'clear';
@@ -200,7 +218,7 @@ export function DisplayedTasks({ onAdd, condition, activeTab }) {
           </ul>
           {filteredTasks.filter((task) => condition(task)).length === 0 && (
             <div className='absolute top-1/2 flex w-full flex-col items-center justify-center gap-2'>
-              <h2 className='text-2xl text-center font-semibold text-text-secondary'>
+              <h2 className='text-center text-2xl font-semibold text-text-secondary'>
                 You don&apos;t have any{' '}
                 {filter?.includes('Priority') ? filter?.replace('Priority', ' priority') : filter}{' '}
                 tasks in this list
