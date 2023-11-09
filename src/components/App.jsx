@@ -85,7 +85,7 @@ export default function App() {
                     ))}
                   </Route>
                   <Route path='login' element={<Login />} />
-                  <Route path='signup' element={<SignUp />} />
+                  <Route path='signUp' element={<SignUp />} />
                   <Route path='*' element={<NotFound />} />
                 </Routes>
               </BrowserRouter>

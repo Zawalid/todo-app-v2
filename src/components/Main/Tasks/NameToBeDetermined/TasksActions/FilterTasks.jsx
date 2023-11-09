@@ -6,7 +6,6 @@ export function FilterTasks() {
   const filter = searchParams.get('filter') || 'all';
   // Remove the filter query param if the selected filter is 'all' or if the filter doesn't exist
 
-  // TODO : Fix this when you can
   useEffect(() => {
     if (
       ![

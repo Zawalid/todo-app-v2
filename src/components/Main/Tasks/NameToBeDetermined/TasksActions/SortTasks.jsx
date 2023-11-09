@@ -17,7 +17,6 @@ function Button({ sortKey, title }) {
   const direction = searchParams.get('direction') || 'asc';
   const isActive = sort === sortKey;
 
-  // TODO : Fix this when you can
   // Remove the sort and direction query params if the selected sort is 'cDate' and direction is 'asc' or if the sort doesn't exist
   useEffect(() => {
     if (

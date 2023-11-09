@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import { useHref, useNavigate } from 'react-router-dom';
+import { useHref } from 'react-router-dom';
 import { Title } from './Title';
 import { StickyWall } from './Sticky Wall/StickyWall';
 import { DisplayedTasks } from './Tasks/NameToBeDetermined/DisplayedTasks';
@@ -20,13 +20,6 @@ export function Main() {
   const { searchResults } = useSearch();
   const { trashLength } = useTrash();
   const activeTab = useHref().split('/app/')[1];
-  const navigate = useNavigate();
-
-  // TODO : Fix this when you can
-  useEffect(() => {
-    !activeTab && navigate('/app/all');
-    //  eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   useEffect(() => {
     addNewTaskReference.current?.focus();
@@ -79,8 +72,8 @@ export function Main() {
 
   return (
     <main className='flex flex-1 flex-col overflow-hidden rounded-xl bg-background-primary px-5 '>
-      <Title title={title} count={count} />
-      {!['upcoming', 'stickyWall', 'search', 'trash'].includes(activeTab) ? (
+      {activeTab && <Title title={title} count={count} />}
+      {activeTab && !['upcoming', 'stickyWall', 'search', 'trash'].includes(activeTab) ? (
         <DisplayedTasks
           onAdd={(title) => {
             const dueDate = activeTab === 'today' && new Date().toISOString().split('T')[0];
