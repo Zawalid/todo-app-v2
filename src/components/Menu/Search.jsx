@@ -6,7 +6,7 @@ export function Search() {
   const navigate = useNavigate();
 
   function search(query) {
-    query?.trim() === '' ? navigate('all') : navigate(`search?q=${query}`);
+    query?.trim() === '' ? navigate('') : navigate(`search?q=${query}`);
   }
   return (
     <div className='relative mb-5 w-full'>

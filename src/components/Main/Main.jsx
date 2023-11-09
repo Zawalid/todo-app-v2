@@ -28,7 +28,7 @@ export function Main() {
   const listId = lists.find((list) => list.title === activeTab?.replace('%20', ' '))?.$id;
 
   const title =
-    activeTab === 'all'
+    activeTab === undefined
       ? 'All Tasks'
       : activeTab === 'today'
       ? "Today's Tasks"
@@ -43,7 +43,7 @@ export function Main() {
       : activeTab?.replace(/%20/g, ' ');
 
   const count = useMemo(() => {
-    if (activeTab === 'all') return tasks.length;
+    if (activeTab === undefined) return tasks.length;
     if (activeTab === 'today') return todayTasks.length;
     if (activeTab === 'upcoming') return upcomingTasks.length;
     if (activeTab === 'stickyWall') return stickyNotes.length;
@@ -66,14 +66,14 @@ export function Main() {
   const condition = (task) => {
     if (listId) return task.listId === listId;
     if (activeTab === 'today') return checkIfToday(task.dueDate);
-    if (activeTab === 'all') return true;
+    if (activeTab === undefined) return true;
     return false;
   };
 
   return (
     <main className='flex flex-1 flex-col overflow-hidden rounded-xl bg-background-primary px-5 '>
-      {activeTab && <Title title={title} count={count} />}
-      {activeTab && !['upcoming', 'stickyWall', 'search', 'trash'].includes(activeTab) ? (
+      <Title title={title} count={count} />
+      {!['upcoming', 'stickyWall', 'search', 'trash'].includes(activeTab) ? (
         <DisplayedTasks
           onAdd={(title) => {
             const dueDate = activeTab === 'today' && new Date().toISOString().split('T')[0];
