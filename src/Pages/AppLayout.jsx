@@ -17,7 +17,7 @@ export default function AppLayout() {
           className: 'sonner-toast',
         }}
       />
-      <div className='flex h-full gap-2 bg-background-primary p-5'>
+      <div className='flex h-full gap-2  bg-background-primary p-5'>
         <SearchProvider>
           <Menu />
           <Main />

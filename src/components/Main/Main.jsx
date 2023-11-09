@@ -28,7 +28,7 @@ export function Main() {
   const listId = lists.find((list) => list.title === activeTab?.replace('%20', ' '))?.$id;
 
   const title =
-    activeTab === undefined
+    !activeTab 
       ? 'All Tasks'
       : activeTab === 'today'
       ? "Today's Tasks"
@@ -43,7 +43,7 @@ export function Main() {
       : activeTab?.replace(/%20/g, ' ');
 
   const count = useMemo(() => {
-    if (activeTab === undefined) return tasks.length;
+    if (!activeTab ) return tasks.length;
     if (activeTab === 'today') return todayTasks.length;
     if (activeTab === 'upcoming') return upcomingTasks.length;
     if (activeTab === 'stickyWall') return stickyNotes.length;
@@ -66,7 +66,7 @@ export function Main() {
   const condition = (task) => {
     if (listId) return task.listId === listId;
     if (activeTab === 'today') return checkIfToday(task.dueDate);
-    if (activeTab === undefined) return true;
+    if (!activeTab ) return true;
     return false;
   };
 

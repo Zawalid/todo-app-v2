@@ -20,6 +20,8 @@ const collectionsIds = {
   stickyNotes: stickyNotesCollectionId,
 };
 
+const TRASH_CLEANUP_INTERVAL = 30 * 24 * 60 * 60 * 1000; //(30 days in milliseconds)
+
 export const TrashContext = createContext();
 
 const initialState = {
@@ -72,6 +74,7 @@ function reducer(state, action) {
     case 'EMPTY_TRASH':
       return {
         ...state,
+        isUpdated: true,
         trash: initialState.trash,
       };
     case 'TRASH_UPDATED':
@@ -88,7 +91,10 @@ function reducer(state, action) {
 
 export function TrashProvider({ children }) {
   const [currentTab, setCurrentTab] = useState('tasks');
-  const [{ trash, isUpdated, $id }, dispatch] = useReducer(reducer, initialState);
+  const [{ trash, isUpdated, $id, creationDate, lastCleanedUp }, dispatch] = useReducer(
+    reducer,
+    initialState,
+  );
   const trashLength = useMemo(
     () =>
       Object.keys(trash)
@@ -185,8 +191,8 @@ export function TrashProvider({ children }) {
       toast.error(`Failed to empty ${element}. Please try again`, { id: toastId });
     }
   }
-  async function handleEmptyTrash() {
-    const toastId = toast.loading(`Emptying trash...`);
+  async function handleEmptyTrash(autoCleanUp) {
+    const toastId = autoCleanUp ? null : toast.loading(`Emptying trash...`);
     try {
       // Delete all elements from trash permanently
       for (const type of Object.keys(collectionsIds)) {
@@ -197,30 +203,44 @@ export function TrashProvider({ children }) {
       }
       // Delete all elements from trash
       dispatch({ type: 'EMPTY_TRASH' });
-      toast.success('Trash has been successfully emptied.', { id: toastId });
+      !autoCleanUp && toast.success('Trash has been successfully emptied.', { id: toastId });
     } catch (err) {
       console.log(err);
-      toast.error('Failed to empty trash!. Please try again', { id: toastId });
+      !autoCleanUp && toast.error('Failed to empty trash!. Please try again', { id: toastId });
     }
   }
   // get trash from database
-  useEffect(() => {
-    async function getTrash() {
-      const response = await databases.listDocuments(DATABASE_ID, TRASH_COLLECTION_ID);
-      const trash = { ...response.documents[0] };
-      remove$Properties(trash);
-      delete trash.owner;
-      dispatch({
-        type: 'LOAD_TRASH',
-        payload: {
-          trash,
-          $id: response.documents[0].$id,
-        },
+  async function handleGetTrash() {
+    const response = await databases.listDocuments(DATABASE_ID, TRASH_COLLECTION_ID);
+    const trash = { ...response.documents[0] };
+    remove$Properties(trash);
+    delete trash.owner;
+    delete trash.lastCleanedUp;
+
+    dispatch({
+      type: 'LOAD_TRASH',
+      payload: {
+        trash,
+        $id: response.documents[0].$id,
+        creationDate: response.documents[0].$createdAt,
+        lastCleanedUp: response.documents[0].lastCleanedUp,
+      },
+    });
+  }
+  // cleanup trash if it passed 30 days since last cleanup or creation date (if no cleanup was done)
+  async function handleCleanUpTrash() {
+    const lastCleanedUpTimeStamp =
+      new Date(lastCleanedUp).getTime() || new Date(creationDate).getTime();
+    const nowTimeStamp = Date.now();
+
+    if (nowTimeStamp - lastCleanedUpTimeStamp >= TRASH_CLEANUP_INTERVAL) {
+      await handleEmptyTrash(true);
+      dispatch({ type: 'EMPTY_TRASH' });
+      databases.updateDocument(DATABASE_ID, TRASH_COLLECTION_ID, $id, {
+        lastCleanedUp: new Date().toISOString(),
       });
     }
-    getTrash();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }
 
   // update trash in database
   useEffect(() => {
@@ -232,6 +252,15 @@ export function TrashProvider({ children }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trash]);
+
+  useEffect(() => {
+    async function init() {
+      await handleGetTrash();
+      lastCleanedUp !== undefined && (await handleCleanUpTrash());
+    }
+    init();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lastCleanedUp]);
 
   return (
     <TrashContext.Provider

@@ -23,7 +23,7 @@ export function Trash() {
   const whichDelete = useRef(null);
 
   return (
-    <div className='relative flex h-full flex-col overflow-auto p-4'>
+    <div className='relative flex h-full flex-col overflow-auto '>
       <Tabs
         tabs={['Tasks', 'Lists', 'Tags', 'Sticky Notes']}
         currentTab={currentTab}
@@ -90,10 +90,10 @@ export function Trash() {
           isTrash={true}
         />
       )}
-      <div className='mt-auto flex justify-between border-t-2 pt-3'>
+      <div className='mt-auto flex items-center justify-between border-t-2 pt-3'>
         <button
           className={
-            'rounded-lg bg-text-error px-4 py-1 text-sm text-white ' +
+            'rounded-lg bg-text-error px-4 py-2 text-sm text-white ' +
             (trash[currentTab]?.length === 0 ? 'cursor-not-allowed opacity-50' : '')
           }
           onClick={() => {
@@ -107,7 +107,7 @@ export function Trash() {
         </button>
         <button
           className={
-            'rounded-lg bg-text-error px-4 py-1 text-sm text-white ' +
+            'rounded-lg bg-text-error px-4 py-2 text-sm text-white ' +
             (trashLength === 0 ? 'cursor-not-allowed opacity-50' : '')
           }
           onClick={() => {
@@ -120,22 +120,12 @@ export function Trash() {
           <span className='ml-2'>Empty Trash</span>
         </button>
       </div>
+      <div className='mt-2 flex items-center justify-center gap-2'>
+        <i className='fa-solid fa-info-circle text-blue-400'></i>
+        <p className='text-xs font-medium text-text-tertiary '>
+          Items in the trash will be automatically cleared after 30 days.
+        </p>
+      </div>
     </div>
   );
 }
-
-/*  <div className='fixed left-0 top-0  z-[99]  flex h-full w-full items-center justify-center bg-black bg-opacity-25 backdrop-blur-[1px]'>
-</div> */
-/* <div className='flex items-center justify-between pb-5'>
-        <h2 className='text-xl font-bold text-text-secondary'>
-          Trash <span className='text-lg text-text-tertiary'>({trashLength})</span>
-        </h2>
-        <button
-          onClick={() => {
-            onClose();
-            setCurrentTab('tasks');
-          }}
-        >
-          <i className='fa-solid fa-xmark cursor-pointer text-xl text-text-tertiary'></i>
-        </button>
-      </div> */
