@@ -1,21 +1,71 @@
-import { createContext, useEffect } from 'react';
-import { databases, appWriteConfig } from '../AppWrite';
+import { createContext, useEffect, useState } from 'react';
+import { databases, appWriteConfig, setPermissions } from '../AppWrite';
 import { ID } from 'appwrite';
 import { remove$Properties } from '../utils/remove$Properties';
 import { useDelete } from '../hooks/useDelete';
 import { useGetAllElements } from '../hooks/useGetAllElements';
 import { toast } from 'sonner';
 import { useTrash } from '../hooks/useTrash';
+import { useUserAuth } from '../hooks/useUserAuth';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 const LISTS_COLLECTION_ID = '65422c65a17f95378d53';
 
+// const SAMPLE_LISTS = [
+//   {
+//     title: 'Personal',
+//     color: '#ff6b6b',
+//     tasks: [
+//       {
+//         title: 'idk',
+//         note: '',
+//         dueDate: '',
+//         listId: '65424b5a69fab6f186d2',
+//         subtasks: [],
+//         isCompleted: false,
+//         tagsIds: [],
+//         priority: 0,
+//         index: 2,
+//         $id: '65419d00b10b220d3f93',
+//         $createdAt: '2023-11-01T00:34:08.726+00:00',
+//         $updatedAt: '2023-11-01T00:34:08.726+00:00',
+//         $permissions: [],
+//         $databaseId: '654169b1a5c05d9c1e7e',
+//         $collectionId: '65416a6c8f0a546d8b4b',
+//       },
+//     ],
+//     number: 0,
+//     index: 3,
+//     $id: '65424b5a69fab6f186d2',
+//     $createdAt: '2023-11-01T12:58:02.435+00:00',
+//     $updatedAt: '2023-11-01T12:58:02.435+00:00',
+//     $permissions: [],
+//     $databaseId: '654169b1a5c05d9c1e7e',
+//     $collectionId: '65422c65a17f95378d53',
+//   },
+//   {
+//     title: 'Work',
+//     color: '#fffebe',
+//     tasks: [],
+//     number: 0,
+//     index: 4,
+//     $id: '65424b881a6f20cec5cd',
+//     $createdAt: '2023-11-01T12:58:48.109+00:00',
+//     $updatedAt: '2023-11-01T12:58:48.109+00:00',
+//     $permissions: [],
+//     $databaseId: '654169b1a5c05d9c1e7e',
+//     $collectionId: '65422c65a17f95378d53',
+//   },
+// ];
+
 export const ListsContext = createContext();
 
-export function ListsProvider({ children, lists, setLists }) {
+function ListsProvider({ children }) {
+  const [lists, setLists] = useState([]);
   const { handleDeleteElement } = useDelete();
   const { handleGetAllElements } = useGetAllElements();
   const { handleRestoreFromTrash } = useTrash();
+  const { user } = useUserAuth();
 
   async function handleAddList(title, color, list) {
     const toastId = toast.loading('Adding list...');
@@ -31,12 +81,24 @@ export function ListsProvider({ children, lists, setLists }) {
         DATABASE_ID,
         LISTS_COLLECTION_ID,
         ID.unique(),
-        newList,
+        {
+          ...newList,
+          owner: user?.$id,
+        },
+        setPermissions(user?.$id),
       );
       toast.success('List has been successfully added.', { id: toastId });
       setLists((lists) => [...lists, response]);
     } catch (err) {
-      toast.error('Failed to add the list. Please try again.', { id: toastId });
+      toast.error('Failed to add the list.', {
+        id: toastId,
+        action: {
+          label: 'Try again',
+          onClick: async () => {
+            await handleAddList(title, color, list);
+          },
+        },
+      });
     }
   }
   async function handleUpdateList(id, property, value) {
@@ -85,7 +147,15 @@ export function ListsProvider({ children, lists, setLists }) {
             },
       });
     } catch (err) {
-      toast.error('Failed to delete the list. Please try again.', { id: toastId });
+      toast.error('Failed to delete the list.', {
+        id: toastId,
+        action: {
+          label: 'Try again',
+          onClick: async () => {
+            await handleDeleteList(id, deletePermanently);
+          },
+        },
+      });
     }
   }
 
@@ -111,3 +181,4 @@ export function ListsProvider({ children, lists, setLists }) {
     </ListsContext.Provider>
   );
 }
+export default ListsProvider;

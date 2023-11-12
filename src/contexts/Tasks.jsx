@@ -1,5 +1,5 @@
 import { createContext, useEffect, useRef, useState } from 'react';
-import { databases, appWriteConfig } from '../AppWrite';
+import { databases, appWriteConfig, setPermissions } from '../AppWrite';
 import { ID } from 'appwrite';
 import { checkIfToday, checkIfTomorrow, isDateInCurrentWeek } from '../utils/Moment';
 import { remove$Properties } from '../utils/remove$Properties';
@@ -8,145 +8,148 @@ import { useDelete } from '../hooks/useDelete';
 import { useGetAllElements } from '../hooks/useGetAllElements';
 import { toast } from 'sonner';
 import { useTrash } from '../hooks/useTrash';
+import { useUserAuth } from '../hooks/useUserAuth';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 const TASKS_COLLECTION_ID = appWriteConfig.tasksCollectionId;
 
+// const SAMPLE_TASKS = [
+//   {
+//     title: 'idk',
+//     note: '',
+//     dueDate: '',
+//     listId: '65424b5a69fab6f186d2',
+//     subtasks: [],
+//     isCompleted: false,
+//     tagsIds: [],
+//     priority: 0,
+//     index: 2,
+//     $id: '65419d00b10b220d3f93',
+//     $createdAt: '2023-11-01T00:34:08.726+00:00',
+//   },
+//   {
+//     title: 'maybe',
+//     note: '',
+//     dueDate: '',
+//     listId: '65424b5a69fab6f186d2',
+//     subtasks: [],
+//     isCompleted: false,
+//     tagsIds: [],
+//     priority: 0,
+//     index: 3,
+//     $id: '65419d4fbf5731854f09',
+//     $createdAt: '2023-11-01T00:35:27.784+00:00',
+//   },
+//   {
+//     title: 'hey',
+//     note: '',
+//     dueDate: '',
+//     listId: 'none',
+//     subtasks: [],
+//     isCompleted: false,
+//     tagsIds: [],
+//     priority: 0,
+//     index: 4,
+//     $id: '65419d80e7066538faa7',
+//     $createdAt: '2023-11-01T00:36:16.947+00:00',
+//   },
+//   {
+//     title: 'today',
+//     note: '',
+//     dueDate: '2023-11-02',
+//     listId: 'none',
+//     subtasks: [],
+//     isCompleted: false,
+//     tagsIds: [],
+//     priority: 0,
+//     index: 5,
+//     $id: '65419d89d260193sab4a5',
+//     $createdAt: '2023-11-01T00:36:25.862+00:00',
+//   },
+//   {
+//     title: 'tomorrow',
+//     note: '',
+//     dueDate: '2023-11-02',
+//     listId: 'none',
+//     subtasks: [],
+//     isCompleted: false,
+//     tagsIds: [],
+//     priority: 0,
+//     index: 6,
+//     $id: '65419deec89deeef4e5a4',
+//     $createdAt: '2023-11-01T00:38:06.823+00:00',
+//   },
+//   {
+//     title: 'today',
+//     note: '',
+//     dueDate: '2023-11-02',
+//     listId: 'none',
+//     subtasks: [],
+//     isCompleted: false,
+//     tagsIds: [],
+//     priority: 0,
+//     index: 5,
+//     $id: '65419d89d260d193ab4a5',
+//     $createdAt: '2023-11-01T00:36:25.862+00:00',
+//   },
+//   {
+//     title: 'tomorrow',
+//     note: '',
+//     dueDate: '2023-11-02',
+//     listId: 'none',
+//     subtasks: [],
+//     isCompleted: false,
+//     tagsIds: [],
+//     priority: 0,
+//     index: 6,
+//     $id: '65419deec89dqeef4e5a4',
+//     $createdAt: '2023-11-01T00:38:06.823+00:00',
+//   },
+//   {
+//     title: 'tomorrow',
+//     note: '',
+//     dueDate: '2023-11-02',
+//     listId: 'none',
+//     subtasks: [],
+//     isCompleted: false,
+//     tagsIds: [],
+//     priority: 0,
+//     index: 6,
+//     $id: '65419deec89dweef4e5a4',
+//     $createdAt: '2023-11-01T00:38:06.823+00:00',
+//   },
+//   {
+//     title: 'tomorrow',
+//     note: '',
+//     dueDate: '2023-11-02',
+//     listId: 'none',
+//     subtasks: [],
+//     isCompleted: false,
+//     tagsIds: [],
+//     priority: 0,
+//     index: 6,
+//     $id: '65419deec89deef4e5a4',
+//     $createdAt: '2023-11-01T00:38:06.823+00:00',
+//   },
+//   {
+//     title: 'tomorrow',
+//     note: '',
+//     dueDate: '2023-11-02',
+//     listId: 'none',
+//     subtasks: [],
+//     isCompleted: false,
+//     tagsIds: [],
+//     priority: 0,
+//     index: 6,
+//     $id: '65419deec89desef4e5a4',
+//     $createdAt: '2023-11-01T00:38:06.823+00:00',
+//   },
+// ];
+
 export const TasksContext = createContext();
 
-export function TasksProvider({ children }) {
-  const [tasks, setTasks] = useState([
-    {
-      title: 'idk',
-      note: '',
-      dueDate: '',
-      listId: '65424b5a69fab6f186d2',
-      subtasks: [],
-      isCompleted: false,
-      tagsIds: [],
-      priority: 0,
-      index: 2,
-      $id: '65419d00b10b220d3f93',
-      $createdAt: '2023-11-01T00:34:08.726+00:00',
-    },
-    {
-      title: 'maybe',
-      note: '',
-      dueDate: '',
-      listId: '65424b5a69fab6f186d2',
-      subtasks: [],
-      isCompleted: false,
-      tagsIds: [],
-      priority: 0,
-      index: 3,
-      $id: '65419d4fbf5731854f09',
-      $createdAt: '2023-11-01T00:35:27.784+00:00',
-    },
-    {
-      title: 'hey',
-      note: '',
-      dueDate: '',
-      listId: 'none',
-      subtasks: [],
-      isCompleted: false,
-      tagsIds: [],
-      priority: 0,
-      index: 4,
-      $id: '65419d80e7066538faa7',
-      $createdAt: '2023-11-01T00:36:16.947+00:00',
-    },
-    {
-      title: 'today',
-      note: '',
-      dueDate: '2023-11-02',
-      listId: 'none',
-      subtasks: [],
-      isCompleted: false,
-      tagsIds: [],
-      priority: 0,
-      index: 5,
-      $id: '65419d89d260193sab4a5',
-      $createdAt: '2023-11-01T00:36:25.862+00:00',
-    },
-    {
-      title: 'tomorrow',
-      note: '',
-      dueDate: '2023-11-02',
-      listId: 'none',
-      subtasks: [],
-      isCompleted: false,
-      tagsIds: [],
-      priority: 0,
-      index: 6,
-      $id: '65419deec89deeef4e5a4',
-      $createdAt: '2023-11-01T00:38:06.823+00:00',
-    },
-    {
-      title: 'today',
-      note: '',
-      dueDate: '2023-11-02',
-      listId: 'none',
-      subtasks: [],
-      isCompleted: false,
-      tagsIds: [],
-      priority: 0,
-      index: 5,
-      $id: '65419d89d260d193ab4a5',
-      $createdAt: '2023-11-01T00:36:25.862+00:00',
-    },
-    {
-      title: 'tomorrow',
-      note: '',
-      dueDate: '2023-11-02',
-      listId: 'none',
-      subtasks: [],
-      isCompleted: false,
-      tagsIds: [],
-      priority: 0,
-      index: 6,
-      $id: '65419deec89dqeef4e5a4',
-      $createdAt: '2023-11-01T00:38:06.823+00:00',
-    },
-    {
-      title: 'tomorrow',
-      note: '',
-      dueDate: '2023-11-02',
-      listId: 'none',
-      subtasks: [],
-      isCompleted: false,
-      tagsIds: [],
-      priority: 0,
-      index: 6,
-      $id: '65419deec89dweef4e5a4',
-      $createdAt: '2023-11-01T00:38:06.823+00:00',
-    },
-    {
-      title: 'tomorrow',
-      note: '',
-      dueDate: '2023-11-02',
-      listId: 'none',
-      subtasks: [],
-      isCompleted: false,
-      tagsIds: [],
-      priority: 0,
-      index: 6,
-      $id: '65419deec89deef4e5a4',
-      $createdAt: '2023-11-01T00:38:06.823+00:00',
-    },
-    {
-      title: 'tomorrow',
-      note: '',
-      dueDate: '2023-11-02',
-      listId: 'none',
-      subtasks: [],
-      isCompleted: false,
-      tagsIds: [],
-      priority: 0,
-      index: 6,
-      $id: '65419deec89desef4e5a4',
-      $createdAt: '2023-11-01T00:38:06.823+00:00',
-    },
-  ]);
+function TasksProvider({ children }) {
+  const [tasks, setTasks] = useState([]);
   const [currentTask, setCurrentTask] = useState(null);
   const [isTaskOpen, setIsTaskOpen] = useState(false);
   const [isAddingTask, setIsAddingTask] = useState(false);
@@ -156,6 +159,7 @@ export function TasksProvider({ children }) {
   const { handleDeleteElement } = useDelete();
   const { handleGetAllElements } = useGetAllElements();
   const { handleRestoreFromTrash } = useTrash();
+  const { user } = useUserAuth();
 
   const todayTasks = tasks?.filter((task) => checkIfToday(task.dueDate));
   const tomorrowTasks = tasks?.filter((task) => checkIfTomorrow(task.dueDate));
@@ -177,7 +181,11 @@ export function TasksProvider({ children }) {
         DATABASE_ID,
         TASKS_COLLECTION_ID,
         ID.unique(),
-        task,
+        {
+          ...task,
+          owner: user?.$id,
+        },
+        setPermissions(user?.$id),
       );
       toast.success('Task has been successfully added.', { id: toastId });
       setTasks((tasks) => [...tasks, response]);
@@ -185,7 +193,15 @@ export function TasksProvider({ children }) {
         handleAddTaskToList(listId, response.$id);
       }
     } catch (err) {
-      toast.error('Failed to add the task. Please try again.', { id: toastId });
+      toast.error('Failed to add the task.', {
+        id: toastId,
+        action: {
+          label: 'Try again',
+          onClick: () => {
+            handleAddTask(task, listId);
+          },
+        },
+      });
     } finally {
       setIsAddingTask(false);
     }
@@ -198,7 +214,15 @@ export function TasksProvider({ children }) {
       await databases.updateDocument(DATABASE_ID, TASKS_COLLECTION_ID, id, updatedTask);
       isCompleted ?? toast.success('Task has been successfully updated.', { id: toastId });
     } catch (err) {
-      toast.error('Failed to update the task. Please try again.', { id: toastId });
+      toast.error('Failed to update the task.', {
+        id: toastId,
+        action: {
+          label: 'Try again',
+          onClick: () => {
+            handleUpdateTask(id, task, isCompleted);
+          },
+        },
+      });
     } finally {
       await handleGetAllElements(TASKS_COLLECTION_ID, setTasks);
     }
@@ -231,7 +255,16 @@ export function TasksProvider({ children }) {
         });
       }
     } catch (err) {
-      !isClearing && toast.error(getDeletionMessage('error', true), { id: toastId });
+      !isClearing &&
+        toast.error(getDeletionMessage('error', true), {
+          id: toastId,
+          action: {
+            label: 'Try again',
+            onClick: () => {
+              handleDeleteTask(id, listId, deletePermanently, isClearing);
+            },
+          },
+        });
     }
     // Remove the deleted task from the list it was in
     if (listId === 'none') return;
@@ -288,7 +321,15 @@ export function TasksProvider({ children }) {
         isSelectedTasks
           ? getDeletionMessage('error', false, true, selectedTasks.length)
           : getDeletionMessage('error', false, false),
-        { id },
+        {
+          id,
+          action: {
+            label: 'Try again',
+            onClick: () => {
+              handleClearAllTasks(condition1, condition2, deletePermanently, isSelectedTasks);
+            },
+          },
+        },
       );
     }
   }
@@ -345,9 +386,9 @@ function getDeletionMessage(status, singular, selected, number) {
     return `All tasks have been successfully cleared.`;
   }
   if (status === 'error') {
-    if ((selected && number === 1) || singular)
-      return `Failed to delete the task. Please try again.`;
-    if (selected && number > 1) return `Failed to delete the tasks. Please try again.`;
-    return `Failed to clear all tasks. Please try again.`;
+    if ((selected && number === 1) || singular) return `Failed to delete the task.`;
+    if (selected && number > 1) return `Failed to delete the tasks.`;
+    return `Failed to clear all tasks.`;
   }
 }
+export default TasksProvider;

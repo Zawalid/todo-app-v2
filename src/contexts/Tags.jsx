@@ -1,17 +1,18 @@
 import { createContext, useEffect, useState } from 'react';
-import { databases, appWriteConfig } from '../AppWrite';
+import { databases, appWriteConfig, setPermissions } from '../AppWrite';
 import { ID } from 'appwrite';
 import { useDelete } from '../hooks/useDelete';
 import { useGetAllElements } from '../hooks/useGetAllElements';
 import { toast } from 'sonner';
 import { useTrash } from '../hooks/useTrash';
+import { useUserAuth } from '../hooks/useUserAuth';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 const TAGS_COLLECTION_ID = appWriteConfig.tagsCollectionId;
 
 export const TagsContext = createContext();
 
-export function TagsProvider({ children }) {
+ function TagsProvider({ children }) {
   const [tags, setTags] = useState([
     // {
     //   $id: Math.random(),
@@ -24,6 +25,7 @@ export function TagsProvider({ children }) {
   const { handleDeleteElement } = useDelete();
   const { handleGetAllElements } = useGetAllElements();
   const { handleRestoreFromTrash } = useTrash();
+  const {user} = useUserAuth();
 
   async function handleAddTag(title, bgColor, textColor) {
     const toastId = toast.loading('Adding tag...');
@@ -36,12 +38,21 @@ export function TagsProvider({ children }) {
           title,
           bgColor,
           textColor,
+          owner : user?.$id,
         },
+        setPermissions(user?.$id),
       );
       toast.success('Tag has been successfully added.', { id: toastId });
       setTags((notes) => [...notes, response]);
     } catch (err) {
-      toast.error('Failed to add the tag. Please try again.', { id: toastId });
+      toast.error('Failed to add the tag.', { id: toastId,
+        action: {
+          label: 'Try Again',
+          onClick: () => {
+            handleAddTag(title, bgColor, textColor);
+          },
+        },
+      });
     }
   }
   async function handleDeleteTag(id, deletePermanently) {
@@ -61,7 +72,14 @@ export function TagsProvider({ children }) {
             },
       });
     } catch (err) {
-      toast.error('Failed to delete the tag. Please try again.', { id: toastId });
+      toast.error('Failed to delete the tag.', { id: toastId , 
+        action: {
+          label: 'Try Again',
+          onClick: () => {
+            handleDeleteTag(id, deletePermanently);
+          },
+        },
+      });
     }
   }
 
@@ -82,3 +100,4 @@ export function TagsProvider({ children }) {
     </TagsContext.Provider>
   );
 }
+export default TagsProvider

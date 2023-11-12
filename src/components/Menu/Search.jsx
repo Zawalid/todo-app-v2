@@ -20,7 +20,7 @@ export function Search() {
           search(e.target.value);
         }}
       />
-      {searchQuery?.trim() !== '' && (
+      {!searchQuery || searchQuery?.trim() !== '' && (
         <button
           className='absolute right-9 top-[2.5px] cursor-pointer rounded-sm  px-[5px]  text-text-tertiary transition-colors duration-300 hover:bg-background-tertiary'
           onClick={() => {

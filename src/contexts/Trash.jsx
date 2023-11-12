@@ -1,8 +1,9 @@
 import { createContext, useEffect, useMemo, useReducer, useState } from 'react';
-import { databases, appWriteConfig } from '../AppWrite';
-import { ID } from 'appwrite';
+import { databases, appWriteConfig, setPermissions } from '../AppWrite';
+import { ID, Query } from 'appwrite';
 import { remove$Properties } from '../utils/remove$Properties';
 import { toast } from 'sonner';
+import { useUserAuth } from '../hooks/useUserAuth';
 
 const {
   databaseId: DATABASE_ID,
@@ -89,7 +90,7 @@ function reducer(state, action) {
   }
 }
 
-export function TrashProvider({ children }) {
+function TrashProvider({ children }) {
   const [currentTab, setCurrentTab] = useState('tasks');
   const [{ trash, isUpdated, $id, creationDate, lastCleanedUp }, dispatch] = useReducer(
     reducer,
@@ -102,16 +103,26 @@ export function TrashProvider({ children }) {
         .reduce((acc, cur) => acc + cur, 0),
     [trash],
   );
+  const { getCurrentUser } = useUserAuth();
 
   // --- Creation ---
   async function createTrash() {
-    const response = await databases.createDocument(
-      DATABASE_ID,
-      TRASH_COLLECTION_ID,
-      ID.unique(),
-      initialState.trash,
-    );
-    dispatch({ type: 'LOAD_TRASH', payload: response });
+    try {
+      const user = await getCurrentUser();
+      const response = await databases.createDocument(
+        DATABASE_ID,
+        TRASH_COLLECTION_ID,
+        ID.unique(),
+        {
+          ...initialState.trash,
+          owner: user?.$id,
+        },
+        setPermissions(user?.$id),
+      );
+      dispatch({ type: 'LOAD_TRASH', payload: response });
+    } catch (error) {
+      return;
+    }
   }
   async function handleAddToTrash(type, item) {
     dispatch({ type: 'ADD_TO_TRASH', payload: { type, item } });
@@ -136,7 +147,14 @@ export function TrashProvider({ children }) {
       await deleteItem(type, itemId);
       toast.success(` ${element} has been deleted permanently.`);
     } catch (err) {
-      toast.error(`Failed to delete ${element}!. Please try again.`);
+      toast.error(`Failed to delete ${element}!.`, {
+        action: {
+          label: 'Try Again',
+          onClick: () => {
+            handleDeleteFromTrash(type, itemId);
+          },
+        },
+      });
     }
   }
   // --- Restoration ---
@@ -172,7 +190,15 @@ export function TrashProvider({ children }) {
           },
         });
     } catch (err) {
-      toast.error(`Failed to restore ${element}. Please try again`, { id: toastId });
+      toast.error(`Failed to restore ${element}. Please try again`, {
+        id: toastId,
+        action: {
+          label: 'Try Again',
+          onClick: () => {
+            handleRestoreFromTrash(type, itemId, isUndo, updateFunction);
+          },
+        },
+      });
     }
   }
   // --- Emptying ---
@@ -188,7 +214,15 @@ export function TrashProvider({ children }) {
       dispatch({ type: 'EMPTY_TYPE', payload: type });
       toast.success(`${element} have been successfully emptied.`, { id: toastId });
     } catch (err) {
-      toast.error(`Failed to empty ${element}. Please try again`, { id: toastId });
+      toast.error(`Failed to empty ${element}. Please try again`, {
+        id: toastId,
+        action: {
+          label: 'Try Again',
+          onClick: () => {
+            handleEmptyType(type);
+          },
+        },
+      });
     }
   }
   async function handleEmptyTrash(autoCleanUp) {
@@ -205,27 +239,42 @@ export function TrashProvider({ children }) {
       dispatch({ type: 'EMPTY_TRASH' });
       !autoCleanUp && toast.success('Trash has been successfully emptied.', { id: toastId });
     } catch (err) {
-      console.log(err);
-      !autoCleanUp && toast.error('Failed to empty trash!. Please try again', { id: toastId });
+      !autoCleanUp &&
+        toast.error('Failed to empty trash!. Please try again', {
+          id: toastId,
+          action: {
+            label: 'Try Again',
+            onClick: () => {
+              handleEmptyTrash(autoCleanUp);
+            },
+          },
+        });
     }
   }
   // get trash from database
   async function handleGetTrash() {
-    const response = await databases.listDocuments(DATABASE_ID, TRASH_COLLECTION_ID);
-    const trash = { ...response.documents[0] };
-    remove$Properties(trash);
-    delete trash.owner;
-    delete trash.lastCleanedUp;
-
-    dispatch({
-      type: 'LOAD_TRASH',
-      payload: {
-        trash,
-        $id: response.documents[0].$id,
-        creationDate: response.documents[0].$createdAt,
-        lastCleanedUp: response.documents[0].lastCleanedUp,
-      },
-    });
+    try {
+      const user = await getCurrentUser();
+      const response = await databases.listDocuments(DATABASE_ID, TRASH_COLLECTION_ID, [
+        Query.equal('owner', [user?.$id]),
+      ]);
+      const trash = { ...response.documents[0] };
+      if (!trash.$id) throw new Error('Trash not found');
+      remove$Properties(trash);
+      delete trash.owner;
+      delete trash.lastCleanedUp;
+      dispatch({
+        type: 'LOAD_TRASH',
+        payload: {
+          trash,
+          $id: response.documents[0].$id,
+          creationDate: response.documents[0].$createdAt,
+          lastCleanedUp: response.documents[0].lastCleanedUp,
+        },
+      });
+    } catch (error) {
+      return;
+    }
   }
   // cleanup trash if it passed 30 days since last cleanup or creation date (if no cleanup was done)
   async function handleCleanUpTrash() {
@@ -287,3 +336,4 @@ function formatItemName(type, singular) {
     ? 'Sticky notes'
     : type[0].toUpperCase() + type.slice(1, type.length - (singular ? 1 : 0));
 }
+export default TrashProvider;

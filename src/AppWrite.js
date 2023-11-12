@@ -1,4 +1,4 @@
-import { Client, Databases, Account } from 'appwrite';
+import { Client, Databases, Account, Avatars, Permission, Role } from 'appwrite';
 
 export const appWriteConfig = {
   endpoint: import.meta.env.VITE_ENDPOINT,
@@ -16,3 +16,13 @@ client.setEndpoint(appWriteConfig.endpoint).setProject(appWriteConfig.projectId)
 
 export const account = new Account(client);
 export const databases = new Databases(client);
+export const avatars = new Avatars(client);
+
+export function setPermissions(userId) {
+  return [
+    Permission.read(Role.user(userId)),
+    Permission.update(Role.user(userId)),
+    Permission.delete(Role.user(userId)),
+  ];
+}
+

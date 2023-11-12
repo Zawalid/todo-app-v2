@@ -5,7 +5,7 @@ import { useStickyNotes } from '../hooks/useStickyNotes';
 
 export const SearchContext = createContext();
 
-export const SearchProvider = ({ children }) => {
+ const SearchProvider = ({ children }) => {
   const [currentSearchTab, setCurrentSearchTab] = useState('all');
   const { tasks, todayTasks, upcomingTasks } = useTasks();
   const { stickyNotes } = useStickyNotes();
@@ -43,3 +43,4 @@ export const SearchProvider = ({ children }) => {
     </SearchContext.Provider>
   );
 };
+export default SearchProvider

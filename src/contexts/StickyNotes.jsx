@@ -1,18 +1,19 @@
 import { createContext, useEffect, useState } from 'react';
-import { databases, appWriteConfig } from '../AppWrite';
+import { databases, appWriteConfig, setPermissions } from '../AppWrite';
 import { ID } from 'appwrite';
 import { remove$Properties } from '../utils/remove$Properties';
 import { useDelete } from '../hooks/useDelete';
 import { useGetAllElements } from '../hooks/useGetAllElements';
 import { toast } from 'sonner';
 import { useTrash } from '../hooks/useTrash';
+import { useUserAuth } from '../hooks/useUserAuth';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 const STICKY_NOTES_COLLECTION_ID = appWriteConfig.stickyNotesCollectionId;
 
 export const StickyNotesContext = createContext();
 
-export function StickyNotesProvider({ children }) {
+ function StickyNotesProvider({ children }) {
   const [stickyNotes, setStickyNotes] = useState([
     // {
     //   id: Math.random(),
@@ -42,6 +43,7 @@ export function StickyNotesProvider({ children }) {
   const { handleDeleteElement } = useDelete();
   const { handleGetAllElements } = useGetAllElements();
   const {handleRestoreFromTrash } = useTrash();
+  const {user} = useUserAuth()
 
   async function handleAddStickyNote(note) {
     const toastId = toast.loading('Adding sticky note...')
@@ -50,12 +52,23 @@ export function StickyNotesProvider({ children }) {
         DATABASE_ID,
         STICKY_NOTES_COLLECTION_ID,
         ID.unique(),
-        note,
+        {
+          ...note,
+          owner : user.accountID,
+        },
+        setPermissions(user?.$id),
       );
       toast.success('Sticky note has been successfully added.',{id : toastId});
       setStickyNotes((notes) => [...notes, response]);
     } catch (err) {
-      toast.error('Failed to add the sticky note. Please try again.',{id : toastId});
+      toast.error('Failed to add the sticky note.',{id : toastId,
+      action: {
+        label: 'Try again',
+        onClick: async () => {
+          await handleAddStickyNote(note);
+        },
+      },
+      });
     }
   }
   async function handleUpdateStickyNote(id, note) {
@@ -66,7 +79,14 @@ export function StickyNotesProvider({ children }) {
       await databases.updateDocument(DATABASE_ID, STICKY_NOTES_COLLECTION_ID, id, updatedNote);
       toast.success('Sticky note has been successfully updated.',{id : toastId});
     } catch (err) {
-      toast.error('Failed to update the sticky note. Please try again.',{id : toastId});
+      toast.error('Failed to update the sticky note.',{id : toastId,
+      action: {
+        label: 'Try again',
+        onClick: async () => {
+          await handleUpdateStickyNote(id, note);
+        },
+      },
+      });
     } finally {
       await handleGetAllElements(STICKY_NOTES_COLLECTION_ID, setStickyNotes);
     }
@@ -95,7 +115,14 @@ export function StickyNotesProvider({ children }) {
         },
       });
     } catch (err) {
-      toast.error('Failed to delete the sticky note. Please try again.',{id : toastId});
+      toast.error('Failed to delete the sticky note.',{id : toastId,
+      action: {
+        label: 'Try again',
+        onClick: async () => {
+          await handleDeleteStickyNote(id, deletePermanently);
+        },
+      },
+      });
     }
   }
 
@@ -123,3 +150,4 @@ export function StickyNotesProvider({ children }) {
     </StickyNotesContext.Provider>
   );
 }
+export default StickyNotesProvider

@@ -93,11 +93,17 @@ export function DisplayedTasks({ onAdd, condition, activeTab }) {
   }, [sort, direction]);
 
   // MultipleDeletionsModal and selectedTasks
+
+  useEffect(() => {
+    setIsSelecting(false);
+  }, [activeTab]);
+
   useEffect(() => {
     selectedTasks.length > 0 && isSelecting
       ? setIsDeleteMultipleModalOpen(true)
       : setIsDeleteMultipleModalOpen(false);
   }, [selectedTasks, isSelecting]);
+
   useEffect(() => {
     !isDeleteMultipleModalOpen && setSelectedTasks([]);
   }, [isDeleteMultipleModalOpen, setSelectedTasks]);
