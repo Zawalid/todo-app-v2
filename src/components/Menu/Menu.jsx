@@ -6,12 +6,10 @@ import { Search } from './Search';
 import { NavLink } from 'react-router-dom';
 import { useTrash } from '../../hooks/useTrash';
 import { useUserAuth } from '../../hooks/useUserAuth';
-import { ConfirmationModal } from '../Common/ConfirmationModal';
 
 export function Menu() {
   const [isOpen, setIsOpen] = useState(false);
   const menu = useRef(null);
-  const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
   const { trashLength } = useTrash();
   const { handleSignOut } = useUserAuth();
 
@@ -56,8 +54,8 @@ export function Menu() {
             </NavLink>
 
             <button
-              className='mt-3 flex items-center gap-3 px-3'
-              onClick={() => setIsSignOutModalOpen(true)}
+              className='mt-2 flex items-center gap-3 px-3'
+              onClick={handleSignOut}
             >
               <i className='fa-solid fa-sign-out text-text-error'></i>
               <span className='text-sm  text-text-error font-medium'>
@@ -65,13 +63,6 @@ export function Menu() {
               </span>
             </button>
           </div>
-          {isSignOutModalOpen && <ConfirmationModal
-            sentence='Are you sure you want to sign out?'
-            element='Sign Out'
-            confirmText='Sign Out'
-            onConfirm={handleSignOut}
-            onCancel={() => setIsSignOutModalOpen(false)}
-          />}
         </>
       )}
     </aside>
