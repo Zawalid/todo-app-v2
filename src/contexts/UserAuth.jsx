@@ -10,7 +10,7 @@ export const UserAuthContext = createContext();
 
 function UserAuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   async function handleCreateUserAccount(user) {
@@ -64,7 +64,6 @@ function UserAuthProvider({ children }) {
       setIsLoading(true);
       const session = await account.createEmailSession(email, password);
       if (!session) throw new Error('Something went wrong');
-      setIsAuthenticated(true);
     } catch (err) {
       toast.error(getErrorMessage(err));
     } finally {
@@ -75,7 +74,6 @@ function UserAuthProvider({ children }) {
   async function handleSignOut() {
     try {
       await account.deleteSession('current');
-      setIsAuthenticated(false);
       setUser(null);
     } catch (error) {
       toast.error('Something went wrong. Please try again.');
@@ -90,12 +88,15 @@ function UserAuthProvider({ children }) {
       ]);
       const user = currentUser.documents[0];
       setUser(user);
-      setIsAuthenticated(true);
       return user;
     } catch (error) {
-      setIsAuthenticated(false);
       setUser(null);
     }
+  }
+
+  function checkIsUserAuthenticated() {
+    const cookieFallback = localStorage.getItem('cookieFallback');
+    return cookieFallback && cookieFallback !== '[]';
   }
 
   useEffect(() => {
@@ -106,8 +107,8 @@ function UserAuthProvider({ children }) {
     <UserAuthContext.Provider
       value={{
         user,
-        isAuthenticated,
         isLoading,
+        checkIsUserAuthenticated,
         handleSignUp,
         handleSignIn,
         handleSignOut,

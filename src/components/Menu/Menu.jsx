@@ -8,7 +8,7 @@ import { useTrash } from '../../hooks/useTrash';
 import { useUserAuth } from '../../hooks/useUserAuth';
 
 export function Menu() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const menu = useRef(null);
   const { trashLength } = useTrash();
   const { handleSignOut } = useUserAuth();

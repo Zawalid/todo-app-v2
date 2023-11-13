@@ -2,9 +2,10 @@ import { useEffect, useRef, useState } from 'react';
 import { Tag } from './Tag';
 import { AddNewTag } from './AddNewTag';
 import { useTags } from '../../../hooks/useTags';
+import { SpinnerLoader } from '../../Common/SpinnerLoader';
 
 export function MenuTags() {
-  const {tags} = useTags()
+  const { tags, isTagsLoading } = useTags();
   const [isAddNewTagOpen, setIsAddNewTagOpen] = useState(false);
   const addNewTagContainer = useRef(null);
   const addNewTagToggler = useRef(null);
@@ -27,21 +28,25 @@ export function MenuTags() {
   }, []);
 
   return (
-    <div className='pb-5'>
+    <div className='relative pb-5'>
       <h4 className='mb-4 mt-5 font-medium text-text-secondary'>Tags</h4>
-      <ul className='flex flex-wrap gap-2'>
-        {tags.map((tag) => (
-          <Tag key={tag.$id} tag={tag} showDeleteButton={true} />
-        ))}
-        <li
-          className='menu_tag_element cursor-pointer bg-background-tertiary text-text-secondary'
-          onClick={() => setIsAddNewTagOpen(!isAddNewTagOpen)}
-          ref={addNewTagToggler}
-        >
-          + Add Tag
-        </li>
-        {isAddNewTagOpen && <AddNewTag reference={addNewTagContainer} isOpen={isAddNewTagOpen} />}
-      </ul>
+      {isTagsLoading ? (
+        <SpinnerLoader size='small' />
+      ) : (
+        <ul className='flex flex-wrap gap-2'>
+          {tags.map((tag) => (
+            <Tag key={tag.$id} tag={tag} showDeleteButton={true} />
+          ))}
+          <li
+            className='menu_tag_element cursor-pointer bg-background-tertiary text-text-secondary'
+            onClick={() => setIsAddNewTagOpen(!isAddNewTagOpen)}
+            ref={addNewTagToggler}
+          >
+            + Add Tag
+          </li>
+          {isAddNewTagOpen && <AddNewTag reference={addNewTagContainer} isOpen={isAddNewTagOpen} />}
+        </ul>
+      )}
     </div>
   );
 }

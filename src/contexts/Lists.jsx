@@ -62,6 +62,7 @@ export const ListsContext = createContext();
 
 function ListsProvider({ children }) {
   const [lists, setLists] = useState([]);
+  const [isListsLoading, setIsListsLoading] = useState(true);
   const { handleDeleteElement } = useDelete();
   const { handleGetAllElements } = useGetAllElements();
   const { handleRestoreFromTrash } = useTrash();
@@ -159,15 +160,20 @@ function ListsProvider({ children }) {
     }
   }
 
+  async function init() {
+    await handleGetAllElements(LISTS_COLLECTION_ID, setLists);
+    setIsListsLoading(false);
+  }
+
   useEffect(() => {
-    handleGetAllElements(LISTS_COLLECTION_ID, setLists);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    init();
   }, []);
 
   return (
     <ListsContext.Provider
       value={{
         lists,
+        isListsLoading,
         handleAddList,
         handleUpdateList,
         handleDeleteList,

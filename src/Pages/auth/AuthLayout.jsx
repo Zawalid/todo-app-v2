@@ -2,8 +2,8 @@ import { Outlet, Navigate } from 'react-router-dom';
 import { useUserAuth } from '../../hooks/useUserAuth';
 
 function AuthLayout() {
-  const { isAuthenticated } = useUserAuth();
+  const { checkIsUserAuthenticated } = useUserAuth();
 
-  return <>{isAuthenticated ? <Navigate to='/app' /> : <Outlet />}</>;
+  return <>{checkIsUserAuthenticated() ? <Navigate to='/app' /> : <Outlet />}</>;
 }
 export default AuthLayout;

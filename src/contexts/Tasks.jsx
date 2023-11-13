@@ -150,6 +150,7 @@ export const TasksContext = createContext();
 
 function TasksProvider({ children }) {
   const [tasks, setTasks] = useState([]);
+  const [isTasksLoading, setIsTasksLoading] = useState(true);
   const [currentTask, setCurrentTask] = useState(null);
   const [isTaskOpen, setIsTaskOpen] = useState(false);
   const [isAddingTask, setIsAddingTask] = useState(false);
@@ -345,15 +346,19 @@ function TasksProvider({ children }) {
     await handleGetAllElements(TASKS_COLLECTION_ID, setTasks);
   }
 
+  async function init() {
+    await handleGetAllElements(TASKS_COLLECTION_ID, setTasks);
+    setIsTasksLoading(false);
+  }
   useEffect(() => {
-    handleGetAllElements(TASKS_COLLECTION_ID, setTasks);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    init();
   }, []);
 
   return (
     <TasksContext.Provider
       value={{
         tasks,
+        isTasksLoading,
         currentTask,
         todayTasks,
         tomorrowTasks,

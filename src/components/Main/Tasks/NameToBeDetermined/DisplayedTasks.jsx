@@ -105,8 +105,9 @@ export function DisplayedTasks({ onAdd, condition, activeTab }) {
   }, [selectedTasks, isSelecting]);
 
   useEffect(() => {
-    !isDeleteMultipleModalOpen && setSelectedTasks([]);
-  }, [isDeleteMultipleModalOpen, setSelectedTasks]);
+    !isDeleteMultipleModalOpen && selectedTasks.length !== 0 && setSelectedTasks([]);
+  }, [isDeleteMultipleModalOpen, selectedTasks, setSelectedTasks]);
+
 
   return (
     <div className='relative flex h-full flex-col overflow-auto'>
@@ -166,7 +167,12 @@ export function DisplayedTasks({ onAdd, condition, activeTab }) {
               <h2 className='text-center text-2xl font-semibold text-text-secondary'>
                 You don&apos;t have any{' '}
                 {filter?.includes('Priority') ? filter?.replace('Priority', ' priority') : filter}{' '}
-                tasks in this list
+                tasks{' '}
+                {activeTab === 'today'
+                  ? 'scheduled for today'
+                  : !activeTab
+                  ? 'yet'
+                  : 'in this list'}
               </h2>
             </div>
           )}

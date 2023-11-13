@@ -30,6 +30,20 @@ export default {
         'custom-17': '#c8ff2d',
         'custom-18': '#605050',
       },
+      keyframes: {
+        scaleUp: {
+          '0%': { transform: 'translate(-50%, -50%) scale(0)' },
+          '60% , 100%': { transform: 'translate(-50%, -50%)  scale(1)' },
+        },
+        pulse2: {
+          '0% , 60% , 100%': { transform: '  scale(1) ' },
+          '80% ': { transform: '  scale(1.2)' },
+        },
+      },
+      animation: {
+        scaleUp: 'scaleUp 1s linear infinite',
+        pulse2: 'pulse2 1s linear infinite',
+      },
     },
   },
   plugins: [],

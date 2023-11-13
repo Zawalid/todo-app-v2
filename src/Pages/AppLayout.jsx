@@ -7,10 +7,10 @@ import { useUserAuth } from '../hooks/useUserAuth';
 import { Navigate } from 'react-router-dom';
 
 function AppLayout() {
-  const { isAuthenticated } = useUserAuth();
+  const { checkIsUserAuthenticated } = useUserAuth();
   return (
     <>
-      {isAuthenticated ? (
+      {checkIsUserAuthenticated() ? (
         <div className='flex h-full gap-2  bg-background-primary p-5'>
           <SearchProvider>
             <Menu />

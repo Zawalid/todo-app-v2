@@ -12,7 +12,7 @@ const TAGS_COLLECTION_ID = appWriteConfig.tagsCollectionId;
 
 export const TagsContext = createContext();
 
- function TagsProvider({ children }) {
+function TagsProvider({ children }) {
   const [tags, setTags] = useState([
     // {
     //   $id: Math.random(),
@@ -22,10 +22,11 @@ export const TagsContext = createContext();
     //   index: 0,
     // },
   ]);
+  const [isTagsLoading, setIsTagsLoading] = useState(true);
   const { handleDeleteElement } = useDelete();
   const { handleGetAllElements } = useGetAllElements();
   const { handleRestoreFromTrash } = useTrash();
-  const {user} = useUserAuth();
+  const { user } = useUserAuth();
 
   async function handleAddTag(title, bgColor, textColor) {
     const toastId = toast.loading('Adding tag...');
@@ -38,14 +39,15 @@ export const TagsContext = createContext();
           title,
           bgColor,
           textColor,
-          owner : user?.$id,
+          owner: user?.$id,
         },
         setPermissions(user?.$id),
       );
       toast.success('Tag has been successfully added.', { id: toastId });
       setTags((notes) => [...notes, response]);
     } catch (err) {
-      toast.error('Failed to add the tag.', { id: toastId,
+      toast.error('Failed to add the tag.', {
+        id: toastId,
         action: {
           label: 'Try Again',
           onClick: () => {
@@ -72,7 +74,8 @@ export const TagsContext = createContext();
             },
       });
     } catch (err) {
-      toast.error('Failed to delete the tag.', { id: toastId , 
+      toast.error('Failed to delete the tag.', {
+        id: toastId,
         action: {
           label: 'Try Again',
           onClick: () => {
@@ -83,14 +86,19 @@ export const TagsContext = createContext();
     }
   }
 
+  async function init() {
+    await handleGetAllElements(TAGS_COLLECTION_ID, setTags);
+    setIsTagsLoading(false);
+  }
   useEffect(() => {
-    handleGetAllElements(TAGS_COLLECTION_ID, setTags);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    init();
   }, []);
+
   return (
     <TagsContext.Provider
       value={{
         tags,
+        isTagsLoading,
         handleAddTag,
         handleDeleteTag,
         setTags,
@@ -100,4 +108,4 @@ export const TagsContext = createContext();
     </TagsContext.Provider>
   );
 }
-export default TagsProvider
+export default TagsProvider;
