@@ -92,6 +92,7 @@ export function DisplayedTasks({ onAdd, condition, activeTab }) {
     });
   }, [sort, direction]);
 
+
   // MultipleDeletionsModal and selectedTasks
 
   useEffect(() => {
