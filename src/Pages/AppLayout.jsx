@@ -10,12 +10,14 @@ import { useEffect } from 'react';
 
 function AppLayout() {
   const { checkIsUserAuthenticated } = useUserAuth();
-  const { handleFetchAllElements } = useFetchAllElements();
+  const { handleFetchAllElements, handleClearAllElements } = useFetchAllElements();
 
   useEffect(() => {
     if (checkIsUserAuthenticated()) {
       handleFetchAllElements();
     }
+    return () => !checkIsUserAuthenticated() && handleClearAllElements();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

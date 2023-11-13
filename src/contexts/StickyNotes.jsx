@@ -14,7 +14,7 @@ const STICKY_NOTES_COLLECTION_ID = appWriteConfig.stickyNotesCollectionId;
 export const StickyNotesContext = createContext();
 
  function StickyNotesProvider({ children }) {
-  const [stickyNotes, setStickyNotes] = useState(null);
+  const [stickyNotes, setStickyNotes] = useState([]);
   const [currentNote, setCurrentNote] = useState(null);
   const [isStickyNoteOpened, setIsStickyNoteOpened] = useState(false);
   const [isStickyNoteEditorOpen, setIsStickyNoteEditorOpen] = useState(false);

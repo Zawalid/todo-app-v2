@@ -18,7 +18,6 @@ export function useFetchAllElements() {
   const { handleLoadElements } = useLoadElements();
   const { getCurrentUser } = useUserAuth();
 
-
   const elements = [
     {
       collectionId: tasksCollectionId,
@@ -43,9 +42,32 @@ export function useFetchAllElements() {
 
   async function handleFetchAllElements() {
     const user = await getCurrentUser();
-    elements.forEach(async (element) => {
-      await handleLoadElements(user,element.collectionId, element.setElements, element.setIsLoading);
+    try {
+      elements.forEach(async (element) => {
+        await handleLoadElements(
+          user,
+          element.collectionId,
+          element.setElements,
+          element.setIsLoading,
+        );
+      });
+    } catch (error) {
+      console.log(error);
+      if (error.message === 'Server Error') {
+        toast.error(' Server Error, Please try again later', {
+          icon: <i className='fa-solid fa-server text-lg'></i>,
+        });
+      } else {
+        toast.error('Something went wrong, Please try again later');
+      }
+    }
+  }
+
+  function handleClearAllElements() {
+    elements.forEach((element) => {
+      element.setElements([]);
+      element.setIsLoading && element.setIsLoading(true);
     });
   }
-  return { handleFetchAllElements };
+  return { handleFetchAllElements, handleClearAllElements };
 }

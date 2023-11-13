@@ -1,6 +1,5 @@
 import { Query } from 'appwrite';
 import { databases, appWriteConfig } from '../AppWrite';
-import { toast } from 'sonner';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 
@@ -15,11 +14,7 @@ export function useLoadElements() {
       setElements(response.documents);
       setIsLoading && setIsLoading(false);
     } catch (error) {
-      if (error.message === 'Server Error') {
-        toast.error(' Server Error, Please try again later', {
-          icon: <i className='fa-solid fa-server text-lg'></i>,
-        });
-      }
+      throw new Error(error);
     }
   }
   return { handleLoadElements };
