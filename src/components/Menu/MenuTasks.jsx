@@ -17,7 +17,7 @@ export function MenuTasks() {
               All Tasks
             </span>
             <div className='count grid place-content-center rounded-sm bg-background-tertiary py-[1px] transition-colors  duration-300 group-hover:bg-background-primary'>
-              <span className='text-xs font-semibold text-text-secondary'>{tasks.length}</span>
+              <span className='text-xs font-semibold text-text-secondary'>{tasks?.length}</span>
             </div>
           </Link>
         </li>
@@ -29,7 +29,7 @@ export function MenuTasks() {
             </span>
             <div className='count grid place-content-center rounded-sm bg-background-tertiary py-[1px] transition-colors  duration-300 group-hover:bg-background-primary'>
               <span className='text-xs font-semibold text-text-secondary'>
-                {upcomingTasks.length}
+                {upcomingTasks?.length}
               </span>
             </div>
           </NavLink>
@@ -41,7 +41,7 @@ export function MenuTasks() {
               Today
             </span>
             <div className='count grid place-content-center rounded-sm bg-background-tertiary py-[1px] transition-colors  duration-300 group-hover:bg-background-primary'>
-              <span className='text-xs font-semibold text-text-secondary'>{todayTasks.length}</span>
+              <span className='text-xs font-semibold text-text-secondary'>{todayTasks?.length}</span>
             </div>
           </NavLink>
         </li>
@@ -53,7 +53,7 @@ export function MenuTasks() {
             </span>
             <div className='count grid place-content-center rounded-sm bg-background-tertiary py-[1px] transition-colors  duration-300 group-hover:bg-background-primary'>
               <span className='text-xs font-semibold text-text-secondary'>
-                {stickyNotes.length}
+                {stickyNotes?.length}
               </span>
             </div>
           </NavLink>

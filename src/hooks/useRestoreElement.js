@@ -3,7 +3,7 @@ import { useTasks } from './useTasks';
 import { useTags } from './useTags';
 import { useLists } from './useLists';
 import { useStickyNotes } from './useStickyNotes';
-import { useGetAllElements } from './useGetAllElements';
+import { useLoadElements } from './useLoadElements';
 
 const { tasksCollectionId, listsCollectionId, tagsCollectionId, stickyNotesCollectionId } =
   appWriteConfig;
@@ -20,16 +20,16 @@ export function useRestoreElement() {
   const { setTags } = useTags();
   const { setLists } = useLists();
   const { setStickyNotes } = useStickyNotes();
-  const { handleGetAllElements } = useGetAllElements();
+  const { handleLoadElements } = useLoadElements();
   const setters = {
-      tasks: setTasks,
-      tags: setTags,
-      lists: setLists,
-      stickyNotes: setStickyNotes,
-    };
+    tasks: setTasks,
+    tags: setTags,
+    lists: setLists,
+    stickyNotes: setStickyNotes,
+  };
 
   async function handleRestoreElement(type) {
-    await handleGetAllElements(collectionsIds[type], setters[type]);
+    await handleLoadElements(user,collectionsIds[type], setters[type]);
   }
   return { handleRestoreElement };
 }

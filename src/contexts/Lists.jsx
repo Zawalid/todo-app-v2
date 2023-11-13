@@ -1,9 +1,9 @@
-import { createContext, useEffect, useState } from 'react';
+import { createContext, useState } from 'react';
 import { databases, appWriteConfig, setPermissions } from '../AppWrite';
 import { ID } from 'appwrite';
 import { remove$Properties } from '../utils/remove$Properties';
 import { useDelete } from '../hooks/useDelete';
-import { useGetAllElements } from '../hooks/useGetAllElements';
+import { useLoadElements } from '../hooks/useLoadElements';
 import { toast } from 'sonner';
 import { useTrash } from '../hooks/useTrash';
 import { useUserAuth } from '../hooks/useUserAuth';
@@ -64,7 +64,7 @@ function ListsProvider({ children }) {
   const [lists, setLists] = useState([]);
   const [isListsLoading, setIsListsLoading] = useState(true);
   const { handleDeleteElement } = useDelete();
-  const { handleGetAllElements } = useGetAllElements();
+  const { handleLoadElements } = useLoadElements();
   const { handleRestoreFromTrash } = useTrash();
   const { user } = useUserAuth();
 
@@ -111,7 +111,7 @@ function ListsProvider({ children }) {
     remove$Properties(updatedList);
 
     await databases.updateDocument(DATABASE_ID, LISTS_COLLECTION_ID, id, updatedList);
-    await handleGetAllElements(LISTS_COLLECTION_ID, setLists);
+    await handleLoadElements(user,LISTS_COLLECTION_ID, setLists);
   }
   async function handleRenameList(id, title) {
     handleUpdateList(id, 'title', title);
@@ -143,7 +143,7 @@ function ListsProvider({ children }) {
               label: 'Undo',
               onClick: async () => {
                 await handleRestoreFromTrash('lists', id, true);
-                await handleGetAllElements(LISTS_COLLECTION_ID, setLists);
+                await handleLoadElements(user,LISTS_COLLECTION_ID, setLists);
               },
             },
       });
@@ -160,20 +160,14 @@ function ListsProvider({ children }) {
     }
   }
 
-  async function init() {
-    await handleGetAllElements(LISTS_COLLECTION_ID, setLists);
-    setIsListsLoading(false);
-  }
 
-  useEffect(() => {
-    init();
-  }, []);
 
   return (
     <ListsContext.Provider
       value={{
         lists,
         isListsLoading,
+        setIsListsLoading,
         handleAddList,
         handleUpdateList,
         handleDeleteList,

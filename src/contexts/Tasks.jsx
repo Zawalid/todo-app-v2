@@ -1,11 +1,11 @@
-import { createContext, useEffect, useRef, useState } from 'react';
+import { createContext, useRef, useState } from 'react';
 import { databases, appWriteConfig, setPermissions } from '../AppWrite';
 import { ID } from 'appwrite';
 import { checkIfToday, checkIfTomorrow, isDateInCurrentWeek } from '../utils/Moment';
 import { remove$Properties } from '../utils/remove$Properties';
 import { useLists } from '../hooks/useLists';
 import { useDelete } from '../hooks/useDelete';
-import { useGetAllElements } from '../hooks/useGetAllElements';
+import { useLoadElements } from '../hooks/useLoadElements';
 import { toast } from 'sonner';
 import { useTrash } from '../hooks/useTrash';
 import { useUserAuth } from '../hooks/useUserAuth';
@@ -158,7 +158,7 @@ function TasksProvider({ children }) {
   const addNewTaskReference = useRef(null);
   const { lists, handleAddTaskToList, handleUpdateList } = useLists();
   const { handleDeleteElement } = useDelete();
-  const { handleGetAllElements } = useGetAllElements();
+  const { handleLoadElements } = useLoadElements();
   const { handleRestoreFromTrash } = useTrash();
   const { user } = useUserAuth();
 
@@ -225,7 +225,7 @@ function TasksProvider({ children }) {
         },
       });
     } finally {
-      await handleGetAllElements(TASKS_COLLECTION_ID, setTasks);
+      await handleLoadElements(user,TASKS_COLLECTION_ID, setTasks);
     }
   }
   async function handleCompleteTask(id, task, isCompleted) {
@@ -343,16 +343,8 @@ function TasksProvider({ children }) {
   }
   async function undoDelete(fn) {
     await fn();
-    await handleGetAllElements(TASKS_COLLECTION_ID, setTasks);
+    await handleLoadElements(user,TASKS_COLLECTION_ID, setTasks);
   }
-
-  async function init() {
-    await handleGetAllElements(TASKS_COLLECTION_ID, setTasks);
-    setIsTasksLoading(false);
-  }
-  useEffect(() => {
-    init();
-  }, []);
 
   return (
     <TasksContext.Provider
@@ -368,6 +360,7 @@ function TasksProvider({ children }) {
         isTaskOpen,
         isAddingTask,
         addNewTaskReference,
+        setIsTasksLoading,
         handleAddTask,
         handleUpdateTask,
         handleDeleteTask,

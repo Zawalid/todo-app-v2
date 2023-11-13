@@ -1,9 +1,9 @@
-import { createContext, useEffect, useState } from 'react';
+import { createContext, useState } from 'react';
 import { databases, appWriteConfig, setPermissions } from '../AppWrite';
 import { ID } from 'appwrite';
 import { remove$Properties } from '../utils/remove$Properties';
 import { useDelete } from '../hooks/useDelete';
-import { useGetAllElements } from '../hooks/useGetAllElements';
+import { useLoadElements } from '../hooks/useLoadElements';
 import { toast } from 'sonner';
 import { useTrash } from '../hooks/useTrash';
 import { useUserAuth } from '../hooks/useUserAuth';
@@ -14,34 +14,12 @@ const STICKY_NOTES_COLLECTION_ID = appWriteConfig.stickyNotesCollectionId;
 export const StickyNotesContext = createContext();
 
  function StickyNotesProvider({ children }) {
-  const [stickyNotes, setStickyNotes] = useState([
-    // {
-    //   id: Math.random(),
-    //   title: 'Social Media',
-    //   content: '- Plan social content - Build content calendar - Plan promotion and distribution',
-    //   description: 'Social Media',
-    //   bgColor: '#fdf2b3',
-    //   textColor: '#444',
-    //   creationDate: new Date().toLocaleDateString(),
-    //   index: 0,
-    // },
-    // {
-    //   id: Math.random(),
-    //   title: 'Content Strategy',
-    //   content:
-    //     'Would need time to get insights (goals, personals, budget, audits), but after, it would be good to focus on assembling my team (start with SEO specialist, then perhaps an email marketer?). Also need to brainstorm on tooling.',
-    //   description: 'Content Strategy',
-    //   bgColor: '#d1eaed',
-    //   textColor: '#444',
-    //   creationDate: new Date().toLocaleDateString(),
-    //   index: 1,
-    // },
-  ]);
+  const [stickyNotes, setStickyNotes] = useState(null);
   const [currentNote, setCurrentNote] = useState(null);
   const [isStickyNoteOpened, setIsStickyNoteOpened] = useState(false);
   const [isStickyNoteEditorOpen, setIsStickyNoteEditorOpen] = useState(false);
   const { handleDeleteElement } = useDelete();
-  const { handleGetAllElements } = useGetAllElements();
+  const { handleLoadElements } = useLoadElements();
   const {handleRestoreFromTrash } = useTrash();
   const {user} = useUserAuth()
 
@@ -88,7 +66,7 @@ export const StickyNotesContext = createContext();
       },
       });
     } finally {
-      await handleGetAllElements(STICKY_NOTES_COLLECTION_ID, setStickyNotes);
+      await handleLoadElements(user,STICKY_NOTES_COLLECTION_ID, setStickyNotes);
     }
   }
   async function handleDeleteStickyNote(id, deletePermanently) {
@@ -110,7 +88,7 @@ export const StickyNotesContext = createContext();
           label: 'Undo',
           onClick: async () => {
             await handleRestoreFromTrash('stickyNotes', id, true);
-            await handleGetAllElements(STICKY_NOTES_COLLECTION_ID, setStickyNotes);
+            await handleLoadElements(user,STICKY_NOTES_COLLECTION_ID, setStickyNotes);
           },
         },
       });
@@ -126,10 +104,7 @@ export const StickyNotesContext = createContext();
     }
   }
 
-  useEffect(() => {
-    handleGetAllElements(STICKY_NOTES_COLLECTION_ID, setStickyNotes);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+
   return (
     <StickyNotesContext.Provider
       value={{

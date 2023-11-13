@@ -5,9 +5,19 @@ import '../styles/App.css';
 import { SearchProvider } from '../contexts';
 import { useUserAuth } from '../hooks/useUserAuth';
 import { Navigate } from 'react-router-dom';
+import { useFetchAllElements } from '../hooks/useFetchAllElements';
+import { useEffect } from 'react';
 
 function AppLayout() {
   const { checkIsUserAuthenticated } = useUserAuth();
+  const { handleFetchAllElements } = useFetchAllElements();
+
+  useEffect(() => {
+    if (checkIsUserAuthenticated()) {
+      handleFetchAllElements();
+    }
+  }, []);
+
   return (
     <>
       {checkIsUserAuthenticated() ? (

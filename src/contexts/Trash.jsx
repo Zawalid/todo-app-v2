@@ -103,12 +103,12 @@ function TrashProvider({ children }) {
         .reduce((acc, cur) => acc + cur, 0),
     [trash],
   );
-  const { user } = useUserAuth();
+  const { getCurrentUser } = useUserAuth();
 
   // --- Creation ---
   async function createTrash() {
     try {
-      // const user = await getCurrentUser();
+      const user = await getCurrentUser();
       const response = await databases.createDocument(
         DATABASE_ID,
         TRASH_COLLECTION_ID,
@@ -254,8 +254,8 @@ function TrashProvider({ children }) {
   // get trash from database
   async function handleGetTrash() {
     try {
-      // const user = await getCurrentUser();
-      if(!user) return;
+      const user = await getCurrentUser();
+      if (!user) return;
       const response = await databases.listDocuments(DATABASE_ID, TRASH_COLLECTION_ID, [
         Query.equal('owner', [user?.$id]),
       ]);

@@ -1,8 +1,8 @@
-import { createContext, useEffect, useState } from 'react';
+import { createContext, useState } from 'react';
 import { databases, appWriteConfig, setPermissions } from '../AppWrite';
 import { ID } from 'appwrite';
 import { useDelete } from '../hooks/useDelete';
-import { useGetAllElements } from '../hooks/useGetAllElements';
+import { useLoadElements } from '../hooks/useLoadElements';
 import { toast } from 'sonner';
 import { useTrash } from '../hooks/useTrash';
 import { useUserAuth } from '../hooks/useUserAuth';
@@ -24,7 +24,7 @@ function TagsProvider({ children }) {
   ]);
   const [isTagsLoading, setIsTagsLoading] = useState(true);
   const { handleDeleteElement } = useDelete();
-  const { handleGetAllElements } = useGetAllElements();
+  const { handleLoadElements } = useLoadElements();
   const { handleRestoreFromTrash } = useTrash();
   const { user } = useUserAuth();
 
@@ -69,7 +69,7 @@ function TagsProvider({ children }) {
               label: 'Undo',
               onClick: async () => {
                 await handleRestoreFromTrash('tags', id, true);
-                await handleGetAllElements(TAGS_COLLECTION_ID, setTags);
+                await handleLoadElements(user,TAGS_COLLECTION_ID, setTags);
               },
             },
       });
@@ -86,19 +86,14 @@ function TagsProvider({ children }) {
     }
   }
 
-  async function init() {
-    await handleGetAllElements(TAGS_COLLECTION_ID, setTags);
-    setIsTagsLoading(false);
-  }
-  useEffect(() => {
-    init();
-  }, []);
+
 
   return (
     <TagsContext.Provider
       value={{
         tags,
         isTagsLoading,
+        setIsTagsLoading,
         handleAddTag,
         handleDeleteTag,
         setTags,
