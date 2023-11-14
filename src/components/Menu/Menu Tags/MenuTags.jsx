@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Tag } from './Tag';
 import { AddNewTag } from './AddNewTag';
 import { useTags } from '../../../hooks/useTags';
-import { SpinnerLoader } from '../../Common/SpinnerLoader';
+import { TagsSkeleton } from '../../Skeletons';
 
 export function MenuTags() {
   const { tags, isTagsLoading } = useTags();
@@ -31,7 +31,7 @@ export function MenuTags() {
     <div className='relative pb-5'>
       <h4 className='mb-4 mt-5 font-medium text-text-secondary'>Tags</h4>
       {isTagsLoading ? (
-        <SpinnerLoader size='small' />
+        <TagsSkeleton />
       ) : (
         <ul className='flex flex-wrap gap-2'>
           {tags.map((tag) => (

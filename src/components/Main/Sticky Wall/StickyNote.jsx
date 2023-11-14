@@ -1,12 +1,8 @@
-export function StickyNote({
-  stickyNote,
-  adder,
-  onClick,
-}) {
+export function StickyNote({ stickyNote, adder, onClick }) {
   return (
     <div
       className={
-        'group relative h-[270px] overflow-hidden rounded-lg p-5 shadow-[rgba(3_3_3_0.08)_0px_6px_16px] ' +
+        ' relative h-[270px] overflow-hidden rounded-lg p-5 shadow-[rgba(3_3_3_0.08)_0px_6px_16px] ' +
         (adder || !stickyNote.description ? 'grid place-content-center' : '')
       }
       style={{
@@ -32,9 +28,9 @@ export function StickyNote({
           </p>
 
           <div className='absolute bottom-3 left-1/2 flex w-full -translate-x-1/2 items-center justify-between px-5 '>
-            <span className='text-sm font-semibold text-text-primary'>{
-              new Date(stickyNote.$createdAt).toLocaleDateString()
-            }</span>
+            <span className='text-sm font-semibold text-text-primary'>
+              {new Date(stickyNote.$createdAt).toLocaleDateString()}
+            </span>
             <button
               className=' grid h-7 w-7 place-content-center rounded-full bg-text-primary'
               onClick={onClick}
