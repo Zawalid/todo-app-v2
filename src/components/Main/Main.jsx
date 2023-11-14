@@ -10,8 +10,9 @@ import { useTasks } from '../../hooks/useTasks';
 import { useSearch } from '../../hooks/useSearch';
 import { useLists } from '../../hooks/useLists';
 import { useStickyNotes } from '../../hooks/useStickyNotes';
-import { Trash } from './Trash/Trash';
 import { useTrash } from '../../hooks/useTrash';
+import { Trash } from './Trash/Trash';
+import { TasksSkeleton, UpcomingSkeleton, StickyWallSkeleton, TrashSkeleton } from '../Skeletons';
 import { SpinnerLoader } from '../Common/SpinnerLoader';
 
 export function Main() {
@@ -72,10 +73,20 @@ export function Main() {
   };
 
   return (
-    <main className='flex flex-1 relative flex-col overflow-hidden rounded-xl bg-background-primary px-5 '>
+    <main className='relative flex flex-1 flex-col overflow-hidden rounded-xl bg-background-primary px-5 '>
       <Title title={title} count={count} />
       {isTasksLoading ? (
-        <SpinnerLoader size='big' />
+        activeTab === 'upcoming' ? (
+          <UpcomingSkeleton />
+        ) : activeTab === 'stickyWall' ? (
+          <StickyWallSkeleton />
+        ) : activeTab === 'trash' ? (
+          <TrashSkeleton />
+        ) : activeTab === 'search' ? (
+          <SpinnerLoader size='large' />
+        ) : (
+          <TasksSkeleton number={6} />
+        )
       ) : (
         <>
           {!['upcoming', 'stickyWall', 'search', 'trash'].includes(activeTab) ? (

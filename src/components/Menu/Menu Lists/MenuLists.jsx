@@ -2,10 +2,10 @@ import { useEffect, useRef, useState } from 'react';
 import { List } from './List';
 import { AddNewList } from './AddNewList';
 import { useLists } from '../../../hooks/useLists';
-import { SpinnerLoader } from '../../Common/SpinnerLoader';
+import { ListsSkeleton } from '../../Skeletons';
 
 export function MenuLists() {
-  const { lists,isListsLoading } = useLists();
+  const { lists, isListsLoading } = useLists();
   const [isAddNewListOpen, setIsAddNewListOpen] = useState(false);
   const addNewListContainer = useRef(null);
   const addNewListToggler = useRef(null);
@@ -28,10 +28,10 @@ export function MenuLists() {
   }, []);
 
   return (
-    <div className='border-y min-h-[120px] relative border-background-tertiary pb-5'>
+    <div className='relative min-h-[120px] border-y border-background-tertiary pb-5'>
       <h4 className='mb-4 mt-5  font-medium text-text-secondary'>Lists</h4>
       {isListsLoading ? (
-        <SpinnerLoader size='small' />
+        <ListsSkeleton />
       ) : (
         <>
           <ul className=' space-y-1 '>
