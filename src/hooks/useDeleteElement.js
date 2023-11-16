@@ -1,4 +1,4 @@
-import { appWriteConfig, databases } from '../AppWrite';
+import { appWriteConfig, databases } from '../lib/appwrite/config';
 import { useLoadElements } from './useLoadElements';
 import { useTrash } from './useTrash';
 import { useUserAuth } from './useUserAuth';

@@ -1,5 +1,5 @@
 import { Query } from 'appwrite';
-import { databases, appWriteConfig } from '../AppWrite';
+import { databases, appWriteConfig } from '../lib/appwrite/config';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 

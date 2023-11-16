@@ -1,4 +1,4 @@
-import { appWriteConfig } from '../AppWrite';
+import { appWriteConfig } from '../lib/appwrite/config';
 import { useTasks } from './useTasks';
 import { useTags } from './useTags';
 import { useLists } from './useLists';

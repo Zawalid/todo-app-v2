@@ -1,5 +1,5 @@
 import { createContext, useState } from 'react';
-import { databases, appWriteConfig, setPermissions } from '../AppWrite';
+import { databases, appWriteConfig, setPermissions } from '../lib/appwrite/config';
 import { ID } from 'appwrite';
 import { remove$Properties } from '../utils/remove$Properties';
 import { useDeleteElement } from '../hooks/useDeleteElement';

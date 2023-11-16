@@ -1,4 +1,9 @@
 import { Button } from './Button';
+import { SpinnerLoader } from '../Common/SpinnerLoader';
+import { getSessions, deleteSession, deleteSessions } from '../../lib/appwrite/accountApi';
+import { useEffect, useState } from 'react';
+import { useUserAuth } from '../../hooks';
+import { useNavigate } from 'react-router-dom';
 
 const BROWSERS_IMAGES = [
   {
@@ -32,6 +37,24 @@ const BROWSERS_IMAGES = [
 ];
 
 export function Sessions() {
+  const [sessions, setSessions] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    async function fetchSessions() {
+      const sessions = await getSessions();
+      setSessions(sessions);
+      setIsLoading(false);
+    }
+    fetchSessions();
+  }, []);
+
+  async function handleDeleteSession(sessionId) {
+    await deleteSession(sessionId);
+    setSessions((sessions) => sessions.filter((session) => session.$id !== sessionId));
+  }
+
   return (
     <>
       <div>
@@ -41,28 +64,78 @@ export function Sessions() {
         </p>
         <p className='text-sm text-text-tertiary'>Revoke any sessions that you do not recognize.</p>
       </div>
-      <h3 className='mt-12 font-bold text-text-secondary'>Devices</h3>
-      <div className='mt-3 space-y-5'>
-        <Session />
-        <Session />
-        <Session />
+      <h3 className='mt-12 font-bold text-text-secondary'>Devices ({sessions.length})</h3>
+      <div className='relative mt-3 h-[200px] space-y-5 overflow-auto pr-3'>
+        {isLoading ? (
+          <SpinnerLoader />
+        ) : sessions.length === 0 ? (
+          <div className=' grid h-full place-content-center'>
+            <p className='text-sm text-text-tertiary'>No active sessions</p>
+          </div>
+        ) : (
+          sessions.map((session) => (
+            <Session key={session.$id} session={session} onDelete={handleDeleteSession} />
+          ))
+        )}
       </div>
-      <Button text='Sign out all devices' disabled={false} />
+      <Button
+        text='Sign out all devices'
+        disabled={false}
+        onClick={async () => {
+          await deleteSessions();
+          navigate('/sign-in');
+        }}
+      />
     </>
   );
 }
-function Session() {
+function Session({ session, onDelete }) {
+  const {
+    clientName: browserName,
+    ip,
+    deviceName,
+    countryName,
+    $createdAt: signedInAt,
+    $id,
+    current,
+  } = session;
+
+  const { handleSignOut } = useUserAuth();
+
+  const browserImage = BROWSERS_IMAGES.find((browser) =>
+    browserName.toLowerCase().includes(browser.name.toLowerCase()),
+  );
+
   return (
     <div className='flex items-center justify-between gap-4 border-t pt-3'>
-      <div className='grid h-12 w-12 place-content-center rounded-lg bg-background-tertiary'>
-        <i className='fa-brands fa-chrome text-xl'></i>
+      <div className='grid h-12 w-12 place-content-center rounded-lg bg-background-tertiary p-1'>
+        <img src={browserImage?.image} alt={browserName} />
       </div>
-      <div className='flex-1'>
-        <h4>Chrome on Macbook Pro</h4>
-        <p className='text-sm text-text-tertiary'>196.75.103.59</p>
-        <p className='text-sm text-text-tertiary'>Signed in Nov 17, 2023</p>
+      <div className='flex-1 space-y-1'>
+        <h4>
+          {browserName || 'Unknown Browser'} on{' '}
+          {deviceName[0].toUpperCase() + deviceName.slice(1) || 'Unknown Device'}
+        </h4>
+        <p className='text-sm text-text-tertiary'>
+          {ip || 'Unknown IP'} - {countryName || 'Unknown Location'}
+        </p>
+        <p className='text-sm text-text-tertiary'>
+          Signed in{' '}
+          {new Intl.DateTimeFormat('en-US', {
+            dateStyle: 'medium',
+            timeStyle: 'short',
+          }).format(new Date(signedInAt))}
+        </p>
+        {current && (
+          <p className='text-sm text-text-tertiary'>
+            <i className='fa-solid fa-circle-check text-blue-400'></i> Current Session
+          </p>
+        )}
       </div>
-      <button className='rounded-lg border px-3 py-2 text-sm font-medium text-text-primary shadow-sm transition-colors duration-300 hover:bg-background-tertiary'>
+      <button
+        className='rounded-lg border px-3 py-2 text-sm font-medium text-text-primary shadow-sm transition-colors duration-300 hover:bg-background-tertiary'
+        onClick={() => (current ? handleSignOut() : onDelete($id))}
+      >
         Revoke
       </button>
     </div>

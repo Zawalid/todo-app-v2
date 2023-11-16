@@ -7,11 +7,11 @@ export function EditProfile() {
     <>
       <h2 className='text-2xl font-bold text-text-primary'>Edit Profile </h2>
       <div className='mt-8 space-y-5'>
-        <div className=''>
+        <div>
           <h3 className='mb-3 font-bold text-text-secondary'>Avatar</h3>
           <div className='flex items-center gap-5'>
             <div
-              className='h-20 w-20 rounded-full bg-cover'
+              className='h-16 w-16 rounded-full bg-cover'
               style={{
                 backgroundImage: `url('${user?.image}')`,
               }}
@@ -27,7 +27,7 @@ export function EditProfile() {
             </div>
           </div>
         </div>
-        <div className=''>
+        <div>
           <h3 className='mb-3 font-bold text-text-secondary'>Name</h3>
           <input
             type='text'
@@ -37,7 +37,7 @@ export function EditProfile() {
               .map((e) => e[0].toUpperCase() + e.slice(1))
               .join(' ')} />
         </div>
-        <div className=''>
+        <div>
           <h3 className='mb-3 font-bold text-text-secondary'>Email</h3>
           <input
             type='email'

@@ -26,32 +26,4 @@ export function setPermissions(userId) {
   ];
 }
 
-// account.listSessions().then((r) => console.log(r));
 
-// {
-//   "$id": "6552647d3b423436f8a2",
-//   "$createdAt": "2023-11-13T18:01:33.447+00:00",
-//   "userId": "6551599e67fb2adfc908",
-//   "expire": "2024-11-12T18:01:33.447+00:00",
-//   "provider": "email",
-//   "providerUid": "walid.zakan@gmail.com",
-//   "providerAccessToken": "",
-//   "providerAccessTokenExpiry": "",
-//   "providerRefreshToken": "",
-//   "ip": "196.75.103.59",
-//   "osCode": "WIN",
-//   "osName": "Windows",
-//   "osVersion": "10",
-//   "clientType": "browser",
-//   "clientCode": "YA",
-//   "clientName": "Yandex Browser",
-//   "clientVersion": "23.9",
-//   "clientEngine": "Blink",
-//   "clientEngineVersion": "116.0.5845.837",
-//   "deviceName": "desktop",
-//   "deviceBrand": "",
-//   "deviceModel": "",
-//   "countryCode": "ma",
-//   "countryName": "Morocco",
-//   "current": false
-// }

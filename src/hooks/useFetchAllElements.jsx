@@ -1,4 +1,4 @@
-import { appWriteConfig } from '../AppWrite';
+import { appWriteConfig } from '../lib/appwrite/config';
 import { toast } from 'sonner';
 import { useTasks } from './useTasks';
 import { useLists } from './useLists';

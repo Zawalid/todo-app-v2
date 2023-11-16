@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from 'react';
-import { account, appWriteConfig, avatars, databases } from '../AppWrite';
+import { account, appWriteConfig, avatars, databases } from '../lib/appwrite/config';
 import { ID, Query } from 'appwrite';
 import { toast } from 'sonner';
 
