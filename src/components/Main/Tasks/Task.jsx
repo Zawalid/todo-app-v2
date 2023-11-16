@@ -8,39 +8,29 @@ import {
 } from '../../../utils/Moment';
 import Tippy from '@tippyjs/react';
 import completedSoundFile from '../../../assets/completed.mp3';
-import { useTasks } from '../../../hooks/useTasks';
-import { useLists } from '../../../hooks/useLists';
-import { useTags } from '../../../hooks/useTags';
+import { useTasks, useLists, useTags } from '../../../hooks';
 import { CheckBox } from '../../Common/CheckBox';
 
 const completedSound = new Audio(completedSoundFile);
 
-export function Task({ task, isSelecting }) {
-  const [checked, setChecked] = useState(task.isCompleted);
+export function Task({
+  task: { $id, title, isCompleted, dueDate, subtasks, tagsIds, priority, listId },
+  isSelecting,
+}) {
+  const [checked, setChecked] = useState(isCompleted);
   const { lists } = useLists();
   const { handleOpenTask, handleCompleteTask, setSelectedTasks, selectedTasks } = useTasks();
   const { tags } = useTags();
-  const isPassed = isTaskOverdue(task.dueDate);
+  const isPassed = isTaskOverdue(dueDate);
 
-  const listName = useMemo(
-    () => lists.find((l) => l?.$id === task.listId)?.title,
-    [task.listId, lists],
-  );
-  const listColor = useMemo(
-    () => lists.find((l) => l?.$id === task.listId)?.color,
-    [task.listId, lists],
-  );
-  const isSelected = useMemo(
-    () => selectedTasks.some((t) => t.$id === task.$id),
-    [selectedTasks, task.$id],
-  );
+  const listName = useMemo(() => lists.find((l) => l?.$id === listId)?.title, [listId, lists]);
+  const listColor = useMemo(() => lists.find((l) => l?.$id === listId)?.color, [listId, lists]);
+  const isSelected = useMemo(() => selectedTasks.some((t) => t.$id === $id), [selectedTasks, $id]);
 
   useEffect(() => {
-    task.isCompleted !== checked && handleCompleteTask(task.$id, task, checked);
+    isCompleted !== checked && handleCompleteTask($id, checked);
     // eslint-disable-next-line
   }, [checked]);
-
-
 
   return (
     <li
@@ -62,15 +52,11 @@ export function Task({ task, isSelecting }) {
         <span
           className={'text-sm font-medium text-text-secondary ' + (checked ? 'line-through' : '')}
         >
-          {task.title}
+          {title}
         </span>
-        {(listName ||
-          task.dueDate ||
-          task.subtasks?.length > 0 ||
-          task.tagsIds?.length > 0 ||
-          task.priority !== 0) && (
+        {(listName || dueDate || subtasks?.length > 0 || tagsIds?.length > 0 || priority !== 0) && (
           <div className='mt-2 flex flex-wrap items-center gap-5'>
-            {task.dueDate && (
+            {dueDate && (
               <div className='flex items-center gap-2'>
                 <i
                   className={
@@ -84,33 +70,33 @@ export function Task({ task, isSelecting }) {
                     (isPassed && !checked ? 'text-text-error' : 'text-text-secondary')
                   }
                 >
-                  {checkIfToday(task.dueDate)
+                  {checkIfToday(dueDate)
                     ? 'Today'
-                    : checkIfTomorrow(task.dueDate)
+                    : checkIfTomorrow(dueDate)
                     ? 'Tomorrow'
-                    : checkIfYesterday(task.dueDate)
+                    : checkIfYesterday(dueDate)
                     ? 'Yesterday'
-                    : task.dueDate}
+                    : dueDate}
                 </span>
               </div>
             )}
-            {task.subtasks?.length > 0 && (
+            {subtasks?.length > 0 && (
               <div className='flex items-center gap-2'>
                 <span className='rounded-sm bg-background-tertiary px-3 py-[1px] text-xs font-semibold text-text-secondary'>
-                  {task.subtasks.length}
+                  {subtasks.length}
                 </span>
                 <span className='text-xs font-semibold text-text-secondary'>Subtasks</span>
               </div>
             )}
-            {listName && task.listId !== 'none' && (
+            {listName && listId !== 'none' && (
               <div className='flex items-center gap-2'>
                 <span className='h-4 w-4 rounded-sm' style={{ backgroundColor: listColor }}></span>
                 <span className='text-xs font-semibold text-text-secondary'>{listName}</span>
               </div>
             )}
-            {task.tagsIds?.length > 0 && (
+            {tagsIds?.length > 0 && (
               <ul className='flex flex-wrap items-center gap-2'>
-                {task.tagsIds.map((tagId) => {
+                {tagsIds.map((tagId) => {
                   const tag = tags.find((t) => t.$id === tagId);
                   if (tag)
                     return (
@@ -126,24 +112,24 @@ export function Task({ task, isSelecting }) {
               </ul>
             )}
 
-            {task.priority !== 0 && (
+            {priority !== 0 && (
               <div className='flex items-center gap-2'>
                 <i
                   className={
                     'fas fa-flag ' +
-                    (task.priority === 1
+                    (priority === 1
                       ? 'text-[#FFD700]'
-                      : task.priority === 2
+                      : priority === 2
                       ? 'text-[#c0ac3a]'
                       : 'text-text-error')
                   }
                 ></i>
                 <span className='text-xs font-semibold text-text-secondary'>
-                  {task.priority === 1
+                  {priority === 1
                     ? 'Low'
-                    : task.priority === 2
+                    : priority === 2
                     ? 'Medium'
-                    : task.priority === 3
+                    : priority === 3
                     ? 'High'
                     : ''}
                 </span>
@@ -170,7 +156,7 @@ export function Task({ task, isSelecting }) {
         )}
         <button
           className='rounded-sm px-2 py-1 transition-colors duration-300 hover:bg-background-primary'
-          onClick={() => handleOpenTask(task.$id)}
+          onClick={() => handleOpenTask($id)}
         >
           <i className='fa-solid fa-chevron-right cursor-pointer text-text-tertiary'></i>
         </button>
@@ -179,8 +165,8 @@ export function Task({ task, isSelecting }) {
             className='border-l-2 pl-4'
             onClick={() => {
               setSelectedTasks((prev) => {
-                if (isSelected) return prev.filter((t) => t.$id !== task.$id);
-                else return [...prev, { $id: task.$id, title: task.title }];
+                if (isSelected) return prev.filter((t) => t.$id !== $id);
+                else return [...prev, { $id, title, listId }];
               });
             }}
           >

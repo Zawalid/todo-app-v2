@@ -21,7 +21,7 @@ Synatx highlight (note editor) if it has been fixed !!
 
 ## Maybes
 
-Add skeleton instead of loading spinner
+Add skeleton instead of loading spinner (done)
 Make a version that uses firebase instead of appwrite
 Add app tour (driver.js)
 Add transitions between pages (barba.js or other library)

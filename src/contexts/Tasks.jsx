@@ -1,14 +1,10 @@
 import { createContext, useRef, useState } from 'react';
-import { databases, appWriteConfig, setPermissions } from '../AppWrite';
 import { ID } from 'appwrite';
+import { databases, appWriteConfig, setPermissions } from '../AppWrite';
+import { toast } from 'sonner';
 import { checkIfToday, checkIfTomorrow, isDateInCurrentWeek } from '../utils/Moment';
 import { remove$Properties } from '../utils/remove$Properties';
-import { useLists } from '../hooks/useLists';
-import { useDelete } from '../hooks/useDelete';
-import { useLoadElements } from '../hooks/useLoadElements';
-import { toast } from 'sonner';
-import { useTrash } from '../hooks/useTrash';
-import { useUserAuth } from '../hooks/useUserAuth';
+import { useLists, useDeleteElement, useLoadElements, useTrash, useUserAuth } from '../hooks';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 const TASKS_COLLECTION_ID = appWriteConfig.tasksCollectionId;
@@ -157,7 +153,7 @@ function TasksProvider({ children }) {
   const [selectedTasks, setSelectedTasks] = useState([]);
   const addNewTaskReference = useRef(null);
   const { lists, handleAddTaskToList, handleUpdateList } = useLists();
-  const { handleDeleteElement } = useDelete();
+  const { handleDeleteElement } = useDeleteElement();
   const { handleLoadElements } = useLoadElements();
   const { handleRestoreFromTrash } = useTrash();
   const { user } = useUserAuth();
@@ -225,13 +221,14 @@ function TasksProvider({ children }) {
         },
       });
     } finally {
-      await handleLoadElements(user,TASKS_COLLECTION_ID, setTasks);
+      await handleLoadElements(user, TASKS_COLLECTION_ID, setTasks);
     }
   }
   async function handleCompleteTask(id, task, isCompleted) {
     handleUpdateTask(id, task, isCompleted);
   }
   async function handleDeleteTask(id, listId, deletePermanently, isClearing) {
+    console.log(listId);
     const toastId = isClearing ? null : toast.loading('Deleting task...');
     try {
       await handleDeleteElement(
@@ -242,6 +239,13 @@ function TasksProvider({ children }) {
         tasks,
         setTasks,
       );
+      // Remove the deleted task from the list it was in
+      if (listId !== 'none') {
+        const list = lists.find((list) => list.$id === listId);
+        const newTasks = list.tasks.filter((taskId) => taskId !== id);
+        await handleUpdateList(listId, 'tasks', newTasks);
+      }
+
       if (!isClearing) {
         toast.success(getDeletionMessage('success', true), {
           id: toastId,
@@ -267,83 +271,83 @@ function TasksProvider({ children }) {
           },
         });
     }
-    // Remove the deleted task from the list it was in
-    if (listId === 'none') return;
-    const list = lists.find((list) => list.$id === listId);
-    if (!list) return;
-    const newTasks = list.tasks.filter((taskId) => taskId !== id);
-    await handleUpdateList(listId, 'tasks', newTasks);
   }
-  async function handleClearAllTasks(condition1, condition2, deletePermanently, isSelectedTasks) {
-    const id =
-      isSelectedTasks && selectedTasks.length > 1
-        ? toast.loading(`Deleting ${selectedTasks.length} tasks...`)
-        : isSelectedTasks && selectedTasks.length === 1
-        ? toast.loading(`Deleting task...`)
-        : toast.loading('Clearing all tasks...');
+  async function handleClearAllTasks(condition1, condition2, deletePermanently) {
+    const id = toast.loading('Clearing all tasks...');
     try {
-      const deletedTasks = isSelectedTasks
-        ? selectedTasks
-        : tasks.filter((task) => condition1(task) && condition2(task));
-      deletedTasks.forEach(async (task) => {
-        await handleDeleteTask(task.$id, null, deletePermanently, true);
-      });
+      const deletedTasks = tasks.filter((task) => condition1(task) && condition2(task));
 
-      await Promise.all(
-        lists.map(async (list) => {
-          const newTasks = list.tasks.filter(
-            (taskId) => !deletedTasks.map((task) => task.$id).includes(taskId),
-          );
-          await handleUpdateList(list.$id, 'tasks', newTasks);
-        }),
-      );
-      toast.success(
-        isSelectedTasks
-          ? getDeletionMessage('success', false, true, selectedTasks.length)
-          : getDeletionMessage('success', false, false),
-        {
-          id,
-          action: deletePermanently
-            ? null
-            : {
-                label: 'Undo',
-                onClick: () => {
-                  undoDelete(async () => {
-                    for (const task of deletedTasks) {
-                      await handleRestoreFromTrash('tasks', task.$id, true);
-                    }
-                  });
-                },
+      for (const task of deletedTasks) {
+        await handleDeleteTask(task.$id, task.listId, deletePermanently, true);
+      }
+
+      toast.success(getDeletionMessage('success', false, false), {
+        id,
+        action: deletePermanently
+          ? null
+          : {
+              label: 'Undo',
+              onClick: () => {
+                undoDelete(async () => {
+                  for (const task of deletedTasks) {
+                    await handleRestoreFromTrash('tasks', task.$id, true);
+                  }
+                });
               },
-        },
-      );
-    } catch (err) {
-      toast.error(
-        isSelectedTasks
-          ? getDeletionMessage('error', false, true, selectedTasks.length)
-          : getDeletionMessage('error', false, false),
-        {
-          id,
-          action: {
-            label: 'Try again',
-            onClick: () => {
-              handleClearAllTasks(condition1, condition2, deletePermanently, isSelectedTasks);
             },
+      });
+    } catch (err) {
+      toast.error(getDeletionMessage('error', false, false), {
+        id,
+        action: {
+          label: 'Try again',
+          onClick: () => {
+            handleClearAllTasks(condition1, condition2, deletePermanently);
           },
         },
-      );
+      });
     }
   }
+  async function handleDeleteMultipleTasks(deletePermanently) {
+    const id =
+      selectedTasks.length === 1
+        ? toast.loading(`Deleting task...`)
+        : toast.loading(`Deleting ${selectedTasks.length} tasks...`);
+
+    try {
+      for (const task of selectedTasks) {
+        await handleDeleteTask(task.$id, task.listId, deletePermanently, true);
+      }
+      toast.success(getDeletionMessage('success', false, true, selectedTasks.length), {
+        id,
+        action: deletePermanently
+          ? null
+          : {
+              label: 'Undo',
+              onClick: () => {
+                undoDelete(async () => {
+                  for (const task of selectedTasks) {
+                    await handleRestoreFromTrash('tasks', task.$id, true);
+                  }
+                });
+              },
+            },
+      });
+    } catch (err) {
+      toast.error(getDeletionMessage('error', false, true, selectedTasks.length), { id });
+    }
+  }
+
   async function handleOpenTask(id) {
-    if (id && currentTask?.$id !== id) {
+    if (id) {
       const response = await databases.getDocument(DATABASE_ID, TASKS_COLLECTION_ID, id);
       setCurrentTask(response);
+      setIsTaskOpen(true);
     }
-    id && setIsTaskOpen(true);
   }
   async function undoDelete(fn) {
     await fn();
-    await handleLoadElements(user,TASKS_COLLECTION_ID, setTasks);
+    await handleLoadElements(user, TASKS_COLLECTION_ID, setTasks);
   }
 
   return (
@@ -366,6 +370,7 @@ function TasksProvider({ children }) {
         handleDeleteTask,
         handleCompleteTask,
         handleClearAllTasks,
+        handleDeleteMultipleTasks,
         handleOpenTask,
         setIsTaskOpen,
         setTasks,

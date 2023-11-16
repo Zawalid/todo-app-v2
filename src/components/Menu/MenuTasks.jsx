@@ -1,6 +1,5 @@
 import { Link, NavLink, useHref } from 'react-router-dom';
-import { useTasks } from '../../hooks/useTasks';
-import { useStickyNotes } from '../../hooks/useStickyNotes';
+import { useTasks, useStickyNotes } from '../../hooks';
 
 export function MenuTasks() {
   const { todayTasks, tasks, upcomingTasks } = useTasks();

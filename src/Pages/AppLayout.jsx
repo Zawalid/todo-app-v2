@@ -3,9 +3,8 @@ import { Menu } from '../components/Menu/Menu';
 import { Main } from '../components/Main/Main';
 import '../styles/App.css';
 import { SearchProvider } from '../contexts';
-import { useUserAuth } from '../hooks/useUserAuth';
+import { useFetchAllElements, useUserAuth } from '../hooks';
 import { Navigate } from 'react-router-dom';
-import { useFetchAllElements } from '../hooks/useFetchAllElements';
 import { useEffect } from 'react';
 
 function AppLayout() {
@@ -31,7 +30,7 @@ function AppLayout() {
           <TaskInfo />
         </div>
       ) : (
-        <Navigate to='/sign-in' />
+        <Navigate to='/sign-in' replace={true} />
       )}
     </>
   );

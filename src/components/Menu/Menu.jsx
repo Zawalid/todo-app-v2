@@ -4,11 +4,10 @@ import { MenuTags } from './Menu Tags/MenuTags';
 import { MenuTasks } from './MenuTasks';
 import { Search } from './Search';
 import { NavLink } from 'react-router-dom';
-import { useTrash } from '../../hooks/useTrash';
-import { useUserAuth } from '../../hooks/useUserAuth';
+import { useTrash ,useUserAuth} from '../../hooks';
 
 export function Menu() {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const menu = useRef(null);
   const { trashLength } = useTrash();
   const { handleSignOut } = useUserAuth();

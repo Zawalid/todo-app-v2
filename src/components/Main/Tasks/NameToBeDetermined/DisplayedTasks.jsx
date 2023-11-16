@@ -43,12 +43,13 @@ function paginationReducer(state, action) {
 }
 
 export function DisplayedTasks({ onAdd, condition, activeTab }) {
-  const { tasks, handleClearAllTasks, selectedTasks, setSelectedTasks } = useTasks();
+  const { tasks, handleClearAllTasks, handleDeleteMultipleTasks, selectedTasks, setSelectedTasks } =
+    useTasks();
   const [deletePermanently, setDeletePermanently] = useState(false);
   const [filteredTasks, setFilteredTasks] = useState([]);
   const [isSelecting, setIsSelecting] = useState(false);
   const [isDeleteMultipleModalOpen, setIsDeleteMultipleModalOpen] = useState(false);
-  const [isClearAllModalOpen, setIsClearAllModalOpen] = useState(false);
+  const [isDeletingModalOpen, setIsDeletingModalOpen] = useState(false);
   const whichDelete = useRef(null);
   const [pagination, dispatch] = useReducer(paginationReducer, paginationState);
   const [searchParams] = useSearchParams();
@@ -92,7 +93,6 @@ export function DisplayedTasks({ onAdd, condition, activeTab }) {
     });
   }, [sort, direction]);
 
-
   // MultipleDeletionsModal and selectedTasks
 
   useEffect(() => {
@@ -106,9 +106,11 @@ export function DisplayedTasks({ onAdd, condition, activeTab }) {
   }, [selectedTasks, isSelecting]);
 
   useEffect(() => {
-    !isDeleteMultipleModalOpen && selectedTasks.length !== 0 && setSelectedTasks([]);
-  }, [isDeleteMultipleModalOpen, selectedTasks, setSelectedTasks]);
-
+    !isDeleteMultipleModalOpen &&
+      selectedTasks.length !== 0 &&
+      !isSelecting &&
+      setSelectedTasks([]);
+  }, [isDeleteMultipleModalOpen, selectedTasks, isSelecting, setSelectedTasks]);
 
   return (
     <div className='relative flex h-full flex-col overflow-auto'>
@@ -132,7 +134,7 @@ export function DisplayedTasks({ onAdd, condition, activeTab }) {
               <TasksActions
                 tasksLength={filteredTasks.length}
                 onClearAll={() => {
-                  setIsClearAllModalOpen(true);
+                  setIsDeletingModalOpen(true);
                   whichDelete.current = 'clear';
                   setIsDeleteMultipleModalOpen(false);
                 }}
@@ -191,7 +193,7 @@ export function DisplayedTasks({ onAdd, condition, activeTab }) {
           <p className=' font-medium text-text-tertiary'>Add a new task to get started</p>
         </div>
       )}
-      {isClearAllModalOpen && (
+      {isDeletingModalOpen && (
         <ConfirmationModal
           sentence={`Are you sure you want to ${
             whichDelete.current === 'selected'
@@ -202,19 +204,16 @@ export function DisplayedTasks({ onAdd, condition, activeTab }) {
           } `}
           confirmText={whichDelete.current === 'selected' ? 'Delete' : 'Clear All'}
           onConfirm={() => {
-            setIsClearAllModalOpen(false);
-            handleClearAllTasks(
-              condition,
-              filtersConditions[filter],
-              deletePermanently,
-              whichDelete.current === 'selected',
-            );
+            setIsDeletingModalOpen(false);
+            whichDelete.current === 'selected'
+              ? handleDeleteMultipleTasks(deletePermanently)
+              : handleClearAllTasks(condition, filtersConditions[filter], deletePermanently);
             if (whichDelete.current === 'selected') {
               setIsSelecting(false);
               setIsDeleteMultipleModalOpen(false);
             }
           }}
-          onCancel={() => setIsClearAllModalOpen(false)}
+          onCancel={() => setIsDeletingModalOpen(false)}
           element='Tasks'
           checked={deletePermanently}
           setChecked={setDeletePermanently}
@@ -223,7 +222,7 @@ export function DisplayedTasks({ onAdd, condition, activeTab }) {
       <MultipleDeletionsModal
         isOpen={isDeleteMultipleModalOpen}
         onConfirm={() => {
-          setIsClearAllModalOpen(true);
+          setIsDeletingModalOpen(true);
           whichDelete.current = 'selected';
         }}
         onClose={() => {

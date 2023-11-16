@@ -2,7 +2,7 @@ import { createContext, useState } from 'react';
 import { databases, appWriteConfig, setPermissions } from '../AppWrite';
 import { ID } from 'appwrite';
 import { remove$Properties } from '../utils/remove$Properties';
-import { useDelete } from '../hooks/useDelete';
+import { useDeleteElement } from '../hooks/useDeleteElement';
 import { useLoadElements } from '../hooks/useLoadElements';
 import { toast } from 'sonner';
 import { useTrash } from '../hooks/useTrash';
@@ -18,7 +18,7 @@ export const StickyNotesContext = createContext();
   const [currentNote, setCurrentNote] = useState(null);
   const [isStickyNoteOpened, setIsStickyNoteOpened] = useState(false);
   const [isStickyNoteEditorOpen, setIsStickyNoteEditorOpen] = useState(false);
-  const { handleDeleteElement } = useDelete();
+  const { handleDeleteElement } = useDeleteElement();
   const { handleLoadElements } = useLoadElements();
   const {handleRestoreFromTrash } = useTrash();
   const {user} = useUserAuth()
