@@ -65,34 +65,6 @@ export function DisplayedTasks({ onAdd, condition, activeTab }) {
     );
   }, [tasks, filter, condition]);
 
-  // Sort tasks based on the selected sort and direction
-  useEffect(() => {
-    setFilteredTasks((prev) => {
-      const tasks = [...prev];
-      tasks.sort((a, b) => {
-        if (sort === 'cDate') {
-          return direction === 'asc'
-            ? new Date(a.$createdAt) - new Date(b.$createdAt)
-            : new Date(b.$createdAt) - new Date(a.$createdAt);
-        }
-        if (sort === 'dDate') {
-          return direction === 'asc'
-            ? new Date(a.dueDate || 0) - new Date(b.dueDate || 0)
-            : new Date(b.dueDate || 0) - new Date(a.dueDate || 0);
-        }
-        if (sort === 'priority') {
-          return direction === 'asc' ? a.priority - b.priority : b.priority - a.priority;
-        }
-        if (sort === 'title') {
-          return direction === 'asc'
-            ? a.title.localeCompare(b.title)
-            : b.title.localeCompare(a.title);
-        }
-      });
-      return tasks;
-    });
-  }, [sort, direction]);
-
   // MultipleDeletionsModal and selectedTasks
 
   useEffect(() => {
@@ -157,6 +129,26 @@ export function DisplayedTasks({ onAdd, condition, activeTab }) {
         <>
           <ul className='mt-3 h-full space-y-2 overflow-y-auto pr-3'>
             {[...filteredTasks]
+              .sort((a, b) => {
+                if (sort === 'cDate') {
+                  return direction === 'asc'
+                    ? new Date(a.$createdAt) - new Date(b.$createdAt)
+                    : new Date(b.$createdAt) - new Date(a.$createdAt);
+                }
+                if (sort === 'dDate') {
+                  return direction === 'asc'
+                    ? new Date(a.dueDate || 0) - new Date(b.dueDate || 0)
+                    : new Date(b.dueDate || 0) - new Date(a.dueDate || 0);
+                }
+                if (sort === 'priority') {
+                  return direction === 'asc' ? a.priority - b.priority : b.priority - a.priority;
+                }
+                if (sort === 'title') {
+                  return direction === 'asc'
+                    ? a.title.localeCompare(b.title)
+                    : b.title.localeCompare(a.title);
+                }
+              })
               .slice(
                 (pagination.currentPage - 1) * pagination.rowsPerPage,
                 pagination.currentPage * pagination.rowsPerPage,
