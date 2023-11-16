@@ -2,8 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { NavLink, useHref, useNavigate } from 'react-router-dom';
 import { ListAction } from './ListAction';
 import { ConfirmationModal } from '../../Common/ConfirmationModal';
-import { useIsTitleTaken } from '../../../hooks/useIsTitleTaken';
-import { useLists } from '../../../hooks/useLists';
+import { useIsTitleTaken, useLists } from '../../../hooks';
 // import { useTasks } from '../../../hooks/useTasks';
 
 export function List({ list }) {
@@ -16,7 +15,7 @@ export function List({ list }) {
   const [isNewTitleTaken, , setTitle] = useIsTitleTaken(lists, $id, title);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [listColor, setListColor] = useState(color);
-  const [deletePermanently, setDeletePermanently] = useState(false); 
+  const [deletePermanently, setDeletePermanently] = useState(false);
   const listActions = useRef(null);
   const newListTitle = useRef(null);
   const navigate = useNavigate();
@@ -57,10 +56,7 @@ export function List({ list }) {
   return (
     <>
       <li className='relative flex gap-1 pr-2 '>
-        <NavLink
-          to={title}
-          className='menu_element group flex-1  grid-cols-[30px_auto_35px] '
-        >
+        <NavLink to={title} className='menu_element group flex-1  grid-cols-[30px_auto_35px] '>
           <div
             className='h-4 w-4 rounded-[3px]'
             style={{
@@ -115,9 +111,9 @@ export function List({ list }) {
         <ConfirmationModal
           sentence='Are you sure you want to delete this list?'
           confirmText='Delete'
-          onConfirm={ () => {
+          onConfirm={() => {
             setIsDeleteModalOpen(false);
-            handleDeleteList($id,deletePermanently);
+            handleDeleteList($id, deletePermanently);
             path.replace(/%20/g, ' ') === `/${title}` && navigate('/');
             // To delete all the tasks of the deleted list
             // const tasksToDelete = tasks.filter((task) => task.listId === $id);

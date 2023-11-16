@@ -6,7 +6,8 @@ export function useIsTitleTaken(lists, id,curTitle) {
 
   useEffect(() => {
     const listWithSameTitle = lists.find((list) => list.title?.trim() === title?.trim());
-    const isSameList = listWithSameTitle?.id === id;
+    
+    const isSameList = listWithSameTitle?.$id === id;
     let isTaken = listWithSameTitle;
     //make sure that the  title doesn't contain symbols (except spaces and _ and -)
     const regex = /^[a-zA-Z0-9-_ ()]*$/;

@@ -7,7 +7,7 @@ import { NavLink } from 'react-router-dom';
 import { useTrash ,useUserAuth} from '../../hooks';
 
 export function Menu() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const menu = useRef(null);
   const { trashLength } = useTrash();
   const { handleSignOut } = useUserAuth();
