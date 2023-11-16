@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 export function Button({ isLoading, text }) {
@@ -13,40 +12,6 @@ export function Button({ isLoading, text }) {
         text
       )}
     </button>
-  );
-}
-
-export function InputField({ type, placeholder, value, onChange }) {
-  return (
-    <input
-      type={type}
-      className='focus-border-none w-full rounded-md border bg-background-secondary p-2 text-text-secondary placeholder-text-tertiary focus:outline-none '
-      placeholder={placeholder}
-      value={value}
-      onChange={onChange}
-    />
-  );
-}
-
-export function PasswordInput({ password, setPassword }) {
-  const [showPassword, setShowPassword] = useState(false);
-  return (
-    <div className='relative'>
-      <input
-        type={showPassword ? 'text' : 'password'}
-        className='focus-border-none  w-full rounded-md border bg-background-secondary p-2 text-text-secondary placeholder-text-tertiary focus:outline-none'
-        placeholder='Password'
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <button
-        type='button'
-        className='absolute right-2 top-2'
-        onClick={() => password && setShowPassword(!showPassword)}
-      >
-        <i className={`fa-solid fa-${showPassword ? 'eye-slash' : 'eye'} text-text-tertiary`}></i>
-      </button>
-    </div>
   );
 }
 

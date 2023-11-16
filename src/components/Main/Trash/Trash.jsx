@@ -87,7 +87,7 @@ export function Trash() {
           }}
           onCancel={() => setIsConfirmationModalOpen(false)}
           element={whichDelete.current === 'all' ? 'Trash' : 'Permanently'}
-          isTrash={true}
+          showCheckBox={false}
         />
       )}
       <div className='mt-auto flex items-center justify-between border-t-2 pt-3'>

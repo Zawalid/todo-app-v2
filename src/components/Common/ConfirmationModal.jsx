@@ -6,12 +6,12 @@ export function ConfirmationModal({
   onConfirm,
   onCancel,
   element,
-  isTrash,
+  showCheckBox = true,
   checked,
   setChecked,
 }) {
   return (
-    <div className='fixed -top-1 left-0 z-[999999] grid h-full w-full place-content-center bg-black bg-opacity-25 backdrop-blur-[1px]'>
+    <div className='fixed top-0 left-0 z-[999999] grid h-full w-full place-content-center bg-black bg-opacity-25 backdrop-blur-[1px] m-0'>
       <div className=' flex w-[500px] flex-col gap-5 rounded-lg bg-white px-8 py-4'>
         <div className='flex items-center gap-3 border-b pb-3'>
           <div className='grid  h-8 w-8 place-content-center rounded-full bg-[#F57800]'>
@@ -22,7 +22,7 @@ export function ConfirmationModal({
           </h1>
         </div>
         <h4 className=' text-s font-semibold text-text-secondary'>{sentence}</h4>
-        {!isTrash && (
+        {showCheckBox && (
           <div className=' flex items-center gap-3'>
             <CheckBox checked={checked} onChange={() => setChecked(!checked)} />
             <label htmlFor='permanent' className='mb-[3px] text-sm text-text-tertiary'>

@@ -12,7 +12,7 @@ export function Search() {
     <div className='relative mb-5 w-full'>
       <input
         type='text'
-        className='w-full rounded-lg border border-background-tertiary  bg-transparent  py-1 pl-3  pr-16 text-sm text-text-tertiary placeholder:text-text-tertiary focus:outline-none'
+        className='w-full rounded-lg border border-background-tertiary    py-1 pl-3  pr-16 text-sm text-text-tertiary bg-background-secondary placeholder:text-text-tertiary focus:outline-none'
         placeholder='Search'
         value={searchQuery || ''}
         onChange={(e) => {

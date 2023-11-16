@@ -4,13 +4,14 @@ import { MenuTags } from './Menu Tags/MenuTags';
 import { MenuTasks } from './MenuTasks';
 import { Search } from './Search';
 import { NavLink } from 'react-router-dom';
-import { useTrash ,useUserAuth} from '../../hooks';
+import { useTrash } from '../../hooks';
+import { Profile } from './Profile';
+import { Settings } from '../Settings/Settings';
 
 export function Menu() {
   const [isOpen, setIsOpen] = useState(true);
   const menu = useRef(null);
   const { trashLength } = useTrash();
-  const { handleSignOut } = useUserAuth();
 
   return (
     <aside
@@ -24,15 +25,16 @@ export function Menu() {
     >
       {isOpen || (
         <button onClick={() => setIsOpen(true)}>
-          <i className='fa-solid fa-bars cursor-pointer text-text-secondary'></i>
+          <i className='fa-solid fa-angles-right cursor-pointer text-text-secondary'></i>
         </button>
       )}
       {isOpen && (
         <>
-          <div className='flex items-center justify-between pb-3'>
-            <h2 className='text-xl font-bold text-text-secondary'>Menu</h2>
+          <div className='mb-3 flex items-center justify-between gap-8 pb-3'>
+            {/* <h2 className='text-xl font-bold text-text-secondary'>Menu</h2> */}
+            <Profile />
             <button onClick={() => setIsOpen(false)}>
-              <i className='fa-solid fa-xmark cursor-pointer text-xl text-text-secondary'></i>
+              <i className='fa-solid fa-angles-left cursor-pointer  text-text-secondary'></i>
             </button>
           </div>
           <div className='mb-3 overflow-y-auto pr-3'>
@@ -52,16 +54,16 @@ export function Menu() {
               </div>
             </NavLink>
 
-            <button
-              className='mt-2 flex items-center gap-3 px-3'
-              onClick={handleSignOut}
-            >
-              <i className='fa-solid fa-sign-out text-text-error'></i>
-              <span className='text-sm  text-text-error font-medium'>
-                Sign Out
-              </span>
+            {/* <button className='mt-2 flex items-center gap-3 px-3'>
+              <i className='fa-solid fa-gear text-text-tertiary'></i>
+              <span className='text-sm   text-text-secondary'>Settings</span>
             </button>
+            <button className='mt-3 flex items-center gap-3 px-3' onClick={handleSignOut}>
+              <i className='fa-solid fa-sign-out text-text-error'></i>
+              <span className='text-sm  font-medium text-text-error'>Sign Out</span>
+            </button> */}
           </div>
+          <Settings />
         </>
       )}
     </aside>

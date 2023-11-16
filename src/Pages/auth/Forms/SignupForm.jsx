@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { useUserAuth } from '../../../hooks/useUserAuth';
-import { useTrash } from '../../../hooks/useTrash';
-import { Button, PasswordInput, InputField, AuthLink } from './components';
+import { useUserAuth,useTrash } from '../../../hooks';
+import { Button, AuthLink } from './components';
+import { PasswordInput } from '../../../components/Common/PasswordInput';
+import { InputField } from '../../../components/Common/InputField';
 
 function SignUpForm() {
   const [firstName, setFirstName] = useState('');
