@@ -9,5 +9,5 @@ export function Content({ currentTab }) {
     sessions: <Sessions />,
   };
 
-  return <div className='flex-1 flex flex-col'>{tabs[currentTab]}</div>;
+  return <div className='flex flex-1 flex-col'>{tabs[currentTab]}</div>;
 }

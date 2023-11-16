@@ -10,8 +10,9 @@ export const UserAuthContext = createContext();
 
 function UserAuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  // const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  // ------------- Authentication
 
   async function handleCreateUserAccount(user) {
     try {
@@ -99,6 +100,110 @@ function UserAuthProvider({ children }) {
     return cookieFallback && cookieFallback !== '[]';
   }
 
+  // ------------- Settings
+
+  // Profile
+  async function handleUpdateName(name) {
+    try {
+      const res = await account.updateName(name);
+      setUser((user) => {
+        return {
+          ...user,
+          name: res.name,
+        };
+      });
+      await databases.updateDocument(DATABASE_ID, USERS_COLLECTION_ID, user.$id, {
+        name: res.name,
+      });
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  async function handleUpdateEmail(email, password) {
+    try {
+      const res = await account.updateEmail(email, password);
+      setUser((user) => {
+        return {
+          ...user,
+          email: res.email,
+        };
+      });
+      await databases.updateDocument(DATABASE_ID, USERS_COLLECTION_ID, user.$id, {
+        email: res.email,
+      });
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  async function handleUpdateProfile(name, email, password) {
+    console.log(name, email, password);
+    try {
+      if (user.name !== name) await handleUpdateName(name);
+      if (user.email !== email) await handleUpdateEmail(email, password);
+
+      toast.success(
+        user.name !== name
+          ? 'Your name has been updated'
+          : user.email !== email
+          ? 'Your email has been updated'
+          : 'Your name and email have been updated',
+      );
+    } catch (error) {
+      toast.error('Your password is incorrect. Please try again.');
+    }
+  }
+
+  // Password
+  async function handleUpdatePassword(oldPassword, newPassword) {
+    try {
+      await account.updatePassword(newPassword, oldPassword);
+      toast.success('Your password has been updated');
+      return true;
+    } catch (error) {
+      toast.error('Your password is incorrect. Please try again.');
+    }
+  }
+
+  // Sessions
+  async function handleGetSessions() {
+    try {
+      const sessions = await account.listSessions();
+      return sessions.sessions;
+    } catch (error) {
+      toast.error(error.message);
+    }
+  }
+
+  async function handleDeleteSession(sessionId) {
+    try {
+      if (sessionId === 'current') return await handleSignOut();
+      await account.deleteSession(sessionId);
+      toast.success('Session deleted');
+    } catch (error) {
+      toast.error(error.message);
+    }
+  }
+
+  async function handleDeleteSessions() {
+    try {
+      await account.deleteSessions();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  //? Since appwrite doesn't provide a way to delete and account i'll just block it and delete the user from the database
+  async function handleDeleteAccount() {
+    try {
+      await databases.deleteDocument(DATABASE_ID, USERS_COLLECTION_ID, user.$id);
+      await account.updateStatus();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   useEffect(() => {
     getCurrentUser();
   }, []);
@@ -113,6 +218,12 @@ function UserAuthProvider({ children }) {
         handleSignIn,
         handleSignOut,
         getCurrentUser,
+        handleUpdateProfile,
+        handleUpdatePassword,
+        handleGetSessions,
+        handleDeleteSession,
+        handleDeleteSessions,
+        handleDeleteAccount,
       }}
     >
       {children}
@@ -133,6 +244,7 @@ function getErrorMessage(err) {
     case 'A user with the same id, email, or phone already exists in this project.':
       return 'An account with this email already exists. Please try again with a different email.';
     case 'Invalid credentials. Please check the email and password.':
+    case `The current user has been blocked. You can unblock the user by making a request to the User API's "Update User Status" endpoint or in the Appwrite Console's Auth section.`:
       return 'Invalid email or password. Please try again.';
     default:
       return 'Something went wrong. Please try again.';

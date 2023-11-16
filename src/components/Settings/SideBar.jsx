@@ -1,8 +1,13 @@
 import { useState } from 'react';
 import { ConfirmationModal } from '../Common/ConfirmationModal';
+import { useUserAuth } from '../../hooks';
+import { useNavigate } from 'react-router-dom';
 
 export function SideBar({ currentTab, setCurrentTab }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { handleDeleteAccount } = useUserAuth();
+  const navigate = useNavigate();
+
   return (
     <>
       <aside className='space-y-3'>
@@ -50,12 +55,14 @@ export function SideBar({ currentTab, setCurrentTab }) {
           element='Account'
           confirmText='Delete'
           showCheckBox={false}
-          onConfirm={() => console.log('delete')}
+          onConfirm={() => {
+            setIsModalOpen(false);
+            handleDeleteAccount();
+            navigate('/sign-in');
+          }}
           onCancel={() => setIsModalOpen(false)}
         />
       )}
     </>
   );
 }
-
-

@@ -1,6 +1,5 @@
 import { Button } from './Button';
 import { SpinnerLoader } from '../Common/SpinnerLoader';
-import { getSessions, deleteSession, deleteSessions } from '../../lib/appwrite/accountApi';
 import { useEffect, useState } from 'react';
 import { useUserAuth } from '../../hooks';
 import { useNavigate } from 'react-router-dom';
@@ -39,19 +38,20 @@ const BROWSERS_IMAGES = [
 export function Sessions() {
   const [sessions, setSessions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { handleGetSessions, handleDeleteSession, handleDeleteSessions } = useUserAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchSessions() {
-      const sessions = await getSessions();
+      const sessions = await handleGetSessions();
       setSessions(sessions);
       setIsLoading(false);
     }
     fetchSessions();
   }, []);
 
-  async function handleDeleteSession(sessionId) {
-    await deleteSession(sessionId);
+  async function deleteSession(sessionId) {
+    await handleDeleteSession(sessionId);
     setSessions((sessions) => sessions.filter((session) => session.$id !== sessionId));
   }
 
@@ -74,7 +74,7 @@ export function Sessions() {
           </div>
         ) : (
           sessions.map((session) => (
-            <Session key={session.$id} session={session} onDelete={handleDeleteSession} />
+            <Session key={session.$id} session={session} onDelete={deleteSession} />
           ))
         )}
       </div>
@@ -82,7 +82,7 @@ export function Sessions() {
         text='Sign out all devices'
         disabled={false}
         onClick={async () => {
-          await deleteSessions();
+          await handleDeleteSessions();
           navigate('/sign-in');
         }}
       />
@@ -99,8 +99,6 @@ function Session({ session, onDelete }) {
     $id,
     current,
   } = session;
-
-  const { handleSignOut } = useUserAuth();
 
   const browserImage = BROWSERS_IMAGES.find((browser) =>
     browserName.toLowerCase().includes(browser.name.toLowerCase()),
@@ -134,7 +132,7 @@ function Session({ session, onDelete }) {
       </div>
       <button
         className='rounded-lg border px-3 py-2 text-sm font-medium text-text-primary shadow-sm transition-colors duration-300 hover:bg-background-tertiary'
-        onClick={() => (current ? handleSignOut() : onDelete($id))}
+        onClick={() => onDelete(current ? 'current' : $id)}
       >
         Revoke
       </button>

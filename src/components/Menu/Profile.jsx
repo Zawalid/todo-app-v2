@@ -12,12 +12,7 @@ export function Profile() {
           backgroundImage: `url('${user?.image}')`,
         }}
       ></div>
-      <span className='flex-1 text-sm font-semibold text-text-primary '>
-        {user?.name
-          .split(' ')
-          .map((e) => e[0].toUpperCase() + e.slice(1))
-          .join(' ')}
-      </span>
+      <span className='flex-1 text-sm font-semibold text-text-primary '>{user?.name}</span>
       <Tippy
         content={
           <div>
