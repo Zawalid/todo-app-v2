@@ -2,6 +2,7 @@ import { createContext, useEffect, useState } from 'react';
 import { account, appWriteConfig, avatars, databases } from '../lib/appwrite/config';
 import { ID, Query } from 'appwrite';
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 const USERS_COLLECTION_ID = appWriteConfig.usersCollectionId;
@@ -83,14 +84,19 @@ function UserAuthProvider({ children }) {
 
   async function getCurrentUser() {
     try {
+      if (user) return;
       const currentAccount = await account.get();
-      const currentUser = await databases.listDocuments(DATABASE_ID, USERS_COLLECTION_ID, [
+      const res = await databases.listDocuments(DATABASE_ID, USERS_COLLECTION_ID, [
         Query.equal('accountID', currentAccount.$id),
       ]);
-      const user = currentUser.documents[0];
-      setUser(user);
-      return user;
+      const currentUser = {
+        ...res.documents[0],
+        ...currentAccount,
+      };
+      setUser(currentUser);
+      return currentUser;
     } catch (error) {
+      console.log(error);
       setUser(null);
     }
   }

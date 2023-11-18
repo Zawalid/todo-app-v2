@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PasswordInput } from '../Common/PasswordInput';
 import { Button } from './Button';
 import { toast } from 'sonner';
@@ -8,11 +8,16 @@ export function Password() {
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
+  const [isFilled, setIsFilled] = useState(false);
   const { handleUpdatePassword } = useUserAuth();
 
+useEffect(() => {
+  if(oldPassword && newPassword && confirmNewPassword) setIsFilled(true);
+  else setIsFilled(false);
+}
+, [oldPassword, newPassword, confirmNewPassword]);
+
   function changePassword() {
-    if (!oldPassword || !newPassword || !confirmNewPassword)
-      return toast.error('Please fill out all fields');
     if (newPassword.length < 8) return toast.error('Password must be at least 8 characters long');
     if (newPassword !== confirmNewPassword) return toast.error('Passwords do not match');
     const updated = handleUpdatePassword(oldPassword, newPassword);
@@ -51,7 +56,7 @@ export function Password() {
           />
         </div>
       </div>
-      <Button text='Change Password' onClick={changePassword} />
+      <Button text='Change Password' onClick={changePassword} disabled={!isFilled} />
     </>
   );
 }

@@ -10,7 +10,7 @@ export function SideBar({ currentTab, setCurrentTab }) {
 
   return (
     <>
-      <aside className='space-y-3'>
+      <aside className='relative space-y-3'>
         <button
           className={
             'menu_element gap-2 ' +
@@ -41,17 +41,20 @@ export function SideBar({ currentTab, setCurrentTab }) {
           <i className='fa-solid fa-right-to-bracket'></i>
           <span className='font-medium'>Sessions</span>
         </button>
-        <button
-          className='mt-3 flex items-center gap-3 border-t pl-5 pt-3'
-          onClick={() => setIsModalOpen(true)}
-        >
-          <i className='fa-solid fa-trash-can  text-text-error'></i>
-          <span className='text-sn font-medium text-text-error'>Delete Account</span>
-        </button>
+        <div className='border-t absolute bottom-0 pt-3 space-y-3'>
+          <button className='grid grid-cols-[30px_1fr] justify-items-start items-center  pl-5 '>
+            <i className='fa-solid fa-user-check text-text-tertiary'></i>
+            <span className='text-sm font-semibold text-text-secondary'>Verify Account</span>
+          </button>
+          <button className='grid grid-cols-[30px_1fr] justify-items-start items-center  pl-5 ' onClick={() => setIsModalOpen(true)}>
+            <i className='fa-solid fa-trash-can  text-text-error'></i>
+            <span className='text-sm font-semibold text-text-error'>Delete Account</span>
+          </button>
+        </div>
       </aside>
       {isModalOpen && (
         <ConfirmationModal
-          sentence='Are you sure you want to delete your account?'
+          sentence='Deleting your account will delete all of your data. This action cannot be undone. Are you sure you want to proceed?'
           element='Account'
           confirmText='Delete'
           showCheckBox={false}
