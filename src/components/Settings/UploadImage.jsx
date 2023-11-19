@@ -40,6 +40,8 @@ export function UploadImage({ avatar, onChange }) {
     },
   });
 
+  const isInitialsAvatar = avatar?.includes('avatars/initials');
+
   return (
     <div className='flex items-center gap-5'>
       <img
@@ -56,9 +58,13 @@ export function UploadImage({ avatar, onChange }) {
             Upload
           </button>
           <button
-            className='rounded-lg border px-3 py-2 text-sm font-medium text-text-primary shadow-sm transition-colors duration-300 hover:bg-background-tertiary'
+            className={
+              'rounded-lg border px-3 py-2 text-sm font-medium text-text-primary shadow-sm transition-colors duration-300  ' +
+              (isInitialsAvatar ? 'bg-zinc-200 text-white' : 'hover:bg-background-tertiary')
+            }
+            disabled={isInitialsAvatar}
             onClick={async () => {
-              onChange({ src: await getInitialsAvatar(), file: null, type: 'initials' });
+              onChange({ src: await getInitialsAvatar(user?.name), file: null, type: 'initials' });
             }}
           >
             Get Initials

@@ -22,9 +22,9 @@ export async function handleDeleteFile(id) {
   }
 }
 
-export async function getInitialsAvatar() {
+export async function getInitialsAvatar(name) {
   try {
-    const avatarUrl = avatars.getInitials();
+    const avatarUrl = avatars.getInitials(name);
     return avatarUrl.href;
   } catch (error) {
     console.log(error);

@@ -103,7 +103,7 @@ function TrashProvider({ children }) {
         .reduce((acc, cur) => acc + cur, 0),
     [trash],
   );
-  const { getCurrentUser } = useUser();
+  const { getCurrentUser, isUserAuthenticated } = useUser();
 
   // --- Creation ---
   async function createTrash() {
@@ -308,9 +308,9 @@ function TrashProvider({ children }) {
       await handleGetTrash();
       lastCleanedUp !== undefined && (await handleCleanUpTrash());
     }
-    init();
+    isUserAuthenticated && init();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lastCleanedUp]);
+  }, [lastCleanedUp, isUserAuthenticated]);
 
   return (
     <TrashContext.Provider

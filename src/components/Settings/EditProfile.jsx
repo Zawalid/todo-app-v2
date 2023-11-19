@@ -15,7 +15,7 @@ export function EditProfile() {
     type: '',
   });
   const [isUpdated, setIsUpdated] = useState(false);
-  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+  const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
 
   useEffect(() => {
     setName(user?.name || '');
@@ -32,7 +32,7 @@ export function EditProfile() {
   function handleSaveChanges() {
     if (name.length < 3) return toast.error('Name must be at least 3 characters long');
     if (!checkIsEmailValid(email)) return toast.error('Please enter a valid email');
-    setIsPasswordModalOpen(true);
+    setIsVerificationModalOpen(true);
   }
 
   return (
@@ -75,11 +75,11 @@ export function EditProfile() {
         </div>
       </div>
       <Button text='Save Changes' disabled={!isUpdated} onClick={handleSaveChanges} />
-      {isPasswordModalOpen && (
+      {isVerificationModalOpen && (
         <UserVerificationModal
-          onClose={() => setIsPasswordModalOpen(false)}
+          onClose={() => setIsVerificationModalOpen(false)}
           onConfirm={async (password) => {
-            setIsPasswordModalOpen(false);
+            setIsVerificationModalOpen(false);
             setIsUpdated(false);
             const toastId = toast.loading('Updating profile...');
             await handleUpdateProfile(name, email, password, avatar, toastId);

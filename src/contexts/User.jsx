@@ -26,7 +26,7 @@ function UserProvider({ children }) {
         {
           email: user.email,
           name: user.name,
-          image: avatarUrl,
+          avatar: avatarUrl,
           accountID: newAccount.$id,
         },
         newAccount.$id,
@@ -69,6 +69,7 @@ function UserProvider({ children }) {
       setIsLoading(true);
       const session = await account.createEmailSession(email, password);
       if (!session) throw new Error('Something went wrong');
+      setIsUserAuthenticated(true);
     } catch (err) {
       toast.error(getErrorMessage(err));
     } finally {
@@ -80,6 +81,7 @@ function UserProvider({ children }) {
     try {
       await account.deleteSession('current');
       setUser(null);
+      setIsUserAuthenticated(false);
     } catch (error) {
       toast.error('Something went wrong. Please try again.');
     }
@@ -255,6 +257,7 @@ function UserProvider({ children }) {
     try {
       await databases.deleteDocument(DATABASE_ID, USERS_COLLECTION_ID, user.$id);
       await account.updateStatus();
+      setIsUserAuthenticated(false);
     } catch (error) {
       console.log(error);
     }
@@ -285,7 +288,10 @@ function UserProvider({ children }) {
   useEffect(() => {
     // Check if the user is authenticated
     const cookieFallback = localStorage.getItem('cookieFallback');
-    setIsUserAuthenticated(cookieFallback !== '[]');
+    const isAuthenticated = cookieFallback && cookieFallback !== '[]';
+    setIsUserAuthenticated(isAuthenticated);
+
+    if (!isAuthenticated) return;
     // Get the current user
     getCurrentUser();
     // Verify the account

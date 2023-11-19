@@ -10,7 +10,7 @@ import { Settings } from '../Settings/Settings';
 
 export function Menu() {
   const [isOpen, setIsOpen] = useState(true);
-  const [isSettingsOpen, setIsSettingsOpen] = useState(true);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const menu = useRef(null);
   const { trashLength } = useTrash();
 
@@ -53,15 +53,6 @@ export function Menu() {
                 <span className='text-xs font-semibold text-text-secondary'>{trashLength}</span>
               </div>
             </NavLink>
-
-            {/* <button className='mt-2 flex items-center gap-3 px-3'>
-              <i className='fa-solid fa-gear text-text-tertiary'></i>
-              <span className='text-sm   text-text-secondary'>Settings</span>
-            </button>
-            <button className='mt-3 flex items-center gap-3 px-3' onClick={handleSignOut}>
-              <i className='fa-solid fa-sign-out text-text-error'></i>
-              <span className='text-sm  font-medium text-text-error'>Sign Out</span>
-            </button> */}
           </div>
           {isSettingsOpen && <Settings onClose={() => setIsSettingsOpen(false)} />}
         </>
