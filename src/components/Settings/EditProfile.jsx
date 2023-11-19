@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { useUserAuth } from '../../hooks';
+import { useUser } from '../../hooks';
 import { Button } from './Button';
 import { PasswordInput } from '../Common/PasswordInput';
 import { toast } from 'sonner';
 
 export function EditProfile() {
-  const { user, handleUpdateProfile } = useUserAuth();
+  const { user, handleUpdateProfile } = useUser();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [isUpdated, setIsUpdated] = useState(false);
@@ -15,6 +15,7 @@ export function EditProfile() {
     setName(user?.name || '');
     setEmail(user?.email || '');
   }, [user]);
+
   useEffect(() => {
     if (!name || !email) setIsUpdated(false);
   }, [name, email]);

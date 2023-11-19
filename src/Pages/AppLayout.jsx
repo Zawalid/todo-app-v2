@@ -3,25 +3,25 @@ import { Menu } from '../components/Menu/Menu';
 import { Main } from '../components/Main/Main';
 import '../styles/App.css';
 import { SearchProvider } from '../contexts';
-import { useFetchAllElements, useUserAuth } from '../hooks';
+import { useFetchAllElements, useUser } from '../hooks';
 import { Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
 
 function AppLayout() {
-  const { checkIsUserAuthenticated } = useUserAuth();
+  const { isUserAuthenticated } = useUser();
   const { handleFetchAllElements, handleClearAllElements } = useFetchAllElements();
 
   useEffect(() => {
-    if (checkIsUserAuthenticated()) {
+    if (isUserAuthenticated) {
       handleFetchAllElements();
     }
-    return () => !checkIsUserAuthenticated() && handleClearAllElements();
+    return () => !isUserAuthenticated && handleClearAllElements();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <>
-      {checkIsUserAuthenticated() ? (
+      {isUserAuthenticated ? (
         <div className='flex h-full gap-2  bg-background-primary p-5'>
           <SearchProvider>
             <Menu />

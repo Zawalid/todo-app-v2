@@ -1,9 +1,8 @@
 import Tippy from '@tippyjs/react';
-import { useUserAuth } from '../../hooks';
+import { useUser } from '../../hooks';
 
-export function Profile() {
-  const { user, handleSignOut } = useUserAuth();
-
+export function Profile({ onOpenSettings }) {
+  const { user, handleSignOut } = useUser();
   return (
     <div className='relative flex flex-1 items-center gap-2'>
       <div
@@ -19,7 +18,7 @@ export function Profile() {
             <span className='mb-2 block flex-1 border-b px-2 pb-2 pt-1 text-xs font-semibold text-text-tertiary '>
               {user?.email}
             </span>
-            <button className=' flex items-center gap-3 px-2'>
+            <button className=' flex items-center gap-3 px-2' onClick={onOpenSettings}>
               <i className='fa-solid fa-gear text-sm text-text-tertiary'></i>
               <span className='text-xs   text-text-secondary'>Settings</span>
             </button>

@@ -5,7 +5,7 @@ import { useLists } from './useLists';
 import { useTags } from './useTags';
 import { useStickyNotes } from './useStickyNotes';
 import { useLoadElements } from './useLoadElements';
-import { useUserAuth } from './useUserAuth';
+import { useUser } from './useUser';
 
 const { tasksCollectionId, listsCollectionId, tagsCollectionId, stickyNotesCollectionId } =
   appWriteConfig;
@@ -16,7 +16,7 @@ export function useFetchAllElements() {
   const { setTags, setIsTagsLoading } = useTags();
   const { setStickyNotes } = useStickyNotes();
   const { handleLoadElements } = useLoadElements();
-  const { getCurrentUser } = useUserAuth();
+  const { getCurrentUser } = useUser();
 
   const elements = [
     {

@@ -2,16 +2,18 @@ import { createContext, useEffect, useState } from 'react';
 import { account, appWriteConfig, avatars, databases } from '../lib/appwrite/config';
 import { ID, Query } from 'appwrite';
 import { toast } from 'sonner';
-import { useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 const USERS_COLLECTION_ID = appWriteConfig.usersCollectionId;
 
-export const UserAuthContext = createContext();
+export const UserContext = createContext();
 
-function UserAuthProvider({ children }) {
+function UserProvider({ children }) {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
+  const [searchParams] = useSearchParams();
 
   // ------------- Authentication
 
@@ -99,11 +101,6 @@ function UserAuthProvider({ children }) {
       console.log(error);
       setUser(null);
     }
-  }
-
-  function checkIsUserAuthenticated() {
-    const cookieFallback = localStorage.getItem('cookieFallback');
-    return cookieFallback && cookieFallback !== '[]';
   }
 
   // ------------- Settings
@@ -210,16 +207,47 @@ function UserAuthProvider({ children }) {
     }
   }
 
+  // Email Verification
+  async function handleSendVerificationEmail() {
+    try {
+      await account.createVerification('http://localhost:5173/app/'); // TODO: Change this to the production url
+      toast.success('We have sent you an email with a link to verify your account.');
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
+  }
+
+  async function handleVerifyAccount(userId, secret) {
+    const user = await getCurrentUser();
+    if (user.emailVerification) return;
+    try {
+      await account.updateVerification(userId, secret);
+      toast.success('Your account has been verified');
+    } catch (error) {
+      toast.error(error.message);
+    }
+  }
+
   useEffect(() => {
+    // Check if the user is authenticated
+    const cookieFallback = localStorage.getItem('cookieFallback');
+    setIsUserAuthenticated(cookieFallback !== '[]');
+    // Get the current user
     getCurrentUser();
+    // Verify the account
+    if (searchParams.has('userId') && searchParams.has('secret') && searchParams.has('expire')) {
+      handleVerifyAccount(searchParams.get('userId'), searchParams.get('secret'));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
-    <UserAuthContext.Provider
+    <UserContext.Provider
       value={{
         user,
         isLoading,
-        checkIsUserAuthenticated,
+        isUserAuthenticated,
         handleSignUp,
         handleSignIn,
         handleSignOut,
@@ -230,10 +258,12 @@ function UserAuthProvider({ children }) {
         handleDeleteSession,
         handleDeleteSessions,
         handleDeleteAccount,
+        handleSendVerificationEmail,
+        handleVerifyAccount,
       }}
     >
       {children}
-    </UserAuthContext.Provider>
+    </UserContext.Provider>
   );
 }
 
@@ -256,4 +286,4 @@ function getErrorMessage(err) {
       return 'Something went wrong. Please try again.';
   }
 }
-export default UserAuthProvider;
+export default UserProvider;

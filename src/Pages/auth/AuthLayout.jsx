@@ -1,14 +1,14 @@
 import { Outlet, Navigate } from 'react-router-dom';
-import { useUserAuth } from '../../hooks/useUserAuth';
+import { useUser } from '../../hooks/useUser';
 import bgImage from '../../assets/bg.png';
 import { Logo } from '../../components/Common/Logo';
 
 function AuthLayout() {
-  const { checkIsUserAuthenticated } = useUserAuth();
+  const { isUserAuthenticated } = useUser();
 
   return (
     <>
-      {checkIsUserAuthenticated() ? (
+      {isUserAuthenticated ? (
         <Navigate to='/app' replace={true} />
       ) : (
         <div className='grid h-full w-full  grid-cols-2 p-5'>

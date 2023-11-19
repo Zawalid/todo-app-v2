@@ -7,7 +7,7 @@ export { useDeleteElement } from './useDeleteElement';
 export { useRestoreElement } from './useRestoreELement';
 export { useLoadElements } from './useLoadElements';
 export { useSearch } from './useSearch';
-export { useUserAuth } from './useUserAuth';
+export { useUser } from './useUser';
 export { useFetchAllElements } from './useFetchAllElements';
 export { useIsTitleTaken } from './useIsTitleTaken';
 

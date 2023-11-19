@@ -5,7 +5,7 @@ import { useDeleteElement } from '../hooks/useDeleteElement';
 import { useLoadElements } from '../hooks/useLoadElements';
 import { toast } from 'sonner';
 import { useTrash } from '../hooks/useTrash';
-import { useUserAuth } from '../hooks/useUserAuth';
+import { useUser } from '../hooks/useUser';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 const TAGS_COLLECTION_ID = appWriteConfig.tagsCollectionId;
@@ -26,7 +26,7 @@ function TagsProvider({ children }) {
   const { handleDeleteElement } = useDeleteElement();
   const { handleLoadElements } = useLoadElements();
   const { handleRestoreFromTrash } = useTrash();
-  const { user } = useUserAuth();
+  const { user } = useUser();
 
   async function handleAddTag(title, bgColor, textColor) {
     const toastId = toast.loading('Adding tag...');

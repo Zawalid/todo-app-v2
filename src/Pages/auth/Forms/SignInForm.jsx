@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { useUserAuth } from '../../../hooks/useUserAuth';
+import { useUser } from '../../../hooks/useUser';
 import { Button, AuthLink } from './components';
 import { PasswordInput } from '../../../components/Common/PasswordInput';
 import { InputField } from '../../../components/Common/InputField';
@@ -8,7 +8,7 @@ import { InputField } from '../../../components/Common/InputField';
 function SignInForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { handleSignIn, isLoading } = useUserAuth();
+  const { handleSignIn, isLoading } = useUser();
 
   async function handleSubmit(e) {
     e.preventDefault();

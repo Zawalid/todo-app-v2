@@ -4,7 +4,7 @@ import { useTags } from './useTags';
 import { useLists } from './useLists';
 import { useStickyNotes } from './useStickyNotes';
 import { useLoadElements } from './useLoadElements';
-import { useUserAuth } from './useUserAuth';
+import { useUser } from './useUser';
 
 const { tasksCollectionId, listsCollectionId, tagsCollectionId, stickyNotesCollectionId } =
   appWriteConfig;
@@ -22,7 +22,7 @@ export function useRestoreElement() {
   const { setLists } = useLists();
   const { setStickyNotes } = useStickyNotes();
   const { handleLoadElements } = useLoadElements();
-const { user } = useUserAuth();
+const { user } = useUser();
 
   const setters = {
     tasks: setTasks,

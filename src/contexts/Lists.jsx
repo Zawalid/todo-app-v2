@@ -6,7 +6,7 @@ import { useDeleteElement } from '../hooks/useDeleteElement';
 import { useLoadElements } from '../hooks/useLoadElements';
 import { toast } from 'sonner';
 import { useTrash } from '../hooks/useTrash';
-import { useUserAuth } from '../hooks/useUserAuth';
+import { useUser } from '../hooks/useUser';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 const LISTS_COLLECTION_ID = '65422c65a17f95378d53';
@@ -66,7 +66,7 @@ function ListsProvider({ children }) {
   const { handleDeleteElement } = useDeleteElement();
   const { handleLoadElements } = useLoadElements();
   const { handleRestoreFromTrash } = useTrash();
-  const { user } = useUserAuth();
+  const { user } = useUser();
 
   async function handleAddList(title, color, list) {
     const toastId = toast.loading('Adding list...');

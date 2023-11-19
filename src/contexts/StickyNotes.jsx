@@ -6,7 +6,7 @@ import { useDeleteElement } from '../hooks/useDeleteElement';
 import { useLoadElements } from '../hooks/useLoadElements';
 import { toast } from 'sonner';
 import { useTrash } from '../hooks/useTrash';
-import { useUserAuth } from '../hooks/useUserAuth';
+import { useUser } from '../hooks/useUser';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 const STICKY_NOTES_COLLECTION_ID = appWriteConfig.stickyNotesCollectionId;
@@ -21,7 +21,7 @@ export const StickyNotesContext = createContext();
   const { handleDeleteElement } = useDeleteElement();
   const { handleLoadElements } = useLoadElements();
   const {handleRestoreFromTrash } = useTrash();
-  const {user} = useUserAuth()
+  const {user} = useUser()
 
   async function handleAddStickyNote(note) {
     const toastId = toast.loading('Adding sticky note...')

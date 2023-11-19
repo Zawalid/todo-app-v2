@@ -25,3 +25,4 @@ export function setPermissions(userId) {
     Permission.delete(Role.user(userId)),
   ];
 }
+

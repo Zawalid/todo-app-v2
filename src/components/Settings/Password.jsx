@@ -2,14 +2,14 @@ import { useEffect, useState } from 'react';
 import { PasswordInput } from '../Common/PasswordInput';
 import { Button } from './Button';
 import { toast } from 'sonner';
-import { useUserAuth } from '../../hooks';
+import { useUser } from '../../hooks';
 
 export function Password() {
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [isFilled, setIsFilled] = useState(false);
-  const { handleUpdatePassword } = useUserAuth();
+  const { handleUpdatePassword } = useUser();
 
 useEffect(() => {
   if(oldPassword && newPassword && confirmNewPassword) setIsFilled(true);

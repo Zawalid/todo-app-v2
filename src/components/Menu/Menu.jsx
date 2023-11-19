@@ -10,6 +10,7 @@ import { Settings } from '../Settings/Settings';
 
 export function Menu() {
   const [isOpen, setIsOpen] = useState(true);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(true);
   const menu = useRef(null);
   const { trashLength } = useTrash();
 
@@ -31,8 +32,7 @@ export function Menu() {
       {isOpen && (
         <>
           <div className='mb-3 flex items-center justify-between gap-8 pb-3'>
-            {/* <h2 className='text-xl font-bold text-text-secondary'>Menu</h2> */}
-            <Profile />
+            <Profile onOpenSettings={() => setIsSettingsOpen(true)} />
             <button onClick={() => setIsOpen(false)}>
               <i className='fa-solid fa-angles-left cursor-pointer  text-text-secondary'></i>
             </button>
@@ -63,7 +63,7 @@ export function Menu() {
               <span className='text-sm  font-medium text-text-error'>Sign Out</span>
             </button> */}
           </div>
-          <Settings />
+          {isSettingsOpen && <Settings onClose={() => setIsSettingsOpen(false)} />}
         </>
       )}
     </aside>

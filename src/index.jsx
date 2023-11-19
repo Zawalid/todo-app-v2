@@ -8,14 +8,14 @@ import {
   StickyNotesProvider,
   TagsProvider,
   TrashProvider,
-  UserAuthProvider,
+  UserProvider,
 } from './contexts';
 import './styles/index.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
-      <UserAuthProvider>
+      <UserProvider>
         <TrashProvider>
           <ListsProvider>
             <TasksProvider>
@@ -27,7 +27,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             </TasksProvider>
           </ListsProvider>
         </TrashProvider>
-      </UserAuthProvider>
+      </UserProvider>
     </BrowserRouter>
   </React.StrictMode>,
 );

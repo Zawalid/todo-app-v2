@@ -1,7 +1,7 @@
 import { Button } from './Button';
 import { SpinnerLoader } from '../Common/SpinnerLoader';
 import { useEffect, useState } from 'react';
-import { useUserAuth } from '../../hooks';
+import { useUser } from '../../hooks';
 import { useNavigate } from 'react-router-dom';
 
 const BROWSERS_IMAGES = [
@@ -38,7 +38,7 @@ const BROWSERS_IMAGES = [
 export function Sessions() {
   const [sessions, setSessions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const { handleGetSessions, handleDeleteSession, handleDeleteSessions } = useUserAuth();
+  const { handleGetSessions, handleDeleteSession, handleDeleteSessions } = useUser();
   const navigate = useNavigate();
 
   useEffect(() => {

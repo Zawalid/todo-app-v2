@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { ConfirmationModal } from '../Common/ConfirmationModal';
-import { useUserAuth } from '../../hooks';
+import { useUser } from '../../hooks';
 import { useNavigate } from 'react-router-dom';
 
 export function SideBar({ currentTab, setCurrentTab }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { handleDeleteAccount } = useUserAuth();
+  const { user, handleDeleteAccount, handleSendVerificationEmail } = useUser();
   const navigate = useNavigate();
 
   return (
@@ -41,12 +41,20 @@ export function SideBar({ currentTab, setCurrentTab }) {
           <i className='fa-solid fa-right-to-bracket'></i>
           <span className='font-medium'>Sessions</span>
         </button>
-        <div className='border-t absolute bottom-0 pt-3 space-y-3'>
-          <button className='grid grid-cols-[30px_1fr] justify-items-start items-center  pl-5 '>
-            <i className='fa-solid fa-user-check text-text-tertiary'></i>
-            <span className='text-sm font-semibold text-text-secondary'>Verify Account</span>
-          </button>
-          <button className='grid grid-cols-[30px_1fr] justify-items-start items-center  pl-5 ' onClick={() => setIsModalOpen(true)}>
+        <div className='absolute bottom-0 space-y-3 border-t pt-3'>
+          {!user?.emailVerification && (
+            <button
+              className='grid grid-cols-[30px_1fr] items-center justify-items-start'
+              onClick={handleSendVerificationEmail}
+            >
+              <i className='fa-solid fa-user-check text-text-tertiary'></i>
+              <span className='text-sm font-semibold text-text-secondary'>Verify Account</span>
+            </button>
+          )}
+          <button
+            className='grid grid-cols-[30px_1fr] items-center justify-items-start'
+            onClick={() => setIsModalOpen(true)}
+          >
             <i className='fa-solid fa-trash-can  text-text-error'></i>
             <span className='text-sm font-semibold text-text-error'>Delete Account</span>
           </button>

@@ -3,7 +3,7 @@ import { databases, appWriteConfig, setPermissions } from '../lib/appwrite/confi
 import { ID, Query } from 'appwrite';
 import { remove$Properties } from '../utils/remove$Properties';
 import { toast } from 'sonner';
-import { useUserAuth } from '../hooks/useUserAuth';
+import { useUser } from '../hooks/useUser';
 
 const {
   databaseId: DATABASE_ID,
@@ -103,7 +103,7 @@ function TrashProvider({ children }) {
         .reduce((acc, cur) => acc + cur, 0),
     [trash],
   );
-  const { getCurrentUser } = useUserAuth();
+  const { getCurrentUser } = useUser();
 
   // --- Creation ---
   async function createTrash() {
