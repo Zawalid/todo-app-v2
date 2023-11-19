@@ -1,19 +1,28 @@
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import { useUser } from '../../hooks';
 import { Button } from './Button';
-import { PasswordInput } from '../Common/PasswordInput';
-import { toast } from 'sonner';
+import { UploadImage } from './UploadImage';
+import { UserVerificationModal } from './UserVerificationModal';
 
 export function EditProfile() {
   const { user, handleUpdateProfile } = useUser();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [avatar, setAvatar] = useState({
+    src: '',
+    file: null,
+    type: '',
+  });
   const [isUpdated, setIsUpdated] = useState(false);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
 
   useEffect(() => {
     setName(user?.name || '');
     setEmail(user?.email || '');
+    setAvatar((avatar) => {
+      return { ...avatar, src: user?.avatar || '' };
+    });
   }, [user]);
 
   useEffect(() => {
@@ -32,23 +41,13 @@ export function EditProfile() {
       <div className='mt-8 space-y-5'>
         <div>
           <h3 className='mb-3 font-bold text-text-secondary'>Avatar</h3>
-          <div className='flex items-center gap-5'>
-            <div
-              className='h-20 w-20 rounded-full bg-cover'
-              style={{
-                backgroundImage: `url('${user?.image}')`,
-              }}
-            ></div>
-            <div>
-              <button className='rounded-lg border px-3 py-2 text-sm font-medium text-text-primary shadow-sm transition-colors duration-300 hover:bg-background-tertiary'>
-                Upload new image
-              </button>
-              <p className='mb-1 mt-3 text-xs text-text-tertiary'>
-                At least 5OOx500 px recommended.
-              </p>
-              <p className='text-xs text-text-tertiary'>JPG or PNG and GIF is allowed</p>
-            </div>
-          </div>
+          <UploadImage
+            avatar={avatar.src}
+            onChange={(avatar) => {
+              setAvatar(avatar);
+              setIsUpdated(user?.avatar !== avatar.src);
+            }}
+          />
         </div>
         <div>
           <h3 className='mb-3 font-bold text-text-secondary'>Name</h3>
@@ -80,38 +79,14 @@ export function EditProfile() {
         <UserVerificationModal
           onClose={() => setIsPasswordModalOpen(false)}
           onConfirm={async (password) => {
-            await handleUpdateProfile(name, email, password);
             setIsPasswordModalOpen(false);
+            setIsUpdated(false);
+            const toastId = toast.loading('Updating profile...');
+            await handleUpdateProfile(name, email, password, avatar, toastId);
           }}
         />
       )}
     </>
-  );
-}
-
-function UserVerificationModal({ onClose, onConfirm }) {
-  const [password, setPassword] = useState('');
-  return (
-    <div className='fixed left-0 top-0 z-[999999] grid h-full w-full place-content-center bg-black bg-opacity-25 backdrop-blur-[1px]'>
-      <div className=' flex w-[500px] flex-col gap-5 rounded-lg bg-white px-8 py-4'>
-        <div className='flex items-center justify-between'>
-          <h2 className='text-2xl font-bold text-text-primary'>Let&apos;s verify it&apos;s you</h2>
-          <button onClick={onClose}>
-            <i className='fa-solid fa-xmark cursor-pointer text-xl text-text-tertiary'></i>
-          </button>
-        </div>
-        <p className='text-text-tertiary'>Please enter your password to</p>
-
-        <PasswordInput password={password} setPassword={setPassword} />
-        <Button
-          text='Confirm'
-          onClick={() => {
-            if (!password) return toast.error('Please enter your password');
-            onConfirm(password);
-          }}
-        />
-      </div>
-    </div>
   );
 }
 

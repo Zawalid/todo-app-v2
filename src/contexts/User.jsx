@@ -1,5 +1,6 @@
 import { createContext, useEffect, useState } from 'react';
 import { account, appWriteConfig, avatars, databases } from '../lib/appwrite/config';
+import { handleDeleteFile, handleUploadFile } from '../lib/appwrite/api';
 import { ID, Query } from 'appwrite';
 import { toast } from 'sonner';
 import { useSearchParams } from 'react-router-dom';
@@ -106,18 +107,30 @@ function UserProvider({ children }) {
   // ------------- Settings
 
   // Profile
+  async function handleUpdateUser(data) {
+    try {
+      const updatedUser = await databases.updateDocument(
+        DATABASE_ID,
+        USERS_COLLECTION_ID,
+        user.$id,
+        data,
+      );
+      return updatedUser;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
   async function handleUpdateName(name) {
     try {
-      const res = await account.updateName(name);
+      await account.updateName(name);
       setUser((user) => {
         return {
           ...user,
-          name: res.name,
+          name,
         };
       });
-      await databases.updateDocument(DATABASE_ID, USERS_COLLECTION_ID, user.$id, {
-        name: res.name,
-      });
+      await handleUpdateUser({ name });
     } catch (error) {
       throw new Error(error);
     }
@@ -125,33 +138,73 @@ function UserProvider({ children }) {
 
   async function handleUpdateEmail(email, password) {
     try {
-      const res = await account.updateEmail(email, password);
+      await account.updateEmail(email, password);
       setUser((user) => {
         return {
           ...user,
-          email: res.email,
+          email,
         };
       });
-      await databases.updateDocument(DATABASE_ID, USERS_COLLECTION_ID, user.$id, {
-        email: res.email,
-      });
+      await handleUpdateUser({ email });
     } catch (error) {
       throw new Error(error);
     }
   }
 
-  async function handleUpdateProfile(name, email, password) {
-    console.log(name, email, password);
+  async function handleUpdateAvatar(file) {
+    try {
+      const { id, url } = await handleUploadFile(file);
+      // Delete the old avatar
+      if (user.avatarId) await handleDeleteFile(user.avatarId);
+      // Update the user
+      await handleUpdateUser({ avatar: url, avatarId: id });
+      setUser((user) => {
+        return {
+          ...user,
+          avatar: url,
+          avatarId: id,
+        };
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function handleGetInitialsAvatar(avatarUrl) {
+    try {
+      // Delete the old avatar
+      if (user.avatarId) await handleDeleteFile(user.avatarId);
+      await handleUpdateUser({ avatar: avatarUrl, avatarId: '' });
+      setUser((user) => {
+        return {
+          ...user,
+          avatar: avatarUrl,
+        };
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function handleUpdateProfile(name, email, password, avatar, toastId) {
     try {
       if (user.name !== name) await handleUpdateName(name);
       if (user.email !== email) await handleUpdateEmail(email, password);
+      if (user.avatar !== avatar.src) {
+        avatar.type === 'uploaded'
+          ? await handleUpdateAvatar(avatar.file)
+          : await handleGetInitialsAvatar(avatar.src);
+      }
 
       toast.success(
         user.name !== name
           ? 'Your name has been updated'
           : user.email !== email
           ? 'Your email has been updated'
-          : 'Your name and email have been updated',
+          : user.avatar !== avatar.src
+          ? 'Your avatar has been updated'
+          : 'Your profile has been updated',
+        { id: toastId },
       );
     } catch (error) {
       toast.error('Your password is incorrect. Please try again.');

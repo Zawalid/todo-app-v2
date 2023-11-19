@@ -6,7 +6,10 @@ export function Button({ text, disabled, onClick }) {
         (disabled ? 'bg-zinc-300' : 'bg-text-secondary')
       }
       disabled={disabled}
-      onClick={() => !disabled && onClick()}
+      onClick={() => {
+        if (!onClick) return;
+        !disabled && onClick();
+      }}
     >
       <span className='text-white'>{text}</span>
     </button>

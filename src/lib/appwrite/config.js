@@ -1,4 +1,4 @@
-import { Client, Databases, Account, Avatars, Permission, Role } from 'appwrite';
+import { Client, Databases, Account, Avatars, Permission, Role, Storage } from 'appwrite';
 
 export const appWriteConfig = {
   endpoint: import.meta.env.VITE_ENDPOINT,
@@ -10,6 +10,7 @@ export const appWriteConfig = {
   stickyNotesCollectionId: import.meta.env.VITE_STICKY_NOTES_COLLECTION_ID,
   trashCollectionId: import.meta.env.VITE_TRASH_COLLECTION_ID,
   usersCollectionId: import.meta.env.VITE_USERS_COLLECTION_ID,
+  imagesStorageId: import.meta.env.VITE_USERS_IMAGES_STORAGE_ID,
 };
 const client = new Client();
 client.setEndpoint(appWriteConfig.endpoint).setProject(appWriteConfig.projectId);
@@ -17,6 +18,7 @@ client.setEndpoint(appWriteConfig.endpoint).setProject(appWriteConfig.projectId)
 export const account = new Account(client);
 export const databases = new Databases(client);
 export const avatars = new Avatars(client);
+export const storage = new Storage(client);
 
 export function setPermissions(userId) {
   return [

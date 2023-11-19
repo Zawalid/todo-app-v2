@@ -8,7 +8,7 @@ export function Profile({ onOpenSettings }) {
       <div
         className='h-6 w-6 rounded-full bg-cover'
         style={{
-          backgroundImage: `url('${user?.image}')`,
+          backgroundImage: `url('${user?.avatar}')`,
         }}
       ></div>
       <span className='flex-1 text-sm font-semibold text-text-primary '>{user?.name}</span>
