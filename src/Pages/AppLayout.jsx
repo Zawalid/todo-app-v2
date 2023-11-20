@@ -8,20 +8,20 @@ import { Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
 
 function AppLayout() {
-  const { isUserAuthenticated } = useUser();
+  const { checkIsUserAuthenticated } = useUser();
   const { handleFetchAllElements, handleClearAllElements } = useFetchAllElements();
 
   useEffect(() => {
-    if (isUserAuthenticated) {
+    if (checkIsUserAuthenticated()) {
       handleFetchAllElements();
     }
-    return () => !isUserAuthenticated && handleClearAllElements();
+    return () => !checkIsUserAuthenticated() && handleClearAllElements();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <>
-      {isUserAuthenticated ? (
+      {checkIsUserAuthenticated() ? (
         <div className='flex h-full gap-2  bg-background-primary p-5'>
           <SearchProvider>
             <Menu />

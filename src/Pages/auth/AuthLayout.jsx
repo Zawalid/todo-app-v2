@@ -4,11 +4,11 @@ import bgImage from '../../assets/bg.png';
 import { Logo } from '../../components/Common/Logo';
 
 function AuthLayout() {
-  const { isUserAuthenticated } = useUser();
+  const { checkIsUserAuthenticated } = useUser();
 
   return (
     <>
-      {isUserAuthenticated ? (
+      {checkIsUserAuthenticated() ? (
         <Navigate to='/app' replace={true} />
       ) : (
         <div className='grid h-full w-full  grid-cols-2 p-5'>

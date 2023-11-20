@@ -13,7 +13,6 @@ export const UserContext = createContext();
 function UserProvider({ children }) {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
   const [searchParams] = useSearchParams();
 
   // ------------- Authentication
@@ -69,7 +68,6 @@ function UserProvider({ children }) {
       setIsLoading(true);
       const session = await account.createEmailSession(email, password);
       if (!session) throw new Error('Something went wrong');
-      setIsUserAuthenticated(true);
     } catch (err) {
       toast.error(getErrorMessage(err));
     } finally {
@@ -81,7 +79,6 @@ function UserProvider({ children }) {
     try {
       await account.deleteSession('current');
       setUser(null);
-      setIsUserAuthenticated(false);
     } catch (error) {
       toast.error('Something went wrong. Please try again.');
     }
@@ -89,7 +86,7 @@ function UserProvider({ children }) {
 
   async function getCurrentUser() {
     try {
-      if (user) return;
+      if (user) return user;
       const currentAccount = await account.get();
       const res = await databases.listDocuments(DATABASE_ID, USERS_COLLECTION_ID, [
         Query.equal('accountID', currentAccount.$id),
@@ -104,6 +101,12 @@ function UserProvider({ children }) {
       console.log(error);
       setUser(null);
     }
+  }
+
+  function checkIsUserAuthenticated() {
+    const cookieFallback = localStorage.getItem('cookieFallback');
+    const isAuthenticated = cookieFallback && cookieFallback !== '[]';
+    return isAuthenticated;
   }
 
   // ------------- Settings
@@ -257,7 +260,6 @@ function UserProvider({ children }) {
     try {
       await databases.deleteDocument(DATABASE_ID, USERS_COLLECTION_ID, user.$id);
       await account.updateStatus();
-      setIsUserAuthenticated(false);
     } catch (error) {
       console.log(error);
     }
@@ -286,12 +288,7 @@ function UserProvider({ children }) {
   }
 
   useEffect(() => {
-    // Check if the user is authenticated
-    const cookieFallback = localStorage.getItem('cookieFallback');
-    const isAuthenticated = cookieFallback && cookieFallback !== '[]';
-    setIsUserAuthenticated(isAuthenticated);
-
-    if (!isAuthenticated) return;
+    if (!checkIsUserAuthenticated()) return;
     // Get the current user
     getCurrentUser();
     // Verify the account
@@ -306,7 +303,7 @@ function UserProvider({ children }) {
       value={{
         user,
         isLoading,
-        isUserAuthenticated,
+        checkIsUserAuthenticated,
         handleSignUp,
         handleSignIn,
         handleSignOut,

@@ -228,7 +228,6 @@ function TasksProvider({ children }) {
     handleUpdateTask(id, task, isCompleted);
   }
   async function handleDeleteTask(id, listId, deletePermanently, isClearing) {
-    console.log(listId);
     const toastId = isClearing ? null : toast.loading('Deleting task...');
     try {
       await handleDeleteElement(
