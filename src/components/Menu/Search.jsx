@@ -14,6 +14,7 @@ export function Search() {
         type='text'
         className='w-full rounded-lg border border-background-tertiary    py-1 pl-3  pr-16 text-sm text-text-tertiary bg-background-secondary placeholder:text-text-tertiary focus:outline-none'
         placeholder='Search'
+        autoComplete='off'
         value={searchQuery || ''}
         onChange={(e) => {
           setQuery(e.target.value);
