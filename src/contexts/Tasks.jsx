@@ -170,10 +170,9 @@ function TasksProvider({ children }) {
   ];
 
   async function handleAddTask(task) {
-    const toastId = toast.loading('Adding task...');
-    try {
-      setIsAddingTask(true);
-      const response = await databases.createDocument(
+    setIsAddingTask(true);
+    const toastId = toast.promise(
+      databases.createDocument(
         DATABASE_ID,
         TASKS_COLLECTION_ID,
         ID.unique(),
@@ -182,149 +181,197 @@ function TasksProvider({ children }) {
           owner: user?.$id,
         },
         setPermissions(user?.$id),
-      );
-      toast.success('Task has been successfully added.', { id: toastId });
-      setTasks((tasks) => [...tasks, response]);
-    } catch (err) {
-      toast.error('Failed to add the task.', {
-        id: toastId,
-        action: {
-          label: 'Try again',
-          onClick: () => {
-            handleAddTask(task);
-          },
+      ),
+      {
+        loading: 'Adding task...',
+        success: (task) => {
+          setTasks((tasks) => [...tasks, task]);
+          return 'Task has been successfully added.';
         },
-      });
-    } finally {
-      setIsAddingTask(false);
-    }
-  }
-  async function handleUpdateTask(id, task, isCompleted) {
-    const toastId = isCompleted ?? toast.loading('Updating task...');
-    try {
-      const updatedTask = isCompleted ? { ...task, isCompleted } : { ...task };
-      remove$Properties(updatedTask);
-      await databases.updateDocument(DATABASE_ID, TASKS_COLLECTION_ID, id, updatedTask);
-      isCompleted ?? toast.success('Task has been successfully updated.', { id: toastId });
-    } catch (err) {
-      toast.error('Failed to update the task.', {
-        id: toastId,
-        action: {
-          label: 'Try again',
-          onClick: () => {
-            handleUpdateTask(id, task, isCompleted);
-          },
+        error: () => {
+          toast.dismiss(toastId);
+          toast.error('Failed to add the task.', {
+            action: {
+              label: 'Try again',
+              onClick: () => {
+                handleAddTask(task);
+              },
+            },
+          });
         },
-      });
-    } finally {
-      await handleLoadElements(user, TASKS_COLLECTION_ID, setTasks);
-    }
+      },
+    );
+    setIsAddingTask(false);
   }
-  async function handleCompleteTask(id, task, isCompleted) {
-    handleUpdateTask(id, task, isCompleted);
-  }
-  async function handleDeleteTask(id, deletePermanently, isClearing) {
-    const toastId = isClearing ? null : toast.loading('Deleting task...');
-    try {
-      await handleDeleteElement(
-        id,
-        TASKS_COLLECTION_ID,
-        deletePermanently,
-        'tasks',
-        tasks,
-        setTasks,
-      );
 
-      if (!isClearing) {
-        toast.success(getDeletionMessage('success', true), {
-          id: toastId,
-          action: deletePermanently
-            ? null
-            : {
-                label: 'Undo',
-                onClick: () => {
-                  undoDelete(async () => handleRestoreFromTrash('tasks', id, true));
+  async function handleUpdateTask(id, task) {
+    const updatedTask = { ...task };
+    remove$Properties(updatedTask);
+    const toastId = toast.promise(
+      databases.updateDocument(DATABASE_ID, TASKS_COLLECTION_ID, id, updatedTask),
+      {
+        loading: 'Updating task...',
+        success: (updatedTask) => {
+          setTasks((tasks) => tasks.map((task) => (task.$id === id ? updatedTask : task)));
+          return 'Task has been successfully updated.';
+        },
+        error: () => {
+          toast.dismiss(toastId);
+          toast.error('Failed to update the task.', {
+            action: {
+              label: 'Try again',
+              onClick: () => {
+                handleUpdateTask(id, task);
+              },
+            },
+          });
+        },
+      },
+    );
+  }
+
+  async function handleCompleteTask(id, isCompleted) {
+    try {
+      await databases.updateDocument(DATABASE_ID, TASKS_COLLECTION_ID, id, {
+        isCompleted,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function handleDeleteTask(id, deletePermanently) {
+    const toastId = toast.promise(
+      handleDeleteElement(id, TASKS_COLLECTION_ID, deletePermanently, 'tasks', tasks, setTasks),
+      {
+        loading: 'Deleting task...',
+        success: () => {
+          toast.dismiss(toastId);
+          toast.success(getDeletionMessage('success', true), {
+            action: deletePermanently
+              ? null
+              : {
+                  label: 'Undo',
+                  onClick: () => {
+                    undoDelete(async () => handleRestoreFromTrash('tasks', id, true));
+                  },
                 },
-              },
-        });
-      }
-    } catch (err) {
-      !isClearing &&
-        toast.error(getDeletionMessage('error', true), {
-          id: toastId,
-          action: {
-            label: 'Try again',
-            onClick: () => {
-              handleDeleteTask(id, deletePermanently, isClearing);
-            },
-          },
-        });
-    }
-  }
-  async function handleClearAllTasks(condition1, condition2, deletePermanently) {
-    const id = toast.loading('Clearing all tasks...');
-    try {
-      const deletedTasks = tasks.filter((task) => condition1(task) && condition2(task));
-
-      for (const task of deletedTasks) {
-        await handleDeleteTask(task.$id, deletePermanently, true);
-      }
-
-      toast.success(getDeletionMessage('success', false, false), {
-        id,
-        action: deletePermanently
-          ? null
-          : {
-              label: 'Undo',
-              onClick: () => {
-                undoDelete(async () => {
-                  for (const task of deletedTasks) {
-                    await handleRestoreFromTrash('tasks', task.$id, true);
-                  }
-                });
-              },
-            },
-      });
-    } catch (err) {
-      toast.error(getDeletionMessage('error', false, false), {
-        id,
-        action: {
-          label: 'Try again',
-          onClick: () => {
-            handleClearAllTasks(condition1, condition2, deletePermanently);
-          },
+          });
         },
-      });
-    }
-  }
-  async function handleDeleteMultipleTasks(deletePermanently) {
-    const id =
-      selectedTasks.length === 1
-        ? toast.loading(`Deleting task...`)
-        : toast.loading(`Deleting ${selectedTasks.length} tasks...`);
-
-    try {
-      for (const task of selectedTasks) {
-        await handleDeleteTask(task.$id, deletePermanently, true);
-      }
-      toast.success(getDeletionMessage('success', false, true, selectedTasks.length), {
-        id,
-        action: deletePermanently
-          ? null
-          : {
-              label: 'Undo',
+        error: () => {
+          toast.dismiss(toastId);
+          toast.error(getDeletionMessage('error', true), {
+            action: {
+              label: 'Try again',
               onClick: () => {
-                undoDelete(async () => {
-                  for (const task of selectedTasks) {
-                    await handleRestoreFromTrash('tasks', task.$id, true);
-                  }
-                });
+                handleDeleteTask(id, deletePermanently);
               },
             },
-      });
-    } catch (err) {
-      toast.error(getDeletionMessage('error', false, true, selectedTasks.length), { id });
-    }
+          });
+        },
+      },
+    );
+  }
+
+  async function handleClearAllTasks(condition1, condition2, deletePermanently) {
+    const deletedTasks = tasks.filter((task) => condition1(task) && condition2(task));
+
+    const toastId = toast.promise(
+      Promise.all(
+        deletedTasks.map((task) =>
+          handleDeleteElement(
+            task.$id,
+            TASKS_COLLECTION_ID,
+            deletePermanently,
+            'tasks',
+            tasks,
+            setTasks,
+          ),
+        ),
+      ),
+      {
+        loading: 'Clearing all tasks...',
+        success: () => {
+          toast.dismiss(toastId);
+          toast.success(getDeletionMessage('success', false, false), {
+            action: deletePermanently
+              ? null
+              : {
+                  label: 'Undo',
+                  onClick: () => {
+                    undoDelete(async () => {
+                      await Promise.all(
+                        deletedTasks.map((task) => handleRestoreFromTrash('tasks', task.$id, true)),
+                      );
+                    });
+                  },
+                },
+          });
+        },
+        error: () => {
+          toast.dismiss(toastId);
+          toast.error(getDeletionMessage('error', false, false), {
+            action: {
+              label: 'Try again',
+              onClick: () => {
+                handleClearAllTasks(condition1, condition2, deletePermanently);
+              },
+            },
+          });
+        },
+      },
+    );
+  }
+
+  async function handleDeleteMultipleTasks(deletePermanently) {
+    const toastId = toast.promise(
+      Promise.all(
+        selectedTasks.map((task) =>
+          handleDeleteElement(
+            task.$id,
+            TASKS_COLLECTION_ID,
+            deletePermanently,
+            'tasks',
+            tasks,
+            setTasks,
+          ),
+        ),
+      ),
+      {
+        loading:
+          selectedTasks.length === 1
+            ? 'Deleting task...'
+            : `Deleting ${selectedTasks.length} tasks...`,
+        success: () => {
+          toast.dismiss(toastId);
+          toast.success(getDeletionMessage('success', false, true, selectedTasks.length), {
+            action: deletePermanently
+              ? null
+              : {
+                  label: 'Undo',
+                  onClick: () => {
+                    undoDelete(async () => {
+                      await Promise.all(
+                        selectedTasks.map((task) => handleRestoreFromTrash('tasks', task.$id, true)),
+                      );
+                    });
+                  },
+                },
+          });
+        },
+        error: () => {
+          toast.dismiss(toastId);
+          toast.error(getDeletionMessage('error', false, true, selectedTasks.length), {
+            action: {
+              label: 'Try again',
+              onClick: () => {
+                handleDeleteMultipleTasks(deletePermanently);
+              },
+            },
+          });
+        },
+      },
+    );
   }
 
   async function handleOpenTask(id) {
@@ -334,6 +381,7 @@ function TasksProvider({ children }) {
       setIsTaskOpen(true);
     }
   }
+
   async function undoDelete(fn) {
     await fn();
     await handleLoadElements(user, TASKS_COLLECTION_ID, setTasks);
