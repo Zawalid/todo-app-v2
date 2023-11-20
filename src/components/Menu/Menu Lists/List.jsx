@@ -23,7 +23,7 @@ export function List({ list }) {
   const listActions = useRef(null);
   const newListTitle = useRef(null);
   const navigate = useNavigate();
-  const path = useHref();
+  const path = useHref().split('app/')[1];
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -55,7 +55,7 @@ export function List({ list }) {
     handleRenameList($id, newTitle);
     setIsRenameInputOpen(false);
     // Change the path to the new title if the renamed list is the active one
-    path.replace(/%20/g, ' ') === `/${title}` && navigate(`/${newTitle}`);
+    path.replace(/%20/g, ' ') === title && navigate(newTitle);
   }
   return (
     <>
@@ -118,7 +118,7 @@ export function List({ list }) {
           onConfirm={() => {
             setIsDeleteModalOpen(false);
             handleDeleteList($id, deletePermanently);
-            path.replace(/%20/g, ' ') === `/${title}` && navigate('/');
+            path.replace(/%20/g, ' ') === title && navigate('/app');
             // To delete all the tasks of the deleted list
             // const tasksToDelete = tasks.filter((task) => task.listId === $id);
             // if (tasksToDelete.length === 0) return;

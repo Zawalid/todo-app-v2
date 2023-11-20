@@ -10,4 +10,5 @@ export { useSearch } from './useSearch';
 export { useUser } from './useUser';
 export { useFetchAllElements } from './useFetchAllElements';
 export { useIsTitleTaken } from './useIsTitleTaken';
+export { useSaveListsTitlesInLocalStorage } from './useSaveListsTitlesInLocalStorage';
 

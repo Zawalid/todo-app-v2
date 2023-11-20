@@ -1,11 +1,10 @@
 import { Routes, Route } from 'react-router-dom';
 import { HomePage, AppLayout, SignInForm, SignUpForm, NotFound, AuthLayout } from './Pages';
-import { useLists } from './hooks/useLists';
 import { Toaster } from 'sonner';
+import { useSaveListsTitlesInLocalStorage } from './hooks/';
 
 function App() {
-  const { lists } = useLists();
-  const listsTitles = lists.map((list) => list.title);
+  const listsTitles = useSaveListsTitlesInLocalStorage();
 
   return (
     <>
@@ -24,7 +23,7 @@ function App() {
         </Route>
         <Route path='*' element={<NotFound />} />
       </Routes>
-      
+
       <Toaster
         position='top-right'
         loadingIcon={
