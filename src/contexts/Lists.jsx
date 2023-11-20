@@ -15,27 +15,6 @@ const LISTS_COLLECTION_ID = '65422c65a17f95378d53';
 //   {
 //     title: 'Personal',
 //     color: '#ff6b6b',
-//     tasks: [
-//       {
-//         title: 'idk',
-//         note: '',
-//         dueDate: '',
-//         listId: '65424b5a69fab6f186d2',
-//         subtasks: [],
-//         isCompleted: false,
-//         tagsIds: [],
-//         priority: 0,
-//         index: 2,
-//         $id: '65419d00b10b220d3f93',
-//         $createdAt: '2023-11-01T00:34:08.726+00:00',
-//         $updatedAt: '2023-11-01T00:34:08.726+00:00',
-//         $permissions: [],
-//         $databaseId: '654169b1a5c05d9c1e7e',
-//         $collectionId: '65416a6c8f0a546d8b4b',
-//       },
-//     ],
-//     number: 0,
-//     index: 3,
 //     $id: '65424b5a69fab6f186d2',
 //     $createdAt: '2023-11-01T12:58:02.435+00:00',
 //     $updatedAt: '2023-11-01T12:58:02.435+00:00',
@@ -46,9 +25,6 @@ const LISTS_COLLECTION_ID = '65422c65a17f95378d53';
 //   {
 //     title: 'Work',
 //     color: '#fffebe',
-//     tasks: [],
-//     number: 0,
-//     index: 4,
 //     $id: '65424b881a6f20cec5cd',
 //     $createdAt: '2023-11-01T12:58:48.109+00:00',
 //     $updatedAt: '2023-11-01T12:58:48.109+00:00',
@@ -71,13 +47,7 @@ function ListsProvider({ children }) {
   async function handleAddList(title, color, list) {
     const toastId = toast.loading('Adding list...');
     try {
-      const newList = list
-        ? list
-        : {
-            title,
-            color,
-            tasks: [],
-          };
+      const newList = list ? list : { title, color };
       const response = await databases.createDocument(
         DATABASE_ID,
         LISTS_COLLECTION_ID,
@@ -111,18 +81,13 @@ function ListsProvider({ children }) {
     remove$Properties(updatedList);
 
     await databases.updateDocument(DATABASE_ID, LISTS_COLLECTION_ID, id, updatedList);
-    await handleLoadElements(user,LISTS_COLLECTION_ID, setLists);
+    await handleLoadElements(user, LISTS_COLLECTION_ID, setLists);
   }
   async function handleRenameList(id, title) {
     handleUpdateList(id, 'title', title);
   }
   async function handleChangeListColor(id, color) {
     handleUpdateList(id, 'color', color);
-  }
-  async function handleAddTaskToList(listId, taskId) {
-    const list = lists.find((l) => l.$id === listId);
-    const newTasks = [...list.tasks, taskId];
-    handleUpdateList(listId, 'tasks', newTasks);
   }
   async function handleDeleteList(id, deletePermanently) {
     const toastId = toast.loading('Deleting list...');
@@ -143,7 +108,7 @@ function ListsProvider({ children }) {
               label: 'Undo',
               onClick: async () => {
                 await handleRestoreFromTrash('lists', id, true);
-                await handleLoadElements(user,LISTS_COLLECTION_ID, setLists);
+                await handleLoadElements(user, LISTS_COLLECTION_ID, setLists);
               },
             },
       });
@@ -160,8 +125,6 @@ function ListsProvider({ children }) {
     }
   }
 
-
-
   return (
     <ListsContext.Provider
       value={{
@@ -173,7 +136,6 @@ function ListsProvider({ children }) {
         handleDeleteList,
         handleRenameList,
         handleChangeListColor,
-        handleAddTaskToList,
         setLists,
       }}
     >

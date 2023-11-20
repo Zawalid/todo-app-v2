@@ -1,14 +1,13 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { NavLink, useHref, useNavigate } from 'react-router-dom';
 import { ListAction } from './ListAction';
 import { ConfirmationModal } from '../../Common/ConfirmationModal';
-import { useIsTitleTaken, useLists } from '../../../hooks';
-// import { useTasks } from '../../../hooks/useTasks';
+import { useIsTitleTaken, useLists, useTasks } from '../../../hooks';
 
 export function List({ list }) {
-  const { $id, title, color, tasks: listTasks } = list;
+  const { $id, title, color } = list;
   const { lists, handleDeleteList, handleRenameList, handleChangeListColor } = useLists();
-  // const { tasks, handleDeleteTask } = useTasks();
+  const { tasks } = useTasks();
 
   const [isListActionsOpen, setIsListActionsOpen] = useState(false);
   const [isRenameInputOpen, setIsRenameInputOpen] = useState(false);
@@ -16,6 +15,11 @@ export function List({ list }) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [listColor, setListColor] = useState(color);
   const [deletePermanently, setDeletePermanently] = useState(false);
+  const tasksCount = useMemo(
+    () => tasks.filter((task) => task.listId === $id).length,
+    [tasks, $id],
+  );
+
   const listActions = useRef(null);
   const newListTitle = useRef(null);
   const navigate = useNavigate();
@@ -67,7 +71,7 @@ export function List({ list }) {
             {title}
           </span>
           <div className='count mx-1 grid place-content-center rounded-sm bg-background-tertiary py-[1px] transition-colors duration-300 group-hover:bg-background-primary'>
-            <span className='text-xs font-semibold text-text-secondary'>{listTasks.length}</span>
+            <span className='text-xs font-semibold text-text-secondary'>{tasksCount}</span>
           </div>
         </NavLink>
 

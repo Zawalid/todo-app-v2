@@ -47,14 +47,13 @@ export function Main() {
     if (activeTab === 'stickyWall') return stickyNotes.length;
     if (activeTab === 'search') return searchResults.length;
     if (activeTab === 'trash') return trashLength;
-    if (listId) return lists.find((list) => list.$id === listId)?.tasks.length;
+    if (listId) return tasks.filter((task) => task.listId === listId).length;
     return 0;
   }, [
     activeTab,
     tasks,
     listId,
     stickyNotes,
-    lists,
     todayTasks,
     upcomingTasks,
     searchResults,
@@ -99,7 +98,7 @@ export function Main() {
                   tagsIds: [],
                   priority: 0,
                 };
-                handleAddTask(newTask, listId);
+                handleAddTask(newTask);
               }}
               condition={condition}
               activeTab={activeTab}

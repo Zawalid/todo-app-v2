@@ -7,11 +7,9 @@ import { TaskSubTasks } from './TaskSubTasks/TaskSubTasks';
 import { ConfirmationModal } from '../Common/ConfirmationModal';
 import { TaskPriority } from './TaskPriority';
 import { useTasks } from '../../hooks/useTasks';
-import { useLists } from '../../hooks/useLists';
 
 export function TaskInfo() {
   const { currentTask, isTaskOpen, setIsTaskOpen, handleUpdateTask, handleDeleteTask } = useTasks();
-  const { handleAddTaskToList } = useLists();
   const [taskTitle, setTaskTitle] = useState();
   const [taskNote, setTaskNote] = useState();
   const [taskListId, setTaskListId] = useState('none');
@@ -143,9 +141,6 @@ export function TaskInfo() {
       };
       setIsTaskOpen(false);
       handleUpdateTask(currentTask.$id, editedTask);
-      if (taskListId !== 'none' && taskListId !== currentTask.listId) {
-        handleAddTaskToList(taskListId, editedTask.$id);
-      }
     }
   }
   return (
@@ -226,7 +221,7 @@ export function TaskInfo() {
           confirmText='Delete'
           onConfirm={() => {
             setIsDeleteModalOpen(false);
-            handleDeleteTask(currentTask.$id, taskListId, deletePermanently);
+            handleDeleteTask(currentTask.$id, deletePermanently);
             setIsTaskOpen(false);
           }}
           onCancel={() => setIsDeleteModalOpen(false)}

@@ -4,7 +4,7 @@ import { databases, appWriteConfig, setPermissions } from '../lib/appwrite/confi
 import { toast } from 'sonner';
 import { checkIfToday, checkIfTomorrow, isDateInCurrentWeek } from '../utils/Moment';
 import { remove$Properties } from '../utils/remove$Properties';
-import { useLists, useDeleteElement, useLoadElements, useTrash, useUser } from '../hooks';
+import { useDeleteElement, useLoadElements, useTrash, useUser } from '../hooks';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 const TASKS_COLLECTION_ID = appWriteConfig.tasksCollectionId;
@@ -152,7 +152,6 @@ function TasksProvider({ children }) {
   const [isAddingTask, setIsAddingTask] = useState(false);
   const [selectedTasks, setSelectedTasks] = useState([]);
   const addNewTaskReference = useRef(null);
-  const { lists, handleAddTaskToList, handleUpdateList } = useLists();
   const { handleDeleteElement } = useDeleteElement();
   const { handleLoadElements } = useLoadElements();
   const { handleRestoreFromTrash } = useTrash();
@@ -170,7 +169,7 @@ function TasksProvider({ children }) {
     ...thisWeekTasks.filter((t) => ![...todayTasks, ...tomorrowTasks].includes(t)),
   ];
 
-  async function handleAddTask(task, listId) {
+  async function handleAddTask(task) {
     const toastId = toast.loading('Adding task...');
     try {
       setIsAddingTask(true);
@@ -186,16 +185,13 @@ function TasksProvider({ children }) {
       );
       toast.success('Task has been successfully added.', { id: toastId });
       setTasks((tasks) => [...tasks, response]);
-      if (listId) {
-        handleAddTaskToList(listId, response.$id);
-      }
     } catch (err) {
       toast.error('Failed to add the task.', {
         id: toastId,
         action: {
           label: 'Try again',
           onClick: () => {
-            handleAddTask(task, listId);
+            handleAddTask(task);
           },
         },
       });
@@ -227,7 +223,7 @@ function TasksProvider({ children }) {
   async function handleCompleteTask(id, task, isCompleted) {
     handleUpdateTask(id, task, isCompleted);
   }
-  async function handleDeleteTask(id, listId, deletePermanently, isClearing) {
+  async function handleDeleteTask(id, deletePermanently, isClearing) {
     const toastId = isClearing ? null : toast.loading('Deleting task...');
     try {
       await handleDeleteElement(
@@ -238,12 +234,6 @@ function TasksProvider({ children }) {
         tasks,
         setTasks,
       );
-      // Remove the deleted task from the list it was in
-      if (listId !== 'none') {
-        const list = lists.find((list) => list.$id === listId);
-        const newTasks = list.tasks.filter((taskId) => taskId !== id);
-        await handleUpdateList(listId, 'tasks', newTasks);
-      }
 
       if (!isClearing) {
         toast.success(getDeletionMessage('success', true), {
@@ -265,7 +255,7 @@ function TasksProvider({ children }) {
           action: {
             label: 'Try again',
             onClick: () => {
-              handleDeleteTask(id, listId, deletePermanently, isClearing);
+              handleDeleteTask(id, deletePermanently, isClearing);
             },
           },
         });
@@ -277,7 +267,7 @@ function TasksProvider({ children }) {
       const deletedTasks = tasks.filter((task) => condition1(task) && condition2(task));
 
       for (const task of deletedTasks) {
-        await handleDeleteTask(task.$id, task.listId, deletePermanently, true);
+        await handleDeleteTask(task.$id, deletePermanently, true);
       }
 
       toast.success(getDeletionMessage('success', false, false), {
@@ -315,7 +305,7 @@ function TasksProvider({ children }) {
 
     try {
       for (const task of selectedTasks) {
-        await handleDeleteTask(task.$id, task.listId, deletePermanently, true);
+        await handleDeleteTask(task.$id, deletePermanently, true);
       }
       toast.success(getDeletionMessage('success', false, true, selectedTasks.length), {
         id,
