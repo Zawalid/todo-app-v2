@@ -193,8 +193,8 @@ function TasksProvider({ children }) {
           toast.error('Failed to add the task.', {
             action: {
               label: 'Try again',
-              onClick: () => {
-                handleAddTask(task);
+              onClick: async() => {
+                await handleAddTask(task);
               },
             },
           });
@@ -220,8 +220,8 @@ function TasksProvider({ children }) {
           toast.error('Failed to update the task.', {
             action: {
               label: 'Try again',
-              onClick: () => {
-                handleUpdateTask(id, task);
+              onClick: async() => {
+                await handleUpdateTask(id, task);
               },
             },
           });

@@ -45,10 +45,9 @@ function ListsProvider({ children }) {
   const { user } = useUser();
 
   async function handleAddList(title, color, list) {
-    const toastId = toast.loading('Adding list...');
-    try {
-      const newList = list ? list : { title, color };
-      const response = await databases.createDocument(
+    const newList = list ? list : { title, color };
+    const toastId = toast.promise(
+      databases.createDocument(
         DATABASE_ID,
         LISTS_COLLECTION_ID,
         ID.unique(),
@@ -57,20 +56,26 @@ function ListsProvider({ children }) {
           owner: user?.$id,
         },
         setPermissions(user?.$id),
-      );
-      toast.success('List has been successfully added.', { id: toastId });
-      setLists((lists) => [...lists, response]);
-    } catch (err) {
-      toast.error('Failed to add the list.', {
-        id: toastId,
-        action: {
-          label: 'Try again',
-          onClick: async () => {
-            await handleAddList(title, color, list);
-          },
+      ),
+      {
+        loading: 'Adding list...',
+        success: (list) => {
+          setLists((lists) => [...lists, list]);
+          return 'List has been successfully added.';
         },
-      });
-    }
+        error: () => {
+          toast.dismiss(toastId);
+          toast.error('Failed to add the list.', {
+            action: {
+              label: 'Try again',
+              onClick: async () => {
+                await handleAddList(title, color, list);
+              },
+            },
+          });
+        },
+      },
+    );
   }
   async function handleUpdateList(id, property, value) {
     const list = lists.find((list) => list.$id === id);
@@ -90,39 +95,37 @@ function ListsProvider({ children }) {
     handleUpdateList(id, 'color', color);
   }
   async function handleDeleteList(id, deletePermanently) {
-    const toastId = toast.loading('Deleting list...');
-    try {
-      await handleDeleteElement(
-        id,
-        LISTS_COLLECTION_ID,
-        deletePermanently,
-        'lists',
-        lists,
-        setLists,
-      );
-      toast.success('List has been successfully deleted.', {
-        id: toastId,
-        action: deletePermanently
-          ? null
-          : {
-              label: 'Undo',
+    const toastId = toast.promise(
+      handleDeleteElement(id, LISTS_COLLECTION_ID, deletePermanently, 'lists', lists, setLists),
+      {
+        loading: 'Deleting list...',
+        success: () => {
+          toast.dismiss(toastId);
+          toast.success('List has been successfully deleted.', {
+            action: deletePermanently
+              ? null
+              : {
+                  label: 'Undo',
+                  onClick: async () => {
+                    await handleRestoreFromTrash('lists', id, true);
+                    await handleLoadElements(user, LISTS_COLLECTION_ID, setLists);
+                  },
+                },
+          });
+        },
+        error: () => {
+          toast.dismiss(toastId);
+          toast.error('Failed to delete the list.', {
+            action: {
+              label: 'Try again',
               onClick: async () => {
-                await handleRestoreFromTrash('lists', id, true);
-                await handleLoadElements(user, LISTS_COLLECTION_ID, setLists);
+                await handleDeleteList(id, deletePermanently);
               },
             },
-      });
-    } catch (err) {
-      toast.error('Failed to delete the list.', {
-        id: toastId,
-        action: {
-          label: 'Try again',
-          onClick: async () => {
-            await handleDeleteList(id, deletePermanently);
-          },
+          });
         },
-      });
-    }
+      },
+    );
   }
 
   return (
