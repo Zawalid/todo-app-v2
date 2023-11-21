@@ -37,7 +37,7 @@ const LISTS_COLLECTION_ID = '65422c65a17f95378d53';
 export const ListsContext = createContext();
 
 function ListsProvider({ children }) {
-  const [lists, setLists] = useState([]);
+  const [lists, setLists] = useState();
   const [isListsLoading, setIsListsLoading] = useState(true);
   const { handleDeleteElement } = useDeleteElement();
   const { handleLoadElements } = useLoadElements();
@@ -78,7 +78,7 @@ function ListsProvider({ children }) {
     );
   }
   async function handleUpdateList(id, property, value) {
-    const list = lists.find((list) => list.$id === id);
+    const list = lists?.find((list) => list.$id === id);
     const updatedList = {
       ...list,
       [property]: value,
@@ -90,7 +90,7 @@ function ListsProvider({ children }) {
       {
         loading: 'Updating list...',
         success: (updatedList) => {
-          setLists((lists) => lists.map((list) => (list.$id === id ? updatedList : list)));
+          setLists((lists) => lists?.map((list) => (list.$id === id ? updatedList : list)));
           return 'List has been successfully updated.';
         },
         error: () => {

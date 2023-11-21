@@ -7,7 +7,7 @@ export function useIsTitleTaken(id, curTitle) {
   const [title, setTitle] = useState(curTitle);
 
   useEffect(() => {
-    const listWithSameTitle = lists.find((list) => list.title?.trim() === title?.trim());
+    const listWithSameTitle = lists?.find((list) => list.title?.trim() === title?.trim());
 
     const isSameList = listWithSameTitle?.$id === id;
     let isTaken = listWithSameTitle;

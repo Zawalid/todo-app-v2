@@ -23,8 +23,8 @@ export function Task({
   const { tags } = useTags();
   const isPassed = isTaskOverdue(dueDate);
 
-  const listName = useMemo(() => lists.find((l) => l?.$id === listId)?.title, [listId, lists]);
-  const listColor = useMemo(() => lists.find((l) => l?.$id === listId)?.color, [listId, lists]);
+  const listName = useMemo(() => lists?.find((l) => l?.$id === listId)?.title, [listId, lists]);
+  const listColor = useMemo(() => lists?.find((l) => l?.$id === listId)?.color, [listId, lists]);
   const isSelected = useMemo(() => selectedTasks.some((t) => t.$id === $id), [selectedTasks, $id]);
 
   useEffect(() => {

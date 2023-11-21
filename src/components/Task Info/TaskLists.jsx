@@ -11,7 +11,7 @@ export function TaskLists({ taskListId, setTaskListId }) {
         onChange={(e) => setTaskListId(e.target.value)}
       >
         <option value='none'>None</option>
-        {lists.map((list) => (
+        {lists?.map((list) => (
           <option key={list.$id} value={list.$id}>
             {list.title}
           </option>

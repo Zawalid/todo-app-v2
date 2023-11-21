@@ -6,7 +6,7 @@ import { useLists } from '../../../hooks/useLists';
 export function AddNewList({ reference, isOpen }) {
   const { lists, handleAddList } = useLists();
   const untitledListsNumber = useMemo(
-    () => lists.filter((l) => l.title.startsWith('Untitled')).map((l) => l.title),
+    () => lists?.filter((l) => l.title.startsWith('Untitled')).map((l) => l.title),
     [lists],
   );
 
@@ -84,7 +84,7 @@ export function AddNewList({ reference, isOpen }) {
 
 function getTheUntitledNumber(untitledLists) {
   // Extract the numbers from the untitled lists (e.g. Untitled (1) => 1)
-  const untitledNumber = untitledLists.map((l) => {
+  const untitledNumber = untitledLists?.map((l) => {
     const number = l.match(/\d+/g);
     return number ? +number[0] : 0;
   });

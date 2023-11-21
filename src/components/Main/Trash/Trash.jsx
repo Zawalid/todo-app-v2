@@ -45,7 +45,7 @@ export function Trash() {
                 if (currentTab === 'lists') {
                   // If a list with the same title already exists, don't restore the list
                   const listTitle = JSON.parse(item).title;
-                  const isListTitleTaken = lists.some((list) => list.title === listTitle);
+                  const isListTitleTaken = lists?.some((list) => list.title === listTitle);
                   if (isListTitleTaken) {
                     toast.error(
                       'Failed to restore list . A list with the same title already exists.',

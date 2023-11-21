@@ -24,7 +24,7 @@ export function Main() {
     addNewTaskReference.current?.focus();
   }, [activeTab, addNewTaskReference]);
 
-  const listId = lists.find((list) => list.title === activeTab?.replace('%20', ' '))?.$id;
+  const listId = lists?.find((list) => list.title === activeTab?.replace('%20', ' '))?.$id;
 
   const title = !activeTab
     ? 'All Tasks'

@@ -8,9 +8,10 @@ export function useSaveListsTitlesInLocalStorage() {
   );
 
   useEffect(() => {
-    const listsTitles = lists.map((list) => list.title);
-    localStorage.setItem('listsTitles', JSON.stringify(listsTitles));
-    setListsTitles(listsTitles);
+    if (!lists) return;
+    const titles = lists?.map((list) => list.title);
+    localStorage.setItem('listsTitles', JSON.stringify(titles));
+    setListsTitles(titles);
   }, [lists]);
 
   return listsTitles;

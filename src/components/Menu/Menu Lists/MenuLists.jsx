@@ -35,7 +35,7 @@ export function MenuLists() {
       ) : (
         <>
           <ul className=' space-y-1 '>
-            {lists.map((list) => (
+            {lists?.map((list) => (
               <List key={list.$id} list={list} />
             ))}
           </ul>
