@@ -4,7 +4,7 @@ import { ConfirmationModal } from '../../Common/ConfirmationModal';
 import trashIcon from '../../../assets/trash.png';
 import { Item } from './Item';
 import { useTrash } from '../../../hooks/useTrash';
-import { useRestoreElement } from '../../../hooks/useRestoreElement';
+import { useRestoreElement } from '../../../hooks/';
 
 export function Trash() {
   const {

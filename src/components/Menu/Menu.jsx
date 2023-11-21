@@ -9,7 +9,7 @@ import { Profile } from './Profile';
 import { Settings } from '../Settings/Settings';
 
 export function Menu() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const menu = useRef(null);
   const { trashLength } = useTrash();

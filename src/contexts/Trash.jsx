@@ -140,22 +140,26 @@ function TrashProvider({ children }) {
   // To delete an item from trash and the corresponding element permanently:
   async function handleDeleteFromTrash(type, itemId) {
     const element = formatItemName(type, true);
-    try {
-      // Delete the element permanently
-      await deleteElement(type, itemId);
-      // Delete the element from trash
-      await deleteItem(type, itemId);
-      toast.success(` ${element} has been deleted permanently.`);
-    } catch (err) {
-      toast.error(`Failed to delete ${element}!.`, {
-        action: {
-          label: 'Try Again',
-          onClick: () => {
-            handleDeleteFromTrash(type, itemId);
-          },
+    const toastId = toast.promise(
+      Promise.all([deleteElement(type, itemId), deleteItem(type, itemId)]),
+      {
+        loading: `Deleting ${element} permanently...`,
+        success: () => {
+          toast.success(` ${element} has been deleted permanently.`);
         },
-      });
-    }
+        error: () => {
+          toast.dismiss(toastId);
+          toast.error(`Failed to delete ${element}!.`, {
+            action: {
+              label: 'Try Again',
+              onClick: () => {
+                handleDeleteFromTrash(type, itemId);
+              },
+            },
+          });
+        },
+      },
+    );
   }
   // --- Restoration ---
   // To update an element (task, list, tag, stickyNote) from trash (isTrashed: true)
@@ -204,26 +208,27 @@ function TrashProvider({ children }) {
   // --- Emptying ---
   async function handleEmptyType(type) {
     const element = formatItemName(type);
-    const toastId = toast.loading(`Emptying ${element} from trash...`);
-    try {
-      // Delete all elements of a type permanently
-      for (const item of trash[type]) {
-        await deleteElement(type, JSON.parse(item).id);
-      }
-      // Delete all elements of a type from trash
-      dispatch({ type: 'EMPTY_TYPE', payload: type });
-      toast.success(`${element} have been successfully emptied.`, { id: toastId });
-    } catch (err) {
-      toast.error(`Failed to empty ${element}. Please try again`, {
-        id: toastId,
-        action: {
-          label: 'Try Again',
-          onClick: () => {
-            handleEmptyType(type);
-          },
+    const toastId = toast.promise(
+      Promise.all(trash[type].map((item) => deleteElement(type, JSON.parse(item).id))),
+      {
+        loading: `Emptying ${element} from trash...`,
+        success: () => {
+          dispatch({ type: 'EMPTY_TYPE', payload: type });
+          return `${element} have been successfully emptied.`;
         },
-      });
-    }
+        error: () => {
+          toast.dismiss(toastId);
+          toast.error(`Failed to empty ${element}. Please try again`, {
+            action: {
+              label: 'Try Again',
+              onClick: () => {
+                handleEmptyType(type);
+              },
+            },
+          });
+        },
+      },
+    );
   }
   async function handleEmptyTrash(autoCleanUp) {
     const toastId = autoCleanUp ? null : toast.loading(`Emptying trash...`);

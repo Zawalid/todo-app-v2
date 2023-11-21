@@ -29,9 +29,8 @@ function TagsProvider({ children }) {
   const { user } = useUser();
 
   async function handleAddTag(title, bgColor, textColor) {
-    const toastId = toast.loading('Adding tag...');
-    try {
-      const response = await databases.createDocument(
+    const toastId = toast.promise(
+      databases.createDocument(
         DATABASE_ID,
         TAGS_COLLECTION_ID,
         ID.unique(),
@@ -42,52 +41,60 @@ function TagsProvider({ children }) {
           owner: user?.$id,
         },
         setPermissions(user?.$id),
-      );
-      toast.success('Tag has been successfully added.', { id: toastId });
-      setTags((notes) => [...notes, response]);
-    } catch (err) {
-      toast.error('Failed to add the tag.', {
-        id: toastId,
-        action: {
-          label: 'Try Again',
-          onClick: () => {
-            handleAddTag(title, bgColor, textColor);
-          },
+      ),
+      {
+        loading: 'Adding tag...',
+        success: (tag) => {
+          setTags((tags) => [...tags, tag]);
+          return 'Tag has been successfully added.';
         },
-      });
-    }
-  }
-  async function handleDeleteTag(id, deletePermanently) {
-    const toastId = toast.loading('Deleting tag...');
-    try {
-      await handleDeleteElement(id, TAGS_COLLECTION_ID, deletePermanently, 'tags', tags, setTags);
-      toast.success('Tag has been successfully deleted.', {
-        id: toastId,
-        action: deletePermanently
-          ? null
-          : {
-              label: 'Undo',
+        error: () => {
+          toast.dismiss(toastId);
+          toast.error('Failed to add the tag.', {
+            action: {
+              label: 'Try again',
               onClick: async () => {
-                await handleRestoreFromTrash('tags', id, true);
-                await handleLoadElements(user,TAGS_COLLECTION_ID, setTags);
+                await handleAddTag(title, bgColor, textColor);
               },
             },
-      });
-    } catch (err) {
-      toast.error('Failed to delete the tag.', {
-        id: toastId,
-        action: {
-          label: 'Try Again',
-          onClick: () => {
-            handleDeleteTag(id, deletePermanently);
-          },
+          });
         },
-      });
-    }
+      },
+    );
   }
-
-
-
+  async function handleDeleteTag(id, deletePermanently) {
+    const toastId = toast.promise(
+      handleDeleteElement(id, TAGS_COLLECTION_ID, deletePermanently, 'tags', tags, setTags),
+      {
+        loading: 'Deleting tag...',
+        success: () => {
+          toast.dismiss(toastId);
+          toast.success('Tag  has been successfully deleted.', {
+            action: deletePermanently
+              ? null
+              : {
+                  label: 'Undo',
+                  onClick: async () => {
+                    await handleRestoreFromTrash('tags', id, true);
+                    await handleLoadElements(user, TAGS_COLLECTION_ID, setTags);
+                  },
+                },
+          });
+        },
+        error: () => {
+          toast.dismiss(toastId);
+          toast.error('Failed to delete the tag .', {
+            action: {
+              label: 'Try again',
+              onClick: async () => {
+                await handleDeleteTag(id, deletePermanently);
+              },
+            },
+          });
+        },
+      },
+    );
+  }
   return (
     <TagsContext.Provider
       value={{
