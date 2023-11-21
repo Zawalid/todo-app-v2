@@ -3,8 +3,8 @@ import { useRef, useState } from 'react';
 import { ConfirmationModal } from '../../Common/ConfirmationModal';
 import trashIcon from '../../../assets/trash.png';
 import { Item } from './Item';
-import { useTrash } from '../../../hooks/useTrash';
-import { useRestoreElement } from '../../../hooks/';
+import { useRestoreElement, useLists, useTrash } from '../../../hooks/';
+import { toast } from 'sonner';
 
 export function Trash() {
   const {
@@ -21,6 +21,7 @@ export function Trash() {
   const [currentItem, setCurrentItem] = useState(null);
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const whichDelete = useRef(null);
+  const { lists } = useLists();
 
   return (
     <div className='relative flex h-full flex-col overflow-auto '>
@@ -41,6 +42,17 @@ export function Trash() {
                 whichDelete.current = 'item';
               }}
               onRestore={async () => {
+                if (currentTab === 'lists') {
+                  // If a list with the same title already exists, don't restore the list
+                  const listTitle = JSON.parse(item).title;
+                  const isListTitleTaken = lists.some((list) => list.title === listTitle);
+                  if (isListTitleTaken) {
+                    toast.error(
+                      'Failed to restore list . A list with the same title already exists.',
+                    );
+                    return;
+                  }
+                }
                 await handleRestoreFromTrash(
                   currentTab,
                   JSON.parse(item).id,

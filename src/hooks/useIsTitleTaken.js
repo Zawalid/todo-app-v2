@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
+import { useLists } from './useLists';
 
-export function useIsTitleTaken(lists, id,curTitle) {
+export function useIsTitleTaken(id, curTitle) {
+  const { lists } = useLists();
   const [isNewTitleTaken, setIsNewTitleTaken] = useState(false);
   const [title, setTitle] = useState(curTitle);
 
   useEffect(() => {
     const listWithSameTitle = lists.find((list) => list.title?.trim() === title?.trim());
-    
+
     const isSameList = listWithSameTitle?.$id === id;
     let isTaken = listWithSameTitle;
     //make sure that the  title doesn't contain symbols (except spaces and _ and -)
@@ -19,5 +21,5 @@ export function useIsTitleTaken(lists, id,curTitle) {
     setIsNewTitleTaken(isTaken);
   }, [lists, id, title]);
 
-  return [isNewTitleTaken, setIsNewTitleTaken, setTitle];
+  return [isNewTitleTaken, setTitle];
 }

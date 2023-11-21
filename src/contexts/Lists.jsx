@@ -85,8 +85,27 @@ function ListsProvider({ children }) {
     };
     remove$Properties(updatedList);
 
-    await databases.updateDocument(DATABASE_ID, LISTS_COLLECTION_ID, id, updatedList);
-    await handleLoadElements(user, LISTS_COLLECTION_ID, setLists);
+    const toastId = toast.promise(
+      databases.updateDocument(DATABASE_ID, LISTS_COLLECTION_ID, id, updatedList),
+      {
+        loading: 'Updating list...',
+        success: (updatedList) => {
+          setLists((lists) => lists.map((list) => (list.$id === id ? updatedList : list)));
+          return 'List has been successfully updated.';
+        },
+        error: () => {
+          toast.dismiss(toastId);
+          toast.error('Failed to update the list.', {
+            action: {
+              label: 'Try again',
+              onClick: async () => {
+                await handleUpdateList(id, property, value);
+              },
+            },
+          });
+        },
+      },
+    );
   }
   async function handleRenameList(id, title) {
     handleUpdateList(id, 'title', title);

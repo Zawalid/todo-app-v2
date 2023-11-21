@@ -6,12 +6,12 @@ import { useIsTitleTaken, useLists, useTasks } from '../../../hooks';
 
 export function List({ list }) {
   const { $id, title, color } = list;
-  const { lists, handleDeleteList, handleRenameList, handleChangeListColor } = useLists();
+  const {  handleDeleteList, handleRenameList, handleChangeListColor } = useLists();
   const { tasks } = useTasks();
 
   const [isListActionsOpen, setIsListActionsOpen] = useState(false);
   const [isRenameInputOpen, setIsRenameInputOpen] = useState(false);
-  const [isNewTitleTaken, , setTitle] = useIsTitleTaken(lists, $id, title);
+  const [isNewTitleTaken, setTitle] = useIsTitleTaken( $id, title);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [listColor, setListColor] = useState(color);
   const [deletePermanently, setDeletePermanently] = useState(false);
@@ -52,6 +52,7 @@ export function List({ list }) {
   function renameList(e) {
     if (isNewTitleTaken) return;
     const newTitle = e.target.value.trim();
+    if (newTitle === title) return;
     handleRenameList($id, newTitle);
     setIsRenameInputOpen(false);
     // Change the path to the new title if the renamed list is the active one
