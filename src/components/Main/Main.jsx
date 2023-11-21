@@ -1,15 +1,25 @@
-import { useEffect, useMemo } from 'react';
+import { Suspense, lazy, useEffect, useMemo } from 'react';
 import { useHref } from 'react-router-dom';
 import { Title } from './Title';
-import { StickyWall } from './Sticky Wall/StickyWall';
-import { DisplayedTasks } from './Tasks/NameToBeDetermined/DisplayedTasks';
-import { Upcoming } from './Tasks/Upcoming/Upcoming';
 import { checkIfToday } from '../../utils/Moment';
-import { SearchResults } from './Search/SearchResults';
 import { useTasks, useSearch, useLists, useStickyNotes, useTrash } from '../../hooks';
-import { Trash } from './Trash/Trash';
 import { TasksSkeleton, UpcomingSkeleton, StickyWallSkeleton, TrashSkeleton } from '../Skeletons';
 import { SpinnerLoader } from '../Common/SpinnerLoader';
+
+const DisplayedTasks = lazy(() => import('./Tasks/NameToBeDetermined/DisplayedTasks'));
+const Upcoming = lazy(() => import('./Tasks/Upcoming/Upcoming'));
+const StickyWall = lazy(() => import('./Sticky Wall/StickyWall'));
+const SearchResults = lazy(() => import('./Search/SearchResults'));
+const Trash = lazy(() => import('./Trash/Trash'));
+
+const skeletons = {
+  undefined: <TasksSkeleton number={6} />,
+  today: <TasksSkeleton number={6} />,
+  upcoming: <UpcomingSkeleton />,
+  stickyWall: <StickyWallSkeleton />,
+  search: <SpinnerLoader size='large' />,
+  trash: <TrashSkeleton />,
+};
 
 export function Main() {
   const { tasks, isTasksLoading, handleAddTask, todayTasks, upcomingTasks, addNewTaskReference } =
@@ -59,7 +69,6 @@ export function Main() {
     searchResults,
     trashLength,
   ]);
-
   const condition = (task) => {
     if (listId) return task.listId === listId;
     if (activeTab === 'today') return checkIfToday(task.dueDate);
@@ -71,19 +80,9 @@ export function Main() {
     <main className='relative flex flex-1 flex-col overflow-hidden rounded-xl bg-background-primary px-5 '>
       <Title title={title} count={count} />
       {isTasksLoading ? (
-        activeTab === 'upcoming' ? (
-          <UpcomingSkeleton />
-        ) : activeTab === 'stickyWall' ? (
-          <StickyWallSkeleton />
-        ) : activeTab === 'trash' ? (
-          <TrashSkeleton />
-        ) : activeTab === 'search' ? (
-          <SpinnerLoader size='large' />
-        ) : (
-          <TasksSkeleton number={6} />
-        )
+        skeletons[String(activeTab)]
       ) : (
-        <>
+        <Suspense fallback={skeletons[String(activeTab)]}>
           {!['upcoming', 'stickyWall', 'search', 'trash'].includes(activeTab) ? (
             <DisplayedTasks
               onAdd={(title) => {
@@ -108,7 +107,7 @@ export function Main() {
           {(activeTab === 'stickyWall' || isStickyNoteOpened) && <StickyWall />}
           {activeTab === 'search' && !isStickyNoteOpened && <SearchResults />}
           {activeTab === 'trash' && !isStickyNoteOpened && <Trash />}{' '}
-        </>
+        </Suspense>
       )}
     </main>
   );

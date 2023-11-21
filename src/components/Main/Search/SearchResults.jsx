@@ -5,7 +5,7 @@ import { Tabs } from '../../Common/Tabs';
 import { useSearch } from '../../../hooks/useSearch';
 import { useStickyNotes } from '../../../hooks/useStickyNotes';
 
-export function SearchResults() {
+export default function SearchResults() {
   const { searchResults, currentSearchTab, setCurrentSearchTab } = useSearch();
   const { setCurrentNote, setIsStickyNoteOpened, setIsStickyNoteEditorOpen } = useStickyNotes();
 

@@ -2,7 +2,7 @@ import { StickyNote } from './StickyNote';
 import { StickyNoteEditor } from './Sticky Note Editor/StickyNoteEditor';
 import { useStickyNotes } from '../../../hooks/useStickyNotes';
 
-export function StickyWall() {
+export default function StickyWall() {
   const {
     stickyNotes,
     currentNote,

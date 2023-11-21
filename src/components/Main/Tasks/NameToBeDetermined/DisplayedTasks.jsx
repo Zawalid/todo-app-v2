@@ -42,7 +42,7 @@ function paginationReducer(state, action) {
   }
 }
 
-export function DisplayedTasks({ onAdd, condition, activeTab }) {
+export default function DisplayedTasks({ onAdd, condition, activeTab }) {
   const { tasks, handleClearAllTasks, handleDeleteMultipleTasks, selectedTasks, setSelectedTasks } =
     useTasks();
   const [deletePermanently, setDeletePermanently] = useState(false);

@@ -1,13 +1,21 @@
 import { Routes, Route } from 'react-router-dom';
-import { HomePage, AppLayout, SignInForm, SignUpForm, NotFound, AuthLayout } from './Pages';
 import { Toaster } from 'sonner';
 import { useSaveListsTitlesInLocalStorage } from './hooks/';
+import { Suspense, lazy } from 'react';
+import { SpinnerLoader } from './components/Common/SpinnerLoader';
+
+const HomePage = lazy(() => import('./Pages/HomePage'));
+const AppLayout = lazy(() => import('./Pages/AppLayout'));
+const SignInForm = lazy(() => import('./Pages/auth/Forms/SignInForm'));
+const SignUpForm = lazy(() => import('./Pages/auth/Forms/SignUpForm'));
+const NotFound = lazy(() => import('./Pages/NotFound'));
+const AuthLayout = lazy(() => import('./Pages/auth/AuthLayout'));
 
 function App() {
   const listsTitles = useSaveListsTitlesInLocalStorage();
 
   return (
-    <>
+    <Suspense fallback={<SpinnerLoader />}>
       <Routes>
         <Route path='/' element={<HomePage />} />
         <Route path='app' element={<AppLayout />}>
@@ -23,7 +31,6 @@ function App() {
         </Route>
         <Route path='*' element={<NotFound />} />
       </Routes>
-
       <Toaster
         position='top-right'
         loadingIcon={
@@ -33,7 +40,7 @@ function App() {
           className: 'sonner-toast',
         }}
       />
-    </>
+    </Suspense>
   );
 }
 export default App;

@@ -6,7 +6,7 @@ import { Item } from './Item';
 import { useRestoreElement, useLists, useTrash } from '../../../hooks/';
 import { toast } from 'sonner';
 
-export function Trash() {
+export default function Trash() {
   const {
     trash,
     currentTab,

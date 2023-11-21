@@ -22,7 +22,7 @@ const periods = [
     dueDate: moment().endOf('week').format('YYYY-MM-DD'),
   },
 ];
-export function Upcoming() {
+export default function Upcoming() {
   
   const wrapper = useRef(null);
   return (
