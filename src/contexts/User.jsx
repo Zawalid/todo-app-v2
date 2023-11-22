@@ -109,9 +109,61 @@ function UserProvider({ children }) {
     return isAuthenticated;
   }
 
-  // ------------- Settings
+  // ------------- Password
 
-  // Profile
+  async function handleUpdatePassword(currentPassword, newPassword) {
+    toast.promise(account.updatePassword(newPassword, currentPassword), {
+      loading: 'Updating password...',
+      success: 'Your password has been updated',
+      error: (err) => {
+        console.log(err);
+        return 'Your password is incorrect. Please try again.';
+      },
+    });
+  }
+
+  async function handleResetPassword(email) {
+    if (!email) return toast.error('Please enter your email address.');
+    toast.promise(
+      account.createRecovery(email, 'http://localhost:5173/'), // TODO: Change this to the production url
+      {
+        loading: 'Sending recovery email...',
+        success: 'Recovery email sent',
+        error: (err) => {
+          console.log(err);
+          return getErrorMessage(err);
+        },
+      },
+    );
+  }
+
+  async function handleRecoverPassword(
+    userId,
+    secret,
+    password,
+    passwordAgain,
+    setIsResetPasswordSuccessful,
+  ) {
+    if (!password) return toast.error('Please enter your new password.');
+    if (!passwordAgain) return toast.error('Please confirm your new password.');
+    if (password !== passwordAgain)
+      return toast.error('Passwords do not match. Please check the password and confirm password.');
+
+    toast.promise(account.updateRecovery(userId, secret, password, passwordAgain), {
+      loading: 'Updating password...',
+      success: () => {
+        setIsResetPasswordSuccessful(true);
+        return 'Your password has been updated';
+      },
+      error: (err) => {
+        console.log(err);
+        return getErrorMessage(err);
+      },
+    });
+  }
+
+  // ------------- Profile
+
   async function handleUpdateUser(data) {
     try {
       const updatedUser = await databases.updateDocument(
@@ -216,18 +268,7 @@ function UserProvider({ children }) {
     }
   }
 
-  // Password
-  async function handleUpdatePassword(oldPassword, newPassword) {
-    try {
-      await account.updatePassword(newPassword, oldPassword);
-      toast.success('Your password has been updated');
-      return true;
-    } catch (error) {
-      toast.error('Your password is incorrect. Please try again.');
-    }
-  }
-
-  // Sessions
+  // ------------- Sessions
   async function handleGetSessions() {
     try {
       const sessions = await account.listSessions();
@@ -255,17 +296,8 @@ function UserProvider({ children }) {
     }
   }
 
-  //? Since appwrite doesn't provide a way to delete and account i'll just block it and delete the user from the database
-  async function handleDeleteAccount() {
-    try {
-      await databases.deleteDocument(DATABASE_ID, USERS_COLLECTION_ID, user.$id);
-      await account.updateStatus();
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  // ------------- Email Verification
 
-  // Email Verification
   async function handleSendVerificationEmail() {
     try {
       await account.createVerification('http://localhost:5173/app/'); // TODO: Change this to the production url
@@ -284,6 +316,16 @@ function UserProvider({ children }) {
       toast.success('Your account has been verified');
     } catch (error) {
       toast.error(error.message);
+    }
+  }
+
+  //? Since appwrite doesn't provide a way to delete and account i'll just block it and delete the user from the database
+  async function handleDeleteAccount() {
+    try {
+      await databases.deleteDocument(DATABASE_ID, USERS_COLLECTION_ID, user.$id);
+      await account.updateStatus();
+    } catch (error) {
+      console.log(error);
     }
   }
 
@@ -316,6 +358,8 @@ function UserProvider({ children }) {
         handleDeleteAccount,
         handleSendVerificationEmail,
         handleVerifyAccount,
+        handleResetPassword,
+        handleRecoverPassword,
       }}
     >
       {children}
@@ -325,7 +369,7 @@ function UserProvider({ children }) {
 
 function getErrorMessage(err) {
   const errorMessage = err.message.includes(':') ? err.message.split(':')[0] : err.message;
-
+console.log(errorMessage)
   switch (errorMessage) {
     case 'Invalid `password` param':
       return 'Your password is invalid. Password must be at least 8 characters long.';
@@ -338,6 +382,11 @@ function getErrorMessage(err) {
     case 'Invalid credentials. Please check the email and password.':
     case `The current user has been blocked. You can unblock the user by making a request to the User API's "Update User Status" endpoint or in the Appwrite Console's Auth section.`:
       return 'Invalid email or password. Please try again.';
+    case 'User with the requested ID could not be found.':
+      return 'The email you entered is not associated with an account. Please try again.';
+    case 'Invalid token passed in the request.':
+    case "Invalid `userId` param":
+      return 'Invalid link or link expired. Please request a new one.';
     default:
       return 'Something went wrong. Please try again.';
   }

@@ -45,47 +45,15 @@ input[type='checkbox'].subtask {
   @apply absolute  z-10 h-full max-h-full  w-full !important;
 }
 
-.sonner-toast:not([data-type='loading']) [data-icon] {
-  height: calc(100% + 1px);
-  position: absolute;
-  left: 0;
-  width: 45px;
-  justify-content: center;
-  color: white;
-  border-radius: 8px 0 0 8px;
-}
-.sonner-toast:not([data-type='loading']) [data-icon] svg {
-  width: 25px;
-  height: 25px;
-}
-.sonner-toast[data-type='success'] [data-icon] {
-  background-color: limegreen;
-}
-.sonner-toast[data-type='error'] [data-icon] {
-  background-color: #ff0000;
-}
 
-.sonner-toast [data-content] {
-  color: #444444;
-}
-.sonner-toast:not([data-type='loading']) [data-content] {
-  margin-left: 40px;
-}
-
-.sonner-toast [data-close-button] {
-  left: 90%;
-  top: 50%;
-  transform: translateY(-50%);
-  background-color: #f4f4f4;
-  color: #444444;
-}
-.sonner-toast [data-button] {
-  background-color: #f4f4f4;
-  color: #444444;
-  font-weight: 500;
-  box-shadow: -1px 1px 1px 0px #e5e5e5b0;
-}
 
 .pagination-button {
-  @apply ml-0 flex  h-full border-collapse  items-center justify-center border px-2 py-1.5 text-sm font-medium text-text-secondary shadow-sm    transition-colors  duration-300;
+  @apply ml-0 flex  h-full border-collapse items-center justify-center border px-2 py-1.5 text-sm font-medium text-text-secondary shadow-sm transition-colors  duration-300 hover:bg-background-tertiary disabled:cursor-not-allowed disabled:text-opacity-30 disabled:hover:bg-transparent;
+}
+
+#menu:has(#closeMenu:hover) {
+  opacity: 50%;
+}
+#taskInfo:has(#closeTaskInfo:hover) {
+  opacity: 50%;
 }

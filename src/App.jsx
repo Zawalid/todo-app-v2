@@ -8,6 +8,7 @@ const HomePage = lazy(() => import('./Pages/HomePage'));
 const AppLayout = lazy(() => import('./Pages/AppLayout'));
 const SignInForm = lazy(() => import('./Pages/auth/Forms/SignInForm'));
 const SignUpForm = lazy(() => import('./Pages/auth/Forms/SignUpForm'));
+const ForgotPassword = lazy(() => import('./Pages/auth/Forms/ForgotPassword'));
 const NotFound = lazy(() => import('./Pages/NotFound'));
 const AuthLayout = lazy(() => import('./Pages/auth/AuthLayout'));
 
@@ -28,6 +29,7 @@ function App() {
         <Route element={<AuthLayout />}>
           <Route path='sign-in' element={<SignInForm />} />
           <Route path='sign-up' element={<SignUpForm />} />
+          <Route path='forgot-password' element={<ForgotPassword />} />
         </Route>
         <Route path='*' element={<NotFound />} />
       </Routes>

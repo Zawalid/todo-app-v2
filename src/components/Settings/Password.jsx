@@ -5,24 +5,24 @@ import { toast } from 'sonner';
 import { useUser } from '../../hooks';
 
 export function Password() {
-  const [oldPassword, setOldPassword] = useState('');
+  const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [isFilled, setIsFilled] = useState(false);
   const { handleUpdatePassword } = useUser();
 
 useEffect(() => {
-  if(oldPassword && newPassword && confirmNewPassword) setIsFilled(true);
+  if(currentPassword && newPassword && confirmNewPassword) setIsFilled(true);
   else setIsFilled(false);
 }
-, [oldPassword, newPassword, confirmNewPassword]);
+, [currentPassword, newPassword, confirmNewPassword]);
 
   function changePassword() {
     if (newPassword.length < 8) return toast.error('Password must be at least 8 characters long');
     if (newPassword !== confirmNewPassword) return toast.error('Passwords do not match');
-    const updated = handleUpdatePassword(oldPassword, newPassword);
+    const updated = handleUpdatePassword(currentPassword, newPassword);
     if (updated) {
-      setOldPassword('');
+      setCurrentPassword('');
       setNewPassword('');
       setConfirmNewPassword('');
     }
@@ -34,9 +34,9 @@ useEffect(() => {
         <div>
           <h3 className='mb-3 font-bold text-text-secondary'>Old password</h3>
           <PasswordInput
-            password={oldPassword}
-            setPassword={setOldPassword}
-            placeholder='Old password'
+            password={currentPassword}
+            setPassword={setCurrentPassword}
+            placeholder='Current password'
           />
         </div>
         <div>

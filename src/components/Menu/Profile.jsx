@@ -28,7 +28,7 @@ export function Profile({ onOpenSettings }) {
             </button>
           </div>
         }
-        className=' absolute -left-[180px] w-[200px] rounded-lg  bg-background-primary shadow-md'
+        className=' absolute -left-[180px] w-[200px] rounded-lg p-2 bg-background-primary shadow-md'
         trigger='click'
         interactive={true}
         arrow={false}

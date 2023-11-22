@@ -17,12 +17,13 @@ export function Menu() {
   return (
     <aside
       className={
-        'flex flex-col rounded-l-xl p-4 transition-[width] duration-500  ' +
+        'flex flex-col rounded-l-xl p-4 transition-[width_opacity] duration-500  ' +
         (isOpen
           ? 'w-[22%] items-stretch bg-background-secondary '
           : 'w-0 items-center bg-background-primary  ')
       }
       ref={menu}
+      id='menu'
     >
       {isOpen || (
         <button onClick={() => setIsOpen(true)}>
@@ -33,8 +34,8 @@ export function Menu() {
         <>
           <div className='mb-3 flex items-center justify-between gap-8 pb-3'>
             <Profile onOpenSettings={() => setIsSettingsOpen(true)} />
-            <button onClick={() => setIsOpen(false)}>
-              <i className='fa-solid fa-angles-left cursor-pointer  text-text-secondary'></i>
+            <button onClick={() => setIsOpen(false)} id='closeMenu'>
+              <i className='fa-solid fa-angles-left cursor-pointer text-text-secondary'></i>
             </button>
           </div>
           <div className='mb-3 overflow-y-auto pr-3'>

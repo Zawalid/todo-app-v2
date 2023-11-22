@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { useUser,useTrash } from '../../../hooks';
-import { Button, AuthLink } from './components';
+import { useUser, useTrash } from '../../../hooks';
+import { AuthLink } from './AuthLink';
+import { Button } from '../../../components/Common/Button';
 import { PasswordInput } from '../../../components/Common/PasswordInput';
 import { InputField } from '../../../components/Common/InputField';
 
@@ -10,7 +11,6 @@ function SignUpForm() {
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
   const { handleSignUp, isLoading } = useUser();
   const { createTrash } = useTrash();
 
@@ -44,13 +44,13 @@ function SignUpForm() {
             onChange={(e) => setLastName(e.target.value)}
           />
         </div>
-
         <InputField
           type='email'
           placeholder='Email'
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
+
         <PasswordInput password={password} setPassword={setPassword} />
         <Button isLoading={isLoading} text='Sign Up' />
       </form>

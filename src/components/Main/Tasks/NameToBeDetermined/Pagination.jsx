@@ -54,22 +54,16 @@ export function Pagination({ pagination, tasksLength, dispatch }) {
 
       <div className='flex items-center'>
         <button
-          className={`pagination-button  rounded-l-lg ${
-            disabledButton === 'previous' || disabledButton === 'both'
-              ? 'cursor-not-allowed text-opacity-30'
-              : 'hover:bg-background-tertiary  '
-          }`}
+          className='pagination-button  rounded-l-lg'
+          disabled={disabledButton === 'previous' || disabledButton === 'both'}
           onClick={handlePreviousPage}
         >
           Previous
         </button>
 
         <button
-          className={`pagination-button rounded-r-lg ${
-            disabledButton === 'next' || disabledButton === 'both'
-              ? 'cursor-not-allowed text-opacity-30'
-              : 'hover:bg-background-tertiary'
-          }`}
+           className='pagination-button  rounded-r-lg'
+           disabled={disabledButton === 'next' || disabledButton === 'both'}
           onClick={handleNextPage}
         >
           Next

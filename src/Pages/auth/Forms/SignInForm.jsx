@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { useUser } from '../../../hooks/useUser';
-import { Button, AuthLink } from './components';
+import { AuthLink } from './AuthLink';
+import { Button } from '../../../components/Common/Button';
 import { PasswordInput } from '../../../components/Common/PasswordInput';
 import { InputField } from '../../../components/Common/InputField';
+import { Link } from 'react-router-dom';
 
 function SignInForm() {
   const [email, setEmail] = useState('');
@@ -29,6 +31,9 @@ function SignInForm() {
         />
         <PasswordInput password={password} setPassword={setPassword} />
         <Button isLoading={isLoading} text='Sign In' />
+        <Link className='self-start text-sm font-semibold text-text-tertiary' to='/forgot-password'>
+          Forgot Password?
+        </Link>
       </form>
       <AuthLink text='Sign Up' link='/sign-up' />
     </section>

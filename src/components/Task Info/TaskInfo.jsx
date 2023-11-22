@@ -146,17 +146,18 @@ export function TaskInfo() {
   return (
     <aside
       className={
-        'relative ml-auto flex flex-col rounded-l-xl transition-[width] duration-500 ' +
+        'relative ml-auto flex flex-col rounded-l-xl transition-[width_opacity] duration-500 ' +
         (isTaskOpen
           ? 'w-[30%] items-stretch bg-background-secondary  p-4'
           : 'w-0 items-center bg-background-primary p-0')
       }
+      id='taskInfo'
     >
       {isTaskOpen && (
         <>
           <div className='flex items-center justify-between pb-3'>
             <h2 className='text-xl font-bold text-text-secondary'>Task :</h2>
-            <button onClick={() => setIsTaskOpen(false)}>
+            <button onClick={() => setIsTaskOpen(false)} id='closeTaskInfo'>
               <i className='fa-solid fa-xmark cursor-pointer text-xl text-text-secondary'></i>
             </button>
           </div>

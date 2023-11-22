@@ -12,7 +12,7 @@ dist
 dist-ssr
 *.local
 appwrite.json
-bugsAndFeatures.md
+todo.md
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
