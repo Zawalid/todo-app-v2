@@ -137,7 +137,7 @@ function Session({ session, onDelete }) {
         )}
       </div>
       <button
-        className='rounded-lg border px-3 py-2 text-sm font-medium text-text-primary shadow-sm transition-colors duration-300 hover:bg-background-tertiary'
+        className='rounded-lg border px-3 py-2 text-sm font-medium text-text-primary shadow-sm transition-colors duration-300 hover:bg-indigo-600 hover:text-white'
         onClick={() => onDelete(current ? 'current' : $id)}
       >
         Revoke

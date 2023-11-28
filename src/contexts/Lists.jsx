@@ -89,28 +89,48 @@ function ListsProvider({ children }) {
     };
     remove$Properties(updatedList);
 
-    const toastId = toast.promise(
-      databases.updateDocument(DATABASE_ID, LISTS_COLLECTION_ID, id, updatedList),
-      {
-        loading: 'Updating list...',
-        success: (updatedList) => {
-          setLists((lists) => lists?.map((list) => (list.$id === id ? updatedList : list)));
-          return 'List has been successfully updated.';
+    const toastId = toast.loading('Updating list...');
+
+    try {
+      const res = await databases.updateDocument(DATABASE_ID, LISTS_COLLECTION_ID, id, updatedList);
+      setLists((lists) => lists?.map((list) => (list.$id === id ? res : list)));
+      toast.success('List has been successfully updated.', { id: toastId });
+    } catch (error) {
+      console.log(error);
+      toast.error('Failed to update the list.', {
+        action: {
+          label: 'Try again',
+          onClick: async () => {
+            await handleUpdateList(id, property, value);
+          },
         },
-        error: () => {
-          toast.dismiss(toastId);
-          toast.error('Failed to update the list.', {
-            action: {
-              label: 'Try again',
-              onClick: async () => {
-                await handleUpdateList(id, property, value);
-              },
-            },
-          });
-        },
-        finally: () => setCurrentProcessedList(null),
-      },
-    );
+      });
+    } finally {
+      setCurrentProcessedList(null);
+    }
+
+    // const toastId = toast.promise(
+    //   databases.updateDocument(DATABASE_ID, LISTS_COLLECTION_ID, id, updatedList),
+    //   {
+    //     loading: 'Updating list...',
+    //     success: (updatedList) => {
+    //       setLists((lists) => lists?.map((list) => (list.$id === id ? updatedList : list)));
+    //       return 'List has been successfully updated.';
+    //     },
+    //     error: () => {
+    //       toast.dismiss(toastId);
+    //       toast.error('Failed to update the list.', {
+    //         action: {
+    //           label: 'Try again',
+    //           onClick: async () => {
+    //             await handleUpdateList(id, property, value);
+    //           },
+    //         },
+    //       });
+    //     },
+    //     finally: () => setCurrentProcessedList(null),
+    //   },
+    // );
   }
   async function handleRenameList(id, title) {
     await handleUpdateList(id, 'title', title);

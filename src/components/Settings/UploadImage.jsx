@@ -52,7 +52,7 @@ export function UploadImage({ avatar, onChange }) {
       <div>
         <div className='flex gap-5'>
           <button
-            className='rounded-lg border px-3 py-2 text-sm font-medium text-text-primary shadow-sm transition-colors duration-300 hover:bg-background-tertiary'
+            className='rounded-lg border px-3 py-2 text-sm font-medium text-text-primary shadow-sm transition-colors duration-300 hover:bg-indigo-600 hover:text-white'
             onClick={() => openFilePicker()}
           >
             Upload
@@ -60,7 +60,7 @@ export function UploadImage({ avatar, onChange }) {
           <button
             className={
               'rounded-lg border px-3 py-2 text-sm font-medium text-text-primary shadow-sm transition-colors duration-300  ' +
-              (isInitialsAvatar ? 'bg-zinc-200 text-white' : 'hover:bg-background-tertiary')
+              (isInitialsAvatar ? 'bg-zinc-200 text-white' : 'hover:bg-indigo-600 hover:text-white')
             }
             disabled={isInitialsAvatar}
             onClick={async () => {
