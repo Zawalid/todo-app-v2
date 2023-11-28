@@ -3,6 +3,7 @@ import { Toaster } from 'sonner';
 import { useSaveListsTitlesInLocalStorage } from './hooks/';
 import { Suspense, lazy } from 'react';
 import { SpinnerLoader } from './components/Common/SpinnerLoader';
+import './styles/App.css';
 
 const HomePage = lazy(() => import('./Pages/HomePage'));
 const AppLayout = lazy(() => import('./Pages/AppLayout'));

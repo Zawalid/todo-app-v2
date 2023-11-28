@@ -6,7 +6,6 @@ import {
   checkIfYesterday,
   isTaskOverdue,
 } from '../../../utils/Moment';
-import Tippy from '@tippyjs/react';
 import completedSoundFile from '../../../assets/completed.mp3';
 import { useTasks, useLists, useTags } from '../../../hooks';
 import { CheckBox } from '../../Common/CheckBox';
@@ -140,19 +139,7 @@ export function Task({
       </div>
       <div className='flex gap-3'>
         {isPassed && !checked && (
-          <Tippy
-            content={
-              <span className='  font-semibold text-text-error'>This task is overdue !</span>
-            }
-            placement='top'
-            className='bg-background-primary text-center shadow-md'
-            arrow={false}
-            animation='fade'
-          >
-            <button>
-              <i className='fa-solid  fa-triangle-exclamation text-lg text-text-error'></i>
-            </button>
-          </Tippy>
+          <i className='fa-solid  fa-triangle-exclamation text-lg text-text-error'></i>
         )}
         <button
           className='rounded-sm px-2 py-1 transition-colors duration-300 hover:bg-background-primary'

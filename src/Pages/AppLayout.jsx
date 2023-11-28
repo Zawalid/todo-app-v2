@@ -1,7 +1,6 @@
 import { TaskInfo } from '../components/Task Info/TaskInfo';
 import { Menu } from '../components/Menu/Menu';
 import { Main } from '../components/Main/Main';
-import '../styles/App.css';
 import { SearchProvider } from '../contexts';
 import { useFetchAllElements, useUser } from '../hooks';
 import { Navigate } from 'react-router-dom';

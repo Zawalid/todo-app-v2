@@ -104,6 +104,7 @@ function TrashProvider({ children }) {
     [trash],
   );
   const { getCurrentUser, checkIsUserAuthenticated } = useUser();
+  const [currentProcessedItem, setCurrentProcessedItem] = useState(null);
 
   // --- Creation ---
   async function createTrash() {
@@ -139,6 +140,12 @@ function TrashProvider({ children }) {
   }
   // To delete an item from trash and the corresponding element permanently:
   async function handleDeleteFromTrash(type, itemId) {
+    if (
+      (currentProcessedItem?.itemId === itemId && currentProcessedItem?.type === type) ||
+      currentProcessedItem === 'all'
+    )
+      return;
+    setCurrentProcessedItem({ itemId, type });
     const element = formatItemName(type, true);
     const toastId = toast.promise(
       Promise.all([deleteElement(type, itemId), deleteItem(type, itemId)]),
@@ -158,6 +165,7 @@ function TrashProvider({ children }) {
             },
           });
         },
+        finally: () => setCurrentProcessedItem(null),
       },
     );
   }
@@ -170,6 +178,13 @@ function TrashProvider({ children }) {
   }
   // To delete an item from trash and restore the corresponding element:
   async function handleRestoreFromTrash(type, itemId, isUndo, updateFunction) {
+    if (
+      (currentProcessedItem?.itemId === itemId && currentProcessedItem?.type === type) ||
+      currentProcessedItem === 'all'
+    )
+      return;
+    setCurrentProcessedItem({ itemId, type });
+
     const element = formatItemName(type, true);
     const toastId = isUndo ? null : toast.loading(`Restoring ${element}...`);
     try {
@@ -203,10 +218,15 @@ function TrashProvider({ children }) {
           },
         },
       });
+    } finally {
+      setCurrentProcessedItem(null);
     }
   }
   // --- Emptying ---
   async function handleEmptyType(type) {
+    if (currentProcessedItem?.type === type || currentProcessedItem === 'all') return;
+    setCurrentProcessedItem({ type });
+
     const element = formatItemName(type);
     const toastId = toast.promise(
       Promise.all(trash[type].map((item) => deleteElement(type, JSON.parse(item).id))),
@@ -227,34 +247,70 @@ function TrashProvider({ children }) {
             },
           });
         },
+        finally: () => setCurrentProcessedItem(null),
       },
     );
   }
   async function handleEmptyTrash(autoCleanUp) {
-    const toastId = autoCleanUp ? null : toast.loading(`Emptying trash...`);
-    try {
-      // Delete all elements from trash permanently
-      for (const type of Object.keys(collectionsIds)) {
-        const trashItems = trash[type];
-        for (const item of trashItems) {
-          await deleteElement(type, JSON.parse(item).id);
-        }
-      }
-      // Delete all elements from trash
-      dispatch({ type: 'EMPTY_TRASH' });
-      !autoCleanUp && toast.success('Trash has been successfully emptied.', { id: toastId });
-    } catch (err) {
-      !autoCleanUp &&
-        toast.error('Failed to empty trash!. Please try again', {
-          id: toastId,
-          action: {
-            label: 'Try Again',
-            onClick: () => {
-              handleEmptyTrash(autoCleanUp);
-            },
-          },
-        });
-    }
+    if (currentProcessedItem) return;
+    setCurrentProcessedItem('all');
+
+    // const toastId = autoCleanUp ? null : toast.loading(`Emptying trash...`);
+    // try {
+    //   // Delete all elements from trash permanently
+    //   for (const type of Object.keys(collectionsIds)) {
+    //     const trashItems = trash[type];
+    //     for (const item of trashItems) {
+    //       await deleteElement(type, JSON.parse(item).id);
+    //     }
+    //   }
+    //   // Delete all elements from trash
+    //   dispatch({ type: 'EMPTY_TRASH' });
+    //   !autoCleanUp && toast.success('Trash has been successfully emptied.', { id: toastId });
+    // } catch (err) {
+    //   !autoCleanUp &&
+    //     toast.error('Failed to empty trash!. Please try again', {
+    //       id: toastId,
+    //       action: {
+    //         label: 'Try Again',
+    //         onClick: () => {
+    //           handleEmptyTrash(autoCleanUp);
+    //         },
+    //       },
+    //     });
+    // } finally {
+    //   setCurrentProcessedItem(null);
+    // }
+    const toastId = toast.promise(
+      Promise.all(
+        ['tasks', 'lists', 'tags', 'stickyNotes'].map((type) => {
+          return Promise.all(
+            trash[type].map(async (item) => await deleteElement(type, JSON.parse(item).id)),
+          );
+        }),
+      ),
+
+      {
+        loading: 'Emptying trash...',
+        success: () => {
+          dispatch({ type: 'EMPTY_TRASH' });
+          return autoCleanUp ? null : 'Trash has been successfully emptied.';
+        },
+        error: () => {
+          toast.dismiss(toastId);
+          !autoCleanUp &&
+            toast.error('Failed to empty trash!. Please try again', {
+              action: {
+                label: 'Try Again',
+                onClick: () => {
+                  handleEmptyTrash(autoCleanUp);
+                },
+              },
+            });
+        },
+        finally: () => setCurrentProcessedItem(null),
+      },
+    );
   }
   // get trash from database
   async function handleGetTrash() {

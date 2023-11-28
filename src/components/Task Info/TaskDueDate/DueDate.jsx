@@ -1,6 +1,7 @@
 import Tippy from '@tippyjs/react';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { isTaskOverdue } from '../../../utils/Moment';
+import { Dates } from './Dates';
 
 export function DueDate({ taskDueDate, setTaskDueDate }) {
   const [isOpen, setIsOpen] = useState();
@@ -35,7 +36,8 @@ export function DueDate({ taskDueDate, setTaskDueDate }) {
             tomorrow={tomorrow}
           />
         }
-        className='w-52 rounded-lg bg-background-primary shadow-md'
+        className='w-52'
+        theme='light'
         trigger='click'
         interactive={true}
         arrow={false}
@@ -74,55 +76,3 @@ export function DueDate({ taskDueDate, setTaskDueDate }) {
   );
 }
 
-function Dates({ isOpen, taskDueDate, onAdd, today, tomorrow }) {
-  const [isPickerOpen, setIsPickerOpen] = useState();
-
-  useEffect(() => {
-    isOpen || setIsPickerOpen(false);
-  }, [isOpen]);
-
-  return (
-    <ul>
-      <li
-        className='flex cursor-pointer items-center justify-between gap-3 rounded-md p-2 transition-colors duration-300 hover:bg-background-secondary'
-        onClick={() => onAdd('Today')}
-      >
-        <i className='fa-solid fa-calendar cursor-pointer  text-text-tertiary'></i>
-        <span className='flex-1 text-text-primary'>Today</span>
-        <span className='text-text-tertiary'>
-          {today.toLocaleDateString(undefined, { weekday: 'short' })}
-        </span>
-      </li>
-      <li
-        className='flex cursor-pointer items-center justify-between gap-3 rounded-md p-2 transition-colors duration-300 hover:bg-background-secondary'
-        onClick={() => onAdd('Tomorrow')}
-      >
-        <i className='fa-solid fa-calendar cursor-pointer  text-text-tertiary'></i>
-        <span className='flex-1 text-text-primary'>Tomorrow</span>
-        <span className='text-text-tertiary'>
-          {tomorrow.toLocaleDateString(undefined, { weekday: 'short' })}
-        </span>
-      </li>
-      <li
-        className='relative flex cursor-pointer items-center justify-between gap-3 rounded-md  border-t border-t-background-secondary p-2 transition-colors duration-300 hover:bg-background-secondary'
-        onClick={() => setIsPickerOpen(!isPickerOpen)}
-      >
-        <i className='fa-solid fa-calendar cursor-pointer  text-text-tertiary'></i>
-        <span className='flex-1 text-text-primary'>Pick a date</span>
-      </li>
-      <li
-        className={
-          'flex cursor-pointer items-center justify-between gap-3 rounded-md  transition-all duration-300 hover:bg-background-secondary ' +
-          (isPickerOpen ? 'h-[37px] p-2' : 'h-0 p-0')
-        }
-      >
-        <input
-          type='date'
-          className='h-full w-full bg-transparent text-text-primary focus:outline-none'
-          value={taskDueDate}
-          onChange={(e) => onAdd(e.target.value)}
-        />
-      </li>
-    </ul>
-  );
-}

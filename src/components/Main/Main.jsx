@@ -13,7 +13,6 @@ const SearchResults = lazy(() => import('./Search/SearchResults'));
 const Trash = lazy(() => import('./Trash/Trash'));
 
 const skeletons = {
-  undefined: <TasksSkeleton number={6} />,
   today: <TasksSkeleton number={6} />,
   upcoming: <UpcomingSkeleton />,
   stickyWall: <StickyWallSkeleton />,
@@ -80,9 +79,15 @@ export function Main() {
     <main className='relative flex flex-1 flex-col overflow-hidden rounded-xl bg-background-primary px-5 '>
       <Title title={title} count={count} />
       {isTasksLoading ? (
-        skeletons[String(activeTab)]
+        skeletons[activeTab] ? (
+          skeletons[activeTab]
+        ) : (
+          <TasksSkeleton number={6} />
+        )
       ) : (
-        <Suspense fallback={skeletons[String(activeTab)]}>
+        <Suspense
+          fallback={skeletons[activeTab] ? skeletons[activeTab] : <TasksSkeleton number={6} />}
+        >
           {!['upcoming', 'stickyWall', 'search', 'trash'].includes(activeTab) ? (
             <DisplayedTasks
               onAdd={(title) => {

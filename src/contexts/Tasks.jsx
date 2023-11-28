@@ -156,6 +156,7 @@ function TasksProvider({ children }) {
   const { handleLoadElements } = useLoadElements();
   const { handleRestoreFromTrash } = useTrash();
   const { user } = useUser();
+  const [currentProcessedTask, setCurrentProcessedTask] = useState(null);
 
   const todayTasks = tasks?.filter((task) => checkIfToday(task.dueDate));
   const tomorrowTasks = tasks?.filter((task) => checkIfTomorrow(task.dueDate));
@@ -193,18 +194,20 @@ function TasksProvider({ children }) {
           toast.error('Failed to add the task.', {
             action: {
               label: 'Try again',
-              onClick: async() => {
+              onClick: async () => {
                 await handleAddTask(task);
               },
             },
           });
         },
+        finally: () => setIsAddingTask(false),
       },
     );
-    setIsAddingTask(false);
   }
 
   async function handleUpdateTask(id, task) {
+    if (currentProcessedTask === id) return;
+    setCurrentProcessedTask(id);
     const updatedTask = { ...task };
     remove$Properties(updatedTask);
     const toastId = toast.promise(
@@ -220,12 +223,13 @@ function TasksProvider({ children }) {
           toast.error('Failed to update the task.', {
             action: {
               label: 'Try again',
-              onClick: async() => {
+              onClick: async () => {
                 await handleUpdateTask(id, task);
               },
             },
           });
         },
+        finally: () => setCurrentProcessedTask(null),
       },
     );
   }
@@ -241,6 +245,9 @@ function TasksProvider({ children }) {
   }
 
   async function handleDeleteTask(id, deletePermanently) {
+    if (currentProcessedTask === id) return;
+    setCurrentProcessedTask(id);
+    setIsTaskOpen(false);
     const toastId = toast.promise(
       handleDeleteElement(id, TASKS_COLLECTION_ID, deletePermanently, 'tasks', tasks, setTasks),
       {
@@ -269,11 +276,14 @@ function TasksProvider({ children }) {
             },
           });
         },
+        finally: () => setCurrentProcessedTask(null),
       },
     );
   }
 
   async function handleClearAllTasks(condition1, condition2, deletePermanently) {
+    setCurrentProcessedTask('multiple');
+    setIsTaskOpen(false);
     const deletedTasks = tasks.filter((task) => condition1(task) && condition2(task));
 
     const toastId = toast.promise(
@@ -319,11 +329,14 @@ function TasksProvider({ children }) {
             },
           });
         },
+        finally: () => setCurrentProcessedTask(null),
       },
     );
   }
 
   async function handleDeleteMultipleTasks(deletePermanently) {
+    setCurrentProcessedTask('multiple');
+    setIsTaskOpen(false);
     const toastId = toast.promise(
       Promise.all(
         selectedTasks.map((task) =>
@@ -352,7 +365,9 @@ function TasksProvider({ children }) {
                   onClick: () => {
                     undoDelete(async () => {
                       await Promise.all(
-                        selectedTasks.map((task) => handleRestoreFromTrash('tasks', task.$id, true)),
+                        selectedTasks.map((task) =>
+                          handleRestoreFromTrash('tasks', task.$id, true),
+                        ),
                       );
                     });
                   },
@@ -370,11 +385,13 @@ function TasksProvider({ children }) {
             },
           });
         },
+        finally: () => setCurrentProcessedTask(null),
       },
     );
   }
 
   async function handleOpenTask(id) {
+    if (currentProcessedTask === id || currentProcessedTask === 'multiple') return;
     if (id) {
       const response = await databases.getDocument(DATABASE_ID, TASKS_COLLECTION_ID, id);
       setCurrentTask(response);

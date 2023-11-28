@@ -43,6 +43,7 @@ function ListsProvider({ children }) {
   const { handleLoadElements } = useLoadElements();
   const { handleRestoreFromTrash } = useTrash();
   const { user } = useUser();
+  const [currentProcessedList, setCurrentProcessedList] = useState(null);
 
   async function handleAddList(title, color, list) {
     const newList = list ? list : { title, color };
@@ -78,6 +79,9 @@ function ListsProvider({ children }) {
     );
   }
   async function handleUpdateList(id, property, value) {
+    if (currentProcessedList === id) return;
+    setCurrentProcessedList(id);
+
     const list = lists?.find((list) => list.$id === id);
     const updatedList = {
       ...list,
@@ -104,16 +108,20 @@ function ListsProvider({ children }) {
             },
           });
         },
+        finally: () => setCurrentProcessedList(null),
       },
     );
   }
   async function handleRenameList(id, title) {
-    handleUpdateList(id, 'title', title);
+    await handleUpdateList(id, 'title', title);
   }
   async function handleChangeListColor(id, color) {
     handleUpdateList(id, 'color', color);
   }
   async function handleDeleteList(id, deletePermanently) {
+    if (currentProcessedList === id) return;
+    setCurrentProcessedList(id);
+
     const toastId = toast.promise(
       handleDeleteElement(id, LISTS_COLLECTION_ID, deletePermanently, 'lists', lists, setLists),
       {
@@ -143,6 +151,7 @@ function ListsProvider({ children }) {
             },
           });
         },
+        finally: () => setCurrentProcessedList(null),
       },
     );
   }

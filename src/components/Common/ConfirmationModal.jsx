@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom';
 import { CheckBox } from './CheckBox';
 
 export function ConfirmationModal({
@@ -10,8 +11,8 @@ export function ConfirmationModal({
   checked,
   setChecked,
 }) {
-  return (
-    <div className='fixed top-0 left-0 z-[999999] grid h-full w-full place-content-center bg-black bg-opacity-25 backdrop-blur-[1px]'>
+  return createPortal(
+    <div className='fixed left-0 top-0 z-[999999] grid h-full w-full place-content-center bg-black bg-opacity-25 backdrop-blur-[1px]'>
       <div className=' flex w-[500px] flex-col gap-5 rounded-lg bg-white px-8 py-4'>
         <div className='flex items-center gap-3 border-b pb-3'>
           <div className='grid  h-8 w-8 place-content-center rounded-full bg-[#F57800]'>
@@ -51,6 +52,7 @@ export function ConfirmationModal({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

@@ -41,7 +41,6 @@ export function List({ list }) {
   }, [listActions]);
 
   function changeColor(color) {
-    console.log(color);
     setListColor(color);
     handleChangeListColor($id, color);
   }

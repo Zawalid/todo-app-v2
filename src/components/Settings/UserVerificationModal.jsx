@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { Button } from './Button';
+import { Button } from '../Common/Button';
 import { PasswordInput } from '../Common/PasswordInput';
 
 export function UserVerificationModal({ onClose, onConfirm }) {

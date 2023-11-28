@@ -98,7 +98,7 @@ function UserProvider({ children }) {
       setUser(currentUser);
       return currentUser;
     } catch (error) {
-      console.log(error);
+      toast.error(error.message);
       setUser(null);
     }
   }
@@ -369,7 +369,7 @@ function UserProvider({ children }) {
 
 function getErrorMessage(err) {
   const errorMessage = err.message.includes(':') ? err.message.split(':')[0] : err.message;
-console.log(errorMessage)
+  console.log(errorMessage);
   switch (errorMessage) {
     case 'Invalid `password` param':
       return 'Your password is invalid. Password must be at least 8 characters long.';
@@ -385,8 +385,10 @@ console.log(errorMessage)
     case 'User with the requested ID could not be found.':
       return 'The email you entered is not associated with an account. Please try again.';
     case 'Invalid token passed in the request.':
-    case "Invalid `userId` param":
+    case 'Invalid `userId` param':
       return 'Invalid link or link expired. Please request a new one.';
+    case 'Network request failed':
+      return 'Network request failed. Please check your internet connection.';
     default:
       return 'Something went wrong. Please try again.';
   }

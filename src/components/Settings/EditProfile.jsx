@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { useUser } from '../../hooks';
-import { Button } from './Button';
+import { Button } from '../Common/Button';
 import { UploadImage } from './UploadImage';
 import { UserVerificationModal } from './UserVerificationModal';
 

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { PasswordInput } from '../Common/PasswordInput';
-import { Button } from './Button';
 import { toast } from 'sonner';
 import { useUser } from '../../hooks';
+import { Button } from '../Common/Button';
 
 export function Password() {
   const [currentPassword, setCurrentPassword] = useState('');

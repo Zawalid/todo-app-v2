@@ -112,7 +112,7 @@ export default function DisplayedTasks({ onAdd, condition, activeTab }) {
                 }}
               />
             }
-            className=' rounded-lg  bg-background-primary shadow-md'
+            theme='light'
             trigger='click'
             interactive={true}
             arrow={false}

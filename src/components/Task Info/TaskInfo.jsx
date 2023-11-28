@@ -206,7 +206,7 @@ export function TaskInfo() {
               className={
                 'flex-1 rounded-lg border border-background-tertiary py-2 text-center  text-sm font-semibold transition-colors duration-500 ' +
                 (isChanged
-                  ? 'cursor-pointer bg-indigo-500 text-background-secondary '
+                  ? 'cursor-pointer bg-indigo-600 text-background-secondary hover:bg-indigo-500 '
                   : 'cursor-not-allowed bg-background-tertiary text-text-tertiary')
               }
               onClick={handleSaveChanges}
@@ -223,7 +223,6 @@ export function TaskInfo() {
           onConfirm={() => {
             setIsDeleteModalOpen(false);
             handleDeleteTask(currentTask.$id, deletePermanently);
-            setIsTaskOpen(false);
           }}
           onCancel={() => setIsDeleteModalOpen(false)}
           element='Task'

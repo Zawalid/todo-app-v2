@@ -1,8 +1,8 @@
-import { Button } from './Button';
-import { SpinnerLoader } from '../Common/SpinnerLoader';
 import { useEffect, useState } from 'react';
-import { useUser } from '../../hooks';
 import { useNavigate } from 'react-router-dom';
+import { SpinnerLoader } from '../Common/SpinnerLoader';
+import { useUser } from '../../hooks';
+import { Button } from '../Common/Button';
 
 const BROWSERS_IMAGES = [
   {
@@ -64,16 +64,22 @@ export function Sessions() {
         </p>
         <p className='text-sm text-text-tertiary'>Revoke any sessions that you do not recognize.</p>
       </div>
-      <h3 className='mt-12 font-bold text-text-secondary'>Devices ({sessions.length})</h3>
+      <h3 className='mt-12 font-bold text-text-secondary'>Devices ({sessions?.length || '-'})</h3>
       <div className='relative mt-3 h-[200px] space-y-5 overflow-auto pr-3'>
         {isLoading ? (
           <SpinnerLoader />
-        ) : sessions.length === 0 ? (
+        ) : sessions?.length === 0 ? (
           <div className=' grid h-full place-content-center'>
             <p className='text-sm text-text-tertiary'>No active sessions</p>
           </div>
+        ) : !sessions ? (
+          <div className=' grid h-full place-content-center'>
+            <p className='text-sm text-text-tertiary'>
+              Something went wrong. Please try again later.
+            </p>
+          </div>
         ) : (
-          sessions.map((session) => (
+          sessions?.map((session) => (
             <Session key={session.$id} session={session} onDelete={deleteSession} />
           ))
         )}
