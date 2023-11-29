@@ -62,7 +62,7 @@ function GetStartedButton() {
 
   return (
     <Link
-      className='rounded-lg bg-text-secondary px-5 py-2 font-medium text-white shadow transition-colors '
+      className='rounded-lg bg-indigo-600 hover:bg-indigo-500 px-5 py-2 font-medium text-white shadow transition-colors '
       to={checkIsUserAuthenticated() ? '/app' : '/sign-up'}
     >
       {checkIsUserAuthenticated() ? 'Go to App' : 'Get Started'}
