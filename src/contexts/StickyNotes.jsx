@@ -1,7 +1,7 @@
 import { createContext, useState } from 'react';
 import { databases, appWriteConfig, setPermissions } from '../lib/appwrite/config';
 import { ID } from 'appwrite';
-import { remove$Properties } from '../utils/remove$Properties';
+import { remove$Properties } from '../utils/helpers';
 import { useDeleteElement } from '../hooks/useDeleteElement';
 import { useLoadElements } from '../hooks/useLoadElements';
 import { toast } from 'sonner';

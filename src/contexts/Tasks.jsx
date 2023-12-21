@@ -3,7 +3,7 @@ import { ID } from 'appwrite';
 import { databases, appWriteConfig, setPermissions } from '../lib/appwrite/config';
 import { toast } from 'sonner';
 import { checkIfToday, checkIfTomorrow, isDateInCurrentWeek } from '../utils/Moment';
-import { remove$Properties } from '../utils/remove$Properties';
+import { remove$Properties } from '../utils/helpers';
 import { useDeleteElement, useLoadElements, useTrash, useUser } from '../hooks';
 
 const DATABASE_ID = appWriteConfig.databaseId;

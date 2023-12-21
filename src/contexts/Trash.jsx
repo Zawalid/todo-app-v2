@@ -1,7 +1,7 @@
 import { createContext, useEffect, useMemo, useReducer, useState } from 'react';
 import { databases, appWriteConfig, setPermissions } from '../lib/appwrite/config';
 import { ID, Query } from 'appwrite';
-import { remove$Properties } from '../utils/remove$Properties';
+import { remove$Properties } from '../utils/helpers';
 import { toast } from 'sonner';
 import { useUser } from '../hooks/useUser';
 
