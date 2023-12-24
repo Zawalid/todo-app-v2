@@ -11,6 +11,7 @@ import {
   UserProvider,
 } from './contexts';
 import './styles/index.css';
+import { monitorNetwork } from './components/Common/MonitorNetwork.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -31,3 +32,5 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     </BrowserRouter>
   </React.StrictMode>,
 );
+
+monitorNetwork()
