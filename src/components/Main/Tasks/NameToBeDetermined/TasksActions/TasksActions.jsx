@@ -17,7 +17,9 @@ export function TasksActions({ tasksLength, onClearAll }) {
         </button>
       </div>
       <div className='flex items-center gap-4'>
-        <h5 className=' text-text-secondary'>Sort By</h5>
+        <h5 className=' text-text-secondary' style={{ textWrap: 'nowrap' }}>
+          Sort By
+        </h5>
         <SortTasks />
       </div>
     </div>

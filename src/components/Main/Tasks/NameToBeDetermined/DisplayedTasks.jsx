@@ -184,7 +184,7 @@ export default function DisplayedTasks({ onAdd, condition, activeTab }) {
       )}
       {tasks.filter((task) => condition(task)).length === 0 && (
         <div className='absolute top-1/2 flex w-full flex-col items-center justify-center gap-2'>
-          <h2 className='text-2xl font-semibold text-text-secondary'>
+          <h2 className='text-2xl text-center font-semibold text-text-secondary'>
             {activeTab === 'today'
               ? 'You have no tasks scheduled for today.'
               : activeTab === 'all'

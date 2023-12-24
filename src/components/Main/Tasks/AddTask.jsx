@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTasks } from '../../../hooks/useTasks';
 
 export function AddTask({ onAdd }) {
   const [value, setValue] = useState('');
-  const { isAddingTask, addNewTaskReference } = useTasks();
+  const { isAddingTask} = useTasks();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -12,9 +12,6 @@ export function AddTask({ onAdd }) {
     setValue('');
   };
 
-  useEffect(() => {
-    !isAddingTask && addNewTaskReference.current?.focus();
-  }, [isAddingTask, addNewTaskReference]);
 
   return (
     <form className='w-full' onSubmit={handleSubmit}>
@@ -23,7 +20,6 @@ export function AddTask({ onAdd }) {
         className='w-full rounded-lg bg-transparent  p-2  text-sm text-text-tertiary placeholder:text-text-tertiary focus:outline-none'
         placeholder='Add New Task'
         name='task'
-        ref={addNewTaskReference}
         value={value}
         disabled={isAddingTask}
         onChange={(e) => setValue(e.target.value)}

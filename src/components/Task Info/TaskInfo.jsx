@@ -17,7 +17,6 @@ export function TaskInfo() {
   const [taskSubtasks, setTaskSubtasks] = useState();
   const [taskTagsIds, setTaskTagsIds] = useState();
   const [taskPriority, setTaskPriority] = useState(0);
-  const [isSelectTagOpen, setIsSelectTagOpen] = useState(false);
   const [isChanged, setIsChanged] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deletePermanently, setDeletePermanently] = useState(false);
@@ -76,14 +75,6 @@ export function TaskInfo() {
   ]);
   useEffect(() => {
     function handleClickOutside(event) {
-      if (
-        tagsDropDown.current &&
-        !tagsDropDown.current.contains(event.target) &&
-        tagsDropDownToggler.current &&
-        !tagsDropDownToggler.current.contains(event.target)
-      ) {
-        setIsSelectTagOpen(false);
-      }
       if (tagsDropDown.current && tagsDropDown.current.contains(event.target)) {
         const id = event.target.dataset.id;
         id && handleAddTagToTask(id);
@@ -146,9 +137,9 @@ export function TaskInfo() {
   return (
     <aside
       className={
-        'relative ml-auto flex flex-col rounded-l-xl transition-[width_opacity] duration-500 ' +
+        'lg:relative ml-auto flex flex-col rounded-l-xl transition-[width,opacity] duration-500 ' +
         (isTaskOpen
-          ? 'w-[30%] items-stretch bg-background-secondary  p-4'
+          ? 'fixed right-0 top-0 z-10 h-full sm:w-1/2 w-full items-stretch bg-background-secondary p-4  lg:w-[30%]'
           : 'w-0 items-center bg-background-primary p-0')
       }
       id='taskInfo'
@@ -170,14 +161,12 @@ export function TaskInfo() {
                 setTaskNote,
               }}
             />
-            <div className='grid grid-cols-[1fr_3fr] items-center space-y-2'>
+            <div className='gap-x-5 grid grid-cols-[1fr_2fr] items-center space-y-2'>
               <TaskLists taskListId={taskListId} setTaskListId={setTaskListId} />
               <TaskDueDate taskDueDate={taskDueDate} setTaskDueDate={setTaskDueDate} />
               <TaskTags
                 {...{
                   taskTagsIds,
-                  isSelectTagOpen,
-                  setIsSelectTagOpen,
                   tagsDropDown,
                   tagsDropDownToggler,
                   handleDeleteTagFromTask,

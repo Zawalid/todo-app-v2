@@ -27,7 +27,7 @@ function SignUpForm() {
   }
 
   return (
-    <div className='flex h-full flex-col items-center justify-center gap-10 px-16  text-center'>
+    <div className='flex h-full flex-col items-center justify-center gap-10 px-5 sm:px-10 md:px-16  text-center'>
       <h1 className='self-start text-4xl font-bold text-text-primary'>Sign Up</h1>
       <form className='flex w-full flex-col gap-6' onSubmit={handleSubmit}>
         <div className='flex flex-col items-center justify-between gap-6 sm:flex-row'>

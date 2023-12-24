@@ -36,19 +36,21 @@ export function MenuTags() {
       {isTagsLoading ? (
         <TagsSkeleton />
       ) : (
-        <ul className='flex flex-wrap gap-2' ref={parent}>
-          {tags.map((tag) => (
-            <Tag key={tag.$id} tag={tag} showDeleteButton={true} />
-          ))}
-          <li
-            className='menu_tag_element cursor-pointer bg-background-tertiary text-text-secondary'
-            onClick={() => setIsAddNewTagOpen(!isAddNewTagOpen)}
-            ref={addNewTagToggler}
-          >
-            + Add Tag
-          </li>
-          {isAddNewTagOpen && <AddNewTag reference={addNewTagContainer} isOpen={isAddNewTagOpen} />}
-        </ul>
+        <>
+          <ul className='flex flex-wrap gap-2' ref={parent}>
+            {tags.map((tag) => (
+              <Tag key={tag.$id} tag={tag} showDeleteButton={true} />
+            ))}
+            <li
+              className='menu_tag_element cursor-pointer bg-background-tertiary text-text-secondary'
+              onClick={() => setIsAddNewTagOpen(!isAddNewTagOpen)}
+              ref={addNewTagToggler}
+            >
+              + Add Tag
+            </li>
+          </ul>
+            {isAddNewTagOpen && <AddNewTag reference={addNewTagContainer} isOpen={isAddNewTagOpen} />}
+        </>
       )}
     </div>
   );

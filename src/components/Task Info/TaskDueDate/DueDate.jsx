@@ -42,8 +42,6 @@ export function DueDate({ taskDueDate, setTaskDueDate }) {
         interactive={true}
         arrow={false}
         placement='bottom'
-        onClickOutside={(instance) => instance.hide()}
-        onMount={(instance) => (instanceRef.current = instance)}
       >
         <div
           className={

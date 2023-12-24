@@ -67,7 +67,7 @@ export function List({ list }) {
               backgroundColor: listColor,
             }}
           ></div>
-          <span className='first-line: text-sm text-text-secondary outline-none transition-[color_font-weight] duration-100 group-hover:font-bold'>
+          <span className='first-line: text-sm text-text-secondary outline-none transition-[color,font-weight] duration-100 group-hover:font-bold'>
             {title}
           </span>
           <div className='count mx-1 grid place-content-center rounded-sm bg-background-tertiary py-[1px] transition-colors duration-300 group-hover:bg-background-primary'>

@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, useMemo } from 'react';
+import { Suspense, lazy, useMemo } from 'react';
 import { useHref } from 'react-router-dom';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { Title } from './Title';
@@ -22,7 +22,7 @@ const skeletons = {
 };
 
 export function Main() {
-  const { tasks, isTasksLoading, handleAddTask, todayTasks, upcomingTasks, addNewTaskReference } =
+  const { tasks, isTasksLoading, handleAddTask, todayTasks, upcomingTasks } =
     useTasks();
   const { lists } = useLists();
   const { stickyNotes, isStickyNoteOpened } = useStickyNotes();
@@ -33,9 +33,6 @@ export function Main() {
     duration : 300,
   });
 
-  useEffect(() => {
-    addNewTaskReference.current?.focus();
-  }, [activeTab, addNewTaskReference]);
 
   const listId = lists?.find((list) => list.title === activeTab?.replace('%20', ' '))?.$id;
 
@@ -80,7 +77,7 @@ export function Main() {
   };
 
   return (
-    <main className='relative flex flex-1 flex-col overflow-hidden rounded-xl bg-background-primary px-5 '
+    <main className='relative flex flex-1 flex-col overflow-hidden rounded-xl bg-background-primary pl-2'
     ref={parent}
     >
       <Title title={title} count={count} />

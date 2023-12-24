@@ -4,8 +4,6 @@ import { useTags } from '../../../hooks/useTags';
 
 export function TaskTags({
   taskTagsIds,
-  isSelectTagOpen,
-  setIsSelectTagOpen,
   tagsDropDown,
   tagsDropDownToggler,
   handleDeleteTagFromTask,
@@ -28,14 +26,16 @@ export function TaskTags({
               />
             );
         })}
-        <li
-          className='menu_tag_element relative cursor-pointer bg-background-tertiary'
-          ref={tagsDropDownToggler}
-          onClick={() => setIsSelectTagOpen(true)}
+        <TagsDropDown
+        reference={tagsDropDown}
         >
-          + Add Tag
-          {isSelectTagOpen && <TagsDropDown reference={tagsDropDown} />}
-        </li>
+          <li
+            className='menu_tag_element relative cursor-pointer bg-background-tertiary'
+            ref={tagsDropDownToggler}
+          >
+            + Add Tag
+          </li>
+        </TagsDropDown>
       </ul>
     </>
   );

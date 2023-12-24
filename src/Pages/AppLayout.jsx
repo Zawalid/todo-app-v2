@@ -14,14 +14,23 @@ function AppLayout() {
     if (checkIsUserAuthenticated()) {
       handleFetchAllElements();
     }
-    return () => !checkIsUserAuthenticated() && handleClearAllElements();
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        handleFetchAllElements();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => {
+      !checkIsUserAuthenticated() && handleClearAllElements();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <>
       {checkIsUserAuthenticated() ? (
-        <div className='flex h-full gap-2  bg-background-primary p-5'>
+        <div className='flex h-full gap-2 bg-background-primary p-2'>
           <SearchProvider>
             <Menu />
             <Main />

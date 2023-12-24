@@ -91,10 +91,10 @@ input[type='checkbox'].subtask {
 }
 
 #menu:has(#closeMenu:hover) {
-  opacity: 50%;
+  @apply lg:opacity-50;
 }
 #taskInfo:has(#closeTaskInfo:hover) {
-  opacity: 50%;
+  @apply lg:opacity-50;
 }
 
 .tippy-box[data-theme~='light'] {

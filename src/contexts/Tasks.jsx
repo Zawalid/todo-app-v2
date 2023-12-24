@@ -1,4 +1,4 @@
-import { createContext, useRef, useState } from 'react';
+import { createContext, useState } from 'react';
 import { ID } from 'appwrite';
 import { databases, appWriteConfig, setPermissions } from '../lib/appwrite/config';
 import { toast } from 'sonner';
@@ -151,7 +151,6 @@ function TasksProvider({ children }) {
   const [isTaskOpen, setIsTaskOpen] = useState(false);
   const [isAddingTask, setIsAddingTask] = useState(false);
   const [selectedTasks, setSelectedTasks] = useState([]);
-  const addNewTaskReference = useRef(null);
   const { handleDeleteElement } = useDeleteElement();
   const { handleLoadElements } = useLoadElements();
   const { handleRestoreFromTrash } = useTrash();
@@ -417,7 +416,6 @@ function TasksProvider({ children }) {
         selectedTasks,
         isTaskOpen,
         isAddingTask,
-        addNewTaskReference,
         setIsTasksLoading,
         handleAddTask,
         handleUpdateTask,
