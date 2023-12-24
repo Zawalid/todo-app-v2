@@ -5,6 +5,7 @@ import trashIcon from '../../../assets/trash.png';
 import { Item } from './Item';
 import { useRestoreElement, useLists, useTrash } from '../../../hooks/';
 import { toast } from 'sonner';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 
 export default function Trash() {
   const {
@@ -22,6 +23,9 @@ export default function Trash() {
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const whichDelete = useRef(null);
   const { lists } = useLists();
+  const [parent] = useAutoAnimate({
+    duration: 500,
+  });
 
   return (
     <div className='relative flex h-full flex-col overflow-auto '>
@@ -30,7 +34,9 @@ export default function Trash() {
         currentTab={currentTab}
         setCurrentTab={setCurrentTab}
       />
-      <ul className='flex h-[170px] flex-1 flex-col gap-2 overflow-auto py-5'>
+      <ul className='flex h-[170px] flex-1 flex-col gap-2 overflow-auto py-5'
+      ref={parent}
+      >
         {trash[currentTab]?.length > 0 &&
           trash[currentTab]?.map((item) => (
             <Item

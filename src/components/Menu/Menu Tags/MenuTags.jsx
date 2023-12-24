@@ -3,13 +3,16 @@ import { Tag } from './Tag';
 import { AddNewTag } from './AddNewTag';
 import { useTags } from '../../../hooks/useTags';
 import { TagsSkeleton } from '../../Skeletons';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 
 export function MenuTags() {
   const { tags, isTagsLoading } = useTags();
   const [isAddNewTagOpen, setIsAddNewTagOpen] = useState(false);
   const addNewTagContainer = useRef(null);
   const addNewTagToggler = useRef(null);
-
+  const [parent] = useAutoAnimate({
+    duration: 500,
+  });
   useEffect(() => {
     function handleClickOutside(e) {
       if (
@@ -33,7 +36,7 @@ export function MenuTags() {
       {isTagsLoading ? (
         <TagsSkeleton />
       ) : (
-        <ul className='flex flex-wrap gap-2'>
+        <ul className='flex flex-wrap gap-2' ref={parent}>
           {tags.map((tag) => (
             <Tag key={tag.$id} tag={tag} showDeleteButton={true} />
           ))}

@@ -4,10 +4,14 @@ import { StickyNote } from '../Sticky Wall/StickyNote';
 import { Tabs } from '../../Common/Tabs';
 import { useSearch } from '../../../hooks/useSearch';
 import { useStickyNotes } from '../../../hooks/useStickyNotes';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 
 export default function SearchResults() {
   const { searchResults, currentSearchTab, setCurrentSearchTab } = useSearch();
   const { setCurrentNote, setIsStickyNoteOpened, setIsStickyNoteEditorOpen } = useStickyNotes();
+  const [parent] = useAutoAnimate({
+    duration: 500,
+  });
 
   return (
     <div className='relative flex h-full flex-col overflow-auto p-4'>
@@ -30,6 +34,7 @@ export default function SearchResults() {
               ? 'grid grid-cols-[repeat(auto-fill,minmax(270px,1fr))] place-content-start gap-6'
               : 'space-y-2 ')
           }
+          ref={parent}
         >
           {searchResults.map((result) => {
             if (currentSearchTab !== 'stickyWall') {

@@ -3,12 +3,16 @@ import { List } from './List';
 import { AddNewList } from './AddNewList';
 import { useLists } from '../../../hooks/useLists';
 import { ListsSkeleton } from '../../Skeletons';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 
 export function MenuLists() {
   const { lists, isListsLoading } = useLists();
   const [isAddNewListOpen, setIsAddNewListOpen] = useState(false);
   const addNewListContainer = useRef(null);
   const addNewListToggler = useRef(null);
+  const [parent] = useAutoAnimate({
+    duration: 500,
+  });
 
   useEffect(() => {
     function handleClickOutside(e) {
@@ -34,7 +38,9 @@ export function MenuLists() {
         <ListsSkeleton />
       ) : (
         <>
-          <ul className=' space-y-1 '>
+          <ul className=' space-y-1 '
+          ref={parent}
+          >
             {lists?.map((list) => (
               <List key={list.$id} list={list} />
             ))}

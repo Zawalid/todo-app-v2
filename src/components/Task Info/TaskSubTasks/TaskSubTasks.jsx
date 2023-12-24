@@ -1,9 +1,15 @@
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { AddTask } from '../../Main/Tasks/AddTask';
 import { SubTask } from './SubTask';
 
 export function TaskSubTasks({
   taskSubtasks, handleAddSubTask, handleDeleteSubtask, handleUpdateSubtask, handleCompleteSubTask,
 }) {
+  const [parent] = useAutoAnimate({
+    duration: 500,
+  });
+
+
   return (
     <div className='mt-7 pb-5 flex-shrink-0 '>
       <h2 className='mb-4 text-xl font-bold text-text-secondary'>Subtasks :</h2>
@@ -11,7 +17,9 @@ export function TaskSubTasks({
         <i className='fa-solid fa-plus text-xl text-text-tertiary'></i>
         <AddTask onAdd={handleAddSubTask} />
       </div>
-      <ul className='mt-3 max-h-[300px] overflow-y-auto space-y-2 px-3'>
+      <ul className='mt-3 max-h-[300px] overflow-y-auto space-y-2 px-3'
+      ref={parent}
+      >
         {taskSubtasks?.map((subtask) => (
           <SubTask
             key={subtask.id}

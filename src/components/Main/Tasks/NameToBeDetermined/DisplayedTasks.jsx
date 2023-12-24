@@ -9,6 +9,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useTasks } from '../../../../hooks/useTasks';
 import { MultipleDeletionsModal } from './MultipleDeletionsModal';
 import { Pagination } from './Pagination';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 
 const filtersConditions = {
   all: () => true,
@@ -53,6 +54,10 @@ export default function DisplayedTasks({ onAdd, condition, activeTab }) {
   const whichDelete = useRef(null);
   const [pagination, dispatch] = useReducer(paginationReducer, paginationState);
   const [searchParams] = useSearchParams();
+  const [parent] = useAutoAnimate({
+    duration : 500,
+  });
+
 
   const filter = searchParams.get('filter') || 'all';
   const sort = searchParams.get('sort');
@@ -85,7 +90,9 @@ export default function DisplayedTasks({ onAdd, condition, activeTab }) {
   }, [isDeleteMultipleModalOpen, selectedTasks, isSelecting, setSelectedTasks]);
 
   return (
-    <div className='relative flex h-full flex-col overflow-auto'>
+    <div className='relative flex h-full flex-col overflow-auto'
+    ref={parent}
+    >
       <div className='flex items-center gap-2'>
         <div className='flex  flex-1 items-center gap-3 rounded-xl border border-background-tertiary px-5 py-1'>
           <i className='fa-solid fa-plus text-xl text-text-tertiary'></i>
@@ -127,7 +134,9 @@ export default function DisplayedTasks({ onAdd, condition, activeTab }) {
       </div>
       {tasks.filter((task) => condition(task)).length > 0 && (
         <>
-          <ul className='mt-3 h-full space-y-2 overflow-y-auto pr-3'>
+          <ul className='mt-3 h-full space-y-2 overflow-y-auto pr-3'
+          ref={parent}
+          >
             {[...filteredTasks]
               .sort((a, b) => {
                 if (sort === 'cDate') {

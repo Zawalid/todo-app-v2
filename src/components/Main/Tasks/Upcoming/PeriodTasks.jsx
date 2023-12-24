@@ -2,10 +2,14 @@ import { useEffect, useState } from 'react';
 import { Task } from '../Task';
 import { AddTask } from '../AddTask';
 import { useTasks } from '../../../../hooks/useTasks';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 
 export function PeriodTasks({ title, period, parentRef, isToday }) {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const { handleAddTask, todayTasks, tomorrowTasks, thisWeekTasks } = useTasks();
+  const [parent] = useAutoAnimate({
+    duration: 500,
+  });
 
   const tasks = {
     todayTasks,
@@ -65,6 +69,7 @@ export function PeriodTasks({ title, period, parentRef, isToday }) {
       </div>
       <ul
         className={' flex-1 space-y-2 overflow-auto  px-4 ' + (isFullScreen ? '' : 'max-h-[280px]')}
+        ref={parent}
       >
         {tasks[period.tasks]?.length > 0 ? (
           tasks[period.tasks]?.map((task) => <Task key={task.$id} task={task} />)

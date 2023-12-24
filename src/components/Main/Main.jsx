@@ -1,5 +1,6 @@
 import { Suspense, lazy, useEffect, useMemo } from 'react';
 import { useHref } from 'react-router-dom';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { Title } from './Title';
 import { checkIfToday } from '../../utils/Moment';
 import { useTasks, useSearch, useLists, useStickyNotes, useTrash } from '../../hooks';
@@ -28,6 +29,9 @@ export function Main() {
   const { searchResults } = useSearch();
   const { trashLength } = useTrash();
   const activeTab = useHref().split('/app/')[1];
+  const [parent] = useAutoAnimate({
+    duration : 300,
+  });
 
   useEffect(() => {
     addNewTaskReference.current?.focus();
@@ -76,7 +80,9 @@ export function Main() {
   };
 
   return (
-    <main className='relative flex flex-1 flex-col overflow-hidden rounded-xl bg-background-primary px-5 '>
+    <main className='relative flex flex-1 flex-col overflow-hidden rounded-xl bg-background-primary px-5 '
+    ref={parent}
+    >
       <Title title={title} count={count} />
       {isTasksLoading ? (
         skeletons[activeTab] ? (
