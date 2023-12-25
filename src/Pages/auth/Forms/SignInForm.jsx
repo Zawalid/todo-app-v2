@@ -20,7 +20,7 @@ function SignInForm() {
   }
 
   return (
-    <section className='flex flex-col items-center justify-center gap-10 px-5 sm:px-10 md:px-16 text-center'>
+    <section className='flex h-full flex-col items-center justify-center gap-10 px-5 sm:px-10 md:px-16 text-center'>
       <h1 className=' self-start text-4xl font-bold text-text-primary'>Sign In</h1>
       <form className='flex w-full flex-col gap-6' onSubmit={handleSubmit}>
         <InputField

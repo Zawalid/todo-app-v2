@@ -4,6 +4,7 @@ import { useUser } from '../../hooks';
 import { Button } from '../Common/Button';
 import { UploadImage } from './UploadImage';
 import { UserVerificationModal } from './UserVerificationModal';
+import { InputField } from '../Common/InputField';
 
 export function EditProfile() {
   const { user, handleUpdateProfile } = useUser();
@@ -51,27 +52,27 @@ export function EditProfile() {
         </div>
         <div>
           <h3 className='mb-3 font-bold text-text-secondary'>Name</h3>
-          <input
-            type='text'
-            className='focus-border-none w-full rounded-md border bg-background-secondary p-2 text-text-secondary placeholder-text-tertiary focus:outline-none '
-            value={name}
-            onChange={(e) => {
-              setName(e.target.value);
-              setIsUpdated(user?.name.trim() !== e.target.value.trim());
-            }}
-          />
+           <InputField
+          type='text'
+          placeholder='Name'
+          value={name}
+          onChange={(e) => {
+            setName(e.target.value);
+            setIsUpdated(user?.name.trim() !== e.target.value.trim());
+          }}
+        />
         </div>
         <div>
           <h3 className='mb-3 font-bold text-text-secondary'>Email</h3>
-          <input
-            type='email'
-            className='focus-border-none w-full rounded-md border bg-background-secondary p-2 text-text-secondary placeholder-text-tertiary focus:outline-none '
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-              setIsUpdated(user?.email.trim() !== e.target.value.trim());
-            }}
-          />
+           <InputField
+          type='email'
+          placeholder='Email'
+          value={email}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            setIsUpdated(user?.email.trim() !== e.target.value.trim());
+          }}
+        />
         </div>
       </div>
       <Button text='Save Changes' disabled={!isUpdated} onClick={handleSaveChanges} />

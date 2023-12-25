@@ -10,7 +10,7 @@ const HomePage = () => {
   const isResetPassword = searchParams.get('userId') && searchParams.get('secret');
 
   return (
-    <div className='flex min-h-screen flex-col'>
+    <div className='flex min-h-screen flex-col bg-background-secondary'>
       <header className='flex h-14 items-center px-4 lg:px-6'>
         <Logo />
         {!isResetPassword && (
@@ -39,12 +39,12 @@ const HomePage = () => {
             <div className='flex flex-col items-center space-y-7 text-center'>
               <h1 className='text-3xl font-bold tracking-tighter text-text-primary sm:text-5xl'>
                 {checkIsUserAuthenticated()
-                  ? 'Welcome back to TaskMaster'
+                  ? 'Welcome back to I Do'
                   : ' Manage Your Tasks Effortlessly'}
               </h1>
               <p className='mx-auto max-w-[700px] text-text-tertiary  md:text-xl'>
-                TaskMaster provides an easy and efficient way to manage all your tasks. Stay
-                organized and get more done.
+                I Do provides an easy and efficient way to manage all your tasks. Stay organized and
+                get more done.
               </p>
               <GetStartedButton />
             </div>
@@ -62,7 +62,7 @@ function GetStartedButton() {
 
   return (
     <Link
-      className='rounded-lg bg-indigo-600 hover:bg-indigo-500 px-5 py-2 font-medium text-white shadow transition-colors '
+      className='rounded-lg bg-indigo-600 px-5 py-2 font-medium text-white shadow transition-colors hover:bg-indigo-500 '
       to={checkIsUserAuthenticated() ? '/app' : '/sign-up'}
     >
       {checkIsUserAuthenticated() ? 'Go to App' : 'Get Started'}
