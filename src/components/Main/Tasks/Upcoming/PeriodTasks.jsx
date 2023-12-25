@@ -28,12 +28,12 @@ export function PeriodTasks({ title, period, parentRef, isToday }) {
   return (
     <div
       className={
-        'relative  flex max-h-[400px] min-w-[400px] flex-1 flex-col rounded-lg  border border-zinc-200 bg-background-primary pb-4 ' +
+        'relative  flex max-h-[400px] min-w-full sm:min-w-[400px] flex-1 flex-col rounded-lg  border border-zinc-200 bg-background-primary pb-4 ' +
         (isFullScreen ? 'full_screen ' : '') +
         (isToday ? 'w-full basis-auto' : '')
       }
     >
-      <h1 className='mb-3 border-b p-4 pb-3 text-2xl font-bold text-text-primary'>
+      <h1 className='mb-3 border-b p-4 pb-3 text-xl sm:text-2xl font-bold text-text-primary'>
         {title}
         {title === 'This Week' && (
           <span className='ml-3 text-xs text-text-tertiary'>(Mon - Sun)</span>

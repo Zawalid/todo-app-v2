@@ -16,7 +16,7 @@ export default function SearchResults() {
   return (
     <div className='relative flex h-full flex-col overflow-auto p-4'>
       <Tabs
-        tabs={['All', 'Tasks', 'Upcoming', 'Sticky Wall']}
+        tabs={['All', 'Today', 'Upcoming', 'Sticky Wall']}
         currentTab={currentSearchTab}
         setCurrentTab={setCurrentSearchTab}
       />

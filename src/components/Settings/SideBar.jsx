@@ -4,13 +4,28 @@ import { useUser } from '../../hooks';
 import { useNavigate } from 'react-router-dom';
 
 export function SideBar({ currentTab, setCurrentTab }) {
+  const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { user, handleDeleteAccount, handleSendVerificationEmail } = useUser();
   const navigate = useNavigate();
 
   return (
     <>
-      <aside className='relative space-y-3'>
+      <button
+        className='sm:hidden absolute right-12 top-4 h-7 w-7 rounded-full bg-background-secondary transition-colors duration-300 hover:bg-background-tertiary'
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <i
+          className={`fa-solid fa-chevron-right  text-text-tertiary transition-transform duration-500
+          ${isOpen ? 'rotate-180' : ''}
+           `}
+        ></i>
+      </button>
+      <aside
+        className={`absolute top-0 z-[100] flex h-full flex-col items-start gap-3 bg-background-primary p-3 shadow-md transition-[left] duration-500 sm:static sm:p-0 sm:shadow-none ${
+          isOpen ? 'left-0' : '-left-full'
+        }`}
+      >
         <button
           className={
             'menu_element gap-2 ' +
@@ -28,7 +43,7 @@ export function SideBar({ currentTab, setCurrentTab }) {
           }
           onClick={() => setCurrentTab('password')}
         >
-          <i className='fa-solid fa-lock'></i>
+          <i className='fa-solid fa-key'></i>
           <span className='font-medium'>Password</span>
         </button>
         <button
@@ -38,10 +53,10 @@ export function SideBar({ currentTab, setCurrentTab }) {
           }
           onClick={() => setCurrentTab('sessions')}
         >
-          <i className='fa-solid fa-right-to-bracket'></i>
+          <i className='fa-solid fa-laptop'></i>
           <span className='font-medium'>Sessions</span>
         </button>
-        <div className='absolute bottom-0 space-y-3 border-t pt-3'>
+        <div className=' bottom-0 mt-auto w-full space-y-4 border-t border-zinc-300 pt-3'>
           {!user?.emailVerification && (
             <button
               className='grid grid-cols-[30px_1fr] items-center justify-items-start'

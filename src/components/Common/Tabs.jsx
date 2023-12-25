@@ -1,6 +1,6 @@
 export function Tabs({ tabs, currentTab, setCurrentTab }) {
   return (
-    <div className='flex items-center  gap-12 border-b-2 pb-2'>
+    <div className='flex items-center gap-8 sm:gap-12 border-b-2 pb-2'>
       {tabs.map((tab) => {
         const tabTitle = tab.includes(' ')
           ? tab.split(' ')[0].toLowerCase() + tab.split(' ')[1]
@@ -9,7 +9,7 @@ export function Tabs({ tabs, currentTab, setCurrentTab }) {
           <button
             key={tab}
             className={
-              'relative font-semibold text-text-secondary before:absolute before:-bottom-[10px] before:left-0 before:h-[2px] before:w-full before:transition-colors before:duration-300 hover:before:bg-text-secondary ' +
+              'relative font-semibold text-sm sm:text-base text-text-secondary before:absolute before:-bottom-[10px] before:left-0 before:h-[2px] before:w-full before:transition-colors before:duration-300 hover:before:bg-text-secondary ' +
               (currentTab === tabTitle ? 'before:bg-text-secondary' : 'before:bg-text-transparent')
             }
             onClick={() => setCurrentTab(tabTitle)}

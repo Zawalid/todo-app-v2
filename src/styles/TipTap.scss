@@ -11,7 +11,7 @@
     margin-top: 0.75em;
   }
   div:has(> .ProseMirror) {
-    height: calc(100vh - 400px);
+    height: calc(100dvh - 400px);
     margin: 0;
     overflow: auto;
   }

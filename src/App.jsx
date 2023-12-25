@@ -35,12 +35,13 @@ function App() {
         <Route path='*' element={<NotFound />} />
       </Routes>
       <Toaster
-        position='top-right'
+        position={window.innerWidth < 768 ? 'bottom-center' : 'top-right'}
         loadingIcon={
           <i className='fa-solid fa-spinner animate-spin text-lg text-text-secondary'></i>
         }
         toastOptions={{
           className: 'sonner-toast',
+          duration : 2000,
         }}
       />
     </Suspense>

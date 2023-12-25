@@ -108,10 +108,10 @@ export default function Trash() {
           showCheckBox={false}
         />
       )}
-      <div className='mt-auto flex items-center justify-between border-t-2 pt-3'>
+      <div className='mt-auto flex-wrap gap-x-5 gap-y-2 flex items-center justify-between border-t-2 pt-3'>
         <button
           className={
-            'rounded-lg bg-text-error px-4 py-2 text-sm text-white ' +
+            'flex-1 sm:flex-none min-w-[140px] rounded-lg bg-text-error px-4 py-2 text-sm text-white ' +
             (trash[currentTab]?.length === 0 ? 'cursor-not-allowed opacity-50' : '')
           }
           onClick={() => {
@@ -125,7 +125,7 @@ export default function Trash() {
         </button>
         <button
           className={
-            'rounded-lg bg-text-error px-4 py-2 text-sm text-white ' +
+            'flex-1 sm:flex-none min-w-[140px] rounded-lg bg-text-error px-4 py-2 text-sm text-white ' +
             (trashLength === 0 ? 'cursor-not-allowed opacity-50' : '')
           }
           onClick={() => {
@@ -134,13 +134,13 @@ export default function Trash() {
             whichDelete.current = 'all';
           }}
         >
-          <i className='fa-solid fa-trash-can '></i>
+          <i className='fa-solid fa-ban '></i>
           <span className='ml-2'>Empty Trash</span>
         </button>
       </div>
-      <div className='mt-2 flex items-center justify-center gap-2'>
+      <div className='mt-3 flex items-center justify-center gap-2'>
         <i className='fa-solid fa-info-circle text-blue-400'></i>
-        <p className='text-xs font-medium text-text-tertiary '>
+        <p className='text-[10px] sm:text-xs font-medium text-text-tertiary '>
           Items in the trash will be automatically cleared after 30 days.
         </p>
       </div>

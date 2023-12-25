@@ -20,8 +20,6 @@ export function UploadImage({ avatar, onChange }) {
       new FileTypeValidator(['jpg', 'png']),
       new FileSizeValidator({ maxFileSize: 10 * 1024 * 1024 /* 10 MB */ }),
       new ImageDimensionsValidator({
-        maxHeight: 1000,
-        maxWidth: 1000,
         minHeight: 100,
         minWidth: 100,
       }),
@@ -50,16 +48,16 @@ export function UploadImage({ avatar, onChange }) {
         alt={user?.name}
       />
       <div>
-        <div className='flex gap-5'>
+        <div className='flex flex-wrap gap-y-2 gap-x-5'>
           <button
-            className='rounded-lg border px-3 py-2 text-sm font-medium text-text-primary shadow-sm transition-colors duration-300 hover:bg-indigo-600 hover:text-white'
+            className='flex-1 rounded-lg border px-3 py-2 text-sm font-medium text-text-primary shadow-sm transition-colors duration-300 hover:bg-indigo-600 hover:text-white'
             onClick={() => openFilePicker()}
           >
             Upload
           </button>
           <button
             className={
-              'rounded-lg border px-3 py-2 text-sm font-medium text-text-primary shadow-sm transition-colors duration-300  ' +
+              'flex-1 rounded-lg min-w-[105px] border px-3 py-2 text-sm font-medium text-text-primary shadow-sm transition-colors duration-300  ' +
               (isInitialsAvatar ? 'bg-zinc-200 text-white' : 'hover:bg-indigo-600 hover:text-white')
             }
             disabled={isInitialsAvatar}
@@ -82,7 +80,7 @@ function getErrorMessage(name) {
     case 'FileTypeError':
       return 'Only JPG and PNG are allowed';
     case 'ImageDimensionError':
-      return 'Image must be at least 100x100 px and at most 1000x1000 px';
+      return 'Image must be at least 100x100 px';
     case 'FileSizeError':
       return 'Image must be at most 10 MB';
     default:

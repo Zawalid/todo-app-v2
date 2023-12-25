@@ -4,7 +4,7 @@ import { MenuTags } from './Menu Tags/MenuTags';
 import { MenuTasks } from './MenuTasks';
 import { Search } from './Search';
 import { NavLink, useHref } from 'react-router-dom';
-import { useTrash } from '../../hooks';
+import { useTrash, useUser } from '../../hooks';
 import { Profile } from './Profile';
 import { Settings } from '../Settings/Settings';
 import { createPortal } from 'react-dom';
@@ -13,6 +13,7 @@ export function Menu() {
   const [isOpen, setIsOpen] = useState(window.matchMedia('(min-width: 1024px)').matches);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const menu = useRef(null);
+  const { handleSignOut } = useUser();
   const { trashLength } = useTrash();
   const activeTab = useHref().split('/app/')[1];
 
@@ -26,8 +27,8 @@ export function Menu() {
         className={
           'fixed top-0 z-[100] flex h-full  w-full flex-col rounded-l-xl transition-[width,opacity,left] duration-500 lg:static ' +
           (isOpen
-            ? 'left-0 items-stretch bg-background-secondary p-4 pr-1 lg:w-[22%] '
-            : 'items-center -left-full bg-background-primary p-0 lg:w-0  ')
+            ? 'left-0 items-stretch bg-background-primary p-4 pr-1 sm:bg-background-secondary lg:w-[22%] '
+            : '-left-full items-center bg-background-primary p-0 lg:w-0  ')
         }
         ref={menu}
         id='menu'
@@ -35,7 +36,7 @@ export function Menu() {
         {isOpen && (
           <>
             <div className='mb-3 flex items-center justify-between gap-8 pb-3 pr-3'>
-              <Profile onOpenSettings={() => setIsSettingsOpen(true)} />
+              <Profile />
               <button onClick={() => setIsOpen(false)} id='closeMenu'>
                 <i className='fa-solid fa-angles-left cursor-pointer text-text-secondary'></i>
               </button>
@@ -46,7 +47,7 @@ export function Menu() {
               <MenuLists />
               <MenuTags />
             </div>
-            <div className='mt-auto'>
+            <div className='mt-auto pr-2 space-y-1'>
               <NavLink to='trash' className='menu_element  group  pt-3'>
                 <i className='fa-solid fa-trash-can text-text-tertiary'></i>
                 <span className='text-sm text-text-secondary transition-[font-weight] duration-100 group-hover:font-bold'>
@@ -56,6 +57,17 @@ export function Menu() {
                   <span className='text-xs font-semibold text-text-secondary'>{trashLength}</span>
                 </div>
               </NavLink>
+              <button
+                className='menu_element w-full justify-items-start'
+                onClick={() => setIsSettingsOpen(true)}
+              >
+                <i className='fa-solid fa-gear  text-text-tertiary'></i>
+                <span className='text-sm font-medium text-text-secondary'>Settings</span>
+              </button>
+              <button className='menu_element w-full justify-items-start' onClick={handleSignOut}>
+                <i className='fa-solid fa-sign-out  text-text-error'></i>
+                <span className='text-sm font-medium text-text-error'>Sign Out</span>
+              </button>
             </div>
             {isSettingsOpen && <Settings onClose={() => setIsSettingsOpen(false)} />}
           </>
@@ -64,7 +76,7 @@ export function Menu() {
       {isOpen ||
         createPortal(
           <button
-            className='fixed right-1 lg:left-1 top-1/2 -translate-y-1/2 z-50 h-16 w-[6px] rounded-lg bg-zinc-300'
+            className='fixed right-1 top-1/2 z-50 h-16 w-[6px] -translate-y-1/2 rounded-lg bg-zinc-300 lg:left-1'
             onClick={() => setIsOpen(true)}
           ></button>,
           document.body,

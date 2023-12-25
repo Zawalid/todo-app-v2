@@ -386,6 +386,7 @@ function TrashProvider({ children }) {
         handleEmptyType,
         handleEmptyTrash,
         handleRestoreFromTrash,
+        handleGetTrash,
       }}
     >
       {children}

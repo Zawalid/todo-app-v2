@@ -2,24 +2,26 @@ import { TaskInfo } from '../components/Task Info/TaskInfo';
 import { Menu } from '../components/Menu/Menu';
 import { Main } from '../components/Main/Main';
 import { SearchProvider } from '../contexts';
-import { useFetchAllElements, useUser } from '../hooks';
+import { useFetchAllElements, useTrash, useUser } from '../hooks';
 import { Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
 
 function AppLayout() {
   const { checkIsUserAuthenticated } = useUser();
   const { handleFetchAllElements, handleClearAllElements } = useFetchAllElements();
+  const { handleGetTrash } = useTrash();
 
   useEffect(() => {
-    if (checkIsUserAuthenticated()) {
-      handleFetchAllElements();
-    }
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
         handleFetchAllElements();
+        handleGetTrash();
       }
     };
-    document.addEventListener('visibilitychange', handleVisibilityChange);
+    if (checkIsUserAuthenticated()) {
+      handleFetchAllElements();
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+    }
     return () => {
       !checkIsUserAuthenticated() && handleClearAllElements();
       document.removeEventListener('visibilitychange', handleVisibilityChange);

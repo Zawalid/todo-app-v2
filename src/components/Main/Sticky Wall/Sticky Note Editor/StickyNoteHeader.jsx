@@ -15,7 +15,7 @@ export function StickyNoteHeader({
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [deletePermanently, setDeletePermanently] = useState(false);
   return (
-    <div className='flex items-center justify-between border-b border-zinc-200  p-3'>
+    <div className='flex items-center justify-between gap-5 border-b border-zinc-200  p-3'>
       <div>
         <input
           type='text'
@@ -35,33 +35,34 @@ export function StickyNoteHeader({
       <div className='flex items-center gap-2'>
         <CustomTippy content='Back'>
           <button
-            className='h-10 w-10 cursor-pointer rounded-full bg-background-tertiary text-text-tertiary hover:bg-background-secondary'
+            className='sm:h-10 sm:w-10 h-8 w-8 cursor-pointer rounded-full bg-background-tertiary text-text-tertiary hover:bg-background-secondary'
             onClick={onBack}
           >
-            <i className='fa-solid fa-chevron-left'></i>
+            <i className='fa-solid fa-chevron-left text-sm'></i>
           </button>
         </CustomTippy>
         <CustomTippy content='Save'>
           <button
             className={
-              'h-10 w-10 cursor-pointer rounded-full transition-colors duration-500  ' +
+              'sm:h-10 sm:w-10 h-8 w-8 cursor-pointer rounded-full transition-colors duration-500  ' +
               (isChanged
                 ? 'cursor-pointer bg-indigo-500 text-background-secondary hover:bg-indigo-400 '
                 : 'cursor-not-allowed bg-background-tertiary text-text-tertiary hover:bg-background-secondary')
             }
             onClick={onSave}
           >
-            <i className='fa-solid fa-floppy-disk'></i>
+            <i className='fa-solid fa-floppy-disk text-sm'></i>
           </button>
         </CustomTippy>
         <CustomTippy content='Delete'>
           <button
-            className='relative h-10 w-10 cursor-pointer rounded-full bg-background-tertiary text-text-tertiary transition-colors duration-500 hover:bg-red-500 hover:text-white'
+            className='relative sm:h-10 sm:w-10 h-8 w-8 cursor-pointer rounded-full bg-background-tertiary text-text-tertiary transition-colors duration-500 hover:bg-red-500 hover:text-white'
             onClick={() => setIsConfirmationModalOpen(true)}
           >
-            <i className='fa-solid fa-trash-can'></i>
+            <i className='fa-solid fa-trash-can text-sm'></i>
           </button>
         </CustomTippy>
+      
       </div>
       {isConfirmationModalOpen && (
         <ConfirmationModal

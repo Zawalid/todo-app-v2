@@ -68,7 +68,7 @@ export default function TipTap({ onUpdateContent, content, creationDate }) {
   });
 
   return (
-    <div className='tiptap  grid h-full grid-rows-[auto_1fr_60px]'>
+    <div className='tiptap  grid h-full grid-rows-[auto_1fr_50px]'>
       <MenuBar editor={editor} />
       {editor && (
         <BubbleMenu

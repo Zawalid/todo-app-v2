@@ -3,7 +3,7 @@ import { account, appWriteConfig, avatars, databases } from '../lib/appwrite/con
 import { handleDeleteFile, handleUploadFile } from '../lib/appwrite/api';
 import { ID, Query } from 'appwrite';
 import { toast } from 'sonner';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 const USERS_COLLECTION_ID = appWriteConfig.usersCollectionId;
@@ -14,6 +14,7 @@ function UserProvider({ children }) {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   // ------------- Authentication
 
@@ -98,6 +99,10 @@ function UserProvider({ children }) {
       setUser(currentUser);
       return currentUser;
     } catch (error) {
+      if (error.code === 401) {
+        localStorage.removeItem('cookieFallback');
+        return navigate('/sign-in');
+      }
       toast.error(error.message);
       setUser(null);
     }
