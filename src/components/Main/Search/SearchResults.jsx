@@ -22,8 +22,8 @@ export default function SearchResults() {
       />
       {searchResults.length === 0 && (
         <div className='flex  h-full flex-col items-center justify-center gap-2'>
-          <img src={noResults} alt='no result' className='w-[300px]' />
-          <h2 className='text-2xl font-semibold text-text-secondary'>No results found</h2>
+          <img src={noResults} alt='no result' className='sm:w-[300px] w-[200px] ' />
+          <h2 className='text-xl sm:text-2xl font-semibold text-text-secondary'>No results found</h2>
         </div>
       )}
       {searchResults.length > 0 && (

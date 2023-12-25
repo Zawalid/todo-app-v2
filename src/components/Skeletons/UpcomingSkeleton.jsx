@@ -14,7 +14,7 @@ function Period({ first,number }) {
   return (
     <div
       className={
-        'relative flex max-h-[400px] min-w-[400px] flex-1 flex-col rounded-lg  border border-zinc-200 bg-background-primary px-4 ' +
+        'relative  flex max-h-[400px] min-w-full sm:min-w-[400px] flex-1 flex-col rounded-lg  border border-zinc-200 bg-background-primary px-4 ' +
         (first ? 'w-full basis-auto' : '')
       }
     >

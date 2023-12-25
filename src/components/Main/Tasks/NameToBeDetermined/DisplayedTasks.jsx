@@ -167,7 +167,7 @@ export default function DisplayedTasks({ onAdd, condition, activeTab }) {
               ))}
           </ul>
           {filteredTasks.length === 0 && (
-            <div className='absolute top-1/2 flex w-full flex-col items-center justify-center gap-2'>
+            <div className='absolute -translate-y-1/2 top-1/2 flex w-full flex-col items-center justify-center gap-2'>
               <h2 className='text-center text-2xl font-semibold text-text-secondary'>
                 You don&apos;t have any{' '}
                 {filter?.includes('Priority') ? filter?.replace('Priority', ' priority') : filter}{' '}
@@ -183,7 +183,7 @@ export default function DisplayedTasks({ onAdd, condition, activeTab }) {
         </>
       )}
       {tasks.filter((task) => condition(task)).length === 0 && (
-        <div className='absolute top-1/2 flex w-full flex-col items-center justify-center gap-2'>
+        <div className='absolute top-1/2 flex -translate-y-1/2 w-full flex-col items-center justify-center gap-2'>
           <h2 className='text-2xl text-center font-semibold text-text-secondary'>
             {activeTab === 'today'
               ? 'You have no tasks scheduled for today.'

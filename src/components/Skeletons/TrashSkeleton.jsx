@@ -12,9 +12,9 @@ export function TrashSkeleton() {
         <Item />
         <Item />
       </ul>
-      <div className='mt-auto flex  justify-between border-t-2 pt-3'>
-        <div className='h-6 w-28 rounded-lg bg-text-secondary'></div>
-        <div className='h-6 w-28 rounded-lg bg-text-secondary'></div>
+      <div className='mt-auto flex-wrap gap-x-5 gap-y-2 flex items-center justify-between border-t-2 pt-3'>
+        <div className='h-6 flex-1 sm:flex-none min-w-[140px] w-28 rounded-lg bg-text-secondary'></div>
+        <div className='h-6 flex-1 sm:flex-none min-w-[140px] w-28 rounded-lg bg-text-secondary'></div>
       </div>
       <div className='mt-2 h-2 w-1/2 self-center rounded-lg bg-background-tertiary'></div>
     </div>
