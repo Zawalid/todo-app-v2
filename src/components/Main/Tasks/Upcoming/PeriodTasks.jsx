@@ -28,7 +28,7 @@ export function PeriodTasks({ title, period, parentRef, isToday }) {
   return (
     <div
       className={
-        'relative  flex max-h-[400px] min-w-[400px] flex-1 flex-col rounded-lg  border border-background-tertiary bg-background-primary pb-4 ' +
+        'relative  flex max-h-[400px] min-w-[400px] flex-1 flex-col rounded-lg  border border-zinc-200 bg-background-primary pb-4 ' +
         (isFullScreen ? 'full_screen ' : '') +
         (isToday ? 'w-full basis-auto' : '')
       }
@@ -49,7 +49,7 @@ export function PeriodTasks({ title, period, parentRef, isToday }) {
         onClick={() => setIsFullScreen((prev) => !prev)}
       ></i>
 
-      <div className='mx-4 mb-3 flex items-center gap-3 rounded-xl border border-background-tertiary px-5 py-1'>
+      <div className='mx-4 mb-3 flex items-center gap-3 rounded-xl border border-zinc-200 px-5 py-1'>
         <i className='fa-solid fa-plus text-xl text-text-tertiary'></i>
         <AddTask
           onAdd={(title) => {

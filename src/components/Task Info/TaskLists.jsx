@@ -6,7 +6,7 @@ export function TaskLists({ taskListId, setTaskListId }) {
     <>
       <label className='text-sm text-text-tertiary'>List</label>
       <select
-        className='w-fit min-w-[100px] rounded-lg border border-background-tertiary  bg-transparent  p-2  text-sm text-text-secondary  focus:outline-none'
+        className='w-fit min-w-[100px] rounded-lg border border-zinc-200  bg-transparent  p-2  text-sm text-text-secondary  focus:outline-none'
         value={taskListId}
         onChange={(e) => setTaskListId(e.target.value)}
       >

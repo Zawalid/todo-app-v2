@@ -31,10 +31,10 @@ export function Pagination({ pagination, tasksLength, dispatch }) {
   return (
     <div className='mt-4 flex flex-wrap items-center justify-between gap-3'>
       <div className='flex items-center  gap-2'>
-        <span className='text-sm font-medium text-text-secondary '>Rows per page:</span>
+        <span className='text-xs sm:text-sm font-medium text-text-secondary '>Rows per page:</span>
         <select
           className=' cursor-pointer rounded-lg bg-background-secondary  px-3  py-1.5
-            text-sm text-text-tertiary focus:outline-none'
+          text-xs sm:text-sm text-text-tertiary focus:outline-none'
           value={rowsPerPage}
           onChange={(e) => dispatch({ type: 'CHANGE_ROWS_PER_PAGE', payload: +e.target.value })}
         >
@@ -43,10 +43,10 @@ export function Pagination({ pagination, tasksLength, dispatch }) {
           <option value='20'>20</option>
           <option value='30'>50</option>
         </select>
-        <span className='dark:text-dark-text-2 flex gap-1 text-sm text-text-secondary'>
-          <span className='dark:text-dark-text font-semibold text-text-primary'>{currentPage}</span>
+        <span className='flex text-xs sm:text-sm gap-1 text-text-secondary'>
+          <span className='font-semibold text-text-primary'>{currentPage}</span>
           of
-          <span className='dark:text-dark-text font-semibold text-text-primary'>
+          <span className='font-semibold text-text-primary'>
             {Math.ceil(tasksLength / rowsPerPage)}
           </span>
         </span>

@@ -32,7 +32,7 @@ export function MenuLists() {
   }, []);
 
   return (
-    <div className='relative min-h-[120px] border-y border-background-tertiary pb-5'>
+    <div className='relative min-h-[120px] border-y border-zinc-200 pb-5'>
       <h4 className='mb-4 mt-5  font-medium text-text-secondary'>Lists</h4>
       {isListsLoading ? (
         <ListsSkeleton />

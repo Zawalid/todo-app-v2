@@ -41,7 +41,7 @@ export function AddNewTag({ reference, isOpen }) {
     setValue('');
   }
   return (
-    <div className='mt-5 rounded-lg w-fit border-2 border-background-tertiary p-3' ref={reference}>
+    <div className='mt-5 rounded-lg w-fit border-2 border-zinc-200 p-3' ref={reference}>
       <div className='flex items-center gap-2 '>
         <div className='flex flex-col gap-1' ref={textColorsDiv}>
           <span

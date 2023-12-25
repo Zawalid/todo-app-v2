@@ -24,7 +24,7 @@ export default function StickyWall() {
   return isStickyNoteEditorOpen ? (
     <StickyNoteEditor currentNote={currentNote} onBack={handleBack} />
   ) : (
-    <div className='stickyWall grid h-full grid-cols-[repeat(auto-fill,minmax(270px,1fr))] place-content-start gap-6 overflow-auto rounded-lg border border-background-tertiary p-5'
+    <div className='stickyWall grid h-full grid-cols-[repeat(auto-fill,minmax(270px,1fr))] place-content-start gap-6 overflow-auto rounded-lg border border-zinc-200 p-5'
     ref={parent}
     >
       {stickyNotes.map((stickyNote) => {

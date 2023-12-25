@@ -24,7 +24,7 @@ function Task() {
 
 function AddTask() {
   return (
-    <div className='mb-3  flex flex-1 items-center gap-3 rounded-xl border border-background-tertiary px-5 py-2'>
+    <div className='mb-3  flex flex-1 items-center gap-3 rounded-xl border border-zinc-200 px-5 py-2'>
       <i className='fa-solid fa-plus text-xl text-text-tertiary'></i>
       <span className='h-1 w-1/2 rounded-md bg-text-tertiary'></span>
     </div>

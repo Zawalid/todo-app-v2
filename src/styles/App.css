@@ -87,7 +87,7 @@ input[type='checkbox'].subtask {
 }
 
 .pagination-button {
-  @apply ml-0 flex  h-full border-collapse items-center justify-center border px-2 py-1.5 text-sm font-medium text-text-secondary shadow-sm transition-colors  duration-300 hover:bg-background-tertiary disabled:cursor-not-allowed disabled:text-opacity-30 disabled:hover:bg-transparent;
+  @apply ml-0 flex  h-full border-collapse items-center justify-center border px-2 py-1.5 text-xs sm:text-sm font-medium text-text-secondary shadow-sm transition-colors  duration-300 hover:bg-background-tertiary disabled:cursor-not-allowed disabled:text-opacity-30 disabled:hover:bg-transparent;
 }
 
 #menu:has(#closeMenu:hover) {

@@ -35,7 +35,7 @@ export function SubTask({ title, onEdit, onDelete, isCompleted, onComplete }) {
         <i className='fas fa-check pointer-events-none  absolute left-[2px]  top-[2px] hidden h-4 w-4 text-sm text-white peer-checked:block'></i>
       </div>
       <p
-        className={'border-1 flex-1 text-sm font-medium text-text-secondary  focus:border-background-tertiary focus:outline-none ' +
+        className={'border-1 flex-1 text-sm font-medium text-text-secondary  focus:border-zinc-200 focus:outline-none ' +
           (checked ? 'line-through' : '')}
         ref={subTaskEl}
       >

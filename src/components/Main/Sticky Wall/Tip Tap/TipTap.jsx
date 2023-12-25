@@ -59,7 +59,7 @@ export default function TipTap({ onUpdateContent, content, creationDate }) {
     editorProps: {
       attributes: {
         class:
-          'h-full p-3 text-text-secondary focus:outline-none border-t border-background-tertiary overflow-auto',
+          'h-full p-3 text-text-secondary focus:outline-none border-t border-zinc-200 overflow-auto',
       },
     },
     onUpdate: ({ editor }) => {

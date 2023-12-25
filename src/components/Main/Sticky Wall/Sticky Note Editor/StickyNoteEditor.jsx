@@ -87,7 +87,7 @@ export function StickyNoteEditor({ currentNote, onBack }) {
         <span className='font-semibold'>Sticky Note</span>
         <BackgroundColorPicker onChange={handleChangeBgColor} />
       </div>
-      <div className='flex h-full flex-col overflow-hidden rounded-b-lg border-2 border-background-tertiary border-t-transparent'>
+      <div className='flex h-full flex-col overflow-hidden rounded-b-lg border-2 border-zinc-200 border-t-transparent'>
         <StickyNoteHeader
           title={title}
           setTitle={setTitle}

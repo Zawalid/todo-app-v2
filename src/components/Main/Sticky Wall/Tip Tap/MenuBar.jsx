@@ -85,7 +85,7 @@ export const MenuBar = ({ editor }) => {
           </button>
         </CustomTippy>
       </div>
-      <div className='mx-1 flex items-center gap-2 border-x-2 border-background-tertiary px-4'>
+      <div className='mx-1 flex items-center gap-2 border-x-2 border-zinc-200 px-4'>
         <CustomTippy content='Heading 1'>
           <button
             onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
@@ -171,7 +171,7 @@ export const MenuBar = ({ editor }) => {
           </button>
         </CustomTippy>
       </div>
-      <div className='flex items-center gap-2  border-x-2 border-background-tertiary px-4'>
+      <div className='flex items-center gap-2  border-x-2 border-zinc-200 px-4'>
         <CustomTippy content='Align Left'>
           <button
             onClick={() => editor.chain().focus().setTextAlign('left').run()}
@@ -217,7 +217,7 @@ export const MenuBar = ({ editor }) => {
           </button>
         </CustomTippy>
       </div>
-      <div className='ml-auto flex items-center gap-2 border-l-2 border-background-tertiary pl-4'>
+      <div className='ml-auto flex items-center gap-2 border-l-2 border-zinc-200 pl-4'>
         <CustomTippy content='Undo'>
           <button
             onClick={() => editor.chain().focus().undo().run()}

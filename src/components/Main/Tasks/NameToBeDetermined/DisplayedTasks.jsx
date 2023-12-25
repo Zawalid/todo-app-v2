@@ -94,7 +94,7 @@ export default function DisplayedTasks({ onAdd, condition, activeTab }) {
     ref={parent}
     >
       <div className='flex items-center gap-2'>
-        <div className='flex  flex-1 items-center gap-3 rounded-xl border border-background-tertiary px-5 py-1'>
+        <div className='flex  flex-1 items-center gap-3 rounded-xl border border-zinc-200 px-5 py-1'>
           <i className='fa-solid fa-plus text-xl text-text-tertiary'></i>
           <AddTask onAdd={onAdd} />
         </div>

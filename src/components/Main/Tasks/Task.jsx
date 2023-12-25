@@ -34,7 +34,7 @@ export function Task({
   return (
     <li
       className={
-        'flex items-center justify-between gap-3 rounded-lg  border-b border-background-tertiary   px-5 py-2 transition-all duration-500   ' +
+        'flex items-center justify-between gap-3 rounded-lg  border-b border-zinc-200   px-5 py-2 transition-all duration-500   ' +
         (checked ? 'bg-background-tertiary ' : 'bg-slate-50 ') +
         (isSelected ? ' translate-y-1 border-x border-x-text-tertiary' : '')
       }

@@ -186,14 +186,14 @@ export function TaskInfo() {
           </div>
           <div className='mt-auto flex gap-3 pt-3'>
             <button
-              className='flex-1 cursor-pointer rounded-lg border  border-background-tertiary bg-red-500 py-2 text-center text-sm font-semibold text-background-secondary transition-colors duration-300 hover:bg-red-600'
+              className='flex-1 cursor-pointer rounded-lg border  border-zinc-200 bg-red-500 py-2 text-center text-sm font-semibold text-background-secondary transition-colors duration-300 hover:bg-red-600'
               onClick={() => setIsDeleteModalOpen(true)}
             >
               Delete Task
             </button>
             <button
               className={
-                'flex-1 rounded-lg border border-background-tertiary py-2 text-center  text-sm font-semibold transition-colors duration-500 ' +
+                'flex-1 rounded-lg border border-zinc-200 py-2 text-center  text-sm font-semibold transition-colors duration-500 ' +
                 (isChanged
                   ? 'cursor-pointer bg-indigo-600 text-background-secondary hover:bg-indigo-500 '
                   : 'cursor-not-allowed bg-background-tertiary text-text-tertiary')

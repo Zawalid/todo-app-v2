@@ -8,7 +8,7 @@ export function TasksActions({ tasksLength, onClearAll }) {
         <FilterTasks />
         <button
           className={
-            'flex-1 rounded-lg px-6 py-1 font-bold text-white transition-colors duration-300 ' +
+            'flex-1 rounded-lg px-6 py-1 font-semibold text-white transition-colors duration-300 ' +
             (tasksLength > 0 ? 'bg-red-500 hover:bg-red-600' : 'cursor-not-allowed bg-gray-300')
           }
           onClick={() => tasksLength > 0 && onClearAll()}
@@ -16,8 +16,8 @@ export function TasksActions({ tasksLength, onClearAll }) {
           Clear All
         </button>
       </div>
-      <div className='flex items-center gap-4'>
-        <h5 className=' text-text-secondary' style={{ textWrap: 'nowrap' }}>
+      <div className='flex flex-col sm:flex-row items-center gap-4'>
+        <h5 className='font-semibold text-text-secondary' style={{ textWrap: 'nowrap' }}>
           Sort By
         </h5>
         <SortTasks />

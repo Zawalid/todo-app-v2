@@ -45,8 +45,8 @@ export function AddNewList({ reference, isOpen }) {
   }
 
   return (
-    <div className='rounded-lg  border-2 w-fit border-background-tertiary p-3' ref={reference}>
-      <div className='flex items-center gap-2 rounded-lg border border-background-tertiary px-2'>
+    <div className='rounded-lg  border-2 w-fit border-zinc-200 p-3' ref={reference}>
+      <div className='flex items-center gap-2 rounded-lg border border-zinc-200 px-2'>
         <span className='h-4 w-4 rounded-[3px]' style={{ backgroundColor: color }}></span>
         <form
           className='flex-1'
