@@ -3,7 +3,6 @@ import { databases, appWriteConfig, setPermissions } from '../lib/appwrite/confi
 import { ID, Query } from 'appwrite';
 import { remove$Properties } from '../utils/helpers';
 import { toast } from 'sonner';
-import { useUser } from '../hooks/useUser';
 
 const {
   databaseId: DATABASE_ID,
@@ -103,13 +102,12 @@ function TrashProvider({ children }) {
         .reduce((acc, cur) => acc + cur, 0),
     [trash],
   );
-  const { getCurrentUser, checkIsUserAuthenticated } = useUser();
   const [currentProcessedItem, setCurrentProcessedItem] = useState(null);
 
   // --- Creation ---
-  async function createTrash() {
+  async function createTrash(user) {
     try {
-      const user = await getCurrentUser();
+      // const user = await getCurrentUser();
       const response = await databases.createDocument(
         DATABASE_ID,
         TRASH_COLLECTION_ID,
@@ -255,32 +253,6 @@ function TrashProvider({ children }) {
     if (currentProcessedItem) return;
     setCurrentProcessedItem('all');
 
-    // const toastId = autoCleanUp ? null : toast.loading(`Emptying trash...`);
-    // try {
-    //   // Delete all elements from trash permanently
-    //   for (const type of Object.keys(collectionsIds)) {
-    //     const trashItems = trash[type];
-    //     for (const item of trashItems) {
-    //       await deleteElement(type, JSON.parse(item).id);
-    //     }
-    //   }
-    //   // Delete all elements from trash
-    //   dispatch({ type: 'EMPTY_TRASH' });
-    //   !autoCleanUp && toast.success('Trash has been successfully emptied.', { id: toastId });
-    // } catch (err) {
-    //   !autoCleanUp &&
-    //     toast.error('Failed to empty trash!. Please try again', {
-    //       id: toastId,
-    //       action: {
-    //         label: 'Try Again',
-    //         onClick: () => {
-    //           handleEmptyTrash(autoCleanUp);
-    //         },
-    //       },
-    //     });
-    // } finally {
-    //   setCurrentProcessedItem(null);
-    // }
     const toastId = toast.promise(
       Promise.all(
         ['tasks', 'lists', 'tags', 'stickyNotes'].map((type) => {
@@ -313,9 +285,8 @@ function TrashProvider({ children }) {
     );
   }
   // get trash from database
-  async function handleGetTrash() {
+  async function handleGetTrash(user) {
     try {
-      const user = await getCurrentUser();
       if (!user) return;
       const response = await databases.listDocuments(DATABASE_ID, TRASH_COLLECTION_ID, [
         Query.equal('owner', [user?.$id]),
@@ -364,14 +335,10 @@ function TrashProvider({ children }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trash]);
 
-  useEffect(() => {
-    async function init() {
-      await handleGetTrash();
-      lastCleanedUp !== undefined && (await handleCleanUpTrash());
-    }
-    checkIsUserAuthenticated() && init();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lastCleanedUp]);
+  async function initializeTrash(user) {
+    await handleGetTrash(user);
+    lastCleanedUp !== undefined && (await handleCleanUpTrash());
+  }
 
   return (
     <TrashContext.Provider
@@ -381,6 +348,7 @@ function TrashProvider({ children }) {
         trashLength,
         setCurrentTab,
         createTrash,
+        initializeTrash,
         handleAddToTrash,
         handleDeleteFromTrash,
         handleEmptyType,

@@ -16,8 +16,8 @@ import { monitorNetwork } from './components/Common/MonitorNetwork.jsx';
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
-      <UserProvider>
         <TrashProvider>
+      <UserProvider>
           <ListsProvider>
             <TasksProvider>
               <StickyNotesProvider>
@@ -27,8 +27,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               </StickyNotesProvider>
             </TasksProvider>
           </ListsProvider>
-        </TrashProvider>
       </UserProvider>
+        </TrashProvider>
     </BrowserRouter>
   </React.StrictMode>,
 );

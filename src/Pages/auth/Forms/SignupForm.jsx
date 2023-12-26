@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { useUser, useTrash } from '../../../hooks';
+import { useUser } from '../../../hooks';
 import { AuthLink } from './AuthLink';
 import { Button } from '../../../components/Common/Button';
 import { PasswordInput } from '../../../components/Common/PasswordInput';
@@ -12,7 +12,6 @@ function SignUpForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { handleSignUp, isLoading } = useUser();
-  const { createTrash } = useTrash();
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -20,14 +19,13 @@ function SignUpForm() {
       return toast.error('Please fill all the fields');
     try {
       await handleSignUp({ name: `${firstName} ${lastName}`, email, password });
-      createTrash();
     } catch (error) {
       console.log(error);
     }
   }
 
   return (
-    <div className='flex h-full flex-col items-center justify-center gap-10 px-5 sm:px-10 md:px-16  text-center'>
+    <div className='flex h-full flex-col items-center justify-center gap-10 px-5 text-center sm:px-10  md:px-16'>
       <h1 className='self-start text-4xl font-bold text-text-primary'>Sign Up</h1>
       <form className='flex w-full flex-col gap-6' onSubmit={handleSubmit}>
         <div className='flex flex-col items-center justify-between gap-6 sm:flex-row'>

@@ -76,7 +76,7 @@ export function Menu() {
       {isOpen ||
         createPortal(
           <button
-            className='fixed right-1 top-1/2 z-50 h-16 w-[6px] -translate-y-1/2 rounded-lg bg-zinc-300 lg:left-1'
+            className='fixed right-1 top-1/2 z-50 h-16 w-[6px] -translate-y-1/2 rounded-lg bg-text-tertiary lg:left-1'
             onClick={() => setIsOpen(true)}
           ></button>,
           document.body,
