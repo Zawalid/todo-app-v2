@@ -38,7 +38,7 @@ export function Dates({ isOpen, taskDueDate, onAdd, today, tomorrow }) {
       </li>
       <li
         className={
-          'flex cursor-pointer items-center justify-between gap-3 rounded-md  transition-all duration-300 hover:bg-background-secondary ' +
+          'flex cursor-pointer items-center justify-between gap-3 rounded-md overflow-hidden transition-all duration-300 hover:bg-background-secondary ' +
           (isPickerOpen ? 'h-[37px] p-2' : 'h-0 p-0')
         }
       >

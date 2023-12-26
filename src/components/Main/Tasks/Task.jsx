@@ -9,6 +9,7 @@ import {
 import completedSoundFile from '../../../assets/completed.mp3';
 import { useTasks, useLists, useTags } from '../../../hooks';
 import { CheckBox } from '../../Common/CheckBox';
+import { useLongPress } from 'use-long-press';
 
 const completedSound = new Audio(completedSoundFile);
 
@@ -21,6 +22,9 @@ export function Task({
   const { handleOpenTask, handleCompleteTask, setSelectedTasks, selectedTasks } = useTasks();
   const { tags } = useTags();
   const isPassed = isTaskOverdue(dueDate);
+  const bind = useLongPress(() => handleOpenTask($id), {
+    threshold: 200,
+  });
 
   const listName = useMemo(() => lists?.find((l) => l?.$id === listId)?.title, [listId, lists]);
   const listColor = useMemo(() => lists?.find((l) => l?.$id === listId)?.color, [listId, lists]);
@@ -38,6 +42,7 @@ export function Task({
         (checked ? 'bg-background-tertiary ' : 'bg-slate-50 ') +
         (isSelected ? ' translate-y-1 border-x border-x-text-tertiary' : '')
       }
+      {...bind()}
     >
       <CheckBox
         checked={checked}
@@ -141,12 +146,14 @@ export function Task({
         {isPassed && !checked && (
           <i className='fa-solid  fa-triangle-exclamation text-lg text-text-error'></i>
         )}
-        <button
-          className='rounded-sm px-2 py-1 transition-colors duration-300 hover:bg-background-primary'
-          onClick={() => handleOpenTask($id)}
-        >
-          <i className='fa-solid fa-chevron-right cursor-pointer text-text-tertiary'></i>
-        </button>
+        {window.matchMedia('(min-width: 768px)').matches && (
+          <button
+            className='rounded-sm px-2 py-1 transition-colors duration-300 hover:bg-background-primary'
+            onClick={() => handleOpenTask($id)}
+          >
+            <i className='fa-solid fa-chevron-right cursor-pointer text-text-tertiary'></i>
+          </button>
+        )}
         {isSelecting && (
           <button
             className='border-l-2 pl-4'

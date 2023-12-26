@@ -30,7 +30,7 @@ export function TaskTags({
         reference={tagsDropDown}
         >
           <li
-            className='menu_tag_element relative cursor-pointer bg-background-tertiary'
+            className='menu_tag_element relative cursor-pointer bg-background-primary'
             ref={tagsDropDownToggler}
           >
             + Add Tag

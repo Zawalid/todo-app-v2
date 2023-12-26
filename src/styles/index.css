@@ -8,7 +8,7 @@
 }
 body {
   font-family: 'Lexend Deca', sans-serif;
-  height: 100dvh;
+  height: 100dvh !important;
   overflow: hidden;
 }
 #root {

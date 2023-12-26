@@ -100,3 +100,7 @@ input[type='checkbox'].subtask {
 .tippy-box[data-theme~='light'] {
   @apply rounded-lg bg-background-primary p-2 text-sm text-text-primary shadow-md  !important;
 }
+
+[vaul-overlay][vaul-drawer-visible=true]{
+  opacity: 1 !important;
+}

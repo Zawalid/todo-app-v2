@@ -7,6 +7,7 @@ import { TaskSubTasks } from './TaskSubTasks/TaskSubTasks';
 import { ConfirmationModal } from '../Common/ConfirmationModal';
 import { TaskPriority } from './TaskPriority';
 import { useTasks } from '../../hooks/useTasks';
+import Drawer from '../Common/Drawer';
 
 export function TaskInfo() {
   const { currentTask, isTaskOpen, setIsTaskOpen, handleUpdateTask, handleDeleteTask } = useTasks();
@@ -134,77 +135,83 @@ export function TaskInfo() {
       handleUpdateTask(currentTask.$id, editedTask);
     }
   }
+  const taskInfo = (
+    <>
+      <div className='flex items-center justify-between pb-3'>
+        <h2 className='text-xl font-bold text-text-secondary'>Task :</h2>
+        <button className='hidden sm:block' onClick={() => setIsTaskOpen(false)} id='closeTaskInfo'>
+          <i className='fa-solid fa-xmark cursor-pointer text-xl text-text-secondary'></i>
+        </button>
+      </div>
+      <div className='overflow-y-auto'>
+        <TaskTitleAndNote
+          {...{
+            taskTitle,
+            setTaskTitle,
+            taskNote,
+            setTaskNote,
+          }}
+        />
+        <div className='grid grid-cols-[1fr_2fr] items-center gap-x-5 space-y-2'>
+          <TaskLists taskListId={taskListId} setTaskListId={setTaskListId} />
+          <TaskDueDate taskDueDate={taskDueDate} setTaskDueDate={setTaskDueDate} />
+          <TaskTags
+            {...{
+              taskTagsIds,
+              tagsDropDown,
+              tagsDropDownToggler,
+              handleDeleteTagFromTask,
+            }}
+          />
+          <TaskPriority taskPriority={taskPriority} setTaskPriority={setTaskPriority} />
+        </div>
+        <TaskSubTasks
+          {...{
+            taskSubtasks,
+            handleAddSubTask,
+            handleDeleteSubtask,
+            handleUpdateSubtask,
+            handleCompleteSubTask,
+          }}
+        />
+      </div>
+      <div className='mt-auto flex gap-3 pt-3'>
+        <button
+          className='flex-1 cursor-pointer rounded-lg border  border-zinc-200 bg-red-500 py-2 text-center text-sm font-semibold text-background-secondary transition-colors duration-300 hover:bg-red-600'
+          onClick={() => setIsDeleteModalOpen(true)}
+        >
+          Delete Task
+        </button>
+        <button
+          className={
+            'flex-1 rounded-lg border border-zinc-200 py-2 text-center  text-sm font-semibold transition-colors duration-500 ' +
+            (isChanged
+              ? 'cursor-pointer bg-indigo-600 text-background-secondary hover:bg-indigo-500 '
+              : 'cursor-not-allowed bg-background-tertiary text-text-tertiary')
+          }
+          onClick={handleSaveChanges}
+        >
+          Save Changes
+        </button>
+      </div>
+    </>
+  );
   return (
     <aside
       className={
-        'lg:relative ml-auto flex flex-col rounded-l-xl transition-[width,opacity] duration-500 ' +
+        'ml-auto hidden sm:flex flex-col rounded-l-xl transition-[width,opacity] duration-500 lg:relative ' +
         (isTaskOpen
-          ? 'fixed right-0 top-0 z-10 h-full sm:w-1/2 w-full items-stretch bg-background-secondary p-4  lg:w-[30%]'
+          ? 'fixed right-0 top-0 z-10 h-full w-full items-stretch bg-background-secondary p-4 sm:w-1/2  lg:w-[30%]'
           : 'w-0 items-center bg-background-primary p-0')
       }
       id='taskInfo'
     >
-      {isTaskOpen && (
-        <>
-          <div className='flex items-center justify-between pb-3'>
-            <h2 className='text-xl font-bold text-text-secondary'>Task :</h2>
-            <button onClick={() => setIsTaskOpen(false)} id='closeTaskInfo'>
-              <i className='fa-solid fa-xmark cursor-pointer text-xl text-text-secondary'></i>
-            </button>
-          </div>
-          <div className='overflow-y-auto'>
-            <TaskTitleAndNote
-              {...{
-                taskTitle,
-                setTaskTitle,
-                taskNote,
-                setTaskNote,
-              }}
-            />
-            <div className='gap-x-5 grid grid-cols-[1fr_2fr] items-center space-y-2'>
-              <TaskLists taskListId={taskListId} setTaskListId={setTaskListId} />
-              <TaskDueDate taskDueDate={taskDueDate} setTaskDueDate={setTaskDueDate} />
-              <TaskTags
-                {...{
-                  taskTagsIds,
-                  tagsDropDown,
-                  tagsDropDownToggler,
-                  handleDeleteTagFromTask,
-                }}
-              />
-              <TaskPriority taskPriority={taskPriority} setTaskPriority={setTaskPriority} />
-            </div>
-            <TaskSubTasks
-              {...{
-                taskSubtasks,
-                handleAddSubTask,
-                handleDeleteSubtask,
-                handleUpdateSubtask,
-                handleCompleteSubTask,
-              }}
-            />
-          </div>
-          <div className='mt-auto flex gap-3 pt-3'>
-            <button
-              className='flex-1 cursor-pointer rounded-lg border  border-zinc-200 bg-red-500 py-2 text-center text-sm font-semibold text-background-secondary transition-colors duration-300 hover:bg-red-600'
-              onClick={() => setIsDeleteModalOpen(true)}
-            >
-              Delete Task
-            </button>
-            <button
-              className={
-                'flex-1 rounded-lg border border-zinc-200 py-2 text-center  text-sm font-semibold transition-colors duration-500 ' +
-                (isChanged
-                  ? 'cursor-pointer bg-indigo-600 text-background-secondary hover:bg-indigo-500 '
-                  : 'cursor-not-allowed bg-background-tertiary text-text-tertiary')
-              }
-              onClick={handleSaveChanges}
-            >
-              Save Changes
-            </button>
-          </div>
-        </>
-      )}
+      {isTaskOpen &&
+        (window.innerWidth < 1024 ? (
+          <Drawer onClose={() => setIsTaskOpen(false)}>{taskInfo}</Drawer>
+        ) : (
+          taskInfo
+        ))}
       {isDeleteModalOpen && (
         <ConfirmationModal
           sentence='Are you sure you want to delete this task?'
