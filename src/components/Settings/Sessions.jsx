@@ -71,7 +71,7 @@ export function Sessions() {
       <h3 className='mt-7 font-bold text-text-secondary'>
         Active Sessions ({sessions?.filter((session) => !session.current)?.length || '-'})
       </h3>
-      <div className='relative mt-3 space-y-5 overflow-auto pb-3 pr-3'>
+      <div className='relative mb-5 mt-3 space-y-5 overflow-auto pb-3 pr-3'>
         {isLoading ? (
           <SpinnerLoader />
         ) : sessions?.length === 0 ? (
