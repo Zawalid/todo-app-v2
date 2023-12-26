@@ -4,6 +4,7 @@ import { handleDeleteFile, handleUploadFile } from '../lib/appwrite/api';
 import { ID, Query } from 'appwrite';
 import { toast } from 'sonner';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useTrash } from '../hooks';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 const USERS_COLLECTION_ID = appWriteConfig.usersCollectionId;
@@ -14,6 +15,7 @@ function UserProvider({ children }) {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [searchParams] = useSearchParams();
+  const { createTrash, initializeTrash } = useTrash();
   const navigate = useNavigate();
 
   // ------------- Authentication
@@ -31,6 +33,7 @@ function UserProvider({ children }) {
         },
         newAccount.$id,
       );
+      await createTrash(user);
       return newAccount;
     } catch (err) {
       toast.error(getErrorMessage(err));
@@ -55,6 +58,7 @@ function UserProvider({ children }) {
     try {
       setIsLoading(true);
       const newAccount = await handleCreateUserAccount(user);
+      console.log(newAccount);
       if (!newAccount) return;
       await handleSignIn(user.email, user.password);
     } catch (err) {
@@ -69,6 +73,7 @@ function UserProvider({ children }) {
       setIsLoading(true);
       const session = await account.createEmailSession(email, password);
       if (!session) throw new Error('Something went wrong');
+      await initializeTrash(user);
     } catch (err) {
       toast.error(getErrorMessage(err));
     } finally {
@@ -317,10 +322,13 @@ function UserProvider({ children }) {
     const user = await getCurrentUser();
     if (user.emailVerification) return;
     try {
-      await account.updateVerification(userId, secret);
-      toast.success('Your account has been verified');
+      toast.promise(account.updateVerification(userId, secret), {
+        loading: 'Verifying account...',
+        success: 'Your account has been verified',
+      });
     } catch (error) {
-      toast.error(error.message);
+      console.log(error);
+      toast.error('Something went wrong. Please try again.');
     }
   }
 
