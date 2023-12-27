@@ -45,7 +45,7 @@ export function DueDate({ taskDueDate, setTaskDueDate }) {
       >
         <div
           className={
-            'flex w-32 cursor-pointer bg-background-primary items-center justify-between rounded-lg border border-zinc-200 p-2 ' +
+            'flex w-32 cursor-pointer bg-background-secondary items-center justify-between rounded-lg border border-zinc-200 p-2 ' +
             (isOverDue ? 'text-text-error' : 'text-text-secondary')
           }
           id='dueDate'

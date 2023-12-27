@@ -238,6 +238,7 @@ function TasksProvider({ children }) {
       await databases.updateDocument(DATABASE_ID, TASKS_COLLECTION_ID, id, {
         isCompleted,
       });
+      
     } catch (error) {
       console.log(error);
     }
@@ -392,6 +393,7 @@ function TasksProvider({ children }) {
   async function handleOpenTask(id) {
     if (currentProcessedTask === id || currentProcessedTask === 'multiple') return;
     if (id) {
+      setCurrentTask(null);
       setIsTaskOpen(true);
       const response = await databases.getDocument(DATABASE_ID, TASKS_COLLECTION_ID, id);
       setCurrentTask(response);

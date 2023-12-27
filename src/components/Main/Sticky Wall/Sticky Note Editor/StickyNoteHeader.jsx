@@ -46,7 +46,7 @@ export function StickyNoteHeader({
             className={
               'sm:h-10 sm:w-10 h-8 w-8 cursor-pointer rounded-full transition-colors duration-500  ' +
               (isChanged
-                ? 'cursor-pointer bg-indigo-500 text-background-secondary hover:bg-indigo-400 '
+                ? 'cursor-pointer bg-primary-hover text-background-secondary hover:bg-indigo-400 '
                 : 'cursor-not-allowed bg-background-tertiary text-text-tertiary hover:bg-background-secondary')
             }
             onClick={onSave}

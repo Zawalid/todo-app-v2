@@ -11,6 +11,8 @@ export default {
         'text-secondary': '#444444',
         'text-tertiary': '#7C7C7C',
         'text-error': '#FF0000',
+        'primary-hover' : '#4f46e5',
+        'primary' : '#6366f1',
         'custom-1': '#ff6b6b',
         'custom-2': '#da77f2',
         'custom-3': '#9775fa',

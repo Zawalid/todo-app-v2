@@ -3,7 +3,7 @@ export function Button({ text, children, isLoading, disabled, onClick }) {
     <button
       className={
         'mx-auto mt-auto flex w-full justify-center rounded-lg py-2 font-medium text-white transition-colors duration-500 ' +
-        (disabled ? 'bg-zinc-200' : 'bg-indigo-600  hover:bg-indigo-500')
+        (disabled ? 'bg-zinc-200' : 'bg-primary  hover:bg-primary-hover')
       }
       disabled={disabled}
       onClick={() => !disabled && onClick?.()}

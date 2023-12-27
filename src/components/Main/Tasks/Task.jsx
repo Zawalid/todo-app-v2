@@ -10,21 +10,38 @@ import completedSoundFile from '../../../assets/completed.mp3';
 import { useTasks, useLists, useTags } from '../../../hooks';
 import { CheckBox } from '../../Common/CheckBox';
 import { useLongPress } from 'use-long-press';
+import { isTouchDevice } from '../../../utils/helpers';
+import TaskActions from './TaskActions';
+import { toast } from 'sonner';
 
 const completedSound = new Audio(completedSoundFile);
 
 export function Task({
-  task: { $id, title, isCompleted, dueDate, subtasks, tagsIds, priority, listId },
+  task: {
+    $id,
+    title,
+    isCompleted,
+    dueDate,
+    subtasks,
+    tagsIds,
+    priority,
+    listId,
+    $createdAt,
+    $updatedAt,
+  },
   isSelecting,
 }) {
+  const [isTaskActionsOpen, setIsTaskActionsOpen] = useState(false);
   const [checked, setChecked] = useState(isCompleted);
   const { lists } = useLists();
   const { handleOpenTask, handleCompleteTask, setSelectedTasks, selectedTasks } = useTasks();
   const { tags } = useTags();
   const isPassed = isTaskOverdue(dueDate);
-  const bind = useLongPress(() => handleOpenTask($id), {
+  const bind = useLongPress(() => setIsTaskActionsOpen(true), {
     threshold: 200,
+    detect: 'touch',
   });
+  // handleOpenTask($id)
 
   const listName = useMemo(() => lists?.find((l) => l?.$id === listId)?.title, [listId, lists]);
   const listColor = useMemo(() => lists?.find((l) => l?.$id === listId)?.color, [listId, lists]);
@@ -146,7 +163,7 @@ export function Task({
         {isPassed && !checked && (
           <i className='fa-solid  fa-triangle-exclamation text-lg text-text-error'></i>
         )}
-        {window.matchMedia('(min-width: 768px)').matches && (
+        {!isTouchDevice() && (
           <button
             className='rounded-sm px-2 py-1 transition-colors duration-300 hover:bg-background-primary'
             onClick={() => handleOpenTask($id)}
@@ -170,6 +187,24 @@ export function Task({
               <i className='fa-regular fa-circle text-lg text-text-tertiary'></i>
             )}
           </button>
+        )}
+        {isTaskActionsOpen && (
+          <TaskActions
+            onClose={() => setIsTaskActionsOpen(false)}
+            onEdit={() => {
+              handleOpenTask($id);
+              setIsTaskActionsOpen(false);
+            }}
+            onCopy={() => {
+              navigator.clipboard.writeText(title);
+              toast.success('Copied to clipboard');
+              setIsTaskActionsOpen(false);
+            }}
+            date={{
+              created: $createdAt,
+              updated: $updatedAt,
+            }}
+          />
         )}
       </div>
     </li>

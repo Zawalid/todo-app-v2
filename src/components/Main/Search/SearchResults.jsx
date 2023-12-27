@@ -22,8 +22,13 @@ export default function SearchResults() {
       />
       {searchResults.length === 0 && (
         <div className='flex  h-full flex-col items-center justify-center gap-2'>
-          <img src={noResults} alt='no result' className='sm:w-[300px] w-[200px] ' />
-          <h2 className='text-xl sm:text-2xl font-semibold text-text-secondary'>No results found</h2>
+          <img src={noResults} alt='no result' className='w-[200px] sm:w-[300px] ' />
+          <h2 className='text-xl font-semibold text-text-secondary sm:text-2xl'>
+            Oops! No results found
+          </h2>
+          <p className='text-center text-sm text-text-tertiary sm:text-base'>
+            We couldn&apos;t find any results matching your search. Give it another go.
+          </p>
         </div>
       )}
       {searchResults.length > 0 && (

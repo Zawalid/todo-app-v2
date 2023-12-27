@@ -140,7 +140,8 @@ export function TaskInfo() {
       <div className='flex items-center justify-between pb-3'>
         <h2 className='text-xl font-bold text-text-secondary'>Task :</h2>
         <button className='hidden sm:block' onClick={() => setIsTaskOpen(false)} id='closeTaskInfo'>
-          <i className='fa-solid fa-xmark cursor-pointer text-xl text-text-secondary'></i>
+          <i className='fa-solid fa-xmark  text-xl text-text-secondary'></i>
+          {/* <i className='fa-solid fa-circle-check  text-2xl text-primary'></i> */}
         </button>
       </div>
       <div className='overflow-y-auto'>
@@ -186,7 +187,7 @@ export function TaskInfo() {
           className={
             'flex-1 rounded-lg border border-zinc-200 py-2 text-center  text-sm font-semibold transition-colors duration-500 ' +
             (isChanged
-              ? 'cursor-pointer bg-indigo-600 text-background-secondary hover:bg-indigo-500 '
+              ? 'bg-primary hover:bg-primary-hover cursor-pointer text-background-secondary '
               : 'cursor-not-allowed bg-background-tertiary text-text-tertiary')
           }
           onClick={handleSaveChanges}
@@ -199,16 +200,22 @@ export function TaskInfo() {
   return (
     <aside
       className={
-        'ml-auto hidden sm:flex flex-col rounded-l-xl transition-[width,opacity] duration-500 lg:relative ' +
+        'ml-auto hidden flex-col rounded-l-xl transition-[width,opacity] duration-500 sm:flex lg:relative ' +
         (isTaskOpen
-          ? 'fixed right-0 top-0 z-10 h-full w-full items-stretch bg-background-secondary p-4 sm:w-1/2  lg:w-[30%]'
+          ? 'fixed right-0 top-0 z-10 h-full w-full items-stretch  border border-zinc-200 bg-background-primary p-4 shadow-md sm:w-1/2  lg:w-[30%]'
           : 'w-0 items-center bg-background-primary p-0')
       }
       id='taskInfo'
     >
       {isTaskOpen &&
         (window.innerWidth < 1024 ? (
-          <Drawer onClose={() => setIsTaskOpen(false)}>{taskInfo}</Drawer>
+          <Drawer
+            onClose={() => setIsTaskOpen(false)}
+            activeSnap='370px'
+            snapPoints={['370px', 1]}
+          >
+            {taskInfo}
+          </Drawer>
         ) : (
           taskInfo
         ))}
