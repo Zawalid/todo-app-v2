@@ -134,17 +134,14 @@ function UserProvider({ children }) {
 
   async function handleResetPassword(email) {
     if (!email) return toast.error('Please enter your email address.');
-    toast.promise(
-      account.createRecovery(email, 'http://localhost:5173/'), // TODO: Change this to the production url
-      {
-        loading: 'Sending recovery email...',
-        success: 'Recovery email sent',
-        error: (err) => {
-          console.log(err);
-          return getErrorMessage(err);
-        },
+    toast.promise(account.createRecovery(email, import.meta.env.VITE_VERIFICATION_URL), {
+      loading: 'Sending recovery email...',
+      success: 'Recovery email sent',
+      error: (err) => {
+        console.log(err);
+        return getErrorMessage(err);
       },
-    );
+    });
   }
 
   async function handleRecoverPassword(
@@ -310,7 +307,7 @@ function UserProvider({ children }) {
 
   async function handleSendVerificationEmail() {
     try {
-      await account.createVerification('http://localhost:5173/app/'); // TODO: Change this to the production url
+      await account.createVerification(import.meta.env.VITE_VERIFICATION_URL);
       toast.success('We have sent you an email with a link to verify your account.');
     } catch (error) {
       console.log(error);
