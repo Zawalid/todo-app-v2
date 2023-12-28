@@ -11,28 +11,7 @@ import { useUser } from '../hooks/useUser';
 const DATABASE_ID = appWriteConfig.databaseId;
 const LISTS_COLLECTION_ID = '65422c65a17f95378d53';
 
-// const SAMPLE_LISTS = [
-//   {
-//     title: 'Personal',
-//     color: '#ff6b6b',
-//     $id: '65424b5a69fab6f186d2',
-//     $createdAt: '2023-11-01T12:58:02.435+00:00',
-//     $updatedAt: '2023-11-01T12:58:02.435+00:00',
-//     $permissions: [],
-//     $databaseId: '654169b1a5c05d9c1e7e',
-//     $collectionId: '65422c65a17f95378d53',
-//   },
-//   {
-//     title: 'Work',
-//     color: '#fffebe',
-//     $id: '65424b881a6f20cec5cd',
-//     $createdAt: '2023-11-01T12:58:48.109+00:00',
-//     $updatedAt: '2023-11-01T12:58:48.109+00:00',
-//     $permissions: [],
-//     $databaseId: '654169b1a5c05d9c1e7e',
-//     $collectionId: '65422c65a17f95378d53',
-//   },
-// ];
+
 
 export const ListsContext = createContext();
 

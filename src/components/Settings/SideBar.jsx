@@ -22,7 +22,7 @@ export function SideBar({ currentTab, setCurrentTab }) {
         ></i>
       </button>
       <aside
-        className={`absolute top-0 z-[100] flex h-full flex-col items-start gap-3 bg-background-primary p-3 shadow-md transition-[left] duration-500 sm:static sm:p-0 sm:shadow-none ${
+        className={`absolute bordertop-0 z-[100] flex h-full flex-col items-start gap-3 bg-background-primary p-3 shadow-md transition-[left] duration-500 sm:static sm:p-0 sm:shadow-none ${
           isOpen ? 'left-0' : '-left-full'
         }`}
       >
@@ -67,11 +67,11 @@ export function SideBar({ currentTab, setCurrentTab }) {
             </button>
           )}
           <button
-            className='grid grid-cols-[30px_1fr] items-center justify-items-start'
+            className='grid grid-cols-[30px_1fr] text-text-error hover:bg-red-500 transition-colors duration-300 px-3 py-2 rounded-lg hover:text-white items-center justify-items-start'
             onClick={() => setIsModalOpen(true)}
           >
-            <i className='fa-solid fa-trash-can  text-text-error'></i>
-            <span className='text-sm font-semibold text-text-error'>Delete Account</span>
+            <i className='fa-solid fa-trash-can  '></i>
+            <span className='text-sm font-semibold'>Delete Account</span>
           </button>
         </div>
       </aside>

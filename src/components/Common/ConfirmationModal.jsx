@@ -25,7 +25,7 @@ export function ConfirmationModal({
         <h4 className='text-sm sm:text-base font-semibold text-text-secondary'>{sentence}</h4>
         {showCheckBox && (
           <div className='flex items-center gap-3'>
-            <CheckBox checked={checked} onChange={() => setChecked(!checked)} />
+            <CheckBox checked={checked} onChange={() => setChecked(!checked)} id='permanent' />
             <label htmlFor='permanent' className='mb-[3px] font-medium text-sm text-text-tertiary'>
               Delete permanently
             </label>

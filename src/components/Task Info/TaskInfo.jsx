@@ -9,6 +9,7 @@ import { useTasks } from '../../hooks/useTasks';
 import Drawer from '../Common/Drawer';
 import { useDeleteTask } from '../../hooks/useDeleteTask';
 import { isTouchDevice } from '../../utils/helpers';
+import { useHref } from 'react-router-dom';
 
 export function TaskInfo() {
   const { currentTask, isTaskOpen, setIsTaskOpen, handleUpdateTask } = useTasks();
@@ -23,6 +24,11 @@ export function TaskInfo() {
   const { Modal, openModal } = useDeleteTask(currentTask?.$id);
   const tagsDropDown = useRef(null);
   const tagsDropDownToggler = useRef(null);
+  const activeTab = useHref().split('/app/')[1];
+
+  useEffect(() => {
+    setIsTaskOpen(false);
+  }, [activeTab, setIsTaskOpen]);
 
   useEffect(() => {
     if (isTaskOpen) {
@@ -141,10 +147,11 @@ export function TaskInfo() {
         <h2 className='text-xl font-bold text-text-secondary'>Task :</h2>
         {isTouchDevice() ? (
           <button
+          
             onClick={() => (isChanged ? handleSaveChanges() : setIsTaskOpen(false))}
             id='closeTaskInfo'
           >
-            <i className='fa-solid fa-circle-check  text-3xl text-primary hover:text-primary-hover'></i>
+            <i className='fa-solid fa-check  '></i>
           </button>
         ) : (
           <button onClick={() => setIsTaskOpen(false)} id='closeTaskInfo'>
@@ -210,9 +217,7 @@ export function TaskInfo() {
   return (
     <>
       {isTaskOpen && isTouchDevice() && (
-        <Drawer onClose={() => setIsTaskOpen(false)}>
-          {taskInfo}
-        </Drawer>
+        <Drawer onClose={() => setIsTaskOpen(false)}>{taskInfo}</Drawer>
       )}
 
       {!isTouchDevice() && (

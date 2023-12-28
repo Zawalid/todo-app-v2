@@ -13,15 +13,7 @@ const TAGS_COLLECTION_ID = appWriteConfig.tagsCollectionId;
 export const TagsContext = createContext();
 
 function TagsProvider({ children }) {
-  const [tags, setTags] = useState([
-    // {
-    //   $id: Math.random(),
-    //   title: 'Tag 1',
-    //   bgColor: '#d1eaed',
-    //   textColor: '#444',
-    //   index: 0,
-    // },
-  ]);
+  const [tags, setTags] = useState([]);
   const [isTagsLoading, setIsTagsLoading] = useState(true);
   const { handleDeleteElement } = useDeleteElement();
   const { handleLoadElements } = useLoadElements();
