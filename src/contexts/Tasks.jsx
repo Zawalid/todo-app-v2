@@ -191,6 +191,7 @@ function TasksProvider({ children }) {
         error: () => {
           toast.dismiss(toastId);
           toast.error('Failed to add the task.', {
+            duration: 4000,
             action: {
               label: 'Try again',
               onClick: async () => {
@@ -220,6 +221,7 @@ function TasksProvider({ children }) {
         error: () => {
           toast.dismiss(toastId);
           toast.error('Failed to update the task.', {
+            duration: 4000,
             action: {
               label: 'Try again',
               onClick: async () => {
@@ -255,6 +257,7 @@ function TasksProvider({ children }) {
         success: () => {
           toast.dismiss(toastId);
           toast.success(getDeletionMessage('success', true), {
+            duration: 4000,
             action: deletePermanently
               ? null
               : {
@@ -268,6 +271,7 @@ function TasksProvider({ children }) {
         error: () => {
           toast.dismiss(toastId);
           toast.error(getDeletionMessage('error', true), {
+            duration: 4000,
             action: {
               label: 'Try again',
               onClick: () => {
@@ -304,6 +308,7 @@ function TasksProvider({ children }) {
         success: () => {
           toast.dismiss(toastId);
           toast.success(getDeletionMessage('success', false, false), {
+            duration: 4000,
             action: deletePermanently
               ? null
               : {
@@ -321,6 +326,7 @@ function TasksProvider({ children }) {
         error: () => {
           toast.dismiss(toastId);
           toast.error(getDeletionMessage('error', false, false), {
+            duration: 4000,
             action: {
               label: 'Try again',
               onClick: () => {
@@ -358,6 +364,7 @@ function TasksProvider({ children }) {
         success: () => {
           toast.dismiss(toastId);
           toast.success(getDeletionMessage('success', false, true, selectedTasks.length), {
+            duration: 4000,
             action: deletePermanently
               ? null
               : {
@@ -377,6 +384,7 @@ function TasksProvider({ children }) {
         error: () => {
           toast.dismiss(toastId);
           toast.error(getDeletionMessage('error', false, true, selectedTasks.length), {
+            duration: 4000,
             action: {
               label: 'Try again',
               onClick: () => {

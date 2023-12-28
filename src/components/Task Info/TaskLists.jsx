@@ -1,7 +1,7 @@
-import { useLists } from "../../hooks/useLists";
+import { useLists } from '../../hooks/useLists';
 
 export function TaskLists({ taskListId, setTaskListId }) {
-  const {lists} = useLists()
+  const { lists } = useLists();
   return (
     <>
       <label className='text-sm text-text-tertiary'>List</label>

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 export function Dates({ isOpen, taskDueDate, onAdd, today, tomorrow }) {
   const [isPickerOpen, setIsPickerOpen] = useState();
+  const [date, setDate] = useState(taskDueDate);
 
   useEffect(() => {
     isOpen || setIsPickerOpen(false);
@@ -35,18 +36,24 @@ export function Dates({ isOpen, taskDueDate, onAdd, today, tomorrow }) {
       >
         <i className='fa-solid fa-calendar  text-text-tertiary'></i>
         <span className='flex-1 text-text-primary '>Pick a date</span>
+        <i
+          className={`fa-solid fa-chevron-${isPickerOpen ? 'up' : 'down'}  text-text-tertiary`}
+        ></i>
       </li>
       <li
         className={
-          'flex cursor-pointer items-center justify-between gap-3 rounded-md overflow-hidden transition-all duration-300 hover:bg-background-secondary ' +
+          'flex cursor-pointer items-center justify-between gap-3 overflow-hidden rounded-md transition-all duration-300 hover:bg-background-secondary ' +
           (isPickerOpen ? 'h-[37px] p-2' : 'h-0 p-0')
         }
       >
         <input
           type='date'
           className='h-full w-full bg-transparent text-text-primary focus:outline-none'
-          value={taskDueDate}
-          onChange={(e) => onAdd(e.target.value)}
+          value={date}
+          onChange={(e) => {
+            setDate(e.target.value);
+            onAdd(e.target.value);
+          }}
         />
       </li>
     </ul>

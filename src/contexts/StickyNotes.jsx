@@ -44,6 +44,7 @@ function StickyNotesProvider({ children }) {
         error: () => {
           toast.dismiss(toastId);
           toast.error('Failed to add the sticky note.', {
+            duration: 4000,
             action: {
               label: 'Try again',
               onClick: async () => {
@@ -69,6 +70,7 @@ function StickyNotesProvider({ children }) {
         error: () => {
           toast.dismiss(toastId);
           toast.error('Failed to update the sticky note.', {
+            duration: 4000,
             action: {
               label: 'Try again',
               onClick: async () => {
@@ -95,6 +97,7 @@ function StickyNotesProvider({ children }) {
         success: () => {
           toast.dismiss(toastId);
           toast.success('Sticky note  has been successfully deleted.', {
+            duration: 4000,
             action: deletePermanently
               ? null
               : {
@@ -109,6 +112,7 @@ function StickyNotesProvider({ children }) {
         error: () => {
           toast.dismiss(toastId);
           toast.error('Failed to delete the sticky note .', {
+            duration: 4000,
             action: {
               label: 'Try again',
               onClick: async () => {

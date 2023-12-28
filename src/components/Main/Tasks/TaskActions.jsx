@@ -5,7 +5,7 @@ export default function TaskActions({ onClose, onEdit, onDelete, onCopy, date })
   const overlayRef = useRef(null);
   return (
     <Drawer onClose={onClose} overlayRef={overlayRef}>
-      <div className='flex flex-col gap-2'>
+      <div>
         <button className='menu_element w-full justify-items-start' onClick={onCopy}>
           <i className='fa-solid fa-clone  text-lg text-text-secondary'></i>
           <span className='font-semibold text-text-primary'>Copy to clipboard</span>
