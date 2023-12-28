@@ -4,13 +4,14 @@ import { TaskLists } from './TaskLists';
 import { TaskDueDate } from './TaskDueDate/TaskDueDate';
 import { TaskTags } from './TaskTags/TaskTags';
 import { TaskSubTasks } from './TaskSubTasks/TaskSubTasks';
-import { ConfirmationModal } from '../Common/ConfirmationModal';
 import { TaskPriority } from './TaskPriority';
 import { useTasks } from '../../hooks/useTasks';
 import Drawer from '../Common/Drawer';
+import { useDeleteTask } from '../../hooks/useDeleteTask';
+import { isTouchDevice } from '../../utils/helpers';
 
 export function TaskInfo() {
-  const { currentTask, isTaskOpen, setIsTaskOpen, handleUpdateTask, handleDeleteTask } = useTasks();
+  const { currentTask, isTaskOpen, setIsTaskOpen, handleUpdateTask } = useTasks();
   const [taskTitle, setTaskTitle] = useState();
   const [taskNote, setTaskNote] = useState();
   const [taskListId, setTaskListId] = useState('none');
@@ -19,8 +20,7 @@ export function TaskInfo() {
   const [taskTagsIds, setTaskTagsIds] = useState();
   const [taskPriority, setTaskPriority] = useState(0);
   const [isChanged, setIsChanged] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [deletePermanently, setDeletePermanently] = useState(false);
+  const { Modal, openModal } = useDeleteTask(currentTask?.$id);
   const tagsDropDown = useRef(null);
   const tagsDropDownToggler = useRef(null);
 
@@ -139,10 +139,18 @@ export function TaskInfo() {
     <>
       <div className='flex items-center justify-between pb-3'>
         <h2 className='text-xl font-bold text-text-secondary'>Task :</h2>
-        <button className='hidden sm:block' onClick={() => setIsTaskOpen(false)} id='closeTaskInfo'>
-          <i className='fa-solid fa-xmark  text-xl text-text-secondary'></i>
-          {/* <i className='fa-solid fa-circle-check  text-2xl text-primary'></i> */}
-        </button>
+        {isTouchDevice() ? (
+          <button
+            onClick={() => (isChanged ? handleSaveChanges() : setIsTaskOpen(false))}
+            id='closeTaskInfo'
+          >
+            <i className='fa-solid fa-circle-check  text-primary hover:text-primary-hover text-3xl'></i>
+          </button>
+        ) : (
+          <button onClick={() => setIsTaskOpen(false)} id='closeTaskInfo'>
+            <i className='fa-solid fa-xmark  text-xl text-text-secondary'></i>
+          </button>
+        )}
       </div>
       <div className='overflow-y-auto'>
         <TaskTitleAndNote
@@ -176,63 +184,52 @@ export function TaskInfo() {
           }}
         />
       </div>
-      <div className='mt-auto flex gap-3 pt-3'>
-        <button
-          className='flex-1 cursor-pointer rounded-lg border  border-zinc-200 bg-red-500 py-2 text-center text-sm font-semibold text-background-secondary transition-colors duration-300 hover:bg-red-600'
-          onClick={() => setIsDeleteModalOpen(true)}
-        >
-          Delete Task
-        </button>
-        <button
-          className={
-            'flex-1 rounded-lg border border-zinc-200 py-2 text-center  text-sm font-semibold transition-colors duration-500 ' +
-            (isChanged
-              ? 'bg-primary hover:bg-primary-hover cursor-pointer text-background-secondary '
-              : 'cursor-not-allowed bg-background-tertiary text-text-tertiary')
-          }
-          onClick={handleSaveChanges}
-        >
-          Save Changes
-        </button>
-      </div>
+      {!isTouchDevice() && (
+        <div className='mt-auto flex gap-3 pt-3'>
+          <button
+            className='flex-1 cursor-pointer rounded-lg border  border-zinc-200 bg-red-500 py-2 text-center text-sm font-semibold text-background-secondary transition-colors duration-300 hover:bg-red-600'
+            onClick={openModal}
+          >
+            Delete Task
+          </button>
+          <button
+            className={
+              'flex-1 rounded-lg border border-zinc-200 py-2 text-center  text-sm font-semibold transition-colors duration-500 ' +
+              (isChanged
+                ? 'bg-primary hover:bg-primary-hover cursor-pointer text-background-secondary '
+                : 'cursor-not-allowed bg-background-tertiary text-text-tertiary')
+            }
+            onClick={handleSaveChanges}
+          >
+            Save Changes
+          </button>
+        </div>
+      )}
     </>
   );
   return (
-    <aside
-      className={
-        'ml-auto hidden flex-col rounded-l-xl transition-[width,opacity] duration-500 sm:flex lg:relative ' +
-        (isTaskOpen
-          ? 'fixed right-0 top-0 z-10 h-full w-full items-stretch  border border-zinc-200 bg-background-primary p-4 shadow-md sm:w-1/2  lg:w-[30%]'
-          : 'w-0 items-center bg-background-primary p-0')
-      }
-      id='taskInfo'
-    >
-      {isTaskOpen &&
-        (window.innerWidth < 1024 ? (
-          <Drawer
-            onClose={() => setIsTaskOpen(false)}
-            activeSnap='370px'
-            snapPoints={['370px', 1]}
-          >
+    <>
+      {isTaskOpen ? (
+        isTouchDevice() ? (
+          <Drawer onClose={() => setIsTaskOpen(false)} activeSnap='370px' snapPoints={['370px', 1]}>
             {taskInfo}
           </Drawer>
         ) : (
-          taskInfo
-        ))}
-      {isDeleteModalOpen && (
-        <ConfirmationModal
-          sentence='Are you sure you want to delete this task?'
-          confirmText='Delete'
-          onConfirm={() => {
-            setIsDeleteModalOpen(false);
-            handleDeleteTask(currentTask.$id, deletePermanently);
-          }}
-          onCancel={() => setIsDeleteModalOpen(false)}
-          element='Task'
-          checked={deletePermanently}
-          setChecked={setDeletePermanently}
-        />
-      )}
-    </aside>
+          <aside
+            className={
+              'ml-auto hidden flex-col rounded-l-xl transition-[width,opacity] duration-500 sm:flex lg:relative ' +
+              (isTaskOpen
+                ? 'fixed right-0 top-0 z-10 h-full w-full items-stretch  border border-zinc-200 bg-background-primary p-4 shadow-md sm:w-1/2  lg:w-[30%]'
+                : 'w-0 items-center bg-background-primary p-0')
+            }
+            id='taskInfo'
+          >
+            {taskInfo}
+          </aside>
+        )
+      ) : null}
+
+      {Modal}
+    </>
   );
 }

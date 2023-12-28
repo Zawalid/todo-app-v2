@@ -51,6 +51,7 @@ function TagsProvider({ children }) {
         error: () => {
           toast.dismiss(toastId);
           toast.error('Failed to add the tag.', {
+            duration: 4000,
             action: {
               label: 'Try again',
               onClick: async () => {
@@ -70,6 +71,7 @@ function TagsProvider({ children }) {
         success: () => {
           toast.dismiss(toastId);
           toast.success('Tag  has been successfully deleted.', {
+            duration: 4000,
             action: deletePermanently
               ? null
               : {
@@ -84,6 +86,7 @@ function TagsProvider({ children }) {
         error: () => {
           toast.dismiss(toastId);
           toast.error('Failed to delete the tag .', {
+            duration: 4000,
             action: {
               label: 'Try again',
               onClick: async () => {

@@ -13,6 +13,7 @@ import { useLongPress } from 'use-long-press';
 import { isTouchDevice } from '../../../utils/helpers';
 import TaskActions from './TaskActions';
 import { toast } from 'sonner';
+import { useDeleteTask } from '../../../hooks/useDeleteTask';
 
 const completedSound = new Audio(completedSoundFile);
 
@@ -41,7 +42,7 @@ export function Task({
     threshold: 200,
     detect: 'touch',
   });
-  // handleOpenTask($id)
+  const { Modal, openModal } = useDeleteTask($id);
 
   const listName = useMemo(() => lists?.find((l) => l?.$id === listId)?.title, [listId, lists]);
   const listColor = useMemo(() => lists?.find((l) => l?.$id === listId)?.color, [listId, lists]);
@@ -195,6 +196,10 @@ export function Task({
               handleOpenTask($id);
               setIsTaskActionsOpen(false);
             }}
+            onDelete={() => {
+              setIsTaskActionsOpen(false);
+              openModal();
+            }}
             onCopy={() => {
               navigator.clipboard.writeText(title);
               toast.success('Copied to clipboard');
@@ -207,6 +212,7 @@ export function Task({
           />
         )}
       </div>
+      {Modal}
     </li>
   );
 }
