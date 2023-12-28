@@ -144,7 +144,7 @@ export function TaskInfo() {
             onClick={() => (isChanged ? handleSaveChanges() : setIsTaskOpen(false))}
             id='closeTaskInfo'
           >
-            <i className='fa-solid fa-circle-check  text-primary hover:text-primary-hover text-3xl'></i>
+            <i className='fa-solid fa-circle-check  text-3xl text-primary hover:text-primary-hover'></i>
           </button>
         ) : (
           <button onClick={() => setIsTaskOpen(false)} id='closeTaskInfo'>
@@ -152,7 +152,7 @@ export function TaskInfo() {
           </button>
         )}
       </div>
-      <div className='overflow-y-auto'>
+      <div className='overflow-y-auto pr-2'>
         <TaskTitleAndNote
           {...{
             taskTitle,
@@ -196,7 +196,7 @@ export function TaskInfo() {
             className={
               'flex-1 rounded-lg border border-zinc-200 py-2 text-center  text-sm font-semibold transition-colors duration-500 ' +
               (isChanged
-                ? 'bg-primary hover:bg-primary-hover cursor-pointer text-background-secondary '
+                ? 'cursor-pointer bg-primary text-background-secondary hover:bg-primary-hover '
                 : 'cursor-not-allowed bg-background-tertiary text-text-tertiary')
             }
             onClick={handleSaveChanges}
@@ -209,25 +209,25 @@ export function TaskInfo() {
   );
   return (
     <>
-      {isTaskOpen ? (
-        isTouchDevice() ? (
-          <Drawer onClose={() => setIsTaskOpen(false)} activeSnap='270px' snapPoints={['270px', 1]}>
-            {taskInfo}
-          </Drawer>
-        ) : (
-          <aside
-            className={
-              'ml-auto hidden flex-col rounded-l-xl transition-[width,opacity] duration-500 sm:flex lg:relative ' +
-              (isTaskOpen
-                ? 'fixed right-0 top-0 z-10 h-full w-full items-stretch  border border-zinc-200 bg-background-primary p-4 shadow-md sm:w-1/2  lg:w-[30%]'
-                : 'w-0 items-center bg-background-primary p-0')
-            }
-            id='taskInfo'
-          >
-            {taskInfo}
-          </aside>
-        )
-      ) : null}
+      {isTaskOpen && isTouchDevice() && (
+        <Drawer onClose={() => setIsTaskOpen(false)}>
+          {taskInfo}
+        </Drawer>
+      )}
+
+      {!isTouchDevice() && (
+        <aside
+          className={
+            'ml-auto hidden flex-col rounded-l-xl transition-[width,opacity] duration-500 sm:flex lg:relative ' +
+            (isTaskOpen
+              ? 'fixed right-0 top-0 z-10 h-full w-full items-stretch  border border-zinc-200 bg-background-primary p-4 shadow-md sm:w-1/2  lg:w-[30%]'
+              : 'w-0 items-center overflow-hidden bg-background-primary p-0')
+          }
+          id='taskInfo'
+        >
+          {isTaskOpen && taskInfo}
+        </aside>
+      )}
 
       {Modal}
     </>

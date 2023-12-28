@@ -401,10 +401,8 @@ function TasksProvider({ children }) {
   async function handleOpenTask(id) {
     if (currentProcessedTask === id || currentProcessedTask === 'multiple') return;
     if (id) {
-      setCurrentTask(null);
+      setCurrentTask(tasks.find((task) => task.$id === id));
       setIsTaskOpen(true);
-      const response = await databases.getDocument(DATABASE_ID, TASKS_COLLECTION_ID, id);
-      setCurrentTask(response);
     }
   }
 

@@ -15,7 +15,8 @@ const SearchProvider = ({ children }) => {
   useEffect(() => {
     if (!searchQuery) return;
     setSearchParams({ q: searchQuery });
-  }, [searchQuery, setSearchParams]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery]);
 
   const searchSection =
     currentSearchTab === 'all'

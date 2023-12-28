@@ -3,7 +3,7 @@ export const TaskPriority = ({ taskPriority, setTaskPriority }) => {
     <>
       <label className='text-sm text-text-tertiary'>Priority</label>
       <select
-        className='w-fit min-w-[100px] rounded-lg border border-zinc-200  bg-background-secondary  p-2  text-sm text-text-secondary  focus:outline-none'
+        className='w-32 rounded-lg border border-zinc-200  bg-background-secondary  p-2  text-sm text-text-secondary  focus:outline-none'
         value={taskPriority}
         onChange={(e) => setTaskPriority(+e.target.value)}
       >

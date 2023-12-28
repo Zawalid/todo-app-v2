@@ -2,13 +2,13 @@ import Tippy from '@tippyjs/react';
 import { AddTask } from '../AddTask';
 import { Task } from '../Task';
 import { TasksActions } from './TasksActions/TasksActions';
-import { useEffect, useReducer, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { isTaskOverdue } from '../../../../utils/Moment';
 import { ConfirmationModal } from '../../../Common/ConfirmationModal';
 import { useSearchParams } from 'react-router-dom';
 import { useTasks } from '../../../../hooks/useTasks';
 import { MultipleDeletionsModal } from './MultipleDeletionsModal';
-import { Pagination } from './Pagination';
+import { usePagination } from './usePagination';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 
 const filtersConditions = {
@@ -21,28 +21,6 @@ const filtersConditions = {
   lowPriority: (task) => task.priority === '0',
 };
 
-const paginationState = {
-  currentPage: 1,
-  rowsPerPage: 10,
-  disabledButton: 'previous',
-};
-function paginationReducer(state, action) {
-  switch (action.type) {
-    case 'NEXT_PAGE':
-      return { ...state, currentPage: state.currentPage + 1 };
-    case 'PREVIOUS_PAGE':
-      return { ...state, currentPage: state.currentPage - 1 };
-    case 'CHANGE_ROWS_PER_PAGE':
-      return { ...state, rowsPerPage: action.payload, currentPage: 1 };
-    case 'DISABLE_BUTTON':
-      return { ...state, disabledButton: action.payload };
-    default:
-      throw new Error(
-        `Unknown action type: ${action.type}. Make sure to add the action type to the reducer.`,
-      );
-  }
-}
-
 export default function DisplayedTasks({ onAdd, condition, activeTab }) {
   const { tasks, handleClearAllTasks, handleDeleteMultipleTasks, selectedTasks, setSelectedTasks } =
     useTasks();
@@ -52,12 +30,11 @@ export default function DisplayedTasks({ onAdd, condition, activeTab }) {
   const [isDeleteMultipleModalOpen, setIsDeleteMultipleModalOpen] = useState(false);
   const [isDeletingModalOpen, setIsDeletingModalOpen] = useState(false);
   const whichDelete = useRef(null);
-  const [pagination, dispatch] = useReducer(paginationReducer, paginationState);
   const [searchParams] = useSearchParams();
   const [parent] = useAutoAnimate({
-    duration : 500,
+    duration: 500,
   });
-
+  const { Pagination, currentPage, rowsPerPage } = usePagination(filteredTasks.length);
 
   const filter = searchParams.get('filter') || 'all';
   const sort = searchParams.get('sort');
@@ -90,9 +67,7 @@ export default function DisplayedTasks({ onAdd, condition, activeTab }) {
   }, [isDeleteMultipleModalOpen, selectedTasks, isSelecting, setSelectedTasks]);
 
   return (
-    <div className='relative flex h-full flex-col overflow-auto'
-    ref={parent}
-    >
+    <div className='relative flex h-full flex-col overflow-auto' ref={parent}>
       <div className='flex items-center gap-2'>
         <div className='flex  flex-1 items-center gap-3 rounded-xl border border-zinc-200 px-5 py-1'>
           <i className='fa-solid fa-plus text-xl text-text-tertiary'></i>
@@ -134,9 +109,7 @@ export default function DisplayedTasks({ onAdd, condition, activeTab }) {
       </div>
       {tasks.filter((task) => condition(task)).length > 0 && (
         <>
-          <ul className='mt-3 h-full space-y-2 overflow-y-auto pr-3'
-          ref={parent}
-          >
+          <ul className='mt-3 h-full space-y-2 overflow-y-auto pr-3' ref={parent}>
             {[...filteredTasks]
               .sort((a, b) => {
                 if (sort === 'cDate') {
@@ -158,16 +131,13 @@ export default function DisplayedTasks({ onAdd, condition, activeTab }) {
                     : b.title.localeCompare(a.title);
                 }
               })
-              .slice(
-                (pagination.currentPage - 1) * pagination.rowsPerPage,
-                pagination.currentPage * pagination.rowsPerPage,
-              )
+              .slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage)
               .map((task) => (
                 <Task key={task.$id} task={task} isSelecting={isSelecting} />
               ))}
           </ul>
           {filteredTasks.length === 0 && (
-            <div className='absolute -translate-y-1/2 top-1/2 flex w-full flex-col items-center justify-center gap-2'>
+            <div className='absolute top-1/2 flex w-full -translate-y-1/2 flex-col items-center justify-center gap-2'>
               <h2 className='text-center text-2xl font-semibold text-text-secondary'>
                 You don&apos;t have any{' '}
                 {filter?.includes('Priority') ? filter?.replace('Priority', ' priority') : filter}{' '}
@@ -183,8 +153,8 @@ export default function DisplayedTasks({ onAdd, condition, activeTab }) {
         </>
       )}
       {tasks.filter((task) => condition(task)).length === 0 && (
-        <div className='absolute top-1/2 flex -translate-y-1/2 w-full flex-col items-center justify-center gap-2'>
-          <h2 className='text-2xl text-center font-semibold text-text-secondary'>
+        <div className='absolute top-1/2 flex w-full -translate-y-1/2 flex-col items-center justify-center gap-2'>
+          <h2 className='text-center text-2xl font-semibold text-text-secondary'>
             {activeTab === 'today'
               ? 'You have no tasks scheduled for today.'
               : activeTab === 'all'
@@ -232,13 +202,7 @@ export default function DisplayedTasks({ onAdd, condition, activeTab }) {
         }}
         selectedTasksNumber={selectedTasks.length}
       />
-      {filteredTasks.filter((task) => condition(task)).length > 0 && (
-        <Pagination
-          pagination={pagination}
-          tasksLength={filteredTasks.length}
-          dispatch={dispatch}
-        />
-      )}
+      {filteredTasks.filter((task) => condition(task)).length > 0 && Pagination}
     </div>
   );
 }
