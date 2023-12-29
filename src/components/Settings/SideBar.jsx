@@ -22,39 +22,40 @@ export function SideBar({ currentTab, setCurrentTab }) {
         ></i>
       </button>
       <aside
-        className={`absolute bordertop-0 z-[100] flex h-full flex-col items-start gap-3 bg-background-primary p-3 shadow-md transition-[left] duration-500 sm:static sm:p-0 sm:shadow-none ${
+        className={`absolute top-0 z-[100] flex h-full flex-col items-start gap-3 bg-zinc-50  shadow-md transition-[left] p-3 duration-500 sm:static  sm:shadow-none ${
           isOpen ? 'left-0' : '-left-full'
         }`}
       >
+        <h2 className='text-xl mb-2 font-semibold text-text-secondary'>Settings</h2>
         <button
           className={
-            'menu_element gap-2 ' +
-            (currentTab === 'editProfile' ? 'active text-text-secondary' : 'text-text-tertiary')
+            'menu_element justify-start w-full gap-2 ' +
+            (currentTab === 'account' ? 'active text-text-secondary' : 'text-text-tertiary')
           }
-          onClick={() => setCurrentTab('editProfile')}
+          onClick={() => setCurrentTab('account')}
         >
           <i className='fa-solid fa-user'></i>
-          <span className='font-medium'>Edit Profile</span>
+          <span className='font-medium '>Account</span>
         </button>
         <button
           className={
-            'menu_element gap-2 ' +
+            'menu_element justify-start w-full gap-2 ' +
             (currentTab === 'password' ? 'active text-text-secondary' : 'text-text-tertiary')
           }
           onClick={() => setCurrentTab('password')}
         >
           <i className='fa-solid fa-key'></i>
-          <span className='font-medium'>Password</span>
+          <span className='font-medium '>Password</span>
         </button>
         <button
           className={
-            'menu_element gap-2 ' +
+            'menu_element justify-start w-full gap-2 ' +
             (currentTab === 'sessions' ? 'active text-text-secondary' : 'text-text-tertiary')
           }
           onClick={() => setCurrentTab('sessions')}
         >
           <i className='fa-solid fa-laptop'></i>
-          <span className='font-medium'>Sessions</span>
+          <span className='font-medium '>Sessions</span>
         </button>
         <div className=' bottom-0 mt-auto w-full space-y-4 border-t border-zinc-300 pt-3'>
           {!user?.emailVerification && (
@@ -67,7 +68,7 @@ export function SideBar({ currentTab, setCurrentTab }) {
             </button>
           )}
           <button
-            className='grid grid-cols-[30px_1fr] text-text-error hover:bg-red-500 transition-colors duration-300 px-3 py-2 rounded-lg hover:text-white items-center justify-items-start'
+            className='grid grid-cols-[30px_1fr] text-text-error hover:bg-red-500 transition-colors duration-300 px-3 w-full py-2 rounded-lg hover:text-white items-center justify-items-start'
             onClick={() => setIsModalOpen(true)}
           >
             <i className='fa-solid fa-trash-can  '></i>

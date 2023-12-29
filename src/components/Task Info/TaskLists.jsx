@@ -1,22 +1,43 @@
 import { useLists } from '../../hooks/useLists';
+import DropDown from '../Common/DropDown';
 
 export function TaskLists({ taskListId, setTaskListId }) {
   const { lists } = useLists();
   return (
     <>
-      <label className='text-sm text-text-tertiary'>List</label>
-      <select
-        className='w-32 cursor-pointer rounded-lg border border-zinc-200  bg-background-secondary  p-2  text-sm text-text-secondary  focus:outline-none'
-        value={taskListId}
-        onChange={(e) => setTaskListId(e.target.value)}
+      <label className='text-sm justify-self-start text-text-tertiary'>List</label>
+      <DropDown
+        toggler={
+          <DropDown.Toggler>
+            <span> {lists?.find((list) => list.$id === taskListId)?.title || 'None'} </span>
+            <i className='fa-solid fa-chevron-down text-xs'></i>
+          </DropDown.Toggler>
+        }
       >
-        <option value='none'>None</option>
+        <DropDown.Button
+          onClick={() => setTaskListId('none')}
+          className={
+            taskListId === 'none'
+              ? 'bg-background-secondary text-text-secondary'
+              : 'bg-background-primary text-text-tertiary'
+          }
+        >
+          <span>None</span>
+        </DropDown.Button>
         {lists?.map((list) => (
-          <option key={list.$id} value={list.$id}>
-            {list.title}
-          </option>
+          <DropDown.Button
+            key={list.$id}
+            onClick={() => setTaskListId(list.$id)}
+            className={
+              taskListId === list.$id
+                ? 'bg-background-secondary text-text-secondary'
+                : 'bg-background-primary text-text-tertiary'
+            }
+          >
+            <span>{list.title}</span>
+          </DropDown.Button>
         ))}
-      </select>
+      </DropDown>
     </>
   );
 }

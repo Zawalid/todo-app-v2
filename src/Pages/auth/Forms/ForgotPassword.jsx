@@ -20,7 +20,7 @@ export default function ForgotPassword() {
       </button>
 
       <h1 className=' self-start text-3xl sm:text-4xl font-bold text-text-primary'>Forgot Password?</h1>
-      <p className='self-start text-sm font-semibold text-text-tertiary'>
+      <p className='self-start text-sm font-medium text-text-tertiary'>
         Enter your email address below and we&apos;ll send you a link to reset your password.
       </p>
       <form
@@ -37,7 +37,7 @@ export default function ForgotPassword() {
           onChange={(e) => setEmail(e.target.value)}
         />
 
-        <Button text=' Send Reset Link' />
+        <Button text=' Send Reset Link' className='w-full' />
       </form>
     </section>
   );

@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect,  useState } from 'react';
 import { TaskTitleAndNote } from './TaskTitleAndNote';
 import { TaskLists } from './TaskLists';
-import { TaskDueDate } from './TaskDueDate/TaskDueDate';
-import { TaskTags } from './TaskTags/TaskTags';
+import { TaskDueDate } from './TaskDueDate';
+import { TaskTags } from './TaskTags';
 import { TaskSubTasks } from './TaskSubTasks/TaskSubTasks';
 import { TaskPriority } from './TaskPriority';
 import { useTasks } from '../../hooks/useTasks';
@@ -22,8 +22,6 @@ export function TaskInfo() {
   const [taskPriority, setTaskPriority] = useState(0);
   const [isChanged, setIsChanged] = useState(false);
   const { Modal, openModal } = useDeleteTask(currentTask?.$id);
-  const tagsDropDown = useRef(null);
-  const tagsDropDownToggler = useRef(null);
   const activeTab = useHref().split('/app/')[1];
 
   useEffect(() => {
@@ -80,18 +78,6 @@ export function TaskInfo() {
     taskTagsIds,
     taskPriority,
   ]);
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (tagsDropDown.current && tagsDropDown.current.contains(event.target)) {
-        const id = event.target.dataset.id;
-        id && handleAddTagToTask(id);
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [tagsDropDown]);
 
   function handleAddSubTask(title) {
     const newSubtask = {
@@ -147,11 +133,10 @@ export function TaskInfo() {
         <h2 className='text-xl font-bold text-text-secondary'>Task :</h2>
         {isTouchDevice() ? (
           <button
-          
             onClick={() => (isChanged ? handleSaveChanges() : setIsTaskOpen(false))}
             id='closeTaskInfo'
           >
-            <i className='fa-solid fa-check  '></i>
+            <i className='fa-solid fa-circle-check text-3xl text-primary hover:text-primary-hover '></i>
           </button>
         ) : (
           <button onClick={() => setIsTaskOpen(false)} id='closeTaskInfo'>
@@ -159,7 +144,7 @@ export function TaskInfo() {
           </button>
         )}
       </div>
-      <div className='overflow-y-auto pr-2'>
+      <div className='overflow-y-auto pr-3'>
         <TaskTitleAndNote
           {...{
             taskTitle,
@@ -168,27 +153,22 @@ export function TaskInfo() {
             setTaskNote,
           }}
         />
-        <div className='grid grid-cols-[1fr_2fr] items-center gap-x-5 space-y-2'>
+        <div className='grid grid-cols-[1fr_2fr] items-center justify-items-end gap-x-5 space-y-2'>
           <TaskLists taskListId={taskListId} setTaskListId={setTaskListId} />
           <TaskDueDate taskDueDate={taskDueDate} setTaskDueDate={setTaskDueDate} />
           <TaskTags
-            {...{
-              taskTagsIds,
-              tagsDropDown,
-              tagsDropDownToggler,
-              handleDeleteTagFromTask,
-            }}
+            taskTagsIds={taskTagsIds}
+            handleAddTagToTask={handleAddTagToTask}
+            handleDeleteTagFromTask={handleDeleteTagFromTask}
           />
           <TaskPriority taskPriority={taskPriority} setTaskPriority={setTaskPriority} />
         </div>
         <TaskSubTasks
-          {...{
-            taskSubtasks,
-            handleAddSubTask,
-            handleDeleteSubtask,
-            handleUpdateSubtask,
-            handleCompleteSubTask,
-          }}
+          taskSubtasks={taskSubtasks}
+          handleAddSubTask={handleAddSubTask}
+          handleDeleteSubtask={handleDeleteSubtask}
+          handleUpdateSubtask={handleUpdateSubtask}
+          handleCompleteSubTask={handleCompleteSubTask}
         />
       </div>
       {!isTouchDevice() && (
@@ -223,9 +203,9 @@ export function TaskInfo() {
       {!isTouchDevice() && (
         <aside
           className={
-            'ml-auto hidden flex-col rounded-l-xl transition-[width,opacity] duration-500 sm:flex lg:relative ' +
+            'ml-auto  flex flex-col transition-[width,opacity] duration-500 lg:relative lg:first-line:rounded-xl ' +
             (isTaskOpen
-              ? 'fixed right-0 top-0 z-10 h-full w-full items-stretch  border border-zinc-200 bg-background-primary p-4 shadow-md sm:w-1/2  lg:w-[30%]'
+              ? 'fixed right-0 top-0 z-10 h-full w-full items-stretch  border border-zinc-200 bg-background-primary p-4 shadow-md sm:w-[380px]'
               : 'w-0 items-center overflow-hidden bg-background-primary p-0')
           }
           id='taskInfo'

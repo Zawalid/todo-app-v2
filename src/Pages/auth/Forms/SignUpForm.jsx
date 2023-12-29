@@ -50,7 +50,7 @@ function SignUpForm() {
         />
 
         <PasswordInput password={password} setPassword={setPassword} />
-        <Button isLoading={isLoading} text='Sign Up' />
+        <Button isLoading={isLoading} text='Sign Up' className='w-full'/>
       </form>
       <AuthLink text='Sign In' link='/sign-in' />
     </div>

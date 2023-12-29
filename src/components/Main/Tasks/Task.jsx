@@ -38,11 +38,10 @@ export function Task({
   const { handleOpenTask, handleCompleteTask, setSelectedTasks, selectedTasks } = useTasks();
   const { tags } = useTags();
   const isPassed = isTaskOverdue(dueDate);
-  const bind = useLongPress(() => setIsTaskActionsOpen(true), {
-    threshold: 200,
+  const bind = useLongPress(() => !isModalOpen && setIsTaskActionsOpen(true), {
     detect: 'touch',
   });
-  const { Modal, openModal } = useDeleteTask($id);
+  const { Modal, openModal, isModalOpen } = useDeleteTask($id);
 
   const listName = useMemo(() => lists?.find((l) => l?.$id === listId)?.title, [listId, lists]);
   const listColor = useMemo(() => lists?.find((l) => l?.$id === listId)?.color, [listId, lists]);

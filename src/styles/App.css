@@ -1,5 +1,5 @@
 .menu_element {
-  @apply grid cursor-pointer grid-cols-[30px_auto_35px] items-center rounded-lg px-3 py-2 transition-colors duration-500 hover:bg-background-tertiary;
+  @apply grid cursor-pointer grid-cols-[30px_auto_35px] items-center rounded-lg p-2 transition-colors duration-500 hover:bg-background-tertiary;
 }
 .menu_element.active {
   @apply bg-background-tertiary;
@@ -87,7 +87,7 @@ input[type='checkbox'].subtask {
 }
 
 .pagination-button {
-  @apply ml-0 flex  h-full border-collapse items-center justify-center border px-2 py-1.5 text-xs sm:text-sm font-medium text-text-secondary shadow-sm transition-colors  duration-300 hover:bg-background-tertiary disabled:cursor-not-allowed disabled:text-opacity-30 disabled:hover:bg-transparent;
+  @apply ml-0 flex  h-full border-collapse items-center justify-center border px-2 py-1.5 text-xs font-medium text-text-secondary shadow-sm transition-colors duration-300  hover:bg-background-tertiary disabled:cursor-not-allowed disabled:text-opacity-30 disabled:hover:bg-transparent sm:text-sm;
 }
 
 #menu:has(#closeMenu:hover) {
@@ -98,9 +98,12 @@ input[type='checkbox'].subtask {
 }
 
 .tippy-box[data-theme~='light'] {
-  @apply rounded-lg bg-background-primary p-2 text-sm text-text-primary shadow-md  !important;
+  @apply rounded-lg bg-background-primary p-0 text-sm text-text-primary shadow-md  !important;
+}
+.tippy-content {
+  @apply p-0 !important;
 }
 
-[vaul-overlay][vaul-drawer-visible=true]{
+[vaul-overlay][vaul-drawer-visible='true'] {
   opacity: 1 !important;
 }

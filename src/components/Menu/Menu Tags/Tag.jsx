@@ -2,21 +2,24 @@ import { useState } from 'react';
 import { ConfirmationModal } from '../../Common/ConfirmationModal';
 import { useTags } from '../../../hooks/useTags';
 
-export function Tag({ tag, showDeleteButton, customClassName, onDeleteTag }) {
+export function Tag({ tag, showDeleteButton, customClassName, onDeleteTag, onSelectTag }) {
   const { handleDeleteTag } = useTags();
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [deletePermanently, setDeletePermanently] = useState(false);
   return (
     <>
       <li
-        className={'menu_tag_element relative ' + customClassName}
+        className={'menu_tag_element relative text-center ' + customClassName}
         style={{ backgroundColor: tag.bgColor, color: tag.textColor }}
-        data-id={tag.$id}
+        onClick={() => onSelectTag?.(tag.$id)}
       >
         {showDeleteButton && (
           <button
-            className='absolute -right-1 -top-1 grid h-3 w-3 cursor-pointer place-content-center rounded-full bg-red-600'
-            onClick={() => (onDeleteTag ? onDeleteTag() : setIsConfirmationModalOpen(true))}
+            className='absolute -right-1 -top-1 grid h-4 w-4 cursor-pointer place-content-center rounded-full bg-red-600'
+            onClick={(e) => {
+              e.stopPropagation();
+              onDeleteTag ? onDeleteTag(tag.$id) : setIsConfirmationModalOpen(true);
+            }}
           >
             <i className='fas fa-xmark  text-[10px] text-white'></i>
           </button>
@@ -27,9 +30,9 @@ export function Tag({ tag, showDeleteButton, customClassName, onDeleteTag }) {
         <ConfirmationModal
           sentence={`Are you sure you want to delete this tag ? `}
           confirmText={'Delete'}
-          onConfirm={ () => {
+          onConfirm={() => {
             setIsConfirmationModalOpen(false);
-            handleDeleteTag(tag.$id,deletePermanently);
+            handleDeleteTag(tag.$id, deletePermanently);
           }}
           onCancel={() => setIsConfirmationModalOpen(false)}
           element='Tag'

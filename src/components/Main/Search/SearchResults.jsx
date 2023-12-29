@@ -7,7 +7,7 @@ import { useStickyNotes } from '../../../hooks/useStickyNotes';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 
 export default function SearchResults() {
-  const { searchResults, currentSearchTab, setCurrentSearchTab } = useSearch();
+  const { searchResults, currentSearchTab, setCurrentSearchTab, searchQuery } = useSearch();
   const { setCurrentNote, setIsStickyNoteOpened, setIsStickyNoteEditorOpen } = useStickyNotes();
   const [parent] = useAutoAnimate({
     duration: 500,
@@ -24,10 +24,10 @@ export default function SearchResults() {
         <div className='flex  h-full flex-col items-center justify-center gap-2'>
           <img src={noResults} alt='no result' className='w-[200px] sm:w-[300px] ' />
           <h2 className='text-xl font-semibold text-text-secondary sm:text-2xl'>
-            Oops! No results found
+            No results found for &quot;<span>{searchQuery}</span>&quot;
           </h2>
           <p className='text-center text-sm text-text-tertiary sm:text-base'>
-            We couldn&apos;t find any results matching your search. Give it another go.
+            We couldn&apos;t find anything matching your search. Try again with a different term.
           </p>
         </div>
       )}

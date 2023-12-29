@@ -29,10 +29,9 @@ useEffect(() => {
   }
   return (
     <>
-      <h2 className='text-2xl font-bold text-text-primary'>Password</h2>
       <div className='mt-8 space-y-5'>
         <div>
-          <h3 className='mb-3 font-bold text-text-secondary'>Old password</h3>
+          <h3 className='mb-3 font-bold text-text-secondary'>Current password</h3>
           <PasswordInput
             password={currentPassword}
             setPassword={setCurrentPassword}
@@ -48,7 +47,7 @@ useEffect(() => {
           />
         </div>
         <div>
-          <h3 className='mb-3 font-bold text-text-secondary'>Confirm password</h3>
+          <h3 className='mb-3 font-bold text-text-secondary'>Confirm new password</h3>
           <PasswordInput
             password={confirmNewPassword}
             setPassword={setConfirmNewPassword}
@@ -56,7 +55,7 @@ useEffect(() => {
           />
         </div>
       </div>
-      <Button text='Change Password' onClick={changePassword} disabled={!isFilled} />
+      <Button text='Change Password'  onClick={changePassword} disabled={!isFilled} className='mr-0 px-3'/>
     </>
   );
 }

@@ -30,7 +30,7 @@ export function ListAction({
   return (
     <ul
       className={
-        'absolute right-1 top-full z-10 mt-2 w-44 rounded-lg bg-background-primary p-2 shadow-md ' +
+        'absolute right-1 top-full z-10 mt-2 w-44 rounded-lg bg-background-primary p-2 border border-zinc-200 shadow-md ' +
         (isOpen ? 'block' : 'hidden')
       }
       ref={reference}
@@ -53,7 +53,7 @@ export function ListAction({
       <div
         className={
           'flex flex-wrap items-center gap-2  overflow-hidden transition-[height] duration-300 ' +
-          (isColorsOpen ? 'h-16' : 'h-0')
+          (isColorsOpen ? 'h-auto' : 'h-0')
         }
         ref={colorsDiv}
       >

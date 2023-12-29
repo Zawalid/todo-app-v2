@@ -55,7 +55,7 @@ export default function ResetPassword() {
               placeholder='Confirm password'
             />
 
-            <Button text='Reset Password' />
+            <Button text='Reset Password' className='w-full'/>
           </form>
         </>
       )}

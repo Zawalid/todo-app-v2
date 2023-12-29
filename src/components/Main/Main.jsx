@@ -1,4 +1,4 @@
-import { Suspense, lazy, useMemo } from 'react';
+import { Suspense, lazy, useEffect, useMemo } from 'react';
 import { useHref } from 'react-router-dom';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { Title } from './Title';
@@ -22,33 +22,31 @@ const skeletons = {
 };
 
 export function Main() {
-  const { tasks, isTasksLoading, handleAddTask, todayTasks, upcomingTasks } =
-    useTasks();
+  const { tasks, isTasksLoading, handleAddTask, todayTasks, upcomingTasks } = useTasks();
   const { lists } = useLists();
   const { stickyNotes, isStickyNoteOpened } = useStickyNotes();
   const { searchResults } = useSearch();
   const { trashLength } = useTrash();
   const activeTab = useHref().split('/app/')[1];
   const [parent] = useAutoAnimate({
-    duration : 300,
+    duration: 300,
   });
-
 
   const listId = lists?.find((list) => list.title === activeTab?.replace('%20', ' '))?.$id;
 
-  const title = !activeTab
-    ? 'All Tasks'
-    : activeTab === 'today'
-    ? "Today's Tasks"
-    : activeTab === 'upcoming'
-    ? 'Upcoming Tasks'
-    : activeTab === 'stickyWall'
-    ? 'Sticky Wall'
-    : activeTab === 'search'
-    ? 'Search Results'
-    : activeTab === 'trash'
-    ? 'Trash'
-    : activeTab?.replace(/%20/g, ' ');
+  const titles = {
+    today: "Today's Tasks",
+    upcoming: 'Upcoming Tasks',
+    stickyWall: 'Sticky Wall',
+    search: 'Search Results',
+    trash: 'Trash',
+  };
+
+  const title = !activeTab ? 'All Tasks' : titles[activeTab] || activeTab.replace('%20', ' ');
+
+  useEffect(() => {
+    document.title = `I Do | ${title}`;
+  }, [title]);
 
   const count = useMemo(() => {
     if (!activeTab) return tasks.length;
@@ -77,8 +75,9 @@ export function Main() {
   };
 
   return (
-    <main className='relative flex flex-1 flex-col overflow-hidden rounded-xl bg-background-primary pl-2'
-    ref={parent}
+    <main
+      className='relative flex flex-1 flex-col overflow-hidden rounded-xl bg-background-primary pl-2'
+      ref={parent}
     >
       <Title title={title} count={count} />
       {isTasksLoading ? (

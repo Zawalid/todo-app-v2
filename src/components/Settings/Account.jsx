@@ -38,7 +38,6 @@ export function EditProfile() {
 
   return (
     <>
-      <h2 className='text-2xl font-bold text-text-primary'>Edit Profile </h2>
       <div className='mt-8 space-y-5'>
         <div>
           <h3 className='mb-3 font-bold text-text-secondary'>Avatar</h3>
@@ -75,7 +74,7 @@ export function EditProfile() {
         />
         </div>
       </div>
-      <Button text='Save Changes' disabled={!isUpdated} onClick={handleSaveChanges} />
+      <Button text='Save Changes' disabled={!isUpdated} onClick={handleSaveChanges} className='mr-0 px-3'/>
       {isVerificationModalOpen && (
         <UserVerificationModal
           onClose={() => setIsVerificationModalOpen(false)}

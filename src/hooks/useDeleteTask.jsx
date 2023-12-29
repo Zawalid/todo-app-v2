@@ -22,5 +22,6 @@ export function useDeleteTask(id) {
       />
     ) : null,
     openModal: () => setIsDeleteModalOpen(true),
+    isModalOpen: isDeleteModalOpen,
   };
 }

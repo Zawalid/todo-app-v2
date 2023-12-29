@@ -57,8 +57,7 @@ export function Sessions() {
 
   return (
     <>
-      <div>
-        <h2 className='mb-5 text-2xl font-bold text-text-primary'>Your sessions</h2>
+      <div className='mt-8'>
         <p className='text-sm font-medium text-text-tertiary'>
           This is a list of devices that have logged into your account.
         </p>
@@ -71,7 +70,7 @@ export function Sessions() {
       <h3 className='mt-7 font-bold text-text-secondary'>
         Active Sessions ({sessions?.filter((session) => !session.current)?.length || '-'})
       </h3>
-      <div className='relative min-h-[150px] mb-5 mt-3 space-y-5 overflow-auto pb-3 pr-3'>
+      <div className='relative mb-5 mt-3 min-h-[150px] space-y-5 overflow-auto pb-3 pr-3'>
         {isLoading ? (
           <SpinnerLoader />
         ) : sessions?.length === 0 ? (
@@ -99,6 +98,7 @@ export function Sessions() {
           await handleDeleteSessions();
           navigate('/sign-in');
         }}
+        className='mr-0 px-3'
       />
     </>
   );

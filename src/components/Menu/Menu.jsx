@@ -8,6 +8,7 @@ import { useTrash, useUser } from '../../hooks';
 import { Profile } from './Profile';
 import { Settings } from '../Settings/Settings';
 import { createPortal } from 'react-dom';
+import { useSwipe } from '../../hooks/useSwipe';
 
 export function Menu() {
   const [isOpen, setIsOpen] = useState(window.matchMedia('(min-width: 1024px)').matches);
@@ -16,19 +17,28 @@ export function Menu() {
   const { handleSignOut } = useUser();
   const { trashLength } = useTrash();
   const activeTab = useHref().split('/app/')[1];
+  const { onSwipeStart, onSwipeLeft, onSwipeRight } = useSwipe(300);
 
   useEffect(() => {
     setIsOpen(window.matchMedia('(min-width: 1024px)').matches);
   }, [activeTab]);
 
+  useEffect(() => {
+    if (activeTab === 'stickyWall') return;
+    const body = document.body;
+    body.addEventListener('touchstart', onSwipeStart);
+    body.addEventListener('touchmove', (e) => onSwipeLeft(e, () => setIsOpen(false)));
+    body.addEventListener('touchmove', (e) => onSwipeRight(e, () => setIsOpen(true)));
+  }, []);
+
   return (
     <>
       <aside
         className={
-          'fixed top-0 z-[100] flex h-full  w-full flex-col rounded-l-xl transition-[width,opacity,left] duration-500 lg:static ' +
+          'fixed top-0 z-[100] flex h-full bg-background-primary  sm:bg-background-secondary w-full flex-col lg:rounded-xl transition-[width,opacity,left] duration-500 lg:static ' +
           (isOpen
-            ? 'left-0 items-stretch bg-background-primary p-4 pr-1 sm:bg-background-secondary lg:w-[22%] '
-            : '-left-full items-center bg-background-primary p-0 lg:w-0  ')
+            ? 'left-0 items-stretch p-4 pr-1 sm:w-[300px] '
+            : '-left-full items-center p-0 lg:w-0  ')
         }
         ref={menu}
         id='menu'
@@ -47,7 +57,7 @@ export function Menu() {
               <MenuLists />
               <MenuTags />
             </div>
-            <div className='mt-auto pr-2 space-y-1'>
+            <div className='mt-auto space-y-1 pr-2'>
               <NavLink to='trash' className='menu_element  group  pt-3'>
                 <i className='fa-solid fa-trash-can text-text-tertiary'></i>
                 <span className='text-sm text-text-secondary transition-[font-weight] duration-100 group-hover:font-bold'>
@@ -76,10 +86,9 @@ export function Menu() {
       {isOpen ||
         createPortal(
           <button
-            className='fixed right-2 top-1/2 z-50 h-16 w-[6px] -translate-y-1/2 rounded-lg bg-text-tertiary lg:left-1'
+            className='fixed left-1 top-1/2 z-50 h-16 w-[6px] -translate-y-1/2 rounded-lg bg-text-tertiary lg:left-1'
             onClick={() => setIsOpen(true)}
-          >
-          </button>,
+          ></button>,
           document.body,
         )}
     </>

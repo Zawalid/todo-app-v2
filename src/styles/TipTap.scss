@@ -4,7 +4,6 @@
   --background-secondary: #f4f4f4;
   --background-tertiary: #ebebeb;
   --highlight-color: #c8ff2d;
-  --text-color: #444444;
 }
 .tiptap {
   > * + * {
@@ -115,6 +114,9 @@ mark {
   }
 }
 
+.tippy-box[data-theme~='custom'] {
+  background-color:  var(--text-secondary);
+}
 // Tooltip arrow
 .tippy-box[data-theme~='custom'][data-placement^='top'] > .tippy-arrow::before {
   border-top-color: var(--text-secondary);

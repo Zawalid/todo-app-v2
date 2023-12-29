@@ -3,7 +3,7 @@ import { SortTasks } from './SortTasks';
 
 export function TasksActions({ tasksLength, onClearAll }) {
   return (
-    <div className='mt-3 overflow-auto'>
+    <div className='mt-3  p-2'>
       <div className='mb-3 grid grid-cols-2  gap-3'>
         <FilterTasks />
         <button

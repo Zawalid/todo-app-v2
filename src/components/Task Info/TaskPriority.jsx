@@ -1,17 +1,51 @@
+import DropDown from '../Common/DropDown';
+
 export const TaskPriority = ({ taskPriority, setTaskPriority }) => {
+  const priorities = [
+    {
+      label: 'None',
+      value: 0,
+    },
+    {
+      label: 'Low',
+      value: 1,
+    },
+    {
+      label: 'Medium',
+      value: 2,
+    },
+    {
+      label: 'High',
+      value: 3,
+    },
+  ];
+
   return (
     <>
-      <label className='text-sm text-text-tertiary'>Priority</label>
-      <select
-        className='w-32 cursor-pointer rounded-lg border border-zinc-200  bg-background-secondary  p-2  text-sm text-text-secondary  focus:outline-none'
-        value={taskPriority}
-        onChange={(e) => setTaskPriority(+e.target.value)}
+      <label className='text-sm justify-self-start text-text-tertiary'>Priority</label>
+
+      <DropDown
+        toggler={
+          <DropDown.Toggler>
+            <span> {priorities.find((priority) => priority.value === +taskPriority).label} </span>
+            <i className='fa-solid fa-chevron-down text-xs'></i>
+          </DropDown.Toggler>
+        }
       >
-        <option value='0'>None</option>
-        <option value='1'>Low</option>
-        <option value='2'>Medium</option>
-        <option value='3'>High</option>
-      </select>
+        {priorities?.map((priority) => (
+          <DropDown.Button
+            key={priority.label}
+            onClick={() => setTaskPriority(priority.value)}
+            className={
+              taskPriority === priority.value
+                ? 'bg-background-secondary text-text-secondary'
+                : 'bg-background-primary text-text-tertiary'
+            }
+          >
+            <span>{priority.label}</span>
+          </DropDown.Button>
+        ))}
+      </DropDown>
     </>
   );
 };
