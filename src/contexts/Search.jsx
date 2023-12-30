@@ -29,7 +29,7 @@ const SearchProvider = ({ children }) => {
 
   const searchResults = searchSection.filter((result) =>
     `${result.title ?? ''} ${
-      result[currentSearchTab === 'stickyWall' ? 'content' : 'note'] ?? ''
+      result[currentSearchTab === 'sticky-wall' ? 'content' : 'note'] ?? ''
     } ${result.description ?? ''}}`
       .toLowerCase()
       .includes(searchQuery?.toLowerCase()),

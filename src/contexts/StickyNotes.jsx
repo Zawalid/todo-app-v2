@@ -79,48 +79,45 @@ function StickyNotesProvider({ children }) {
   }
 
   async function handleDeleteStickyNote(id, deletePermanently, noToast) {
-    const toastId = toast.promise(
-      handleDeleteElement(
+   const toastId = noToast ? null : toast.loading('Deleting note...',{
+    duration : 10000,
+   });
+    try {
+      await handleDeleteElement(
         id,
         STICKY_NOTES_COLLECTION_ID,
         deletePermanently,
         'stickyNotes',
         stickyNotes,
         setStickyNotes,
-      ),
-      {
-        loading: noToast ? null : 'Deleting note...',
-        success: () => {
-          if (noToast) return;
-          toast.dismiss(toastId);
-          toast.success('Note has been successfully deleted.', {
-            duration: 4000,
-            action: deletePermanently
-              ? null
-              : {
-                  label: 'Undo',
-                  onClick: async () => {
-                    await handleRestoreFromTrash('stickyNotes', id, true);
-                    await handleLoadElements(user, STICKY_NOTES_COLLECTION_ID, setStickyNotes);
-                  },
+      );
+      if (!noToast) {
+        toast.success('Note has been successfully deleted.', {
+          duration: 4000,
+          id: toastId,
+          action: deletePermanently
+            ? null
+            : {
+                label: 'Undo',
+                onClick: async () => {
+                  await handleRestoreFromTrash('stickyNotes', id, true);
+                  await handleLoadElements(user, STICKY_NOTES_COLLECTION_ID, setStickyNotes);
                 },
-          });
-        },
-        error: () => {
-          if (noToast) return;
-          toast.dismiss(toastId);
-          toast.error('Failed to delete the note .', {
-            duration: 4000,
-            action: {
-              label: 'Try again',
-              onClick: async () => {
-                await handleDeleteStickyNote(id, deletePermanently);
               },
-            },
-          });
+        });
+      }
+    } catch (error) {
+      toast.error('Failed to delete the note .', {
+        duration: 4000,
+        id: toastId,
+        action: {
+          label: 'Try again',
+          onClick: async () => {
+            await handleDeleteStickyNote(id, deletePermanently);
+          },
         },
-      },
-    );
+      });
+    }
   }
 
   return (

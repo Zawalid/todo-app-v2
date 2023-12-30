@@ -21,7 +21,7 @@ function App() {
       <Routes>
         <Route path='/' element={<HomePage />} />
         <Route path='app' element={<AppLayout />}>
-          {['all', 'today', 'stickyWall', 'search', 'trash', 'upcoming', ...listsTitles].map(
+          {['all', 'today', 'sticky-wall', 'search', 'trash', 'upcoming', ...listsTitles].map(
             (tab) => (
               <Route path={`${tab}`} element={<AppLayout />} key={tab} />
             ),

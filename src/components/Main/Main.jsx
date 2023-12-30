@@ -13,12 +13,27 @@ const StickyWall = lazy(() => import('./Sticky Wall/StickyWall'));
 const SearchResults = lazy(() => import('./Search/SearchResults'));
 const Trash = lazy(() => import('./Trash/Trash'));
 
-const skeletons = {
-  today: <TasksSkeleton number={6} />,
-  upcoming: <UpcomingSkeleton />,
-  stickyWall: <StickyWallSkeleton />,
-  search: <SpinnerLoader size='large' />,
-  trash: <TrashSkeleton />,
+const tabs = {
+  today: {
+    title: "Today's Tasks",
+    skeleton: <TasksSkeleton number={6} />,
+  },
+  upcoming: {
+    title: 'Upcoming Tasks',
+    skeleton: <UpcomingSkeleton />,
+  },
+  'sticky-wall': {
+    title: 'Sticky Wall',
+    skeleton: <StickyWallSkeleton />,
+  },
+  search: {
+    title: 'Search Results',
+    skeleton: <SpinnerLoader size='large' />,
+  },
+  trash: {
+    title: 'Trash',
+    skeleton: <TrashSkeleton />,
+  },
 };
 
 export function Main() {
@@ -34,15 +49,7 @@ export function Main() {
 
   const listId = lists?.find((list) => list.title === activeTab?.replace('%20', ' '))?.$id;
 
-  const titles = {
-    today: "Today's Tasks",
-    upcoming: 'Upcoming Tasks',
-    stickyWall: 'Sticky Wall',
-    search: 'Search Results',
-    trash: 'Trash',
-  };
-
-  const title = !activeTab ? 'All Tasks' : titles[activeTab] || activeTab.replace('%20', ' ');
+  const title = !activeTab ? 'All Tasks' : tabs[activeTab]?.title || activeTab.replace('%20', ' ');
 
   useEffect(() => {
     document.title = `I Do | ${title}`;
@@ -52,7 +59,7 @@ export function Main() {
     if (!activeTab) return tasks.length;
     if (activeTab === 'today') return todayTasks.length;
     if (activeTab === 'upcoming') return upcomingTasks.length;
-    if (activeTab === 'stickyWall') return stickyNotes.length;
+    if (activeTab === 'sticky-wall') return stickyNotes.length;
     if (activeTab === 'search') return searchResults.length;
     if (activeTab === 'trash') return trashLength;
     if (listId) return tasks.filter((task) => task.listId === listId).length;
@@ -81,16 +88,18 @@ export function Main() {
     >
       <Title title={title} count={count} />
       {isTasksLoading ? (
-        skeletons[activeTab] ? (
-          skeletons[activeTab]
+        tabs[activeTab]?.skeleton ? (
+          tabs[activeTab]?.skeleton
         ) : (
           <TasksSkeleton number={6} />
         )
       ) : (
         <Suspense
-          fallback={skeletons[activeTab] ? skeletons[activeTab] : <TasksSkeleton number={6} />}
+          fallback={
+            tabs[activeTab]?.skeleton ? tabs[activeTab]?.skeleton : <TasksSkeleton number={6} />
+          }
         >
-          {!['upcoming', 'stickyWall', 'search', 'trash'].includes(activeTab) ? (
+          {!['upcoming', 'sticky-wall', 'search', 'trash'].includes(activeTab) ? (
             <DisplayedTasks
               onAdd={(title) => {
                 const dueDate = activeTab === 'today' && new Date().toISOString().split('T')[0];
@@ -111,7 +120,7 @@ export function Main() {
             />
           ) : null}
           {activeTab === 'upcoming' && <Upcoming />}
-          {(activeTab === 'stickyWall' || isStickyNoteOpened) && <StickyWall />}
+          {(activeTab === 'sticky-wall' || isStickyNoteOpened) && <StickyWall />}
           {activeTab === 'search' && !isStickyNoteOpened && <SearchResults />}
           {activeTab === 'trash' && !isStickyNoteOpened && <Trash />}{' '}
         </Suspense>

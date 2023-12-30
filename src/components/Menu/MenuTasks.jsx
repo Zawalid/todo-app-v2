@@ -45,7 +45,7 @@ export function MenuTasks() {
           </NavLink>
         </li>
         <li>
-          <NavLink to='stickyWall' className='menu_element group'>
+          <NavLink to='sticky-wall' className='menu_element group'>
             <i className='fas fa-note-sticky text-text-tertiary'></i>
             <span className='text-sm text-text-secondary transition-[font-weight] duration-100 group-hover:font-bold'>
               Sticky Wall

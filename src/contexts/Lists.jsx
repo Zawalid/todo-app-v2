@@ -11,8 +11,6 @@ import { useUser } from '../hooks/useUser';
 const DATABASE_ID = appWriteConfig.databaseId;
 const LISTS_COLLECTION_ID = '65422c65a17f95378d53';
 
-
-
 export const ListsContext = createContext();
 
 function ListsProvider({ children }) {
@@ -73,12 +71,17 @@ function ListsProvider({ children }) {
 
     try {
       const res = await databases.updateDocument(DATABASE_ID, LISTS_COLLECTION_ID, id, updatedList);
+      console.log(res);
+      console.log({
+        ...list,
+        [property]: value,
+      });
       setLists((lists) => lists?.map((list) => (list.$id === id ? res : list)));
       toast.success('List has been successfully updated.', { id: toastId });
     } catch (error) {
       console.log(error);
       toast.error('Failed to update the list.', {
-            duration: 4000,
+        duration: 4000,
         action: {
           label: 'Try again',
           onClick: async () => {

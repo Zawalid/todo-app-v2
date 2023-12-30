@@ -35,17 +35,17 @@ export default function SearchResults() {
         <ul
           className={
             'mt-5 overflow-y-auto pr-3 ' +
-            (currentSearchTab === 'stickyWall'
+            (currentSearchTab === 'sticky-wall'
               ? 'grid grid-cols-[repeat(auto-fill,minmax(270px,1fr))] place-content-start gap-6'
               : 'space-y-2 ')
           }
           ref={parent}
         >
           {searchResults.map((result) => {
-            if (currentSearchTab !== 'stickyWall') {
+            if (currentSearchTab !== 'sticky-wall') {
               return <Task key={result.$id} task={result} />;
             }
-            if (currentSearchTab === 'stickyWall') {
+            if (currentSearchTab === 'sticky-wall') {
               return (
                 <StickyNote
                   key={result.$id}
