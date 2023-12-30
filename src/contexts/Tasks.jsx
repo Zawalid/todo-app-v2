@@ -3,12 +3,10 @@ import { ID } from 'appwrite';
 import { databases, appWriteConfig, setPermissions } from '../lib/appwrite/config';
 import { toast } from 'sonner';
 import { checkIfToday, checkIfTomorrow, isDateInCurrentWeek } from '../utils/Moment';
-import { remove$Properties } from '../utils/helpers';
 import { useDeleteElement, useLoadElements, useTrash, useUser } from '../hooks';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 const TASKS_COLLECTION_ID = appWriteConfig.tasksCollectionId;
-
 
 export const TasksContext = createContext();
 
@@ -76,10 +74,8 @@ function TasksProvider({ children }) {
   async function handleUpdateTask(id, task) {
     if (currentProcessedTask === id) return;
     setCurrentProcessedTask(id);
-    const updatedTask = { ...task };
-    remove$Properties(updatedTask);
     const toastId = toast.promise(
-      databases.updateDocument(DATABASE_ID, TASKS_COLLECTION_ID, id, updatedTask),
+      databases.updateDocument(DATABASE_ID, TASKS_COLLECTION_ID, id, task),
       {
         loading: 'Updating task...',
         success: (updatedTask) => {
@@ -108,7 +104,6 @@ function TasksProvider({ children }) {
       await databases.updateDocument(DATABASE_ID, TASKS_COLLECTION_ID, id, {
         isCompleted,
       });
-      
     } catch (error) {
       console.log(error);
     }

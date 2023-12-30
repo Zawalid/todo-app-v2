@@ -1,7 +1,6 @@
 import { createContext, useState } from 'react';
 import { databases, appWriteConfig, setPermissions } from '../lib/appwrite/config';
 import { ID } from 'appwrite';
-import { remove$Properties } from '../utils/helpers';
 import { useDeleteElement } from '../hooks/useDeleteElement';
 import { useLoadElements } from '../hooks/useLoadElements';
 import { toast } from 'sonner';
@@ -60,61 +59,31 @@ function ListsProvider({ children }) {
     if (currentProcessedList === id) return;
     setCurrentProcessedList(id);
 
-    const list = lists?.find((list) => list.$id === id);
-    const updatedList = {
-      ...list,
-      [property]: value,
-    };
-    remove$Properties(updatedList);
-
-    const toastId = toast.loading('Updating list...');
-
-    try {
-      const res = await databases.updateDocument(DATABASE_ID, LISTS_COLLECTION_ID, id, updatedList);
-      console.log(res);
-      console.log({
-        ...list,
+    const toastId = toast.promise(
+      databases.updateDocument(DATABASE_ID, LISTS_COLLECTION_ID, id, {
         [property]: value,
-      });
-      setLists((lists) => lists?.map((list) => (list.$id === id ? res : list)));
-      toast.success('List has been successfully updated.', { id: toastId });
-    } catch (error) {
-      console.log(error);
-      toast.error('Failed to update the list.', {
-        duration: 4000,
-        action: {
-          label: 'Try again',
-          onClick: async () => {
-            await handleUpdateList(id, property, value);
-          },
+      }),
+      {
+        loading: 'Updating list...',
+        success: (updatedList) => {
+          setLists((lists) => lists?.map((l) => (l.$id === id ? updatedList : l)));
+          return 'List has been successfully deleted.';
         },
-      });
-    } finally {
-      setCurrentProcessedList(null);
-    }
-
-    // const toastId = toast.promise(
-    //   databases.updateDocument(DATABASE_ID, LISTS_COLLECTION_ID, id, updatedList),
-    //   {
-    //     loading: 'Updating list...',
-    //     success: (updatedList) => {
-    //       setLists((lists) => lists?.map((list) => (list.$id === id ? updatedList : list)));
-    //       return 'List has been successfully updated.';
-    //     },
-    //     error: () => {
-    //       toast.dismiss(toastId);
-    //       toast.error('Failed to update the list.', {
-    //         action: {
-    //           label: 'Try again',
-    //           onClick: async () => {
-    //             await handleUpdateList(id, property, value);
-    //           },
-    //         },
-    //       });
-    //     },
-    //     finally: () => setCurrentProcessedList(null),
-    //   },
-    // );
+        error: () => {
+          toast.dismiss(toastId);
+          toast.error('Failed to update the list.', {
+            duration: 4000,
+            action: {
+              label: 'Try again',
+              onClick: () => {
+                handleUpdateList(id, property, value);
+              },
+            },
+          });
+        },
+        finally: () => setCurrentProcessedList(null),
+      },
+    );
   }
   async function handleRenameList(id, title) {
     await handleUpdateList(id, 'title', title);

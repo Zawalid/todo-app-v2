@@ -1,7 +1,7 @@
 export function MultipleDeletionsModal({ isOpen, onConfirm, onClose, selectedTasksNumber }) {
   return (
     <div
-      className={`fixed left-1/2 flex w-[90%] sm:w-[500px] -translate-x-1/2 items-center justify-between rounded-lg border bg-background-primary px-5 sm:px-8 py-3 sm:py-4 shadow-lg transition-[bottom] duration-500 ${
+      className={`fixed left-1/2 flex w-[90%] sm:w-[500px] -translate-x-1/2 items-center justify-between rounded-lg border bg-background-primary z-[999999] px-5 sm:px-8 py-3 sm:py-4 shadow-lg transition-[bottom] duration-500 ${
         isOpen ? 'bottom-10' : '-bottom-[100px]'
       }`}
     >

@@ -15,7 +15,7 @@ function UserProvider({ children }) {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [searchParams] = useSearchParams();
-  const { createTrash, initializeTrash } = useTrash();
+  const { createTrash } = useTrash();
   const navigate = useNavigate();
 
   // ------------- Authentication
@@ -73,7 +73,6 @@ function UserProvider({ children }) {
       setIsLoading(true);
       const session = await account.createEmailSession(email, password);
       if (!session) throw new Error('Something went wrong');
-      await initializeTrash(user);
     } catch (err) {
       toast.error(getErrorMessage(err));
     } finally {

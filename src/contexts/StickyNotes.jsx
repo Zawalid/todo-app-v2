@@ -1,7 +1,6 @@
 import { createContext, useState } from 'react';
 import { databases, appWriteConfig, setPermissions } from '../lib/appwrite/config';
 import { ID } from 'appwrite';
-import { remove$Properties } from '../utils/helpers';
 import { useDeleteElement } from '../hooks/useDeleteElement';
 import { useLoadElements } from '../hooks/useLoadElements';
 import { toast } from 'sonner';
@@ -50,16 +49,13 @@ function StickyNotesProvider({ children }) {
     }
   }
   async function handleUpdateStickyNote(id, note, setIsSaving) {
-    const updatedNote = { ...note };
-    remove$Properties(updatedNote);
-
     try {
       setIsSaving(true);
       const newNote = await databases.updateDocument(
         DATABASE_ID,
         STICKY_NOTES_COLLECTION_ID,
         id,
-        updatedNote,
+        note,
       );
       setStickyNotes((notes) => notes.map((note) => (note.$id === id ? newNote : note)));
       if (currentNote?.$id === id) setCurrentNote(newNote);
@@ -79,9 +75,11 @@ function StickyNotesProvider({ children }) {
   }
 
   async function handleDeleteStickyNote(id, deletePermanently, noToast) {
-   const toastId = noToast ? null : toast.loading('Deleting note...',{
-    duration : 10000,
-   });
+    const toastId = noToast
+      ? null
+      : toast.loading('Deleting note...', {
+          duration: 10000,
+        });
     try {
       await handleDeleteElement(
         id,

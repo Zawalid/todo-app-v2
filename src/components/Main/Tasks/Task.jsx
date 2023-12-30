@@ -103,7 +103,7 @@ export function Task({
             )}
             {subtasks?.length > 0 && (
               <div className='flex items-center gap-2'>
-                <span className='rounded-sm bg-background-tertiary px-3 py-[1px] text-xs font-semibold text-text-secondary'>
+                <span className='rounded-sm bg-text-secondary px-2 py-[1px] text-xs font-semibold text-background-primary'>
                   {subtasks.length}
                 </span>
                 <span className='text-xs font-semibold text-text-secondary'>Subtasks</span>

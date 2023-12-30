@@ -164,26 +164,7 @@
   }
 }
 
-.tippy-box[data-theme~='custom'] {
-  background-color: var(--text-secondary);
-}
-.tippy-box:is([data-theme~='bubbleMenu'], [data-theme~='custom']) {
-  padding: 0.5rem;
-}
 
-// Tooltip arrow
-.tippy-box[data-theme~='custom'][data-placement^='top'] > .tippy-arrow::before {
-  border-top-color: var(--text-secondary);
-}
-.tippy-box[data-theme~='custom'][data-placement^='bottom'] > .tippy-arrow::before {
-  border-bottom-color: var(--text-secondary);
-}
-.tippy-box[data-theme~='custom'][data-placement^='left'] > .tippy-arrow::before {
-  border-left-color: var(--text-secondary);
-}
-.tippy-box[data-theme~='custom'][data-placement^='right'] > .tippy-arrow::before {
-  border-right-color: var(--text-secondary);
-}
 
 // Bubble menu and link tooltip
 .tippy-box:is([data-theme~='bubbleMenu'], [data-theme~='addLink']) {

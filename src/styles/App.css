@@ -33,7 +33,7 @@ input[type='checkbox'].subtask {
   @apply h-4 w-4;
 }
 .color {
-  @apply h-5 w-5 cursor-pointer border transition-opacity duration-300 border-zinc-200 rounded-[3px] shadow-md;
+  @apply h-5 w-5 cursor-pointer rounded-[3px] border border-zinc-200 shadow-md transition-opacity duration-300;
 }
 .note_text {
   display: -webkit-box;
@@ -104,7 +104,27 @@ input[type='checkbox'].subtask {
   @apply p-0 !important;
 }
 
+.tippy-box[data-theme~='custom'] {
+  @apply bg-text-secondary;
+}
+.tippy-box:is([data-theme~='bubbleMenu'], [data-theme~='custom']) {
+  @apply p-2;
+}
+
+/* Tooltip arrow */
+.tippy-box[data-theme~='custom'][data-placement^='top'] > .tippy-arrow::before {
+  @apply border-t-text-secondary;
+}
+.tippy-box[data-theme~='custom'][data-placement^='bottom'] > .tippy-arrow::before {
+  @apply border-b-text-secondary;
+}
+.tippy-box[data-theme~='custom'][data-placement^='left'] > .tippy-arrow::before {
+  @apply border-l-text-secondary;
+}
+.tippy-box[data-theme~='custom'][data-placement^='right'] > .tippy-arrow::before {
+  @apply border-r-text-secondary;
+}
+
 [vaul-overlay][vaul-drawer-visible='true'] {
   opacity: 1 !important;
 }
-

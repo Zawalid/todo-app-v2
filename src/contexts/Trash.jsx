@@ -1,7 +1,6 @@
 import { createContext, useEffect, useMemo, useReducer, useState } from 'react';
 import { databases, appWriteConfig, setPermissions } from '../lib/appwrite/config';
 import { ID, Query } from 'appwrite';
-import { remove$Properties } from '../utils/helpers';
 import { toast } from 'sonner';
 
 const {
@@ -287,26 +286,29 @@ function TrashProvider({ children }) {
   // get trash from database
   async function handleGetTrash(user) {
     try {
-      if (!user) return;
+      if (!user) throw new Error('User not found');
       const response = await databases.listDocuments(DATABASE_ID, TRASH_COLLECTION_ID, [
         Query.equal('owner', [user?.$id]),
       ]);
-      const trash = { ...response.documents[0] };
+      const trash = response.documents[0];
+      const { tasks, lists, tags, stickyNotes } = trash;
       if (!trash.$id) throw new Error('Trash not found');
-      remove$Properties(trash);
-      delete trash.owner;
-      delete trash.lastCleanedUp;
       dispatch({
         type: 'LOAD_TRASH',
         payload: {
-          trash,
+          trash: {
+            tasks,
+            lists,
+            tags,
+            stickyNotes,
+          },
           $id: response.documents[0].$id,
           creationDate: response.documents[0].$createdAt,
           lastCleanedUp: response.documents[0].lastCleanedUp,
         },
       });
     } catch (error) {
-      return;
+      console.log(error);
     }
   }
   // cleanup trash if it passed 30 days since last cleanup or creation date (if no cleanup was done)
@@ -327,13 +329,10 @@ function TrashProvider({ children }) {
   // update trash in database
   useEffect(() => {
     if (isUpdated) {
-      const newTrash = { ...trash };
-      remove$Properties(newTrash);
-      databases.updateDocument(DATABASE_ID, TRASH_COLLECTION_ID, $id, newTrash);
+      databases.updateDocument(DATABASE_ID, TRASH_COLLECTION_ID, $id, trash);
       dispatch({ type: 'TRASH_UPDATED' });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [trash]);
+  }, [trash, isUpdated, $id]);
 
   async function initializeTrash(user) {
     await handleGetTrash(user);

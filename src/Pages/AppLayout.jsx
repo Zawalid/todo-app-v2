@@ -7,19 +7,20 @@ import { Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
 
 function AppLayout() {
-  const { checkIsUserAuthenticated } = useUser();
+  const { checkIsUserAuthenticated, user } = useUser();
   const { handleFetchAllElements, handleClearAllElements } = useFetchAllElements();
-  const { handleGetTrash } = useTrash();
+  const { initializeTrash } = useTrash();
 
   useEffect(() => {
+    const fetch = () => {
+      handleFetchAllElements();
+      initializeTrash(user);
+    };
     const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
-        handleFetchAllElements();
-        handleGetTrash();
-      }
+      if (document.visibilityState === 'visible') fetch();
     };
     if (checkIsUserAuthenticated()) {
-      handleFetchAllElements();
+      fetch();
       document.addEventListener('visibilitychange', handleVisibilityChange);
     }
     return () => {
@@ -27,7 +28,7 @@ function AppLayout() {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [user]);
 
   return (
     <>

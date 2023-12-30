@@ -1,4 +1,4 @@
-import { useEffect,  useState } from 'react';
+import { useEffect, useState } from 'react';
 import { TaskTitleAndNote } from './TaskTitleAndNote';
 import { TaskLists } from './TaskLists';
 import { TaskDueDate } from './TaskDueDate';
@@ -114,12 +114,11 @@ export function TaskInfo() {
   function handleSaveChanges() {
     if (isChanged) {
       const editedTask = {
-        ...currentTask,
-        title: taskTitle.trim() ? taskTitle : 'Untitled Task',
+        title: taskTitle.trim() ? taskTitle : 'Untitled',
         note: taskNote,
         listId: taskListId,
         dueDate: taskDueDate,
-        subtasks: taskSubtasks.map((el) => JSON.stringify(el)), //cause appWrite takes only stings
+        subtasks: taskSubtasks.map((el) => JSON.stringify(el)),
         tagsIds: taskTagsIds,
         priority: taskPriority,
       };
