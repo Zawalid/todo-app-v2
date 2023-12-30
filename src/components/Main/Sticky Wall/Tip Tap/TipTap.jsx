@@ -58,7 +58,7 @@ const extensions = [
   }),
 ];
 
-export default function TipTap({ onUpdateContent, content, creationDate }) {
+export default function TipTap({ onUpdateContent, content, creationDate,isSaving }) {
   const editor = useEditor({
     extensions,
     content,
@@ -90,7 +90,7 @@ export default function TipTap({ onUpdateContent, content, creationDate }) {
         </BubbleMenu>
       )}
       <EditorContent editor={editor} />
-      <Footer editor={editor} creationDate={creationDate} />
+      <Footer editor={editor} creationDate={creationDate} isSaving={isSaving} />
     </div>
   );
 }

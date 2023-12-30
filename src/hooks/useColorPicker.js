@@ -5,6 +5,8 @@ export function useColorPicker(onChange) {
 
   useEffect(() => {
     function change(e) {
+      div.querySelectorAll('.color').forEach((c) => c.classList.add('opacity-70'));
+      e.target.classList.remove('opacity-70')
       const color = e.target.dataset.color;
       color && onChange(color);
     }

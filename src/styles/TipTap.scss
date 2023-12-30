@@ -14,6 +14,7 @@
   [contenteditable='true'] {
     background-color: var(--background-primary);
   }
+
   div:has(> .ProseMirror) {
     margin: 0;
     overflow: auto;
@@ -49,80 +50,125 @@
       text-decoration: underline;
     }
   }
-}
-code {
-  background-color: rgba(#616161, 0.1);
-  border-radius: 0.25em;
-  box-decoration-break: clone;
-  color: #616161;
-  font-size: 0.9rem;
-  padding: 0.25em;
-}
-pre {
-  background: #0d0d0d;
-  border-radius: 0.5rem;
-  color: #fff;
-  font-family: 'JetBrainsMono', monospace;
-  padding: 0.75rem 1rem;
 
-  code {
-    background: none;
-    color: inherit;
-    font-size: 0.8rem;
+  ul[data-type='taskList'] {
+    list-style: none;
     padding: 0;
   }
-}
-img {
-  max-width: 100%;
-  height: auto;
-}
-
-blockquote {
-  margin: revert;
-  padding-left: 1rem;
-  border-left: 2px solid #0d0d0d1a;
-}
-hr {
-  border: none;
-  border-top: 2px solid rgba(13, 13, 13, 0.1);
-  margin: 2rem 0;
-}
-mark {
-  background-color: var(--highlight-color);
-  border-radius: 0.25em;
-  box-decoration-break: clone;
-  padding: 0.125em 0;
-}
-
-.is-active {
-  width: 2rem;
-  border-radius: 0.25rem;
-  background-color: var(--text-secondary);
-  padding: 0.25rem;
-  color: white;
-}
-.not-active {
-  width: 2rem;
-  border-radius: 0.25rem;
-  background-color: var(--background-tertiary);
-  padding: 0.25rem;
-  color: var(--text-tertiary);
-  transition: color 0.3s;
-  &:hover {
-    background-color: var(--background-secondary);
+  ul[data-type='taskList'] li {
+    display: flex;
+    align-items: center;
   }
-  &:disabled {
-    cursor: not-allowed;
-    background-color: #f5f5f5;
-    color: #cacaca;
+  ul[data-type='taskList'] li > label {
+    display: grid;
+    place-items: center;
+    margin-right: 0.5rem;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+  }
+  ul[data-type='taskList'] li > label input {
+    width: 1rem;
+    height: 1rem;
+    margin: 0;
+    border: 1px solid var(--text-secondary);
+    border-radius: 0.3rem;
+    background: white;
+    accent-color: var(--text-secondary);
+    appearance: auto;
+  }
+
+  code {
+    background-color: rgba(#616161, 0.1);
+    border-radius: 0.25em;
+    box-decoration-break: clone;
+    color: #616161;
+    font-size: 0.9rem;
+    padding: 0.25em;
+  }
+  pre {
+    background: #0d0d0d;
+    border-radius: 0.5rem;
+    color: #fff;
+    font-family: 'JetBrainsMono', monospace;
+    padding: 0.75rem 1rem;
+
+    code {
+      background: none;
+      color: inherit;
+      font-size: 0.8rem;
+      padding: 0;
+    }
+  }
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  blockquote {
+    margin: revert;
+    padding-left: 1rem;
+    border-left: 2px solid #0d0d0d1a;
+  }
+  hr {
+    border: none;
+    border-top: 2px solid rgba(13, 13, 13, 0.1);
+    margin: 2rem 0;
+  }
+  mark {
+    background-color: var(--highlight-color);
+    border-radius: 0.25em;
+    box-decoration-break: clone;
+    padding: 0.125em 0;
+  }
+
+  .is-active {
+    width: 2rem;
+    border-radius: 0.25rem;
+    background-color: var(--text-secondary);
+    padding: 0.25rem;
+    color: white;
+  }
+  .not-active {
+    width: 2rem;
+    border-radius: 0.25rem;
+    background-color: var(--background-tertiary);
+    padding: 0.25rem;
+    color: var(--text-tertiary);
+    transition: color 0.3s;
+    &:hover {
+      background-color: var(--background-secondary);
+    }
+    &:disabled {
+      cursor: not-allowed;
+      background-color: #f5f5f5;
+      color: #cacaca;
+    }
+  }
+
+  .colorHighlight {
+    white-space: nowrap;
+
+    &::before {
+      background-color: var(--color);
+      border: 1px solid rgba(128, 128, 128, 0.3);
+      border-radius: 2px;
+      content: ' ';
+      display: inline-block;
+      height: 1em;
+      margin-bottom: 0.15em;
+      margin-right: 0.1em;
+      vertical-align: middle;
+      width: 1em;
+    }
   }
 }
 
 .tippy-box[data-theme~='custom'] {
-  background-color:  var(--text-secondary);
+  background-color: var(--text-secondary);
 }
-.tippy-box:is([data-theme~='bubbleMenu'],[data-theme~='custom']) {
-  padding : 0.5rem ;
+.tippy-box:is([data-theme~='bubbleMenu'], [data-theme~='custom']) {
+  padding: 0.5rem;
 }
 
 // Tooltip arrow
@@ -149,23 +195,4 @@ mark {
   -moz-border-radius: 0.5rem;
   -ms-border-radius: 0.5rem;
   -o-border-radius: 0.5rem;
-}
-
-/* Color swatches */
-.colorHighlight {
-  white-space: nowrap;
-
-  &::before {
-    background-color: var(--color);
-    border: 1px solid rgba(128, 128, 128, 0.3);
-    border-radius: 2px;
-    content: ' ';
-    display: inline-block;
-    height: 1em;
-    margin-bottom: 0.15em;
-    margin-right: 0.1em;
-    vertical-align: middle;
-    width: 1em;
-  }
-  
 }

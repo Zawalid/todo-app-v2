@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import TipTap from '../Tip Tap/TipTap';
 import { BackgroundColorPicker } from './BackgroundColorPicker';
 import { TextColorPicker } from './TextColorPicker';
@@ -11,73 +11,44 @@ export function StickyNoteEditor({ currentNote, onBack }) {
   const { stickyNotes, handleAddStickyNote, handleUpdateStickyNote, handleDeleteStickyNote } =
     useStickyNotes();
 
-  const [title, setTitle] = useState(currentNote.title);
-  const [content, setContent] = useState(currentNote.content);
-  const [description, setDescription] = useState(currentNote.description);
-  const [textColor, setTextColor] = useState(currentNote.textColor);
-  const [bgColor, setBgColor] = useState(currentNote.bgColor);
-  const [isChanged, setIsChanged] = useState(false);
+  const [title, setTitle] = useState(currentNote?.title);
+  const [content, setContent] = useState(currentNote?.content);
+  const [description, setDescription] = useState(currentNote?.description);
+  const [textColor, setTextColor] = useState(currentNote?.textColor);
+  const [bgColor, setBgColor] = useState(currentNote?.bgColor);
   const [isHeaderOpen, setIsHeaderOpen] = useState(true);
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [deletePermanently, setDeletePermanently] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const exists = useMemo(
-    () => stickyNotes.find((note) => note.$id === currentNote.$id),
+    () => stickyNotes.find((note) => note.$id === currentNote?.$id),
     [stickyNotes, currentNote],
   );
 
-  useEffect(() => {
-    currentNote.title !== title ||
-    (currentNote.content !== content && exists) ||
-    (currentNote.content !== content && !exists && !isElementEmpty(content)) ||
-    currentNote.description !== description ||
-    currentNote.textColor !== textColor ||
-    currentNote.bgColor !== bgColor
-      ? setIsChanged(true)
-      : setIsChanged(false);
-  }, [currentNote, title, content, description, exists, textColor, bgColor]);
-
-  const handleAddNote = useCallback(() => {
-    handleAddStickyNote({
-      title: !title || title.trim() === '' ? 'Untitled' : title,
-      content,
-      description,
-      bgColor,
-      textColor,
-    });
-  }, [title, content, description, bgColor, textColor, handleAddStickyNote]);
-
-  const handleUpdateNote = useCallback(() => {
-    handleUpdateStickyNote(currentNote.$id, {
-      title: title || 'Untitled',
-      content,
-      description,
-      bgColor,
-      textColor,
-    });
-  }, [title, content, description, bgColor, textColor, handleUpdateStickyNote, currentNote]);
-
-  const handleSave = useCallback(() => {
-    if (isChanged) return console.log('changed');
-    if (!exists) return console.log('new');
-    // if (!title && isElementEmpty(content) && !description) return;
-    // isChanged && exists && handleUpdateNote();
-    // exists || handleAddNote();
-    // }, [title, content, description, isChanged, exists, handleUpdateNote, handleAddNote]);
-  }, [isChanged, exists]);
-
-  useEffect(() => {
-  handleSave();
-  }, [handleSave]);
-
-  function handleDeleteNote(deletePermanently) {
-    handleDeleteStickyNote(currentNote.$id, deletePermanently);
-    onBack();
+  function handleUpdateNote(field, value) {
+    if (!exists) {
+      handleAddStickyNote({
+        title: !title || title.trim() === '' ? 'Untitled' : title,
+        content,
+        description,
+        bgColor,
+        textColor,
+      });
+      return;
+    }
+    if (currentNote[field] === value) return;
+    handleUpdateStickyNote(
+      currentNote?.$id,
+      {
+        [field]: value,
+      },
+      setIsSaving,
+    );
   }
-  function isElementEmpty(htmlElement) {
-    const tempElement = document.createElement('div');
-    tempElement.innerHTML = htmlElement;
-    return !tempElement.textContent.trim();
+  function handleDeleteNote(deletePermanently, noToast) {
+    handleDeleteStickyNote(currentNote?.$id, deletePermanently, noToast);
+    onBack();
   }
 
   return (
@@ -90,7 +61,12 @@ export function StickyNoteEditor({ currentNote, onBack }) {
             color: textColor,
           }}
         >
-          <button onClick={onBack}>
+          <button
+            onClick={() => {
+              if (!title && isElementEmpty(content) && !description) handleDeleteNote(true, true);
+              onBack();
+            }}
+          >
             <i className='fa-solid fa-chevron-left text-lg'></i>
           </button>
 
@@ -105,11 +81,21 @@ export function StickyNoteEditor({ currentNote, onBack }) {
             >
               <div className='space-y-2  py-1'>
                 <span className='text-sm text-text-tertiary'>Background Color</span>
-                <BackgroundColorPicker onChange={(color) => setBgColor(color)} />
+                <BackgroundColorPicker
+                  onChange={(color) => {
+                    setBgColor(color);
+                    handleUpdateNote('bgColor', color);
+                  }}
+                />
               </div>
               <div className='mt-1 space-y-2 border-t border-zinc-200 py-2'>
                 <span className='text-sm text-text-tertiary'>Text Color</span>
-                <TextColorPicker onChange={(color) => setTextColor(color)} />
+                <TextColorPicker
+                  onChange={(color) => {
+                    setTextColor(color);
+                    handleUpdateNote('textColor', color);
+                  }}
+                />
               </div>
             </DropDown>
 
@@ -143,31 +129,47 @@ export function StickyNoteEditor({ currentNote, onBack }) {
           <StickyNoteHeader
             isOpen={isHeaderOpen}
             title={title}
-            setTitle={setTitle}
+            setTitle={(title) => {
+              handleUpdateNote('title', title || 'Untitled');
+              setTitle(title);
+            }}
             description={description}
-            setDescription={setDescription}
+            setDescription={(description) => {
+              handleUpdateNote('description', description);
+              setDescription(description);
+            }}
           />
           <TipTap
-            onUpdateContent={setContent}
+            onUpdateContent={(content) => {
+              handleUpdateNote('content', content);
+              setContent(content);
+            }}
             content={content}
-            creationDate={currentNote.$createdAt}
+            creationDate={currentNote?.$createdAt}
+            isSaving={isSaving}
           />
         </div>
       </div>
       {isConfirmationModalOpen && (
         <ConfirmationModal
-          sentence='Are you sure you want to delete this sticky note?'
+          sentence='Are you sure you want to delete this note?'
           confirmText='Delete'
           onConfirm={() => {
             handleDeleteNote(deletePermanently);
             setIsConfirmationModalOpen(false);
           }}
           onCancel={() => setIsConfirmationModalOpen(false)}
-          element='Sticky Note'
+          element='Note'
           checked={deletePermanently}
           setChecked={setDeletePermanently}
         />
       )}
     </>
   );
+}
+
+function isElementEmpty(htmlElement) {
+  const tempElement = document.createElement('div');
+  tempElement.innerHTML = htmlElement;
+  return !tempElement.textContent.trim();
 }

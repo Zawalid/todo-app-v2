@@ -24,8 +24,8 @@ function StickyNotesProvider({ children }) {
   const { user } = useUser();
 
   async function handleAddStickyNote(note) {
-    const toastId = toast.promise(
-      databases.createDocument(
+    try {
+      const newNote = await databases.createDocument(
         DATABASE_ID,
         STICKY_NOTES_COLLECTION_ID,
         ID.unique(),
@@ -34,55 +34,51 @@ function StickyNotesProvider({ children }) {
           owner: user.accountID,
         },
         setPermissions(user?.$id),
-      ),
-      {
-        loading: 'Adding sticky note...',
-        success: (note) => {
-          setStickyNotes((notes) => [...notes, note]);
-          return 'Sticky note has been successfully added.';
+      );
+      setStickyNotes((notes) => [...notes, newNote]);
+      setCurrentNote(newNote);
+    } catch (error) {
+      toast.error('Failed to add the note.', {
+        duration: 4000,
+        action: {
+          label: 'Try again',
+          onClick: async () => {
+            await handleAddStickyNote(note);
+          },
         },
-        error: () => {
-          toast.dismiss(toastId);
-          toast.error('Failed to add the sticky note.', {
-            duration: 4000,
-            action: {
-              label: 'Try again',
-              onClick: async () => {
-                await handleAddStickyNote(note);
-              },
-            },
-          });
-        },
-      },
-    );
+      });
+    }
   }
-  async function handleUpdateStickyNote(id, note) {
+  async function handleUpdateStickyNote(id, note, setIsSaving) {
     const updatedNote = { ...note };
     remove$Properties(updatedNote);
-    const toastId = toast.promise(
-      databases.updateDocument(DATABASE_ID, STICKY_NOTES_COLLECTION_ID, id, updatedNote),
-      {
-        loading: 'Updating sticky note ...',
-        success: (updatedNote) => {
-          setStickyNotes((notes) => notes.map((note) => (note.$id === id ? updatedNote : note)));
-          return 'Sticky note has been successfully updated.';
+
+    try {
+      setIsSaving(true);
+      const newNote = await databases.updateDocument(
+        DATABASE_ID,
+        STICKY_NOTES_COLLECTION_ID,
+        id,
+        updatedNote,
+      );
+      setStickyNotes((notes) => notes.map((note) => (note.$id === id ? newNote : note)));
+      if (currentNote?.$id === id) setCurrentNote(newNote);
+    } catch (error) {
+      toast.error('Failed to update the note.', {
+        duration: 4000,
+        action: {
+          label: 'Try again',
+          onClick: async () => {
+            await handleUpdateStickyNote(id, note);
+          },
         },
-        error: () => {
-          toast.dismiss(toastId);
-          toast.error('Failed to update the sticky note.', {
-            duration: 4000,
-            action: {
-              label: 'Try again',
-              onClick: async () => {
-                await handleUpdateStickyNote(id, note);
-              },
-            },
-          });
-        },
-      },
-    );
+      });
+    } finally {
+      setIsSaving(false);
+    }
   }
-  async function handleDeleteStickyNote(id, deletePermanently) {
+
+  async function handleDeleteStickyNote(id, deletePermanently, noToast) {
     const toastId = toast.promise(
       handleDeleteElement(
         id,
@@ -93,10 +89,11 @@ function StickyNotesProvider({ children }) {
         setStickyNotes,
       ),
       {
-        loading: 'Deleting sticky note...',
+        loading: noToast ? null : 'Deleting note...',
         success: () => {
+          if (noToast) return;
           toast.dismiss(toastId);
-          toast.success('Sticky note  has been successfully deleted.', {
+          toast.success('Note has been successfully deleted.', {
             duration: 4000,
             action: deletePermanently
               ? null
@@ -110,8 +107,9 @@ function StickyNotesProvider({ children }) {
           });
         },
         error: () => {
+          if (noToast) return;
           toast.dismiss(toastId);
-          toast.error('Failed to delete the sticky note .', {
+          toast.error('Failed to delete the note .', {
             duration: 4000,
             action: {
               label: 'Try again',
