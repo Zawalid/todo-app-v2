@@ -5,6 +5,7 @@
 
 * {
   box-sizing: border-box;
+  @apply transition-[height] duration-500
 }
 body {
   font-family: 'Lexend Deca', sans-serif;

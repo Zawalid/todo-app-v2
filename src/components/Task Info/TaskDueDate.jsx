@@ -1,7 +1,6 @@
-import Tippy from '@tippyjs/react';
 import { useRef, useState } from 'react';
 import { isTaskOverdue } from '../../utils/Moment';
-import DropDown from '../Common/DropDown';
+import { DropDown } from '../Common/DropDown';
 
 export function TaskDueDate({ taskDueDate, setTaskDueDate }) {
   const [isOpen, setIsOpen] = useState();
@@ -28,6 +27,14 @@ export function TaskDueDate({ taskDueDate, setTaskDueDate }) {
     <>
       <label className='justify-self-start text-sm text-text-tertiary'>Due date</label>
       <div className='flex items-center gap-2'>
+        {taskDueDate && (
+          <button
+            className={isOverDue ? 'text-text-error' : 'text-text-secondary'}
+            onClick={() => setTaskDueDate('')}
+          >
+            <i className='fa-solid fa-xmark'></i>
+          </button>
+        )}
         <DropDown
           toggler={
             <div
@@ -49,7 +56,7 @@ export function TaskDueDate({ taskDueDate, setTaskDueDate }) {
               <i className='fa-solid fa-calendar-days  text-sm'></i>
             </div>
           }
-          options={{ className: 'w-52', placement: 'bottom' }}
+          options={{ className: 'w-52' }}
           shouldCloseOnClick={false}
         >
           <DropDown.Button onClick={() => handleAddDueDate('Today')}>
@@ -67,43 +74,29 @@ export function TaskDueDate({ taskDueDate, setTaskDueDate }) {
             </span>{' '}
           </DropDown.Button>
 
-          <Tippy
-            content={
-              <input
-                type='date'
-                className='w-full bg-transparent p-2 text-text-primary focus:outline-none'
-                value={date}
-                onChange={(e) => {
-                  setDate(e.target.value);
-                  handleAddDueDate(e.target.value);
-                }}
-              />
-            }
-            theme='light'
-            trigger='click'
-            interactive={true}
-            arrow={false}
-            placement='bottom'
-            className='w-52 border border-zinc-200 shadow-md'
-          >
-            <div role='button' className='w-full'>
+          <DropDown
+            toggler={
               <DropDown.Button>
                 <i className='fa-solid fa-calendar  text-text-tertiary'></i>
                 <span className='flex-1 text-start text-text-primary '>Pick a date</span>
                 <i className='fa-solid fa-chevron-down text-text-tertiary transition-transform duration-300'></i>
               </DropDown.Button>
-            </div>
-          </Tippy>
-        </DropDown>
-
-        {taskDueDate && (
-          <button
-            className={isOverDue ? 'text-text-error' : 'text-text-secondary'}
-            onClick={() => setTaskDueDate('')}
+            }
+            options={{ className: 'w-52', placement: 'bottom' }}
+            togglerClassName='w-full'
+            shouldCloseOnClick={false}
           >
-            <i className='fa-solid fa-xmark'></i>
-          </button>
-        )}
+            <input
+              type='date'
+              className='w-full bg-transparent p-2 text-text-primary focus:outline-none'
+              value={date}
+              onChange={(e) => {
+                setDate(e.target.value);
+                handleAddDueDate(e.target.value);
+              }}
+            />
+          </DropDown>
+        </DropDown>
       </div>
     </>
   );

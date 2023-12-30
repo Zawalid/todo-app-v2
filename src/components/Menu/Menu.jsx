@@ -24,7 +24,6 @@ export function Menu() {
   }, [activeTab]);
 
   useEffect(() => {
-    if (activeTab === 'stickyWall') return;
     const body = document.body;
     body.addEventListener('touchstart', onSwipeStart);
     body.addEventListener('touchmove', (e) => onSwipeLeft(e, () => setIsOpen(false)));
@@ -35,7 +34,7 @@ export function Menu() {
     <>
       <aside
         className={
-          'fixed top-0 z-[100] flex h-full bg-background-primary  sm:bg-background-secondary w-full flex-col lg:rounded-xl transition-[width,opacity,left] duration-500 lg:static ' +
+          'fixed top-0 z-[99999] flex h-full w-full  flex-col bg-background-primary transition-[width,opacity,left] duration-500 sm:bg-background-secondary lg:static lg:rounded-xl ' +
           (isOpen
             ? 'left-0 items-stretch p-4 pr-1 sm:w-[300px] '
             : '-left-full items-center p-0 lg:w-0  ')
@@ -86,7 +85,7 @@ export function Menu() {
       {isOpen ||
         createPortal(
           <button
-            className='fixed left-1 top-1/2 z-50 h-16 w-[6px] -translate-y-1/2 rounded-lg bg-text-tertiary lg:left-1'
+            className='absolute left-1 top-1/2 z-50 h-16 w-[6px] -translate-y-1/2 rounded-lg bg-text-tertiary lg:left-1'
             onClick={() => setIsOpen(true)}
           ></button>,
           document.body,

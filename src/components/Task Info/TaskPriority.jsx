@@ -1,4 +1,4 @@
-import DropDown from '../Common/DropDown';
+import { DropDown }from '../Common/DropDown';
 
 export const TaskPriority = ({ taskPriority, setTaskPriority }) => {
   const priorities = [

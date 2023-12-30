@@ -1,30 +1,12 @@
 import { Colors } from '../../../Common/Colors';
-import CustomTippy from '../../../Common/CustomTippy';
-import { useColorPicker } from './useColorPicker';
+import { useColorPicker } from '../../../../hooks/useColorPicker';
 
 export function BackgroundColorPicker({ onChange }) {
-  const { isOpen, setIsOpen, colorsDiv } = useColorPicker(onChange);
+  const colorsDiv = useColorPicker(onChange);
 
   return (
-    <>
-      <CustomTippy content='Change background color'>
-        <button>
-          <i
-            className={'fas cursor-pointer ' + (isOpen ? 'fa-chevron-right' : 'fa-chevron-left')}
-            onClick={() => setIsOpen(!isOpen)}
-          ></i>
-        </button>
-      </CustomTippy>
-
-      <div
-        className={
-          'absolute flex h-full items-center justify-center transition-[right] duration-500 ' +
-          (isOpen ? 'right-8' : '-right-72')
-        }
-        ref={colorsDiv}
-      >
-        <Colors customClass='h-full rounded-none' />
-      </div>
-    </>
+    <div className='flex h-auto flex-wrap gap-2 ' ref={colorsDiv}>
+      <Colors customClass='w-6 h-6' />
+    </div>
   );
 }

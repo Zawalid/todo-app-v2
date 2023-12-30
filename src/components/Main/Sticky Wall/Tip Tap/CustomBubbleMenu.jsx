@@ -4,64 +4,64 @@ export function CustomBubbleMenu({ editor }) {
   return (
     <div className='flex items-center gap-2 '>
       <button
-        onClick={() => editor.chain().focus().toggleBold().run()}
-        disabled={!editor.can().chain().focus().toggleBold().run()}
+        onClick={() => editor.chain().toggleBold().run()}
+        disabled={!editor.can().chain().toggleBold().run()}
         className={editor.isActive('bold') ? 'is-active' : 'not-active '}
       >
         <i className='fa-solid fa-bold'></i>
       </button>
       <button
-        onClick={() => editor.chain().focus().toggleItalic().run()}
-        disabled={!editor.can().chain().focus().toggleItalic().run()}
+        onClick={() => editor.chain().toggleItalic().run()}
+        disabled={!editor.can().chain().toggleItalic().run()}
         className={editor.isActive('italic') ? 'is-active' : 'not-active'}
       >
         <i className='fa-solid fa-italic'></i>
       </button>
       <button
-        onClick={() => editor.chain().focus().toggleStrike().run()}
-        disabled={!editor.can().chain().focus().toggleStrike().run()}
+        onClick={() => editor.chain().toggleStrike().run()}
+        disabled={!editor.can().chain().toggleStrike().run()}
         className={editor.isActive('strike') ? 'is-active' : 'not-active'}
       >
         <i className='fa-solid fa-strikethrough'></i>
       </button>
       <button
-        onClick={() => editor.chain().focus().toggleUnderline().run()}
-        disabled={!editor.can().chain().focus().toggleUnderline().run()}
+        onClick={() => editor.chain().toggleUnderline().run()}
+        disabled={!editor.can().chain().toggleUnderline().run()}
         className={editor.isActive('underline') ? 'is-active' : 'not-active'}
       >
         <i className='fa-solid fa-underline'></i>
       </button>
       <button
-        onClick={() => editor.chain().focus().toggleCode().run()}
-        disabled={!editor.can().chain().focus().toggleCode().run()}
+        onClick={() => editor.chain().toggleCode().run()}
+        disabled={!editor.can().chain().toggleCode().run()}
         className={editor.isActive('code') ? 'is-active' : 'not-active'}
       >
         <i className='fa-solid fa-code'></i>
       </button>
       <button
-        onClick={() => editor.chain().focus().toggleHighlight({ color: highlightColor }).run()}
-        disabled={!editor.can().chain().focus().toggleHighlight().run()}
+        onClick={() => editor.chain().toggleHighlight({ color: highlightColor }).run()}
+        disabled={!editor.can().chain().toggleHighlight().run()}
         className={editor.isActive('highlight') ? 'is-active' : 'not-active'}
       >
         <i className='fa-solid fa-highlighter'></i>
       </button>
       <button
-        onClick={() => editor.chain().focus().setColor(textColor).run()}
-        disabled={!editor.can().chain().focus().setColor(textColor).run()}
+        onClick={() => editor.chain().setColor(textColor).run()}
+        disabled={!editor.can().chain().setColor(textColor).run()}
         className='not-active'
       >
         <i className='fa-solid fa-paintbrush'></i>
       </button>
       <button
-        onClick={() => editor.chain().focus().toggleSuperscript().run()}
-        disabled={!editor.can().chain().focus().toggleSuperscript().run()}
+        onClick={() => editor.chain().toggleSuperscript().run()}
+        disabled={!editor.can().chain().toggleSuperscript().run()}
         className={editor.isActive('superscript') ? 'is-active' : 'not-active'}
       >
         <i className='fa-solid fa-superscript'></i>
       </button>
       <button
-        onClick={() => editor.chain().focus().toggleSubscript().run()}
-        disabled={!editor.can().chain().focus().toggleSubscript().run()}
+        onClick={() => editor.chain().toggleSubscript().run()}
+        disabled={!editor.can().chain().toggleSubscript().run()}
         className={editor.isActive('subscript') ? 'is-active' : 'not-active'}
       >
         <i className='fa-solid fa-subscript'></i>

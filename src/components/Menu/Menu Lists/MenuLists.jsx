@@ -8,6 +8,7 @@ import { useAutoAnimate } from '@formkit/auto-animate/react';
 export function MenuLists() {
   const { lists, isListsLoading } = useLists();
   const [isAddNewListOpen, setIsAddNewListOpen] = useState(false);
+  const [currentOpenedList, setCurrentOpenedList] = useState(null);
   const addNewListContainer = useRef(null);
   const addNewListToggler = useRef(null);
   const [parent] = useAutoAnimate({
@@ -42,7 +43,7 @@ export function MenuLists() {
           ref={parent}
           >
             {lists?.map((list) => (
-              <List key={list.$id} list={list} />
+              <List key={list.$id} list={list} currentOpenedList={currentOpenedList} setCurrentOpenedList={setCurrentOpenedList} />
             ))}
           </ul>
           <button

@@ -10,12 +10,11 @@ export function StickyNote({ stickyNote, adder, onClick }) {
         color: stickyNote.textColor,
       }}
     >
-      {adder && (
+      {adder ? (
         <button onClick={onClick}>
           <i className='fas fa-plus cursor-pointer text-5xl text-text-primary'></i>
         </button>
-      )}
-      {!adder && (
+      ) : (
         <>
           <h2 className='mb-3 text-2xl font-bold'>{stickyNote.title}</h2>
           <p

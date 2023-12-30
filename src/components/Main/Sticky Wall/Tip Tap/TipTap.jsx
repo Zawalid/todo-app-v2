@@ -18,6 +18,8 @@ import { Footer } from './Footer';
 import { CustomBubbleMenu } from './CustomBubbleMenu';
 
 import '../../../../styles/TipTap.scss';
+import TaskItem from '@tiptap/extension-task-item';
+import TaskList from '@tiptap/extension-task-list';
 
 const extensions = [
   Color.configure({ types: [TextStyle.name, ListItem.name] }),
@@ -50,6 +52,10 @@ const extensions = [
     autolink: false,
   }),
   ColorHighlighter,
+  TaskList,
+  TaskItem.configure({
+    nested: true,
+  }),
 ];
 
 export default function TipTap({ onUpdateContent, content, creationDate }) {

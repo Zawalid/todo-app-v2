@@ -1,83 +1,24 @@
-import { useState } from 'react';
-import CustomTippy from '../../../Common/CustomTippy';
-import { ConfirmationModal } from '../../../Common/ConfirmationModal';
+import { InputField } from '../../../Common/InputField';
 
-export function StickyNoteHeader({
-  title,
-  setTitle,
-  description,
-  setDescription,
-  onBack,
-  onSave,
-  onDelete,
-  isChanged,
-}) {
-  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
-  const [deletePermanently, setDeletePermanently] = useState(false);
+export function StickyNoteHeader({ isOpen, title, setTitle, description, setDescription }) {
   return (
-    <div className='flex items-center justify-between gap-5 border-b border-zinc-200  p-3'>
-      <div>
-        <input
-          type='text'
-          className='w-full border-b bg-transparent  pb-2 text-xl font-bold text-text-secondary placeholder:text-text-tertiary focus:outline-none'
-          placeholder='Title'
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-        <input
-          type='text'
-          className='mt-2 w-full  border-b bg-transparent p-1  text-sm font-medium text-text-tertiary placeholder:text-text-tertiary focus:outline-none'
-          placeholder='Description'
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-      </div>
-      <div className='flex items-center gap-2'>
-        <CustomTippy content='Back'>
-          <button
-            className='sm:h-10 sm:w-10 h-8 w-8 cursor-pointer rounded-full bg-background-tertiary text-text-tertiary hover:bg-background-secondary'
-            onClick={onBack}
-          >
-            <i className='fa-solid fa-chevron-left text-sm'></i>
-          </button>
-        </CustomTippy>
-        <CustomTippy content='Save'>
-          <button
-            className={
-              'sm:h-10 sm:w-10 h-8 w-8 cursor-pointer rounded-full transition-colors duration-500  ' +
-              (isChanged
-                ? 'cursor-pointer bg-primary-hover text-background-secondary hover:bg-indigo-400 '
-                : 'cursor-not-allowed bg-background-tertiary text-text-tertiary hover:bg-background-secondary')
-            }
-            onClick={onSave}
-          >
-            <i className='fa-solid fa-floppy-disk text-sm'></i>
-          </button>
-        </CustomTippy>
-        <CustomTippy content='Delete'>
-          <button
-            className='relative sm:h-10 sm:w-10 h-8 w-8 cursor-pointer rounded-full bg-background-tertiary text-text-tertiary transition-colors duration-500 hover:bg-red-500 hover:text-white'
-            onClick={() => setIsConfirmationModalOpen(true)}
-          >
-            <i className='fa-solid fa-trash-can text-sm'></i>
-          </button>
-        </CustomTippy>
-      
-      </div>
-      {isConfirmationModalOpen && (
-        <ConfirmationModal
-          sentence='Are you sure you want to delete this sticky note?'
-          confirmText='Delete'
-          onConfirm={() => {
-            onDelete(deletePermanently);
-            setIsConfirmationModalOpen(false);
-          }}
-          onCancel={() => setIsConfirmationModalOpen(false)}
-          element='Sticky Note'
-          checked={deletePermanently}
-          setChecked={setDeletePermanently}
-        />
-      )}
+    <div
+      className={
+        'space-y-2 border-b border-zinc-200 px-3 pt-4  ' + (isOpen ? 'h-[120px] py-3' : 'h-0')
+      }
+    >
+      <InputField
+        type='text'
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        placeholder='Title'
+      />
+      <InputField
+        type='text'
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+        placeholder='Description'
+      />
     </div>
   );
 }

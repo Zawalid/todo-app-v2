@@ -8,8 +8,6 @@ export function List({ list }) {
   const { $id, title, color } = list;
   const { handleDeleteList, handleRenameList, handleChangeListColor } = useLists();
   const { tasks } = useTasks();
-
-  const [isListActionsOpen, setIsListActionsOpen] = useState(false);
   const [isRenameInputOpen, setIsRenameInputOpen] = useState(false);
   const [isNewTitleTaken, setTitle] = useIsTitleTaken($id, title);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -20,16 +18,12 @@ export function List({ list }) {
     [tasks, $id],
   );
 
-  const listActions = useRef(null);
   const newListTitle = useRef(null);
   const navigate = useNavigate();
   const path = useHref().split('app/')[1];
 
   useEffect(() => {
     function handleClickOutside(event) {
-      if (listActions.current && !listActions.current.contains(event.target)) {
-        setIsListActionsOpen(false);
-      }
       if (newListTitle.current && !newListTitle.current.contains(event.target)) {
         setIsRenameInputOpen(false);
       }
@@ -38,12 +32,20 @@ export function List({ list }) {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [listActions]);
+  }, []);
 
-  function changeColor(color) {
-    setListColor(color);
-    handleChangeListColor($id, color);
-  }
+  // function changeColor(colorsDiv) {
+  //   function handleClick(e) {
+  //     console.log(e.target);
+  //     if (colorsDiv.current.contains(e.target) && e.target.classList.contains('color')) {
+  //       const color = e.target.dataset.color;
+  //       console.log(color);
+  //       // setListColor(color);
+  //       // handleChangeListColor($id, color);
+  //     }
+  //   }
+  //   document.addEventListener('click', handleClick);
+  // }
   function openRenameInput() {
     setIsRenameInputOpen(true);
     setTimeout(() => newListTitle.current.focus(), 50);
@@ -62,7 +64,7 @@ export function List({ list }) {
       <li className='relative flex gap-1 pr-2 '>
         <NavLink to={title} className='menu_element group flex-1  grid-cols-[30px_auto_35px] '>
           <div
-            className='h-4 w-4 rounded-[3px]'
+            className='h-5 w-5 rounded-[3px]'
             style={{
               backgroundColor: listColor,
             }}
@@ -75,20 +77,14 @@ export function List({ list }) {
           </div>
         </NavLink>
 
-        <button
-          className='cursor-pinter relative rounded-md px-2 text-center transition-colors duration-300 hover:bg-background-primary'
-          onClick={() => setIsListActionsOpen(true)}
-        >
-          <i className='fas fa-ellipsis-vertical text-text-tertiary'></i>
-          <ListAction
-            isOpen={isListActionsOpen}
-            reference={listActions}
-            onDelete={() => setIsDeleteModalOpen(true)}
-            onClose={() => setIsListActionsOpen(false)}
-            onChangeColor={changeColor}
-            onOpenRenameInput={openRenameInput}
-          />
-        </button>
+        <ListAction
+          onDelete={() => setIsDeleteModalOpen(true)}
+          onChangeColor={(color) => {
+            setListColor(color);
+            handleChangeListColor($id, color);
+          }}
+          onOpenRenameInput={openRenameInput}
+        />
         <div
           className={
             'absolute  left-0 top-full z-10 w-[95%]  items-center overflow-hidden rounded-lg bg-background-primary px-3 shadow-[-4px_4px_1px_#EBEBEB] ' +

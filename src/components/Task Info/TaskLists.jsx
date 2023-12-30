@@ -1,5 +1,5 @@
 import { useLists } from '../../hooks/useLists';
-import DropDown from '../Common/DropDown';
+import { DropDown }from '../Common/DropDown';
 
 export function TaskLists({ taskListId, setTaskListId }) {
   const { lists } = useLists();

@@ -1,6 +1,7 @@
 :root {
   --text-secondary: #444444;
   --text-tertiary: #b46262;
+  --background-primary: #fff;
   --background-secondary: #f4f4f4;
   --background-tertiary: #ebebeb;
   --highlight-color: #c8ff2d;
@@ -9,8 +10,11 @@
   > * + * {
     margin-top: 0.75em;
   }
+
+  [contenteditable='true'] {
+    background-color: var(--background-primary);
+  }
   div:has(> .ProseMirror) {
-    height: calc(100dvh - 400px);
     margin: 0;
     overflow: auto;
   }
@@ -117,6 +121,10 @@ mark {
 .tippy-box[data-theme~='custom'] {
   background-color:  var(--text-secondary);
 }
+.tippy-box:is([data-theme~='bubbleMenu'],[data-theme~='custom']) {
+  padding : 0.5rem ;
+}
+
 // Tooltip arrow
 .tippy-box[data-theme~='custom'][data-placement^='top'] > .tippy-arrow::before {
   border-top-color: var(--text-secondary);
@@ -159,4 +167,5 @@ mark {
     vertical-align: middle;
     width: 1em;
   }
+  
 }
