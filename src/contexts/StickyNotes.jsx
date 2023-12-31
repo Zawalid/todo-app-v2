@@ -118,6 +118,33 @@ function StickyNotesProvider({ children }) {
     }
   }
 
+  async function handleDeleteAllNotes(deletePermanently) {
+    const toastId = toast.loading('Deleting notes...', {
+      duration: 10000,
+    });
+    try {
+      await Promise.all(
+        stickyNotes.map(async (note) => {
+          await handleDeleteStickyNote(note.$id, deletePermanently, true);
+        }),
+      );
+      toast.success('Notes have been successfully deleted.', {
+        id: toastId,
+      });
+    } catch (error) {
+      toast.error('Failed to delete the notes.', {
+        duration: 4000,
+        id: toastId,
+        action: {
+          label: 'Try again',
+          onClick: async () => {
+            await handleDeleteAllNotes(deletePermanently);
+          },
+        },
+      });
+    }
+  }
+
   return (
     <StickyNotesContext.Provider
       value={{
@@ -132,6 +159,7 @@ function StickyNotesProvider({ children }) {
         handleUpdateStickyNote,
         handleDeleteStickyNote,
         setStickyNotes,
+        handleDeleteAllNotes,
       }}
     >
       {children}

@@ -1,16 +1,12 @@
 import { Tag } from '../Menu/Menu Tags/Tag';
 import { useTags } from '../../hooks/useTags';
-import { DropDown }from '../Common/DropDown';
+import { DropDown } from '../Common/DropDown';
 
-export function TaskTags({
-  taskTagsIds,
-  handleAddTagToTask,
-  handleDeleteTagFromTask,
-}) {
+export function TaskTags({ taskTagsIds, handleAddTagToTask, handleDeleteTagFromTask }) {
   const { tags } = useTags();
   return (
     <>
-      <label className='text-sm justify-self-start text-text-tertiary'>Tags</label>
+      <label className='justify-self-start text-sm text-text-tertiary'>Tags</label>
       <DropDown
         toggler={
           <DropDown.Toggler>
@@ -24,7 +20,9 @@ export function TaskTags({
             )}
           </DropDown.Toggler>
         }
-        shouldCloseOnClick={false}
+        options={{
+          shouldCloseOnClick: false,
+        }}
       >
         {tags.map((tag) => (
           <div key={tag.$id} className='grid grid-cols-[1fr_auto] items-center'>

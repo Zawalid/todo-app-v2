@@ -148,7 +148,7 @@ function TasksProvider({ children }) {
     );
   }
 
-  async function handleClearAllTasks(condition1, condition2, deletePermanently) {
+  async function handleDeleteAllTasks(condition1, condition2, deletePermanently) {
     setCurrentProcessedTask('multiple');
     setIsTaskOpen(false);
     const deletedTasks = tasks.filter((task) => condition1(task) && condition2(task));
@@ -193,7 +193,7 @@ function TasksProvider({ children }) {
             action: {
               label: 'Try again',
               onClick: () => {
-                handleClearAllTasks(condition1, condition2, deletePermanently);
+                handleDeleteAllTasks(condition1, condition2, deletePermanently);
               },
             },
           });
@@ -292,7 +292,7 @@ function TasksProvider({ children }) {
         handleUpdateTask,
         handleDeleteTask,
         handleCompleteTask,
-        handleClearAllTasks,
+        handleDeleteAllTasks,
         handleDeleteMultipleTasks,
         handleOpenTask,
         setIsTaskOpen,
@@ -309,12 +309,12 @@ function getDeletionMessage(status, singular, selected, number) {
   if (status === 'success') {
     if ((selected && number === 1) || singular) return `Task has been successfully deleted.`;
     if (selected && number > 1) return `${number} tasks have been successfully deleted`;
-    return `All tasks have been successfully cleared.`;
+    return `All tasks have been successfully deleted.`;
   }
   if (status === 'error') {
     if ((selected && number === 1) || singular) return `Failed to delete the task.`;
     if (selected && number > 1) return `Failed to delete the tasks.`;
-    return `Failed to clear all tasks.`;
+    return `Failed to delete all tasks.`;
   }
 }
 export default TasksProvider;

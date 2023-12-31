@@ -8,7 +8,7 @@ import { useEffect } from 'react';
 
 function AppLayout() {
   const { checkIsUserAuthenticated, user } = useUser();
-  const { handleFetchAllElements, handleClearAllElements } = useFetchAllElements();
+  const { handleFetchAllElements, handleDeleteAllElements } = useFetchAllElements();
   const { initializeTrash } = useTrash();
 
   useEffect(() => {
@@ -24,7 +24,7 @@ function AppLayout() {
       document.addEventListener('visibilitychange', handleVisibilityChange);
     }
     return () => {
-      !checkIsUserAuthenticated() && handleClearAllElements();
+      !checkIsUserAuthenticated() && handleDeleteAllElements();
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

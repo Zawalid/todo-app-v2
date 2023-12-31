@@ -76,11 +76,11 @@ export function StickyNoteEditor({ currentNote, onBack }) {
               toggler={<i className='fas fa-palette text-lg'></i>}
               options={{
                 className: 'w-52',
+                shouldCloseOnClick : false
               }}
-              shouldCloseOnClick={false}
             >
               <div className='space-y-2  py-1'>
-                <span className='text-sm text-text-tertiary'>Background Color</span>
+                <DropDown.Title>Background Color</DropDown.Title>
                 <BackgroundColorPicker
                   onChange={(color) => {
                     setBgColor(color);
@@ -89,7 +89,7 @@ export function StickyNoteEditor({ currentNote, onBack }) {
                 />
               </div>
               <div className='mt-1 space-y-2 border-t border-zinc-200 py-2'>
-                <span className='text-sm text-text-tertiary'>Text Color</span>
+                <DropDown.Title>Text Color</DropDown.Title>
                 <TextColorPicker
                   onChange={(color) => {
                     setTextColor(color);
@@ -107,7 +107,7 @@ export function StickyNoteEditor({ currentNote, onBack }) {
             >
               <DropDown.Button
                 onClick={() => setIsConfirmationModalOpen(true)}
-                className='hover:bg-red-500 hover:text-white'
+                isDeleteButton={true}
               >
                 <i className='fa-solid fa-trash-can '></i>
                 <span>Delete Note</span>

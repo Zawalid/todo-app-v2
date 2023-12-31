@@ -63,11 +63,11 @@ export function useFetchAllElements() {
     }
   }
 
-  function handleClearAllElements() {
+  function handleDeleteAllElements() {
     elements.forEach((element) => {
       element.setElements([]);
       element.setIsLoading && element.setIsLoading(true);
     });
   }
-  return { handleFetchAllElements, handleClearAllElements };
+  return { handleFetchAllElements, handleDeleteAllElements };
 }

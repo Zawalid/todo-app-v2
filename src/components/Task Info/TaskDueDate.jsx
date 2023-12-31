@@ -56,8 +56,7 @@ export function TaskDueDate({ taskDueDate, setTaskDueDate }) {
               <i className='fa-solid fa-calendar-days  text-sm'></i>
             </div>
           }
-          options={{ className: 'w-52' }}
-          shouldCloseOnClick={false}
+          options={{ className: 'w-52', shouldCloseOnClick: false }}
         >
           <DropDown.Button onClick={() => handleAddDueDate('Today')}>
             <i className='fa-solid fa-calendar  text-text-tertiary'></i>
@@ -74,7 +73,7 @@ export function TaskDueDate({ taskDueDate, setTaskDueDate }) {
             </span>{' '}
           </DropDown.Button>
 
-          <DropDown
+          <DropDown.NestedMenu
             toggler={
               <DropDown.Button>
                 <i className='fa-solid fa-calendar  text-text-tertiary'></i>
@@ -82,9 +81,8 @@ export function TaskDueDate({ taskDueDate, setTaskDueDate }) {
                 <i className='fa-solid fa-chevron-down text-text-tertiary transition-transform duration-300'></i>
               </DropDown.Button>
             }
-            options={{ className: 'w-52', placement: 'bottom' }}
+            options={{ className: 'w-52', placement: 'bottom', shouldCloseOnClick: false }}
             togglerClassName='w-full'
-            shouldCloseOnClick={false}
           >
             <input
               type='date'
@@ -95,7 +93,7 @@ export function TaskDueDate({ taskDueDate, setTaskDueDate }) {
                 handleAddDueDate(e.target.value);
               }}
             />
-          </DropDown>
+          </DropDown.NestedMenu>
         </DropDown>
       </div>
     </>

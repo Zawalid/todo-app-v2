@@ -1,10 +1,8 @@
-import { useState } from 'react';
 import { Colors } from '../../Common/Colors';
 import { DropDown } from '../../Common/DropDown';
 import { useColorPicker } from '../../../hooks/useColorPicker';
 
 export function ListAction({ onDelete, onChangeColor, onOpenRenameInput }) {
-  const [isColorsOpen, setIsColorsOpen] = useState(false);
   const colorsDiv = useColorPicker(onChangeColor);
 
   return (
@@ -14,36 +12,28 @@ export function ListAction({ onDelete, onChangeColor, onOpenRenameInput }) {
       options={{
         className: 'w-52',
       }}
-      shouldCloseOnClick={false}
-      onClose={() => isColorsOpen && setIsColorsOpen(false)}
     >
       <DropDown.Button onClick={onOpenRenameInput}>
         <i className='fa-solid fa-pen '></i>
         <span>Rename List</span>
       </DropDown.Button>
 
-      <DropDown
+      <DropDown.NestedMenu
         toggler={
-          <DropDown.Button onClick={() => setIsColorsOpen(!isColorsOpen)}>
+          <DropDown.Button>
             <i className='fa-solid fa-palette'></i>
             <span className='flex-1 text-start'>Change Color</span>
             <i className='fa-solid fa-chevron-down'></i>
           </DropDown.Button>
         }
-        options={{ className: 'w-52', placement: 'bottom' }}
+        options={{ className: 'w-52', placement: 'bottom', shouldCloseOnClick: false }}
         togglerClassName='w-full'
-        shouldCloseOnClick={false}
       >
-        <div
-          className={
-            'flex flex-wrap items-center gap-2  overflow-hidden  ' + (isColorsOpen ? 'h-20' : 'h-0')
-          }
-          ref={colorsDiv}
-        >
+        <div className='flex h-20 flex-wrap items-center  gap-2 overflow-hidden' ref={colorsDiv}>
           <Colors />
         </div>
-      </DropDown>
-      <DropDown.Button onClick={onDelete} className='hover:bg-red-500 hover:text-white'>
+      </DropDown.NestedMenu>
+      <DropDown.Button onClick={onDelete} isDeleteButton={true}>
         <i className='fa-solid fa-trash-can '></i>
         <span>Delete List</span>
       </DropDown.Button>

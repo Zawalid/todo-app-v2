@@ -1,3 +1,6 @@
+:root {
+  --line-clamp: 8;
+}
 .menu_element {
   @apply grid cursor-pointer grid-cols-[30px_auto_35px] items-center rounded-lg p-2 transition-colors duration-500 hover:bg-background-tertiary;
 }
@@ -38,7 +41,7 @@ input[type='checkbox'].subtask {
 .note_text {
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 8;
+  -webkit-line-clamp: var(--line-clamp);
 }
 
 .full_screen {

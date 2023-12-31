@@ -1,9 +1,15 @@
-export function StickyNote({ stickyNote, onClick }) {
+import { useEffect } from 'react';
+
+export function StickyNote({ stickyNote, onClick, listView }) {
+  useEffect(() => {
+    document.documentElement.style.setProperty('--line-clamp', listView ? '1' : '8');
+  }, [listView]);
+
   return (
     <button
       className={
-        ' relative grid h-[270px] overflow-hidden rounded-lg p-5 shadow-[rgba(3_3_3_0.08)_0px_6px_16px] ' +
-        (!stickyNote.description ? ' place-content-center' : 'place-content-start text-start')
+        'relative flex  flex-col  gap-3 overflow-hidden rounded-lg p-5 shadow-[rgba(3_3_3_0.08)_0px_6px_16px] ' +
+        (listView ? 'h-[120px]' : 'h-[270px] ')
       }
       style={{
         backgroundColor: stickyNote.bgColor,
@@ -12,28 +18,45 @@ export function StickyNote({ stickyNote, onClick }) {
       onClick={onClick}
     >
       <>
-        <h2 className='mb-3 text-2xl font-bold'>{stickyNote.title}</h2>
-        <p
+        <div
           className={
-            'note_text overflow-hidden text-sm font-medium ' +
-            (stickyNote.textColor === '#fff' ? 'text-background-tertiary' : 'text-text-tertiary')
+            'grid w-full flex-1 space-y-3 ' +
+            (!stickyNote.description && !listView
+              ? ' place-content-center'
+              : 'place-content-start text-start')
           }
         >
-          {stickyNote.description}
-        </p>
+          <h2 className='text-xl font-bold sm:text-2xl'>{stickyNote.title}</h2>
 
-        <div className='absolute bottom-3 left-1/2 flex w-full -translate-x-1/2 items-center justify-between px-5 '>
+          {stickyNote.description && (
+            <p
+              className={
+                'note_text overflow-hidden text-xs font-medium sm:text-sm ' +
+                (stickyNote.textColor === '#fff'
+                  ? 'text-background-tertiary'
+                  : 'text-text-tertiary')
+              }
+            >
+              {stickyNote.description}
+            </p>
+          )}
+        </div>
+
+        <div className='flex w-full items-center justify-between '>
           <span
-            className='text-sm font-semibold'
+            className='text-[10px] font-medium sm:text-xs'
             style={{
               color: stickyNote.textColor,
             }}
           >
-            {new Date(stickyNote.$createdAt).toLocaleDateString()}
+            {new Intl.DateTimeFormat('en-US', {
+              dateStyle: 'medium',
+              timeStyle: 'short',
+            }).format(new Date(stickyNote.$updatedAt))}
           </span>
           {/* <button>
               <i
-                className='fa-regular fa-circle text-lg'
+                className='fa-regular fa-circle text-xl'
                 style={{
                   color: stickyNote.textColor,
                 }}
