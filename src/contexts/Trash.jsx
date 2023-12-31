@@ -286,13 +286,16 @@ function TrashProvider({ children }) {
   // get trash from database
   async function handleGetTrash(user) {
     try {
-      if (!user) throw new Error('User not found');
+      if (!user) return;
       const response = await databases.listDocuments(DATABASE_ID, TRASH_COLLECTION_ID, [
         Query.equal('owner', [user?.$id]),
       ]);
       const trash = response.documents[0];
       const { tasks, lists, tags, stickyNotes } = trash;
-      if (!trash.$id) throw new Error('Trash not found');
+      if (!trash.$id) {
+        await createTrash(user);
+        return;
+      }
       dispatch({
         type: 'LOAD_TRASH',
         payload: {
