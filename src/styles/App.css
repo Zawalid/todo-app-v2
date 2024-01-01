@@ -25,7 +25,7 @@ aside::-webkit-scrollbar-track {
 }
 
 input[type='checkbox'] {
-  @apply mt-1 shrink-0 cursor-pointer appearance-none rounded-[4px] border border-[#dddddd] checked:border-0 checked:bg-text-tertiary focus:outline-none;
+  @apply shrink-0 cursor-pointer appearance-none rounded-[4px] border border-[#dddddd] checked:border-0 checked:bg-text-tertiary focus:outline-none;
 }
 
 input[type='checkbox'].task {

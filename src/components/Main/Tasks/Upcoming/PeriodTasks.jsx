@@ -68,7 +68,7 @@ export function PeriodTasks({ title, period, parentRef, isToday }) {
         />
       </div>
       <ul
-        className={' flex-1 space-y-2 overflow-auto  px-4 ' + (isFullScreen ? '' : 'max-h-[280px]')}
+        className={' flex-1 space-y-2 overflow-auto overflow-x-hidden  px-4 ' + (isFullScreen ? '' : 'max-h-[280px]')}
         ref={parent}
       >
         {tasks[period.tasks]?.length > 0 ? (

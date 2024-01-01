@@ -17,6 +17,9 @@ function StickyNotesProvider({ children }) {
   const [currentNote, setCurrentNote] = useState(null);
   const [isStickyNoteOpened, setIsStickyNoteOpened] = useState(false);
   const [isStickyNoteEditorOpen, setIsStickyNoteEditorOpen] = useState(false);
+  const [selectedNotes, setSelectedNotes] = useState([]);
+  const [currentProcessedNote, setCurrentProcessedNote] = useState(null);
+
   const { handleDeleteElement } = useDeleteElement();
   const { handleLoadElements } = useLoadElements();
   const { handleRestoreFromTrash } = useTrash();
@@ -49,6 +52,8 @@ function StickyNotesProvider({ children }) {
     }
   }
   async function handleUpdateStickyNote(id, note, setIsSaving) {
+    if (currentProcessedNote === id) return;
+    setCurrentProcessedNote(id);
     try {
       setIsSaving(true);
       const newNote = await databases.updateDocument(
@@ -71,10 +76,13 @@ function StickyNotesProvider({ children }) {
       });
     } finally {
       setIsSaving(false);
+      setCurrentProcessedNote(null);
     }
   }
 
   async function handleDeleteStickyNote(id, deletePermanently, noToast) {
+    if (currentProcessedNote === id || currentProcessedNote === 'multiple') return;
+    setCurrentProcessedNote(id);
     const toastId = noToast
       ? null
       : toast.loading('Deleting note...', {
@@ -115,10 +123,13 @@ function StickyNotesProvider({ children }) {
           },
         },
       });
+    } finally {
+      setCurrentProcessedNote(null);
     }
   }
 
   async function handleDeleteAllNotes(deletePermanently) {
+    setCurrentProcessedNote('multiple');
     const toastId = toast.loading('Deleting notes...', {
       duration: 10000,
     });
@@ -142,6 +153,38 @@ function StickyNotesProvider({ children }) {
           },
         },
       });
+    } finally {
+      setCurrentProcessedNote(null);
+    }
+  }
+
+  async function handleDeleteMultipleNotes(deletePermanently) {
+    setCurrentProcessedNote('multiple');
+    const toastId = toast.loading('Deleting notes...', {
+      duration: 10000,
+    });
+    try {
+      await Promise.all(
+        selectedNotes.map(async (note) => {
+          await handleDeleteStickyNote(note.$id, deletePermanently, true);
+        }),
+      );
+      toast.success('Notes have been successfully deleted.', {
+        id: toastId,
+      });
+    } catch (error) {
+      toast.error('Failed to delete the notes.', {
+        duration: 4000,
+        id: toastId,
+        action: {
+          label: 'Try again',
+          onClick: async () => {
+            await handleDeleteMultipleNotes(deletePermanently);
+          },
+        },
+      });
+    } finally {
+      setCurrentProcessedNote(null);
     }
   }
 
@@ -152,6 +195,7 @@ function StickyNotesProvider({ children }) {
         currentNote,
         isStickyNoteOpened,
         isStickyNoteEditorOpen,
+        selectedNotes,
         setCurrentNote,
         setIsStickyNoteOpened,
         setIsStickyNoteEditorOpen,
@@ -160,6 +204,8 @@ function StickyNotesProvider({ children }) {
         handleDeleteStickyNote,
         setStickyNotes,
         handleDeleteAllNotes,
+        handleDeleteMultipleNotes,
+        setSelectedNotes,
       }}
     >
       {children}

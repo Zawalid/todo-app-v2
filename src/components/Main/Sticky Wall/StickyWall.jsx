@@ -2,9 +2,10 @@ import { StickyNote } from './StickyNote';
 import { StickyNoteEditor } from './Sticky Note Editor/StickyNoteEditor';
 import { useStickyNotes } from '../../../hooks/useStickyNotes';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import StickyWallActions from './StickyWallActions/StickyWallActions';
 import { ConfirmationModal } from '../../Common/ConfirmationModal';
+import { MultipleDeletionsModal } from '../Tasks/NameToBeDetermined/MultipleDeletionsModal';
 
 export default function StickyWall() {
   const {
@@ -16,16 +17,27 @@ export default function StickyWall() {
     setIsStickyNoteEditorOpen,
     handleAddStickyNote,
     handleDeleteAllNotes,
+    selectedNotes,
+    setSelectedNotes,
+    handleDeleteMultipleNotes,
   } = useStickyNotes();
   const [view, setView] = useState('grid');
   const [sortBy, setSortBy] = useState('$updatedAt');
   const [direction, setDirection] = useState('desc');
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [deletePermanently, setDeletePermanently] = useState(false);
+  const [isSelecting, setIsSelecting] = useState(false);
+  const [isDeleteMultipleModalOpen, setIsDeleteMultipleModalOpen] = useState(false);
 
   const [parent] = useAutoAnimate({
     duration: 500,
   });
+
+  useEffect(() => {
+    selectedNotes.length > 0 && isSelecting
+      ? setIsDeleteMultipleModalOpen(true)
+      : setIsDeleteMultipleModalOpen(false);
+  }, [selectedNotes, isSelecting]);
 
   function handleBack() {
     setIsStickyNoteEditorOpen(false);
@@ -46,6 +58,7 @@ export default function StickyWall() {
           direction,
           setDirection,
           setIsConfirmationModalOpen,
+          setIsSelecting,
         }}
       />
 
@@ -76,15 +89,26 @@ export default function StickyWall() {
               }
             })
             .map((stickyNote) => {
+              const isSelected =
+                selectedNotes.filter((note) => note.$id === stickyNote.$id).length > 0;
               return (
                 <StickyNote
                   key={stickyNote.$id}
                   stickyNote={stickyNote}
                   onClick={() => {
-                    setCurrentNote(stickyNote);
-                    setIsStickyNoteEditorOpen(true);
+                    if (isSelecting) {
+                      setSelectedNotes((prev) => {
+                        if (isSelected) return prev.filter((t) => t.$id !== stickyNote.$id);
+                        else return [...prev, { $id: stickyNote.$id, title: stickyNote.title }];
+                      });
+                    } else {
+                      setCurrentNote(stickyNote);
+                      setIsStickyNoteEditorOpen(true);
+                    }
                   }}
                   listView={view === 'list'}
+                  isSelecting={isSelecting}
+                  isSelected={isSelected}
                 />
               );
             })
@@ -123,7 +147,7 @@ export default function StickyWall() {
           sentence='Are you sure you want to delete all notes'
           confirmText='Delete All'
           onConfirm={() => {
-            handleDeleteAllNotes(deletePermanently);
+            handleDeleteMultipleNotes(deletePermanently);
             setIsConfirmationModalOpen(false);
           }}
           onCancel={() => setIsConfirmationModalOpen(false)}
@@ -132,6 +156,18 @@ export default function StickyWall() {
           setChecked={setDeletePermanently}
         />
       )}
+      <MultipleDeletionsModal
+        isOpen={isDeleteMultipleModalOpen}
+        onConfirm={() => {
+          setIsConfirmationModalOpen(true);
+          // whichDelete.current = 'selected';
+        }}
+        onClose={() => {
+          setIsDeleteMultipleModalOpen(false);
+          setIsSelecting(false);
+        }}
+        selectedTasksNumber={selectedNotes.length}
+      />
     </div>
   );
 }

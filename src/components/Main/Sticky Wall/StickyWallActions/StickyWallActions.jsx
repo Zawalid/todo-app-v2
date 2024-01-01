@@ -10,6 +10,7 @@ export default function StickyWallActions({
     direction,
     setDirection,
     setIsConfirmationModalOpen,
+    setIsSelecting
   },
 }) {
   return (
@@ -49,7 +50,9 @@ export default function StickyWallActions({
         </button>
       </div>
       <div className='flex gap-3'>
-        <button className='grid h-8 w-8 place-content-center rounded-full bg-background-primary text-text-tertiary transition-colors duration-300 hover:bg-background-secondary'>
+        <button className='grid h-8 w-8 place-content-center rounded-full bg-background-primary text-text-tertiary transition-colors duration-300 hover:bg-background-secondary'
+          onClick={() => setIsSelecting(prev => !prev)}
+        >
           <svg
             stroke='currentColor'
             fill='currentColor'

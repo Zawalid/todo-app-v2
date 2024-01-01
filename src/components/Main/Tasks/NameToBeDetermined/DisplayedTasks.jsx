@@ -22,8 +22,13 @@ const filtersConditions = {
 };
 
 export default function DisplayedTasks({ onAdd, condition, activeTab }) {
-  const { tasks, handleDeleteAllTasks, handleDeleteMultipleTasks, selectedTasks, setSelectedTasks } =
-    useTasks();
+  const {
+    tasks,
+    handleDeleteAllTasks,
+    handleDeleteMultipleTasks,
+    selectedTasks,
+    setSelectedTasks,
+  } = useTasks();
   const [deletePermanently, setDeletePermanently] = useState(false);
   const [filteredTasks, setFilteredTasks] = useState([]);
   const [isSelecting, setIsSelecting] = useState(false);
@@ -75,13 +80,24 @@ export default function DisplayedTasks({ onAdd, condition, activeTab }) {
         </div>
         <div className='flex gap-3'>
           <button
-            className='h-8 w-8 rounded-full grid place-content-center bg-background-primary text-text-tertiary transition-colors duration-300 hover:bg-background-secondary'
+            className='grid h-8 w-8 place-content-center rounded-full bg-background-primary text-text-tertiary transition-colors duration-300 hover:bg-background-secondary'
             onClick={() => {
               setIsSelecting(!isSelecting);
               setIsDeleteMultipleModalOpen(false);
             }}
           >
-<svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 256 256" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg"><path d="M228,128a12,12,0,0,1-12,12H128a12,12,0,0,1,0-24h88A12,12,0,0,1,228,128ZM128,76h88a12,12,0,0,0,0-24H128a12,12,0,0,0,0,24Zm88,104H128a12,12,0,0,0,0,24h88a12,12,0,0,0,0-24ZM79.51,39.51,56,63l-7.51-7.52a12,12,0,0,0-17,17l16,16a12,12,0,0,0,17,0l32-32a12,12,0,0,0-17-17Zm0,64L56,127l-7.51-7.52a12,12,0,1,0-17,17l16,16a12,12,0,0,0,17,0l32-32a12,12,0,0,0-17-17Zm0,64L56,191l-7.51-7.52a12,12,0,1,0-17,17l16,16a12,12,0,0,0,17,0l32-32a12,12,0,0,0-17-17Z"></path></svg>          </button>
+            <svg
+              stroke='currentColor'
+              fill='currentColor'
+              strokeWidth='0'
+              viewBox='0 0 256 256'
+              height='20px'
+              width='20px'
+              xmlns='http://www.w3.org/2000/svg'
+            >
+              <path d='M228,128a12,12,0,0,1-12,12H128a12,12,0,0,1,0-24h88A12,12,0,0,1,228,128ZM128,76h88a12,12,0,0,0,0-24H128a12,12,0,0,0,0,24Zm88,104H128a12,12,0,0,0,0,24h88a12,12,0,0,0,0-24ZM79.51,39.51,56,63l-7.51-7.52a12,12,0,0,0-17,17l16,16a12,12,0,0,0,17,0l32-32a12,12,0,0,0-17-17Zm0,64L56,127l-7.51-7.52a12,12,0,1,0-17,17l16,16a12,12,0,0,0,17,0l32-32a12,12,0,0,0-17-17Zm0,64L56,191l-7.51-7.52a12,12,0,1,0-17,17l16,16a12,12,0,0,0,17,0l32-32a12,12,0,0,0-17-17Z'></path>
+            </svg>{' '}
+          </button>
           <Tippy
             content={
               <TasksActions
@@ -108,7 +124,7 @@ export default function DisplayedTasks({ onAdd, condition, activeTab }) {
       </div>
       {tasks.filter((task) => condition(task)).length > 0 && (
         <>
-          <ul className='mt-3 h-full space-y-2 overflow-y-auto pr-3' ref={parent}>
+          <ul className='mt-3 h-full overflow-x-hidden space-y-2 overflow-y-auto pr-3' ref={parent}>
             {filteredTasks
               .toSorted((a, b) => {
                 if (sort === 'cDate') {
@@ -131,9 +147,24 @@ export default function DisplayedTasks({ onAdd, condition, activeTab }) {
                 }
               })
               .slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage)
-              .map((task) => (
-                <Task key={task.$id} task={task} isSelecting={isSelecting} />
-              ))}
+              .map((task) => {
+                const { $id, title, listId } = task;
+                const isSelected = selectedTasks.filter((t) => t.$id === $id).length > 0;
+                return (
+                  <Task
+                    key={task.$id}
+                    task={task}
+                    onClick={() => {
+                      setSelectedTasks((prev) => {
+                        if (isSelected) return prev.filter((t) => t.$id !== $id);
+                        else return [...prev, { $id, title, listId }];
+                      });
+                    }}
+                    isSelecting={isSelecting}
+                    isSelected={isSelected}
+                  />
+                );
+              })}
           </ul>
           {filteredTasks.length === 0 && (
             <div className='absolute top-1/2 flex w-full -translate-y-1/2 flex-col items-center justify-center gap-2'>

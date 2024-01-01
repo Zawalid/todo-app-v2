@@ -1,12 +1,13 @@
 import Tippy from '@tippyjs/react';
 
+
+const defaultOptions = {
+  className: 'w-32',
+  placement: 'bottom-end',
+  trigger: 'click',
+  shouldCloseOnClick: true,
+};
 export function DropDown({ children, toggler, togglerClassName, options, onOpen, onClose }) {
-  const defaultOptions = {
-    className: 'w-32',
-    placement: 'bottom-end',
-    trigger: 'click',
-    shouldCloseOnClick: true,
-  };
 
   return (
     <Tippy
@@ -19,12 +20,10 @@ export function DropDown({ children, toggler, togglerClassName, options, onOpen,
       interactive={true}
       arrow={false}
       placement={options?.placement || defaultOptions.placement}
-      onShown={(instance) => {
+      onShow={(instance) => {
         onOpen?.();
         (options?.shouldCloseOnClick ?? defaultOptions.shouldCloseOnClick) &&
-          document
-            .querySelector('[data-tippy-root]')
-            .addEventListener('click', () => instance?.hide());
+          instance.popper.addEventListener('click', () => instance.hide());
       }}
       onHidden={onClose}
     >
