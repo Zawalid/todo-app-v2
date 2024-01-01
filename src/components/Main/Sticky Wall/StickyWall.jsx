@@ -2,11 +2,12 @@ import { StickyNote } from './StickyNote';
 import { StickyNoteEditor } from './Sticky Note Editor/StickyNoteEditor';
 import { useStickyNotes } from '../../../hooks/useStickyNotes';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import StickyWallActions from './StickyWallActions/StickyWallActions';
 import { ConfirmationModal } from '../../Common/ConfirmationModal';
 import useDeleteMultiple from '../useDeleteMultiple';
 import { usePagination } from '../usePagination';
+import { useSearchParams } from 'react-router-dom';
 
 export default function StickyWall() {
   const {
@@ -23,12 +24,14 @@ export default function StickyWall() {
     handleDeleteMultipleNotes,
   } = useStickyNotes();
   const [view, setView] = useState('grid');
-  const [sortBy, setSortBy] = useState('$updatedAt');
-  const [direction, setDirection] = useState('desc');
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [deletePermanently, setDeletePermanently] = useState(false);
   const whichDelete = useRef(null);
   const { Pagination, currentPage, rowsPerPage } = usePagination(stickyNotes.length);
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const sortBy = searchParams.get('sortBy') || 'updatedAt';
+  const direction = searchParams.get('direction') || 'desc';
 
   const { isSelecting, setIsSelecting, setIsDeleteMultipleModalOpen, Modal } = useDeleteMultiple({
     selectedItems: selectedNotes,
@@ -43,6 +46,21 @@ export default function StickyWall() {
   const [parent] = useAutoAnimate({
     duration: 500,
   });
+
+  useEffect(() => {
+    if (
+      !['createdAt', 'updatedAt', 'title'].includes(sortBy) ||
+      (sortBy === 'updatedAt' && direction === 'desc')
+    )
+      setSearchParams(
+        (prev) => {
+          prev.delete('sortBy');
+          prev.delete('direction');
+          return prev;
+        },
+        { replace: true },
+      );
+  }, [sortBy, direction,setSearchParams]);
 
   function handleBack() {
     setIsStickyNoteEditorOpen(false);
@@ -60,9 +78,9 @@ export default function StickyWall() {
           view,
           setView,
           sortBy,
-          setSortBy,
+          setSortBy: (sortBy) => setSearchParams({ sortBy, direction }, { replace: true }),
           direction,
-          setDirection,
+          setDirection: (direction) => setSearchParams({ sortBy, direction }, { replace: true }),
           setIsConfirmationModalOpen,
           setIsSelecting,
         }}
@@ -71,19 +89,21 @@ export default function StickyWall() {
       <div
         className={
           ' flex-1 overflow-auto rounded-lg border border-zinc-200 p-3 sm:p-5 ' +
-          (view === 'list' ? 'space-y-3' : ' gap-4 grid grid-cols-[repeat(auto-fill,minmax(270px,1fr))] ')
+          (view === 'list'
+            ? 'space-y-3'
+            : ' grid grid-cols-[repeat(auto-fill,minmax(270px,1fr))] gap-4 ')
         }
         ref={parent}
       >
         {stickyNotes.length > 0 &&
           stickyNotes
             .toSorted((a, b) => {
-              if (sortBy === '$updatedAt') {
+              if (sortBy === 'updatedAt') {
                 return direction === 'asc'
                   ? new Date(a.$updatedAt) - new Date(b.$updatedAt)
                   : new Date(b.$updatedAt) - new Date(a.$updatedAt);
               }
-              if (sortBy === '$createdAt') {
+              if (sortBy === 'createdAt') {
                 return direction === 'asc'
                   ? new Date(a.$createdAt) - new Date(b.$createdAt)
                   : new Date(b.$createdAt) - new Date(a.$createdAt);
@@ -130,9 +150,8 @@ export default function StickyWall() {
             </p>
           </div>
         )}
-
       </div>
-      {!isSelecting && 
+      {!isSelecting && (
         <button
           className='fixed bottom-14 right-5 z-10 grid h-12 w-12 place-content-center rounded-full bg-primary p-2 shadow-lg transition-colors duration-300 hover:bg-primary-hover sm:right-8'
           onClick={() => {
@@ -149,7 +168,8 @@ export default function StickyWall() {
           }}
         >
           <i className='fa-regular fa-plus text-xl text-white'></i>
-        </button>}
+        </button>
+      )}
       {stickyNotes.length > 0 && Pagination}
       {isConfirmationModalOpen && (
         <ConfirmationModal

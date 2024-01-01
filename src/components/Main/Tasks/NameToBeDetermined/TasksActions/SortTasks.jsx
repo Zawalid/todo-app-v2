@@ -13,25 +13,25 @@ export function SortTasks() {
 }
 function Button({ sortKey, title }) {
   const [searchParams, setSearchParams] = useSearchParams();
-  const sort = searchParams.get('sort') || 'cDate';
+  const sortBy = searchParams.get('sortBy') || 'cDate';
   const direction = searchParams.get('direction') || 'asc';
-  const isActive = sort === sortKey;
+  const isActive = sortBy === sortKey;
 
-  // Remove the sort and direction query params if the selected sort is 'cDate' and direction is 'asc' or if the sort doesn't exist
+  // Remove the sortBy and direction query params if the selected sortBy is 'cDate' and direction is 'asc' or if the sortBy doesn't exist
   useEffect(() => {
     if (
-      !['cDate', 'dDate', 'priority', 'title'].includes(sort) ||
-      (sort === 'cDate' && direction === 'asc')
+      !['cDate', 'dDate', 'priority', 'title'].includes(sortBy) ||
+      (sortBy === 'cDate' && direction === 'asc')
     )
       setSearchParams(
         (prev) => {
-          prev.delete('sort');
+          prev.delete('sortBy');
           prev.delete('direction');
           return prev;
         },
         { replace: true },
       );
-  }, [sort, direction, setSearchParams]);
+  }, [sortBy, direction, setSearchParams]);
 
   return (
     <button
@@ -39,7 +39,7 @@ function Button({ sortKey, title }) {
       onClick={() => {
         const filter = searchParams.get('filter');
         const sortParams = {
-          sort: sortKey,
+          sortBy: sortKey,
           direction: direction === 'asc' ? 'desc' : 'asc',
         };
         setSearchParams(searchParams.has('filter') ? { filter, ...sortParams } : sortParams, {

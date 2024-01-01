@@ -49,8 +49,8 @@ export default function TasksList({ onAdd, condition, activeTab }) {
   });
 
   const filter = searchParams.get('filter') || 'all';
-  const sort = searchParams.get('sort');
-  const direction = searchParams.get('direction');
+  const sortBy = searchParams.get('sortBy') || 'cDate';
+  const direction = searchParams.get('direction') || 'asc';
 
   useEffect(() => {
     setFilteredTasks(
@@ -117,20 +117,20 @@ export default function TasksList({ onAdd, condition, activeTab }) {
           <ul className='mt-3 h-full space-y-2 overflow-y-auto overflow-x-hidden pr-3' ref={parent}>
             {filteredTasks
               .toSorted((a, b) => {
-                if (sort === 'cDate') {
+                if (sortBy === 'cDate') {
                   return direction === 'asc'
                     ? new Date(a.$createdAt) - new Date(b.$createdAt)
                     : new Date(b.$createdAt) - new Date(a.$createdAt);
                 }
-                if (sort === 'dDate') {
+                if (sortBy === 'dDate') {
                   return direction === 'asc'
                     ? new Date(a.dueDate || 0) - new Date(b.dueDate || 0)
                     : new Date(b.dueDate || 0) - new Date(a.dueDate || 0);
                 }
-                if (sort === 'priority') {
+                if (sortBy === 'priority') {
                   return direction === 'asc' ? a.priority - b.priority : b.priority - a.priority;
                 }
-                if (sort === 'title') {
+                if (sortBy === 'title') {
                   return direction === 'asc'
                     ? a.title.localeCompare(b.title)
                     : b.title.localeCompare(a.title);

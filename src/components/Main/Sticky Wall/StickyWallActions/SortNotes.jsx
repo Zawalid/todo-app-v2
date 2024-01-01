@@ -1,16 +1,17 @@
 import { DropDown } from '../../../Common/DropDown';
 
 export default function SortNotes({ options: { sortBy, setSortBy, direction, setDirection } }) {
+  
   return (
     <>
       <DropDown.Title>Sort by</DropDown.Title>
-      <DropDown.Button onClick={() => setSortBy('$createdAt')} className='justify-between'>
+      <DropDown.Button onClick={() => setSortBy('createdAt')} className='justify-between'>
         <span>Creation date</span>
-        {sortBy === '$createdAt' && <i className='fa-solid fa-check'></i>}
+        {sortBy === 'createdAt' && <i className='fa-solid fa-check'></i>}
       </DropDown.Button>
-      <DropDown.Button onClick={() => setSortBy('$updatedAt')} className='justify-between'>
+      <DropDown.Button onClick={() => setSortBy('updatedAt')} className='justify-between'>
         <span>Modification date</span>
-        {sortBy === '$updatedAt' && <i className='fa-solid fa-check'></i>}
+        {sortBy === 'updatedAt' && <i className='fa-solid fa-check'></i>}
       </DropDown.Button>
       <DropDown.Button onClick={() => setSortBy('title')} className='justify-between'>
         <span>Title</span>
