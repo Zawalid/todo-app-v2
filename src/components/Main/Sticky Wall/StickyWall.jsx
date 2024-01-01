@@ -70,8 +70,8 @@ export default function StickyWall() {
 
       <div
         className={
-          'grid flex-1 place-content-start  gap-x-6 gap-y-3 overflow-auto rounded-lg border border-zinc-200 p-3 sm:p-5' +
-          (view === 'list' ? '' : ' grid-cols-[repeat(auto-fill,minmax(270px,1fr))] ')
+          ' flex-1 overflow-auto rounded-lg border border-zinc-200 p-3 sm:p-5 ' +
+          (view === 'list' ? 'space-y-3' : ' gap-4 grid grid-cols-[repeat(auto-fill,minmax(270px,1fr))] ')
         }
         ref={parent}
       >

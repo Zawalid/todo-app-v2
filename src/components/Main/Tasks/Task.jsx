@@ -57,9 +57,8 @@ export function Task({
     <li>
       <button
         className={
-          ' grid min-h-[49px] w-full cursor-pointer grid-cols-[20px_auto_20px] items-center gap-3 rounded-lg border-b  border-zinc-200 px-5 py-2 text-start transition-all duration-500   ' +
-          (checked ? 'bg-background-tertiary ' : 'bg-slate-50 ') +
-          (isSelected ? ' translate-y-1 shadow-[2px_2px_0px_rgb(228_228_231)]' : '')
+          ' grid min-h-[49px] w-full hover:translate-y-1 hover:shadow-[2px_2px_0px_rgb(228_228_231)] cursor-pointer grid-cols-[20px_auto_20px] items-center gap-3 rounded-lg border-b  border-zinc-200 px-5 py-2 text-start transition-all duration-500   ' +
+          (checked ? 'bg-background-tertiary ' : 'bg-slate-50 ') 
         }
         {...bind()}
         onClick={() => (isSelecting ? onClick() : isTouchDevice() || handleOpenTask($id))}

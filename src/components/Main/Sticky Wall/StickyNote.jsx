@@ -14,7 +14,7 @@ export function StickyNote({
   return (
     <button
       className={
-        'relative flex flex-col gap-3 overflow-hidden rounded-lg px-5 py-3 shadow-[rgba(3_3_3_0.08)_0px_6px_16px] ' +
+        'relative flex w-full flex-col gap-3 overflow-hidden rounded-lg px-5 py-3 shadow-[rgba(3_3_3_0.08)_0px_6px_16px] transition-[transform,height] duration-500 hover:scale-105 ' +
         (listView ? 'h-[130px]' : 'h-[270px] ')
       }
       style={{

@@ -23,13 +23,13 @@ function paginationReducer(state, action) {
   }
 }
 
-export function usePagination(tasksLength) {
+export function usePagination(itemsLength) {
   const [pagination, dispatch] = useReducer(paginationReducer, paginationState);
   const { currentPage, rowsPerPage, disabledButton } = pagination;
-  const totalPages = useRef(Math.ceil(tasksLength / rowsPerPage));
+  const totalPages = useRef(Math.ceil(itemsLength / rowsPerPage));
 
   function handleNextPage() {
-    currentPage * rowsPerPage >= tasksLength ||
+    currentPage * rowsPerPage >= itemsLength ||
       dispatch({ type: 'NEXT_PAGE', payload: currentPage + 1 });
   }
   const handlePreviousPage = useCallback(() => {
@@ -38,19 +38,19 @@ export function usePagination(tasksLength) {
 
   // Responsible for disabling the pagination items when the user reaches the first or last page
   useEffect(() => {
-    if (currentPage * rowsPerPage >= tasksLength)
+    if (currentPage * rowsPerPage >= itemsLength)
       dispatch({ type: 'DISABLE_BUTTON', payload: 'next' });
     if (currentPage === 1) dispatch({ type: 'DISABLE_BUTTON', payload: 'previous' });
-    if (currentPage * rowsPerPage >= tasksLength && currentPage === 1)
+    if (currentPage * rowsPerPage >= itemsLength && currentPage === 1)
       dispatch({ type: 'DISABLE_BUTTON', payload: 'both' });
-  }, [currentPage, rowsPerPage, tasksLength, dispatch]);
+  }, [currentPage, rowsPerPage, itemsLength, dispatch]);
 
   useEffect(() => {
-    totalPages.current = Math.ceil(tasksLength / rowsPerPage);
+    totalPages.current = Math.ceil(itemsLength / rowsPerPage);
     currentPage > totalPages.current && handlePreviousPage();
 
     return () => dispatch({ type: 'DISABLE_BUTTON', payload: 'none' });
-  }, [tasksLength, rowsPerPage, currentPage, handlePreviousPage, dispatch]);
+  }, [itemsLength, rowsPerPage, currentPage, handlePreviousPage, dispatch]);
 
   return {
     Pagination: (
@@ -100,7 +100,7 @@ export function usePagination(tasksLength) {
             <span className='font-semibold text-text-primary'>{currentPage}</span>
             of
             <span className='font-semibold text-text-primary'>
-              {Math.ceil(tasksLength / rowsPerPage)}
+              {Math.ceil(itemsLength / rowsPerPage)}
             </span>
           </span>
         </div>
