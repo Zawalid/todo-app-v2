@@ -7,7 +7,7 @@ import { useTasks, useSearch, useLists, useStickyNotes, useTrash } from '../../h
 import { TasksSkeleton, UpcomingSkeleton, StickyWallSkeleton, TrashSkeleton } from '../Skeletons';
 import { SpinnerLoader } from '../Common/SpinnerLoader';
 
-const DisplayedTasks = lazy(() => import('./Tasks/NameToBeDetermined/DisplayedTasks'));
+const TasksList = lazy(() => import('./Tasks/NameToBeDetermined/TasksList'));
 const Upcoming = lazy(() => import('./Tasks/Upcoming/Upcoming'));
 const StickyWall = lazy(() => import('./Sticky Wall/StickyWall'));
 const SearchResults = lazy(() => import('./Search/SearchResults'));
@@ -100,7 +100,7 @@ export function Main() {
           }
         >
           {!['upcoming', 'sticky-wall', 'search', 'trash'].includes(activeTab) ? (
-            <DisplayedTasks
+            <TasksList
               onAdd={(title) => {
                 const dueDate = activeTab === 'today' && new Date().toISOString().split('T')[0];
                 const newTask = {

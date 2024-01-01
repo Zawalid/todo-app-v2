@@ -14,7 +14,7 @@ export function StickyNote({
   return (
     <button
       className={
-        'relative flex  flex-col  gap-3 overflow-hidden rounded-lg px-5 py-3 shadow-[rgba(3_3_3_0.08)_0px_6px_16px] ' +
+        'relative flex flex-col gap-3 overflow-hidden rounded-lg px-5 py-3 shadow-[rgba(3_3_3_0.08)_0px_6px_16px] ' +
         (listView ? 'h-[130px]' : 'h-[270px] ')
       }
       style={{
@@ -57,7 +57,7 @@ export function StickyNote({
             }).format(new Date($updatedAt))}
           </span>
 
-          <button
+          <span
             className={'transition-transform duration-500 ' + (isSelecting ? 'scale-1' : 'scale-0')}
             style={{
               color: textColor,
@@ -68,7 +68,7 @@ export function StickyNote({
             ) : (
               <i className='fa-regular fa-circle text-lg'></i>
             )}
-          </button>
+          </span>
         </div>
       </>
     </button>

@@ -34,7 +34,7 @@ export default function Trash() {
         currentTab={currentTab}
         setCurrentTab={setCurrentTab}
       />
-      <ul className='flex h-[170px] flex-1 flex-col gap-2 overflow-auto py-5'
+      <ul className='flex h-[170px] flex-1 flex-col  overflow-x-hidden gap-2 overflow-auto py-5'
       ref={parent}
       >
         {trash[currentTab]?.length > 0 &&

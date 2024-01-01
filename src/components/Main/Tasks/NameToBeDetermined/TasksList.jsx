@@ -7,9 +7,9 @@ import { isTaskOverdue } from '../../../../utils/Moment';
 import { ConfirmationModal } from '../../../Common/ConfirmationModal';
 import { useSearchParams } from 'react-router-dom';
 import { useTasks } from '../../../../hooks/useTasks';
-import { MultipleDeletionsModal } from './MultipleDeletionsModal';
-import { usePagination } from './usePagination';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
+import useDeleteMultiple from '../../useDeleteMultiple';
+import { usePagination } from '../../usePagination';
 
 const filtersConditions = {
   all: () => true,
@@ -21,7 +21,7 @@ const filtersConditions = {
   lowPriority: (task) => task.priority === '0',
 };
 
-export default function DisplayedTasks({ onAdd, condition, activeTab }) {
+export default function TasksList({ onAdd, condition, activeTab }) {
   const {
     tasks,
     handleDeleteAllTasks,
@@ -31,52 +31,42 @@ export default function DisplayedTasks({ onAdd, condition, activeTab }) {
   } = useTasks();
   const [deletePermanently, setDeletePermanently] = useState(false);
   const [filteredTasks, setFilteredTasks] = useState([]);
-  const [isSelecting, setIsSelecting] = useState(false);
-  const [isDeleteMultipleModalOpen, setIsDeleteMultipleModalOpen] = useState(false);
-  const [isDeletingModalOpen, setIsDeletingModalOpen] = useState(false);
-  const whichDelete = useRef(null);
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [searchParams] = useSearchParams();
+  const { Pagination, currentPage, rowsPerPage } = usePagination(filteredTasks.length);
+  const { isSelecting, setIsSelecting, setIsDeleteMultipleModalOpen, Modal } = useDeleteMultiple({
+    selectedItems: selectedTasks,
+    setSelectedItems: setSelectedTasks,
+    itemType: 'Task',
+    onConfirm: () => {
+      setIsConfirmationModalOpen(true);
+      whichDelete.current = 'selected';
+    },
+  });
+  const whichDelete = useRef(null);
   const [parent] = useAutoAnimate({
     duration: 500,
   });
-  const { Pagination, currentPage, rowsPerPage } = usePagination(filteredTasks.length);
 
   const filter = searchParams.get('filter') || 'all';
   const sort = searchParams.get('sort');
   const direction = searchParams.get('direction');
 
-  // Filter tasks based on the selected filter
   useEffect(() => {
     setFilteredTasks(
       tasks.filter((task) => condition(task)).filter((task) => filtersConditions[filter]?.(task)),
     );
   }, [tasks, filter, condition]);
 
-  // MultipleDeletionsModal and selectedTasks
-
-  useEffect(() => {
-    setIsSelecting(false);
-  }, [activeTab]);
-
-  useEffect(() => {
-    selectedTasks.length > 0 && isSelecting
-      ? setIsDeleteMultipleModalOpen(true)
-      : setIsDeleteMultipleModalOpen(false);
-  }, [selectedTasks, isSelecting]);
-
-  useEffect(() => {
-    !isDeleteMultipleModalOpen &&
-      selectedTasks.length !== 0 &&
-      !isSelecting &&
-      setSelectedTasks([]);
-  }, [isDeleteMultipleModalOpen, selectedTasks, isSelecting, setSelectedTasks]);
-
   return (
-    <div className='relative flex h-full flex-col overflow-auto' ref={parent}>
+    <div
+      className='relative flex h-full flex-col gap-3 overflow-hidden  overflow-x-hidden'
+      ref={parent}
+    >
       <div className='flex items-center gap-2'>
         <div className='flex  flex-1 items-center gap-3 rounded-xl border border-zinc-200 px-5 py-1'>
           <i className='fa-solid fa-plus text-xl text-text-tertiary'></i>
-          <AddTask onAdd={onAdd} />
+          <AddTask onAdd={onAdd} disabled={isSelecting} />
         </div>
         <div className='flex gap-3'>
           <button
@@ -103,7 +93,7 @@ export default function DisplayedTasks({ onAdd, condition, activeTab }) {
               <TasksActions
                 tasksLength={filteredTasks.length}
                 onDeleteAll={() => {
-                  setIsDeletingModalOpen(true);
+                  setIsConfirmationModalOpen(true);
                   whichDelete.current = 'clear';
                   setIsDeleteMultipleModalOpen(false);
                 }}
@@ -124,7 +114,7 @@ export default function DisplayedTasks({ onAdd, condition, activeTab }) {
       </div>
       {tasks.filter((task) => condition(task)).length > 0 && (
         <>
-          <ul className='mt-3 h-full overflow-x-hidden space-y-2 overflow-y-auto pr-3' ref={parent}>
+          <ul className='mt-3 h-full space-y-2 overflow-y-auto overflow-x-hidden pr-3' ref={parent}>
             {filteredTasks
               .toSorted((a, b) => {
                 if (sort === 'cDate') {
@@ -168,7 +158,7 @@ export default function DisplayedTasks({ onAdd, condition, activeTab }) {
           </ul>
           {filteredTasks.length === 0 && (
             <div className='absolute top-1/2 flex w-full -translate-y-1/2 flex-col items-center justify-center gap-2'>
-              <h2 className='text-center text-2xl font-semibold text-text-secondary'>
+              <h2 className='text-center text-xl font-semibold text-text-secondary sm:text-2xl'>
                 You don&apos;t have any{' '}
                 {filter?.includes('Priority') ? filter?.replace('Priority', ' priority') : filter}{' '}
                 tasks{' '}
@@ -184,7 +174,7 @@ export default function DisplayedTasks({ onAdd, condition, activeTab }) {
       )}
       {tasks.filter((task) => condition(task)).length === 0 && (
         <div className='absolute top-1/2 flex w-full -translate-y-1/2 flex-col items-center justify-center gap-2'>
-          <h2 className='text-center text-2xl font-semibold text-text-secondary'>
+          <h2 className='text-center text-xl font-semibold text-text-secondary sm:text-2xl'>
             {activeTab === 'today'
               ? 'You have no tasks scheduled for today.'
               : activeTab === 'all'
@@ -194,7 +184,7 @@ export default function DisplayedTasks({ onAdd, condition, activeTab }) {
           <p className=' font-medium text-text-tertiary'>Add a new task to get started</p>
         </div>
       )}
-      {isDeletingModalOpen && (
+      {isConfirmationModalOpen && (
         <ConfirmationModal
           sentence={`Are you sure you want to ${
             whichDelete.current === 'selected'
@@ -205,34 +195,23 @@ export default function DisplayedTasks({ onAdd, condition, activeTab }) {
           } `}
           confirmText={whichDelete.current === 'selected' ? 'Delete' : 'Delete All'}
           onConfirm={() => {
-            setIsDeletingModalOpen(false);
             whichDelete.current === 'selected'
               ? handleDeleteMultipleTasks(deletePermanently)
               : handleDeleteAllTasks(condition, filtersConditions[filter], deletePermanently);
-            if (whichDelete.current === 'selected') {
-              setIsSelecting(false);
-              setIsDeleteMultipleModalOpen(false);
-            }
+
+            setIsConfirmationModalOpen(false);
+            setIsDeleteMultipleModalOpen(false);
+            setIsSelecting(false);
           }}
-          onCancel={() => setIsDeletingModalOpen(false)}
+          onCancel={() => setIsConfirmationModalOpen(false)}
           element='Tasks'
           checked={deletePermanently}
           setChecked={setDeletePermanently}
         />
       )}
-      <MultipleDeletionsModal
-        isOpen={isDeleteMultipleModalOpen}
-        onConfirm={() => {
-          setIsDeletingModalOpen(true);
-          whichDelete.current = 'selected';
-        }}
-        onClose={() => {
-          setIsDeleteMultipleModalOpen(false);
-          setIsSelecting(false);
-        }}
-        selectedTasksNumber={selectedTasks.length}
-      />
+
       {filteredTasks.filter((task) => condition(task)).length > 0 && Pagination}
+      {Modal}
     </div>
   );
 }

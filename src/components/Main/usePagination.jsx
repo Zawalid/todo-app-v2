@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useReducer, useRef } from 'react';
+import { DropDown } from '../Common/DropDown';
 
 const paginationState = {
   currentPage: 1,
@@ -35,7 +36,7 @@ export function usePagination(tasksLength) {
     currentPage === 1 || dispatch({ type: 'PREVIOUS_PAGE', payload: currentPage - 1 });
   }, [currentPage, dispatch]);
 
-  // Responsible for disabling the pagination buttons when the user reaches the first or last page
+  // Responsible for disabling the pagination items when the user reaches the first or last page
   useEffect(() => {
     if (currentPage * rowsPerPage >= tasksLength)
       dispatch({ type: 'DISABLE_BUTTON', payload: 'next' });
@@ -53,22 +54,48 @@ export function usePagination(tasksLength) {
 
   return {
     Pagination: (
-      <div className='mt-4 flex flex-wrap items-center justify-between gap-3'>
+      <div className='flex flex-wrap items-center justify-between gap-3'>
         <div className='flex items-center  gap-2'>
           <span className='text-xs font-medium text-text-secondary sm:text-sm '>
             Rows per page:
           </span>
-          <select
-            className=' cursor-pointer rounded-lg bg-background-secondary  px-3  py-1.5
+          <DropDown
+            toggler={
+              <span
+                className=' cursor-pointer rounded-lg bg-background-secondary  px-3  py-1.5
             text-xs text-text-tertiary focus:outline-none sm:text-sm'
-            value={rowsPerPage}
-            onChange={(e) => dispatch({ type: 'CHANGE_ROWS_PER_PAGE', payload: +e.target.value })}
+              >
+                {rowsPerPage}
+              </span>
+            }
+            options={{ placement: 'top', className: 'w-fit' }}
           >
-            <option value='5'>5</option>
-            <option value='10'>10</option>
-            <option value='20'>20</option>
-            <option value='30'>50</option>
-          </select>
+            <DropDown.Button
+              size='small'
+              onClick={() => dispatch({ type: 'CHANGE_ROWS_PER_PAGE', payload: 5 })}
+            >
+              5
+            </DropDown.Button>
+            <DropDown.Button
+              size='small'
+              onClick={() => dispatch({ type: 'CHANGE_ROWS_PER_PAGE', payload: 10 })}
+            >
+              10
+            </DropDown.Button>
+            <DropDown.Button
+              size='small'
+              onClick={() => dispatch({ type: 'CHANGE_ROWS_PER_PAGE', payload: 20 })}
+            >
+              20
+            </DropDown.Button>
+            <DropDown.Button
+              size='small'
+              onClick={() => dispatch({ type: 'CHANGE_ROWS_PER_PAGE', payload: 30 })}
+            >
+              30
+            </DropDown.Button>
+          </DropDown>
+
           <span className='flex gap-1 text-xs text-text-secondary sm:text-sm'>
             <span className='font-semibold text-text-primary'>{currentPage}</span>
             of

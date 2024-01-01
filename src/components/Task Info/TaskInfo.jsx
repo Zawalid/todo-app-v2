@@ -7,7 +7,7 @@ import { TaskSubTasks } from './TaskSubTasks/TaskSubTasks';
 import { TaskPriority } from './TaskPriority';
 import { useTasks } from '../../hooks/useTasks';
 import Drawer from '../Common/Drawer';
-import { useDeleteTask } from '../../hooks/useDeleteTask';
+import { useDeleteTask } from '../Main/Tasks/useDeleteTask';
 import { isTouchDevice } from '../../utils/helpers';
 import { useHref } from 'react-router-dom';
 

@@ -42,7 +42,7 @@ export function ConfirmationModal({
             {confirmText}
           </button>
           <button
-            className='rounded-lg bg-background-secondary px-4 py-2 text-sm font-semibold text-text-secondary'
+            className='rounded-lg  transition-colors duration-300 hover:bg-background-tertiary  bg-background-secondary px-4 py-2 text-sm font-semibold text-text-secondary'
             onClick={() => {
               onCancel();
               setChecked && setChecked(false);

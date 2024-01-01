@@ -1,11 +1,11 @@
 import { appWriteConfig } from '../lib/appwrite/config';
 import { toast } from 'sonner';
-import { useTasks } from './useTasks';
-import { useLists } from './useLists';
-import { useTags } from './useTags';
-import { useStickyNotes } from './useStickyNotes';
-import { useLoadElements } from './useLoadElements';
-import { useUser } from './useUser';
+import { useTasks } from '../hooks/useTasks';
+import { useLists } from '../hooks/useLists';
+import { useTags } from '../hooks/useTags';
+import { useStickyNotes } from '../hooks/useStickyNotes';
+import { useLoadElements } from '../hooks/useLoadElements';
+import { useUser } from '../hooks/useUser';
 
 const { tasksCollectionId, listsCollectionId, tagsCollectionId, stickyNotesCollectionId } =
   appWriteConfig;

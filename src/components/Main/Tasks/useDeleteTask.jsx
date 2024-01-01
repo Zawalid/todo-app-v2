@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { ConfirmationModal } from '../components/Common/ConfirmationModal';
-import { useTasks } from './useTasks';
+import { ConfirmationModal } from '../../Common/ConfirmationModal';
+import { useTasks } from '../../../hooks/useTasks';
 
 export function useDeleteTask(id) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);

@@ -34,18 +34,7 @@ export function List({ list }) {
     };
   }, []);
 
-  // function changeColor(colorsDiv) {
-  //   function handleClick(e) {
-  //     console.log(e.target);
-  //     if (colorsDiv.current.contains(e.target) && e.target.classList.contains('color')) {
-  //       const color = e.target.dataset.color;
-  //       console.log(color);
-  //       // setListColor(color);
-  //       // handleChangeListColor($id, color);
-  //     }
-  //   }
-  //   document.addEventListener('click', handleClick);
-  // }
+
   function openRenameInput() {
     setIsRenameInputOpen(true);
     setTimeout(() => newListTitle.current.focus(), 50);
