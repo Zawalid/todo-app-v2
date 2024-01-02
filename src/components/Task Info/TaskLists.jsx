@@ -11,7 +11,7 @@ export function TaskLists({ taskListId, setTaskListId }) {
       <DropDown
         toggler={
           <DropDown.Toggler>
-            <span className='overflow-auto'>
+            <span className='truncate'>
               {' '}
               {lists?.find((list) => list.$id === taskListId)?.title || 'None'}{' '}
             </span>

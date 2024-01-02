@@ -12,7 +12,7 @@ export function StickyNote({
   }, [listView]);
 
   return (
-    <button
+    <button 
       className={
         'relative flex w-full flex-col gap-3 overflow-hidden rounded-lg px-5 py-3 shadow-[rgba(3_3_3_0.08)_0px_6px_16px] transition-[transform,height] duration-500 hover:scale-105 ' +
         (listView ? 'h-[130px]' : 'h-[270px] ')
@@ -30,10 +30,10 @@ export function StickyNote({
             (!description && !listView ? ' place-content-center' : 'place-content-start text-start')
           }
         >
-          <h2 className='text-xl font-bold sm:text-2xl'>{title}</h2>
+          <h2 className='text-xl font-bold truncate sm:text-2xl'>{title || 'Untitled'}</h2>
 
           {description && (
-            <p
+            <p 
               className={
                 'note_text overflow-hidden text-xs font-medium sm:text-sm ' +
                 (textColor === '#fff' ? 'text-background-tertiary' : 'text-text-tertiary')

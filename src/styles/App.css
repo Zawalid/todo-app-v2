@@ -2,7 +2,7 @@
   --line-clamp: 8;
 }
 .menu_element {
-  @apply grid cursor-pointer grid-cols-[30px_auto_35px] items-center rounded-lg p-2 transition-colors duration-500 hover:bg-background-tertiary;
+  @apply grid cursor-pointer  grid-cols-[30px_auto_35px] items-center rounded-lg p-2 transition-colors duration-500 hover:bg-background-tertiary;
 }
 .menu_element.active {
   @apply bg-background-tertiary;
@@ -128,4 +128,8 @@ input[type='checkbox'].task {
 
 [vaul-overlay][vaul-drawer-visible='true'] {
   opacity: 1 !important;
+}
+
+.no_scrollbar::-webkit-scrollbar {
+  display: none;
 }

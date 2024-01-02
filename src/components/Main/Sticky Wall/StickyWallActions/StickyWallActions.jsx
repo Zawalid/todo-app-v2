@@ -68,7 +68,7 @@ export default function StickyWallActions({
         <DropDown
           toggler={<i className='fa-solid fa-ellipsis-v text-xl'></i>}
           togglerClassName='h-8 w-8 rounded-full bg-background-primary text-text-tertiary transition-colors duration-300 hover:bg-background-secondary'
-          options={{ className: 'w-52', shouldCloseOnClick: false }}
+          options={{ className: 'w-52 max-h-[100%]', shouldCloseOnClick: false }}
         >
           <SortNotes
             options={{

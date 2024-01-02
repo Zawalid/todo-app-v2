@@ -25,11 +25,11 @@ export function Tag({ tag, showDeleteButton, customClassName, onDeleteTag, onSel
           </button>
         )}
         <li
-          className={'menu_tag_element relative overflow-hidden text-center ' + customClassName}
+          className={'menu_tag_element truncate relative overflow-hidden text-center ' + customClassName}
           style={{ backgroundColor: tag.bgColor, color: tag.textColor }}
           onClick={() => onSelectTag?.(tag.$id)}
         >
-          <span className='block w-full overflow-auto'>{tag.title}</span>
+         {tag.title}
         </li>
       </div>
       {isConfirmationModalOpen && (

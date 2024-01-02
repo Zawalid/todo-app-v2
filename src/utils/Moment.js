@@ -5,14 +5,7 @@ moment.updateLocale('en', {
     dow: 1,
   },
 });
-export function getFormattedDate(date) {
-  const inputDate = moment(date);
-  const diffDays = moment().diff(inputDate, 'days');
 
-  if (diffDays === 0) return 'Today';
-  if (diffDays === 1) return 'Yesterday';
-  return diffDays <= 7 ? `${diffDays} days ago` : inputDate.format('ddd MMM D YY');
-}
 
 export function checkIfToday(date) {
   if (!date) return;

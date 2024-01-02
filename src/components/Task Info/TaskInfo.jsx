@@ -129,7 +129,7 @@ export function TaskInfo() {
   const taskInfo = (
     <>
       <div className='grid grid-cols-[auto_40px] items-center gap-5 pb-3'>
-        <h2 className='text-xl overflow-auto font-bold text-text-secondary'>
+        <h2 className='text-xl truncate font-bold text-text-secondary'>
           {taskTitle ? taskTitle : 'Untitled'}
         </h2>
         {isTouchDevice() ? (

@@ -1,46 +1,40 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CheckBox } from '../../Common/CheckBox';
 
 export function SubTask({ title, onEdit, onDelete, isCompleted, onComplete }) {
   const [checked, setChecked] = useState(isCompleted);
-  const subTaskEl = useRef(null);
+  const [subtask, setSubtask] = useState(title || '');
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     onComplete(checked);
     // eslint-disable-next-line
   }, [checked]);
 
-  function editSubTask() {
-    function saveTitle() {
-      subTaskEl.current.setAttribute('contenteditable', false);
-      onEdit(subTaskEl.current.innerText);
-    }
-    subTaskEl.current.setAttribute('contenteditable', true);
-    subTaskEl.current.focus();
-    subTaskEl.current.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        saveTitle();
-      }
-    });
-    subTaskEl.current.addEventListener('blur', () => saveTitle());
-  }
   return (
     <li className='flex items-center gap-3'>
       <CheckBox checked={checked} onChange={() => setChecked(!checked)} />
-      <p
+      <input
+        type='text'
         className={
-          'border-1  flex-1 overflow-auto text-sm font-medium text-text-secondary  focus:border-zinc-200 focus:outline-none ' +
-          (checked ? 'line-through' : '')
+          ' flex-1 truncate rounded-md  p-1 text-sm font-medium text-text-secondary outline-none ' +
+          (checked ? 'line-through ' : '') +
+          (isEditing ? 'border border-zinc-200' : '')
         }
-        ref={subTaskEl}
-      >
-        {title}
-      </p>
+        readOnly={!isEditing}
+        value={subtask}
+        onChange={(e) => (setSubtask(e.target.value), onEdit(e.target.value))}
+        onBlur={() => (setIsEditing(false), onEdit(subtask))}
+      />
       <div className='ml-5 flex items-center'>
         <button
           className='grid h-8 w-8 place-content-center rounded-full bg-background-primary text-sm text-text-tertiary transition-colors duration-300 hover:bg-background-secondary'
-          onClick={editSubTask}
+          onClick={(e) => {
+            e.target.parentElement.parentElement.parentElement
+              .querySelector('[type="text"]')
+              ?.focus();
+            setIsEditing(!isEditing);
+          }}
         >
           <i className='fas fa-pen cursor-pointer'></i>
         </button>

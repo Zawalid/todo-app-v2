@@ -1,17 +1,16 @@
-import { Suspense, lazy, useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useHref } from 'react-router-dom';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
+import TasksList from './Tasks/TasksList';
+import Upcoming from './Tasks/Upcoming';
+import StickyWall from './Sticky Wall/StickyWall';
+import SearchResults from './Search/SearchResults';
+import Trash from './Trash/Trash';
 import { Title } from './Title';
 import { checkIfToday } from '../../utils/Moment';
 import { useTasks, useSearch, useLists, useStickyNotes, useTrash } from '../../hooks';
 import { TasksSkeleton, UpcomingSkeleton, StickyWallSkeleton, TrashSkeleton } from '../Skeletons';
 import { SpinnerLoader } from '../Common/SpinnerLoader';
-
-const TasksList = lazy(() => import('./Tasks/NameToBeDetermined/TasksList'));
-const Upcoming = lazy(() => import('./Tasks/Upcoming/Upcoming'));
-const StickyWall = lazy(() => import('./Sticky Wall/StickyWall'));
-const SearchResults = lazy(() => import('./Search/SearchResults'));
-const Trash = lazy(() => import('./Trash/Trash'));
 
 const tabs = {
   today: {
@@ -37,9 +36,9 @@ const tabs = {
 };
 
 export function Main() {
-  const { tasks, isTasksLoading, handleAddTask, todayTasks, upcomingTasks } = useTasks();
+  const { tasks, isTasksLoading, todayTasks, upcomingTasks } = useTasks();
   const { lists } = useLists();
-  const { stickyNotes, isStickyNoteOpened } = useStickyNotes();
+  const { stickyNotes, isStickyNoteOpened, isNotesLoading } = useStickyNotes();
   const { searchResults } = useSearch();
   const { trashLength } = useTrash();
   const activeTab = useHref().split('/app/')[1];
@@ -81,49 +80,32 @@ export function Main() {
     return false;
   };
 
+  const isLoading = activeTab === 'sticky-wall' ? isNotesLoading : isTasksLoading;
+
+
   return (
     <main
       className='relative flex flex-1 flex-col overflow-hidden rounded-xl bg-background-primary pl-2'
       ref={parent}
     >
-      <Title title={title} count={count} />
-      {isTasksLoading ? (
-        tabs[activeTab]?.skeleton ? (
-          tabs[activeTab]?.skeleton
-        ) : (
-          <TasksSkeleton number={6} />
-        )
+      {/* <Title title={title} count={count} /> */}
+      {isLoading ? (
+        tabs[activeTab]?.skeleton || <TasksSkeleton number={6} />
       ) : (
-        <Suspense
-          fallback={
-            tabs[activeTab]?.skeleton ? tabs[activeTab]?.skeleton : <TasksSkeleton number={6} />
-          }
-        >
-          {!['upcoming', 'sticky-wall', 'search', 'trash'].includes(activeTab) ? (
+        <>
+          {!['upcoming', 'sticky-wall', 'search', 'trash'].includes(activeTab) && (
             <TasksList
-              onAdd={(title) => {
-                const dueDate = activeTab === 'today' && new Date().toISOString().split('T')[0];
-                const newTask = {
-                  title,
-                  note: '',
-                  dueDate: dueDate || '',
-                  listId: listId || 'none',
-                  subtasks: [],
-                  isCompleted: false,
-                  tagsIds: [],
-                  priority: 0,
-                };
-                handleAddTask(newTask);
-              }}
+              dueDate={activeTab === 'today' && new Date().toISOString().split('T')[0]}
+              listId={listId}
               condition={condition}
               activeTab={activeTab}
             />
-          ) : null}
+          )}
           {activeTab === 'upcoming' && <Upcoming />}
           {(activeTab === 'sticky-wall' || isStickyNoteOpened) && <StickyWall />}
           {activeTab === 'search' && !isStickyNoteOpened && <SearchResults />}
-          {activeTab === 'trash' && !isStickyNoteOpened && <Trash />}{' '}
-        </Suspense>
+          {activeTab === 'trash' && !isStickyNoteOpened && <Trash />}
+        </>
       )}
     </main>
   );

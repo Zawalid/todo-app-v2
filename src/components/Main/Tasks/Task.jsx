@@ -86,14 +86,17 @@ export function Task({
     >
       <button
         className={
-          ' grid min-h-[49px] w-full cursor-pointer select-none grid-cols-[20px_auto_20px] items-center gap-3 overflow-auto rounded-lg border-b border-zinc-200 px-5  py-2 text-start transition-all duration-500 hover:translate-y-1 hover:shadow-[2px_2px_0px_rgb(228_228_231)]   ' +
+          ' grid min-h-[49px] w-full select-none grid-cols-[20px_auto_20px] items-center gap-3 rounded-lg border-b border-zinc-200 px-3 py-2  text-start transition-all duration-500 hover:translate-y-1 hover:shadow-[2px_2px_0px_rgb(228_228_231)] sm:px-5   ' +
           (checked ? 'bg-background-tertiary ' : 'bg-slate-50 ')
         }
       >
         <TaskCheckbox isSelecting={isSelecting} checked={checked} setChecked={setChecked} />
-        <div>
+        <div className=' overflow-hidden'>
           <span
-            className={'text-sm font-medium text-text-secondary ' + (checked ? 'line-through' : '')}
+            className={
+              'block truncate text-sm font-medium text-text-secondary ' +
+              (checked ? 'line-through' : '')
+            }
           >
             {title}
           </span>
@@ -101,7 +104,7 @@ export function Task({
           {[listName, dueDate, subtasks?.length > 0, tagsIds?.length > 0, priority !== 0].some(
             (c) => c,
           ) && (
-            <div className='mt-2 flex max-h-[40px] flex-wrap items-center gap-5 overflow-auto'>
+            <div className='mt-2 max-h-[40px] flex overflow-auto flex-wrap items-center gap-y-3 gap-x-5'>
               <TaskDueDate dueDate={dueDate} isPassed={isPassed} checked={checked} />
               <TaskSubtasks subtasks={subtasks} />
               <TaskPriority priority={priority} />
@@ -223,23 +226,19 @@ function TaskSubtasks({ subtasks }) {
 function TaskTags({ tagsIds }) {
   const { tags } = useTags();
   if (!tagsIds?.length > 0) return null;
-  return (
-    <ul className='flex flex-wrap items-center gap-2'>
-      {tagsIds.map((tagId) => {
-        const tag = tags.find((t) => t.$id === tagId);
-        if (tag)
-          return (
-            <Tag
-              key={tag.$id}
-              tag={tag}
-              isMainTag={false}
-              showDeleteButton={false}
-              customClassName={'px-2 py-1 cursor-auto'}
-            />
-          );
-      })}
-    </ul>
-  );
+  return tagsIds.map((tagId) => {
+    const tag = tags.find((t) => t.$id === tagId);
+    if (tag)
+      return (
+        <Tag
+          key={tag.$id}
+          tag={tag}
+          isMainTag={false}
+          showDeleteButton={false}
+          customClassName={'px-2 py-1 cursor-auto'}
+        />
+      );
+  });
 }
 
 function TaskPriority({ priority }) {
@@ -262,9 +261,9 @@ function TaskPriority({ priority }) {
 function TaskList({ listId, listName, listColor }) {
   if (!listId || listId === 'none') return null;
   return (
-    <div className='flex items-center gap-2'>
+    <div className='grid grid-cols-[16px_auto] items-center gap-2 overflow-hidden'>
       <span className='h-4 w-4 rounded-sm' style={{ backgroundColor: listColor }}></span>
-      <span className='text-xs font-semibold text-text-secondary'>{listName}</span>
+      <span className='truncate text-xs font-semibold text-text-secondary'>{listName}</span>
     </div>
   );
 }

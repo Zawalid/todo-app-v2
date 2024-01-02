@@ -1,14 +1,24 @@
 import { useState } from 'react';
 import { useTasks } from '../../../hooks/useTasks';
 
-export function AddTask({ onAdd, disabled }) {
+export function AddTask({ dueDate, listId, disabled }) {
   const [value, setValue] = useState('');
-  const { isAddingTask } = useTasks();
+  const { isAddingTask, handleAddTask } = useTasks();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!value) return;
-    onAdd(value);
+    const newTask = {
+      title: value,
+      note: '',
+      dueDate: dueDate || '',
+      listId: listId || 'none',
+      subtasks: [],
+      isCompleted: false,
+      tagsIds: [],
+      priority: 0,
+    };
+    handleAddTask(newTask);
     setValue('');
   };
 

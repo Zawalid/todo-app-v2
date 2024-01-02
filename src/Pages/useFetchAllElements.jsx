@@ -14,7 +14,7 @@ export function useFetchAllElements() {
   const { setTasks, setIsTasksLoading } = useTasks();
   const { setLists, setIsListsLoading } = useLists();
   const { setTags, setIsTagsLoading } = useTags();
-  const { setStickyNotes } = useStickyNotes();
+  const { setStickyNotes, setIsNotesLoading } = useStickyNotes();
   const { handleLoadElements } = useLoadElements();
   const { getCurrentUser } = useUser();
 
@@ -37,6 +37,7 @@ export function useFetchAllElements() {
     {
       collectionId: stickyNotesCollectionId,
       setElements: setStickyNotes,
+      setIsLoading: setIsNotesLoading,
     },
   ];
 

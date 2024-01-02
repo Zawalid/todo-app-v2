@@ -19,6 +19,7 @@ function StickyNotesProvider({ children }) {
   const [isStickyNoteEditorOpen, setIsStickyNoteEditorOpen] = useState(false);
   const [selectedNotes, setSelectedNotes] = useState([]);
   const [currentProcessedNote, setCurrentProcessedNote] = useState(null);
+  const [isNotesLoading, setIsNotesLoading] = useState(true);
 
   const { handleDeleteElement } = useDeleteElement();
   const { handleLoadElements } = useLoadElements();
@@ -52,17 +53,16 @@ function StickyNotesProvider({ children }) {
     }
   }
   async function handleUpdateStickyNote(id, note, setIsSaving) {
-    if (currentProcessedNote === id) return;
     setCurrentProcessedNote(id);
     try {
       setIsSaving(true);
+      setStickyNotes((notes) => notes.map((n) => (n.$id === id ? { ...n, ...note } : n)));
       const newNote = await databases.updateDocument(
         DATABASE_ID,
         STICKY_NOTES_COLLECTION_ID,
         id,
         note,
       );
-      setStickyNotes((notes) => notes.map((note) => (note.$id === id ? newNote : note)));
       if (currentNote?.$id === id) setCurrentNote(newNote);
     } catch (error) {
       toast.error('Failed to update the note.', {
@@ -206,6 +206,8 @@ function StickyNotesProvider({ children }) {
         handleDeleteAllNotes,
         handleDeleteMultipleNotes,
         setSelectedNotes,
+        isNotesLoading,
+        setIsNotesLoading,
       }}
     >
       {children}

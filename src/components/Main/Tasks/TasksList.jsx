@@ -1,27 +1,27 @@
 import Tippy from '@tippyjs/react';
-import { AddTask } from '../AddTask';
-import { Task } from '../Task';
+import { AddTask } from './AddTask';
+import { Task } from './Task';
 import { TasksActions } from './TasksActions/TasksActions';
 import { useEffect, useRef, useState } from 'react';
-import { isTaskOverdue } from '../../../../utils/Moment';
-import { ConfirmationModal } from '../../../Common/ConfirmationModal';
+import { isTaskOverdue } from '../../../utils/Moment';
+import { ConfirmationModal } from '../../Common/ConfirmationModal';
 import { useSearchParams } from 'react-router-dom';
-import { useTasks } from '../../../../hooks/useTasks';
+import { useTasks } from '../../../hooks/useTasks';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
-import useDeleteMultiple from '../../useDeleteMultiple';
-import { usePagination } from '../../usePagination';
+import useDeleteMultiple from '../useDeleteMultiple';
+import { usePagination } from '../usePagination';
 
 const filtersConditions = {
   all: () => true,
   completed: (task) => task.isCompleted,
   uncompleted: (task) => !task.isCompleted,
   overdue: (task) => isTaskOverdue(task.dueDate) && !task.isCompleted,
-  highPriority: (task) => task.priority === '2',
-  mediumPriority: (task) => task.priority === '1',
-  lowPriority: (task) => task.priority === '0',
+  'high-priority': (task) => task.priority === '2',
+  'medium-priority': (task) => task.priority === '1',
+  'low-priority': (task) => task.priority === '0',
 };
 
-export default function TasksList({ onAdd, condition, activeTab }) {
+export default function TasksList({ dueDate, listId, condition, activeTab }) {
   const {
     tasks,
     handleDeleteAllTasks,
@@ -64,7 +64,7 @@ export default function TasksList({ onAdd, condition, activeTab }) {
       <div className='flex items-center gap-2'>
         <div className='flex  flex-1 items-center gap-3 rounded-xl border border-zinc-200 px-5 py-1'>
           <i className='fa-solid fa-plus text-xl text-text-tertiary'></i>
-          <AddTask onAdd={onAdd} disabled={isSelecting} />
+          <AddTask dueDate={dueDate} listId={listId} disabled={isSelecting} />
         </div>
         <Actions
           filteredTasks={filteredTasks}
@@ -243,9 +243,8 @@ function NoFilteredTasksMessage({ filter, activeTab, filteredTasks }) {
   return (
     <div className='absolute top-1/2 flex w-full -translate-y-1/2 flex-col items-center justify-center gap-2'>
       <h2 className='text-center text-xl font-semibold text-text-secondary sm:text-2xl'>
-        You don&apos;t have any{' '}
-        {filter?.includes('Priority') ? filter?.replace('Priority', ' priority') : filter} tasks{' '}
-        {activeTab === 'today' ? 'scheduled for today' : !activeTab ? 'yet' : 'in this list'}
+        You don&apos;t have any {filter?.includes('priority') ? filter?.replace('-', ' ') : filter}{' '}
+        tasks {activeTab === 'today' ? 'scheduled for today' : !activeTab ? 'yet' : 'in this list'}
       </h2>
     </div>
   );

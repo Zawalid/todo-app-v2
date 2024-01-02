@@ -1,25 +1,18 @@
-import { getFormattedDate } from '../../../../utils/Moment';
-
-export function Footer({ editor, creationDate, isSaving }) {
-  const cDate = getFormattedDate(creationDate);
+export function Footer({ noteInfo }) {
   return (
-    <div className='mt-3 flex items-center justify-between bg-background-secondary px-3 py-2  font-medium text-text-tertiary'>
+    <div className='mt-3 flex items-center justify-between bg-background-secondary px-3 py-1  font-medium text-text-tertiary'>
       <div>
-        <span className='text-xs sm:text-sm'>
+        <span className='text-[10px] '>
           <i className='fas fa-calendar mr-2 text-text-tertiary '></i>
-          Created {Number.isFinite(parseInt(cDate)) ? 'on' : ''} {cDate}
+          {noteInfo.date}
         </span>
       </div>
-      <div className='flex items-center gap-5'>
-        <div>
-          <span className='mr-2 border-r border-text-tertiary pr-2 text-xs sm:text-sm'>
-            {editor?.storage?.characterCount?.words()} words
-          </span>
-          <span className='text-xs sm:text-sm'>
-            {editor?.storage?.characterCount?.characters()} characters
-          </span>
-        </div>
-        {isSaving && <i className='fa-solid fa-spinner animate-spin'></i>}
+      <div className='flex items-center'>
+        <span className='text-[10px]'>{noteInfo.words} words</span>
+        <span className='mx-2 border-x border-text-tertiary px-2 text-[10px]'>
+          {noteInfo.characters} characters
+        </span>
+        {noteInfo.getStatus()}
       </div>
     </div>
   );

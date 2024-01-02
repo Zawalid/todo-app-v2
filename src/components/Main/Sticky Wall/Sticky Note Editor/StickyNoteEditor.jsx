@@ -16,7 +16,6 @@ export function StickyNoteEditor({ currentNote, onBack }) {
   const [description, setDescription] = useState(currentNote?.description);
   const [textColor, setTextColor] = useState(currentNote?.textColor);
   const [bgColor, setBgColor] = useState(currentNote?.bgColor);
-  const [isHeaderOpen, setIsHeaderOpen] = useState(true);
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [deletePermanently, setDeletePermanently] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -53,15 +52,16 @@ export function StickyNoteEditor({ currentNote, onBack }) {
 
   return (
     <>
-      <div className=' grid flex-[0.99] grid-rows-[40px_1fr]'>
-        <div
-          className='relative flex items-center justify-between rounded-t-lg px-4 '
+      <div className=' grid flex-[0.99] overflow-auto bg-background-primary' id='editor'>
+        {/* <div
+          className='relative grid grid-cols-[100px_auto_100px] place-content-center  items-center  rounded-t-lg px-4 '
           style={{
             backgroundColor: bgColor,
             color: textColor,
           }}
         >
           <button
+            className='place-self-start'
             onClick={() => {
               if (!title && isElementEmpty(content) && !description) handleDeleteNote(true, true);
               onBack();
@@ -69,14 +69,15 @@ export function StickyNoteEditor({ currentNote, onBack }) {
           >
             <i className='fa-solid fa-chevron-left text-lg'></i>
           </button>
-
-          <span className='text-xl font-semibold'>{title || 'Untitled'}</span>
-          <div className='flex gap-5'>
+          <div className='overflow-hidden'>
+            <span className='truncate  text-xl font-semibold'>{title || 'Untitled'}</span>
+          </div>
+          <div className='flex gap-5 place-self-end'>
             <DropDown
               toggler={<i className='fas fa-palette text-lg'></i>}
               options={{
                 className: 'w-52',
-                shouldCloseOnClick : false
+                shouldCloseOnClick: false,
               }}
             >
               <div className='space-y-2  py-1'>
@@ -114,39 +115,21 @@ export function StickyNoteEditor({ currentNote, onBack }) {
               </DropDown.Button>
             </DropDown>
           </div>
-        </div>
-        <div className='relative flex h-full flex-col overflow-hidden rounded-b-lg border-2 border-zinc-200 border-t-transparent'>
-          <button
-            className='absolute -top-1 left-1/2 -translate-x-1/2'
-            onClick={() => setIsHeaderOpen(!isHeaderOpen)}
-          >
-            <i
-              className={`fa-solid fa-chevron-down text-text-tertiary transition-transform duration-300 ${
-                isHeaderOpen ? 'rotate-180' : ''
-              }`}
-            ></i>
-          </button>
-          <StickyNoteHeader
-            isOpen={isHeaderOpen}
-            title={title}
-            setTitle={(title) => {
-              handleUpdateNote('title', title || 'Untitled');
-              setTitle(title);
-            }}
-            description={description}
-            setDescription={(description) => {
-              handleUpdateNote('description', description);
-              setDescription(description);
-            }}
-          />
+        </div> */}
+        <div className='relative flex h-full flex-col overflow-hidden rounded-lg border-zinc-200 '>
           <TipTap
             onUpdateContent={(content) => {
               handleUpdateNote('content', content);
               setContent(content);
             }}
             content={content}
-            creationDate={currentNote?.$createdAt}
+            updateDate={currentNote?.$updatedAt}
             isSaving={isSaving}
+            title={title}
+            setTitle={(title) => {
+              handleUpdateNote('title', title || 'Untitled');
+              setTitle(title);
+            }}
           />
         </div>
       </div>

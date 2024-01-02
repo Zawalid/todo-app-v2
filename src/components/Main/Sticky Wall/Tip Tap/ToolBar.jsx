@@ -1,13 +1,37 @@
+import { toast } from 'sonner';
 import CustomTippy from '../../../Common/CustomTippy';
 import { AddLink } from './AddLink';
 import { Highlighter } from './Highlighter';
 import { TextColor } from './TextColor';
+import { useEffect, useState } from 'react';
+import { isTouchDevice } from '../../../../utils/helpers';
 
-export const MenuBar = ({ editor }) => {
+export const ToolBar = ({ editor, isKeyboardOpen, className }) => {
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+
+  useEffect(() => {
+    if ('virtualKeyboard' in navigator && isKeyboardOpen) {
+      navigator.virtualKeyboard.overlaysContent = true;
+      const handleKeyboard = (e) => setKeyboardHeight(e.target.boundingRect.height);
+      navigator.virtualKeyboard.addEventListener('geometrychange', handleKeyboard);
+
+      return () => navigator.virtualKeyboard.removeEventListener('geometrychange', handleKeyboard);
+    }
+  }, [isKeyboardOpen]);
+
   if (!editor) return null;
   return (
-    <div className='flex bg-background-primary w-full justify-between gap-3 overflow-auto p-3'>
-      <div className='flex w-full gap-3 overflow-auto pb-2'>
+    <div
+      className={
+        'flex w-full justify-between gap-3 overflow-auto bg-background-primary ' + (isTouchDevice()
+          ? 'fixed left-0 z-[1000] border-t shadow-lg'
+          : '')
+      }
+      style={{
+        bottom: `${isKeyboardOpen ? keyboardHeight : 0}px`,
+      }}
+    >
+      <div className='no_scrollbar  flex w-full gap-3 overflow-auto px-3 py-2  sm:flex-wrap'>
         <div className='flex items-center gap-2'>
           <CustomTippy content='Bold'>
             <button
@@ -85,13 +109,15 @@ export const MenuBar = ({ editor }) => {
             </button>
           </CustomTippy>
         </div>
-        <div className='mx-1 flex items-center gap-2 border-x-2 border-background-tertiary px-4'>
+        <span className='w-[2px] bg-background-tertiary'></span>
+        <div className='flex items-center gap-2'>
           <CustomTippy content='Heading 1'>
             <button
               onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
               className={editor.isActive('heading', { level: 1 }) ? 'is-active' : 'not-active'}
             >
-              <i className='fa-solid fa-heading'></i>1
+              <i className='fa-solid fa-heading'></i>
+              <span className='text-[10px]'>1</span>
             </button>
           </CustomTippy>
           <CustomTippy content='Heading 2'>
@@ -99,7 +125,8 @@ export const MenuBar = ({ editor }) => {
               onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
               className={editor.isActive('heading', { level: 2 }) ? 'is-active' : 'not-active'}
             >
-              <i className='fa-solid fa-heading'></i>2
+              <i className='fa-solid fa-heading'></i>
+              <span className='text-[10px]'>2</span>
             </button>
           </CustomTippy>
           <CustomTippy content='Heading 3'>
@@ -107,7 +134,8 @@ export const MenuBar = ({ editor }) => {
               onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
               className={editor.isActive('heading', { level: 3 }) ? 'is-active' : 'not-active'}
             >
-              <i className='fa-solid fa-heading'></i>3
+              <i className='fa-solid fa-heading'></i>
+              <span className='text-[10px]'>3</span>
             </button>
           </CustomTippy>
           <CustomTippy content='Paragraph'>
@@ -147,7 +175,13 @@ export const MenuBar = ({ editor }) => {
               onClick={() => editor.chain().focus().toggleCodeBlock().run()}
               className={editor.isActive('codeBlock') ? 'is-active' : 'not-active'}
             >
-              <svg xmlns='http://www.w3.org/2000/svg' fill='currentColor' viewBox='0 0 24 24'>
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                fill='currentColor'
+                viewBox='0 0 24 24'
+                width='15px'
+                height='15px'
+              >
                 <g>
                   <path fill='none' d='M0 0h24v24H0z'></path>
                   <path d='M3 3h18a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h16V5H4zm8 10h6v2h-6v-2zm-3.333-3L5.838 9.172l1.415-1.415L11.495 12l-4.242 4.243-1.415-1.415L8.667 12z'></path>
@@ -156,6 +190,8 @@ export const MenuBar = ({ editor }) => {
             </button>
           </CustomTippy>
         </div>
+        <span className='w-[2px] bg-background-tertiary'></span>
+
         <div className='flex items-center gap-2'>
           <CustomTippy content='Blockquote'>
             <button
@@ -170,7 +206,13 @@ export const MenuBar = ({ editor }) => {
               onClick={() => editor.chain().focus().setHorizontalRule().run()}
               className='not-active'
             >
-              <svg xmlns='http://www.w3.org/2000/svg' fill='currentColor' viewBox='0 0 24 24'>
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                fill='currentColor'
+                viewBox='0 0 24 24'
+                width='15px'
+                height='15px'
+              >
                 <g>
                   <path fill='none' d='M0 0h24v24H0z'></path>
                   <path d='M2 11h2v2H2v-2zm4 0h12v2H6v-2zm14 0h2v2h-2v-2z'></path>
@@ -179,7 +221,9 @@ export const MenuBar = ({ editor }) => {
             </button>
           </CustomTippy>
         </div>
-        <div className='flex items-center gap-2  border-x-2 border-background-tertiary px-4'>
+        <span className='w-[2px] bg-background-tertiary'></span>
+
+        <div className='flex items-center gap-2'>
           <CustomTippy content='Align Left'>
             <button
               onClick={() => editor.chain().focus().setTextAlign('left').run()}
@@ -205,7 +249,9 @@ export const MenuBar = ({ editor }) => {
             </button>
           </CustomTippy>
         </div>
-        <div className='mx-1 flex items-center gap-2 '>
+        <span className='w-[2px] bg-background-tertiary'></span>
+
+        <div className='flex items-center gap-2 '>
           <CustomTippy content='Hard Break'>
             <button
               onClick={() => editor.chain().focus().setHardBreak().run()}
@@ -226,26 +272,71 @@ export const MenuBar = ({ editor }) => {
           </CustomTippy>
         </div>
       </div>
-      <div className=' flex items-center gap-2 border-l-2 border-background-tertiary pb-2 pl-4'>
-        <CustomTippy content='Undo'>
-          <button
-            onClick={() => editor.chain().undo().run()}
-            disabled={!editor.can().chain().undo().run()}
-            className='not-active cursor-pointer'
-          >
-            <i className='fa-solid fa-rotate-left'></i>{' '}
-          </button>
-        </CustomTippy>
-        <CustomTippy content='Redo'>
-          <button
-            onClick={() => editor.chain().redo().run()}
-            disabled={!editor.can().chain().redo().run()}
-            className='not-active cursor-pointer'
-          >
-            <i className='fa-solid fa-rotate-right'></i>{' '}
-          </button>
-        </CustomTippy>
-      </div>
+      {isTouchDevice() || <UndoRedo editor={editor} />}
     </div>
   );
 };
+
+export function UndoRedo({ editor }) {
+  if (!editor) return null;
+  return (
+    <div className='flex items-center gap-2  border-background-tertiary px-3 py-2'>
+      <CustomTippy content='Undo'>
+        <button
+          onClick={() => editor.chain().undo().run()}
+          disabled={!editor.can().chain().undo().run()}
+          className='not-active cursor-pointer'
+        >
+          <svg
+            stroke='currentColor'
+            fill='currentColor'
+            strokeWidth='0'
+            viewBox='0 0 24 24'
+            height='20px'
+            width='20px'
+            xmlns='http://www.w3.org/2000/svg'
+          >
+            <path d='M7.18,4,8.6,5.44,6.06,8h9.71a6,6,0,0,1,0,12h-2V18h2a4,4,0,0,0,0-8H6.06L8.6,12.51,7.18,13.92,2.23,9Z'></path>
+          </svg>
+        </button>
+      </CustomTippy>
+      <CustomTippy content='Redo'>
+        <button
+          onClick={() => editor.chain().redo().run()}
+          disabled={!editor.can().chain().redo().run()}
+          className='not-active cursor-pointer'
+        >
+          <svg
+            stroke='currentColor'
+            fill='currentColor'
+            strokeWidth='0'
+            viewBox='0 0 24 24'
+            height='20px'
+            width='20px'
+            xmlns='http://www.w3.org/2000/svg'
+          >
+            <path d='M16.82,4,15.4,5.44,17.94,8H8.23a6,6,0,0,0,0,12h2V18h-2a4,4,0,0,1,0-8h9.71L15.4,12.51l1.41,1.41L21.77,9Z'></path>
+          </svg>
+        </button>
+      </CustomTippy>
+      <CustomTippy content={document.fullscreenElement ? 'Exit Fullscreen' : 'Enter Fullscreen'}>
+        <button
+          onClick={() => {
+            document.fullscreenElement
+              ? document.exitFullscreen()
+              : document.getElementById('editor').requestFullscreen();
+            document.fullscreenerror &&
+              toast.error('Your browser does not support fullscreen mode');
+          }}
+          className='not-active cursor-pointer'
+        >
+          {document.fullscreenElement ? (
+            <i className='fa-solid fa-compress'></i>
+          ) : (
+            <i className='fa-solid fa-expand'></i>
+          )}
+        </button>
+      </CustomTippy>
+    </div>
+  );
+}
