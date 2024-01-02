@@ -1,17 +1,15 @@
 import Tippy from '@tippyjs/react';
 
-
 const defaultOptions = {
-  className: 'w-32',
+  className: 'w-36',
   placement: 'bottom-end',
   trigger: 'click',
   shouldCloseOnClick: true,
 };
 export function DropDown({ children, toggler, togglerClassName, options, onOpen, onClose }) {
-
   return (
     <Tippy
-      content={<ul className='grid gap-1 p-2'>{children}</ul>}
+      content={<ul className='grid max-h-[200px] gap-1 overflow-auto p-2'>{children}</ul>}
       className={
         'border border-zinc-200 p-0 shadow-md ' + (options?.className || defaultOptions.className)
       }
@@ -32,14 +30,17 @@ export function DropDown({ children, toggler, togglerClassName, options, onOpen,
   );
 }
 
-function Button({ children, onClick, className, isDeleteButton,size = 'default' }) {
+function Button({ children, onClick, className, isDeleteButton, size = 'default', isCurrent }) {
   return (
     <li
       className={
-        'relative flex w-full cursor-pointer items-center  gap-3 rounded-md transition-colors duration-300 hover:bg-background-secondary ' +
+        'relative flex w-full cursor-pointer items-center gap-3 overflow-auto rounded-md transition-colors duration-300 hover:bg-background-secondary ' +
         className +
-        (size === 'small' ? ' py-1 px-2' : ' py-2 px-3') +
-        (isDeleteButton ? ' hover:bg-red-500 hover:text-white' : '')
+        (size === 'small' ? ' px-2 py-1' : ' px-3 py-2') +
+        (isDeleteButton ? ' hover:bg-red-500 hover:text-white' : '') +
+        (isCurrent
+          ? 'bg-background-secondary text-text-secondary'
+          : 'bg-background-primary text-text-tertiary')
       }
       onClick={onClick}
     >
@@ -50,7 +51,7 @@ function Button({ children, onClick, className, isDeleteButton,size = 'default' 
 
 function Toggler({ children }) {
   return (
-    <span className='flex w-32 cursor-pointer items-center justify-between rounded-lg border border-zinc-200  bg-background-secondary p-2 text-start  text-sm text-text-secondary  focus:outline-none'>
+    <span className='flex w-36 cursor-pointer items-center justify-between rounded-lg border border-zinc-200  bg-background-secondary p-2 text-start  text-sm text-text-secondary  focus:outline-none'>
       {children}
     </span>
   );

@@ -8,24 +8,30 @@ export function Tag({ tag, showDeleteButton, customClassName, onDeleteTag, onSel
   const [deletePermanently, setDeletePermanently] = useState(false);
   return (
     <>
-      <li
-        className={'menu_tag_element relative text-center ' + customClassName}
-        style={{ backgroundColor: tag.bgColor, color: tag.textColor }}
-        onClick={() => onSelectTag?.(tag.$id)}
+      <div
+        className={
+          'items-center gap-1 grid overflow-hidden ' +
+          (showDeleteButton ? ' grid-cols-[16px_auto]' : '')
+        }
       >
         {showDeleteButton && (
           <button
-            className='absolute -right-1 -top-1 grid h-4 w-4 cursor-pointer place-content-center rounded-full bg-red-600'
             onClick={(e) => {
               e.stopPropagation();
               onDeleteTag ? onDeleteTag(tag.$id) : setIsConfirmationModalOpen(true);
             }}
           >
-            <i className='fas fa-xmark  text-[10px] text-white'></i>
+            <i className='fas fa-xmark text-red-600'></i>
           </button>
         )}
-        {tag.title}
-      </li>
+        <li
+          className={'menu_tag_element relative overflow-hidden text-center ' + customClassName}
+          style={{ backgroundColor: tag.bgColor, color: tag.textColor }}
+          onClick={() => onSelectTag?.(tag.$id)}
+        >
+          <span className='block w-full overflow-auto'>{tag.title}</span>
+        </li>
+      </div>
       {isConfirmationModalOpen && (
         <ConfirmationModal
           sentence={`Are you sure you want to delete this tag ? `}

@@ -32,9 +32,7 @@ input[type='checkbox'].task {
   @apply h-5 w-5;
 }
 
-input[type='checkbox'].subtask {
-  @apply h-4 w-4;
-}
+
 .color {
   @apply h-5 w-5 cursor-pointer rounded-[3px] border border-zinc-200 shadow-md transition-opacity duration-300;
 }

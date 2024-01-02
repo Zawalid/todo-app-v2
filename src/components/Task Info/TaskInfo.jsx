@@ -128,8 +128,10 @@ export function TaskInfo() {
   }
   const taskInfo = (
     <>
-      <div className='flex items-center justify-between pb-3'>
-        <h2 className='text-xl font-bold text-text-secondary'>Task :</h2>
+      <div className='grid grid-cols-[auto_40px] items-center gap-5 pb-3'>
+        <h2 className='text-xl overflow-auto font-bold text-text-secondary'>
+          {taskTitle ? taskTitle : 'Untitled'}
+        </h2>
         {isTouchDevice() ? (
           <button
             onClick={() => (isChanged ? handleSaveChanges() : setIsTaskOpen(false))}

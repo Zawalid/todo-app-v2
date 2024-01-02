@@ -1,18 +1,25 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import Drawer from '../../Common/Drawer';
 
-export default function TaskActions({ onClose, onEdit, onDelete, onCopy, date }) {
+export default function TaskActions({ isOpen,onClose,  onDelete, onCopy, date, lists, onMove }) {
   const overlayRef = useRef(null);
+  const [listSelectionOpen, setListSelectionOpen] = useState(false);
+
+  if(!isOpen) return null
+  
   return (
-    <Drawer onClose={onClose} overlayRef={overlayRef}>
+    <Drawer onClose={onClose} overlayRef={overlayRef} shouldClose={!listSelectionOpen}>
       <div>
         <button className='menu_element w-full justify-items-start' onClick={onCopy}>
           <i className='fa-solid fa-clone  text-lg text-text-secondary'></i>
           <span className='font-semibold text-text-primary'>Copy to clipboard</span>
         </button>
-        <button className='menu_element w-full justify-items-start' onClick={onEdit}>
-          <i className='fa-solid fa-pen text-lg text-text-secondary'></i>
-          <span className='font-semibold text-text-primary'>Edit Task</span>
+        <button
+          className='menu_element w-full justify-items-start'
+          onClick={() => setListSelectionOpen(true)}
+        >
+          <i className='fa-solid fa-arrow-right-from-bracket text-lg'></i>
+          <span className='font-semibold '>Move Task To</span>
         </button>
         <button
           className='menu_element w-full justify-items-start text-text-error
@@ -38,6 +45,44 @@ export default function TaskActions({ onClose, onEdit, onDelete, onCopy, date })
             timeStyle: 'short',
           }).format(new Date(date.updated))}
         </p>
+      </div>
+      <div
+        className={
+          'absolute top-0 h-full w-full bg-background-primary p-3 pt-11 transition-[left] duration-700 ' +
+          (listSelectionOpen ? 'left-0' : 'left-full')
+        }
+      >
+        <div className='flex items-center justify-between'>
+          <button onClick={() => setListSelectionOpen(false)}>
+            <i className='fa-solid fa-arrow-left text-xl text-text-secondary'></i>
+          </button>
+          <h3 className='flex-1 text-center text-lg font-semibold text-text-secondary'>
+            Select List
+          </h3>
+          <button onClick={onClose}>
+            <i className='fa-solid fa-xmark text-2xl text-text-secondary'></i>
+          </button>
+        </div>
+        <ul className='mt-3 h-[150px] space-y-2 overflow-auto overflow-x-hidden pr-2'>
+          {lists.map((list) => (
+            <li
+              className='menu_element w-full grid-cols-[30px_auto_50px] justify-items-start'
+              key={list.id}
+              onClick={() => {
+                setListSelectionOpen(false);
+                onMove(list.id);
+              }}
+            >
+              <span className='h-5 w-5 rounded-sm' style={{ backgroundColor: list.color }}></span>
+              <span className='w-[90%] overflow-auto font-semibold text-text-primary'>
+                {list.title}
+              </span>
+              <span className='text-xs font-medium text-text-tertiary'>
+                {list.tasksLength} Tasks
+              </span>
+            </li>
+          ))}
+        </ul>
       </div>
     </Drawer>
   );

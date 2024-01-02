@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { CheckBox } from '../../Common/CheckBox';
 
 export function SubTask({ title, onEdit, onDelete, isCompleted, onComplete }) {
   const [checked, setChecked] = useState(isCompleted);
@@ -26,27 +27,28 @@ export function SubTask({ title, onEdit, onDelete, isCompleted, onComplete }) {
   }
   return (
     <li className='flex items-center gap-3'>
-      <div className='relative'>
-        <input
-          type='checkbox'
-          className='subtask peer'
-          checked={checked}
-          onChange={() => setChecked(!checked)} />
-        <i className='fas fa-check pointer-events-none  absolute left-[2px]  top-[2px] hidden h-4 w-4 text-sm text-white peer-checked:block'></i>
-      </div>
+      <CheckBox checked={checked} onChange={() => setChecked(!checked)} />
       <p
-        className={'border-1 flex-1 text-sm font-medium text-text-secondary  focus:border-zinc-200 focus:outline-none ' +
-          (checked ? 'line-through' : '')}
+        className={
+          'border-1  flex-1 overflow-auto text-sm font-medium text-text-secondary  focus:border-zinc-200 focus:outline-none ' +
+          (checked ? 'line-through' : '')
+        }
         ref={subTaskEl}
       >
         {title}
       </p>
-      <div className='flex items-center gap-2'>
-        <button onClick={editSubTask}>
-          <i className='fas fa-pen cursor-pointer text-xs text-text-tertiary'></i>
+      <div className='ml-5 flex items-center'>
+        <button
+          className='grid h-8 w-8 place-content-center rounded-full bg-background-primary text-sm text-text-tertiary transition-colors duration-300 hover:bg-background-secondary'
+          onClick={editSubTask}
+        >
+          <i className='fas fa-pen cursor-pointer'></i>
         </button>
-        <button onClick={onDelete}>
-          <i className='fas fa-trash cursor-pointer text-xs text-text-tertiary'></i>
+        <button
+          className='grid h-8 w-8 place-content-center rounded-full bg-background-primary text-sm text-text-tertiary transition-colors duration-300 hover:bg-background-secondary'
+          onClick={onDelete}
+        >
+          <i className='fas fa-trash cursor-pointer'></i>
         </button>
       </div>
     </li>

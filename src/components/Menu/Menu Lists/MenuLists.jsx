@@ -39,7 +39,7 @@ export function MenuLists() {
         <ListsSkeleton />
       ) : (
         <>
-          <ul className=' space-y-1 '
+          <ul className='space-y-1 '
           ref={parent}
           >
             {lists?.map((list) => (

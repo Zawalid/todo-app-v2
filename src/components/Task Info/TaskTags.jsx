@@ -14,7 +14,7 @@ export function TaskTags({ taskTagsIds, handleAddTagToTask, handleDeleteTagFromT
             {taskTagsIds.length === 0 ? (
               <i className='fas fa-plus text-text-secondary'></i>
             ) : (
-              <span className=' grid h-5 w-5 place-content-center rounded-full bg-text-secondary text-xs text-white'>
+              <span className='grid h-5 w-5 place-content-center rounded-full bg-text-secondary text-xs text-white'>
                 {taskTagsIds.length}
               </span>
             )}

@@ -23,12 +23,12 @@ export function Menu() {
     setIsOpen(window.matchMedia('(min-width: 1024px)').matches);
   }, [activeTab]);
 
-  useEffect(() => {
-    const body = document.body;
-    body.addEventListener('touchstart', onSwipeStart);
-    body.addEventListener('touchmove', (e) => onSwipeLeft(e, () => setIsOpen(false)));
-    body.addEventListener('touchmove', (e) => onSwipeRight(e, () => setIsOpen(true)));
-  }, []);
+  // useEffect(() => {
+  //   const body = document.body;
+  //   body.addEventListener('touchstart', onSwipeStart);
+  //   body.addEventListener('touchmove', (e) => onSwipeLeft(e, () => setIsOpen(false)));
+  //   body.addEventListener('touchmove', (e) => onSwipeRight(e, () => setIsOpen(true)));
+  // }, []);
 
   return (
     <>
@@ -50,7 +50,7 @@ export function Menu() {
                 <i className='fa-solid fa-angles-left cursor-pointer text-text-secondary'></i>
               </button>
             </div>
-            <div className='mb-3 overflow-y-auto pr-3'>
+            <div className='mb-3 overflow-y-auto overflow-x-hidden pr-3'>
               <Search />
               <MenuTasks />
               <MenuLists />

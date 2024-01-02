@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useReducer, useRef } from 'react';
 import { DropDown } from '../Common/DropDown';
 
+const rowsPerPageOptions = [5, 10, 20, 30];
+
 const paginationState = {
   currentPage: 1,
   rowsPerPage: 10,
@@ -70,30 +72,16 @@ export function usePagination(itemsLength) {
             }
             options={{ placement: 'top', className: 'w-fit' }}
           >
-            <DropDown.Button
-              size='small'
-              onClick={() => dispatch({ type: 'CHANGE_ROWS_PER_PAGE', payload: 5 })}
-            >
-              5
-            </DropDown.Button>
-            <DropDown.Button
-              size='small'
-              onClick={() => dispatch({ type: 'CHANGE_ROWS_PER_PAGE', payload: 10 })}
-            >
-              10
-            </DropDown.Button>
-            <DropDown.Button
-              size='small'
-              onClick={() => dispatch({ type: 'CHANGE_ROWS_PER_PAGE', payload: 20 })}
-            >
-              20
-            </DropDown.Button>
-            <DropDown.Button
-              size='small'
-              onClick={() => dispatch({ type: 'CHANGE_ROWS_PER_PAGE', payload: 30 })}
-            >
-              30
-            </DropDown.Button>
+            {rowsPerPageOptions.map((option) => (
+              <DropDown.Button
+                key={option}
+                size='small'
+                onClick={() => dispatch({ type: 'CHANGE_ROWS_PER_PAGE', payload: option })}
+                isCurrent={option === rowsPerPage}
+              >
+                <span>{option}</span>
+              </DropDown.Button>
+            ))}
           </DropDown>
 
           <span className='flex gap-1 text-xs text-text-secondary sm:text-sm'>

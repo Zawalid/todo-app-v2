@@ -1,4 +1,4 @@
-import { DropDown }from '../Common/DropDown';
+import { DropDown } from '../Common/DropDown';
 
 export const TaskPriority = ({ taskPriority, setTaskPriority }) => {
   const priorities = [
@@ -22,7 +22,7 @@ export const TaskPriority = ({ taskPriority, setTaskPriority }) => {
 
   return (
     <>
-      <label className='text-sm justify-self-start text-text-tertiary'>Priority</label>
+      <label className='justify-self-start text-sm text-text-tertiary'>Priority</label>
 
       <DropDown
         toggler={
@@ -36,11 +36,7 @@ export const TaskPriority = ({ taskPriority, setTaskPriority }) => {
           <DropDown.Button
             key={priority.label}
             onClick={() => setTaskPriority(priority.value)}
-            className={
-              taskPriority === priority.value
-                ? 'bg-background-secondary text-text-secondary'
-                : 'bg-background-primary text-text-tertiary'
-            }
+            isCurrent={taskPriority === priority.value}
           >
             <span>{priority.label}</span>
           </DropDown.Button>

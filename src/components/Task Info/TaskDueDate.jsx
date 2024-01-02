@@ -3,7 +3,6 @@ import { isTaskOverdue } from '../../utils/Moment';
 import { DropDown } from '../Common/DropDown';
 
 export function TaskDueDate({ taskDueDate, setTaskDueDate }) {
-  const [isOpen, setIsOpen] = useState();
   const [date, setDate] = useState(taskDueDate);
   const instanceRef = useRef(null);
   const today = new Date();
@@ -37,15 +36,10 @@ export function TaskDueDate({ taskDueDate, setTaskDueDate }) {
         )}
         <DropDown
           toggler={
-            <div
-              className={
-                'flex w-32 cursor-pointer items-center justify-between rounded-lg border border-zinc-200 bg-background-secondary p-2 ' +
-                (isOverDue ? 'text-text-error' : 'text-text-secondary')
-              }
-              id='dueDate'
-              onClick={() => setIsOpen(!isOpen)}
-            >
-              <span className='text-sm'>
+            <DropDown.Toggler>
+              <span
+                className={'text-sm ' + (isOverDue ? 'text-text-error' : 'text-text-secondary')}
+              >
                 {!taskDueDate && 'Not set'}
                 {taskDueDate === today.toISOString().split('T')[0]
                   ? 'Today'
@@ -54,7 +48,7 @@ export function TaskDueDate({ taskDueDate, setTaskDueDate }) {
                   : taskDueDate}
               </span>
               <i className='fa-solid fa-calendar-days  text-sm'></i>
-            </div>
+            </DropDown.Toggler>
           }
           options={{ className: 'w-52', shouldCloseOnClick: false }}
         >
