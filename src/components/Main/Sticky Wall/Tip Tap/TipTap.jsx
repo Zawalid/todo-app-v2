@@ -13,8 +13,7 @@ import TextStyle from '@tiptap/extension-text-style';
 import { BubbleMenu, EditorContent, useEditor } from '@tiptap/react';
 import { ColorHighlighter } from './ColorHighlighter';
 import StarterKit from '@tiptap/starter-kit';
-import { ToolBar, UndoRedo } from './ToolBar';
-import { Footer } from './Footer';
+import { ToolBar, ActionBar } from './ToolBar';
 import { CustomBubbleMenu } from './CustomBubbleMenu';
 
 import '../../../../styles/TipTap.scss';
@@ -22,6 +21,7 @@ import TaskItem from '@tiptap/extension-task-item';
 import TaskList from '@tiptap/extension-task-list';
 import { isTouchDevice } from '../../../../utils/helpers';
 import { useState } from 'react';
+import { useStickyNotes } from '../../../../hooks';
 
 const extensions = [
   Color.configure({ types: [TextStyle.name, ListItem.name] }),
@@ -62,6 +62,7 @@ const extensions = [
 
 export default function TipTap({
   onUpdateContent,
+  $id,
   content,
   updateDate,
   isSaving,
@@ -69,6 +70,7 @@ export default function TipTap({
   setTitle,
 }) {
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+  const { handleBack } = useStickyNotes();
 
   const editor = useEditor({
     extensions,
@@ -85,76 +87,25 @@ export default function TipTap({
     onBlur: () => isTouchDevice() && setIsKeyboardOpen(false),
   });
 
-  const noteInfo = {
-    date: new Intl.DateTimeFormat('en-US', {
-      dateStyle: 'medium',
-      timeStyle: 'short',
-    }).format(new Date(updateDate)),
-    words: editor?.storage?.characterCount?.words(),
-    characters: editor?.storage?.characterCount?.characters(),
-    getStatus: () => {
-      if (isTouchDevice()) return isSaving ? 'Saving...' : 'Saved';
-      return isSaving ? (
-        <i className='fa-solid fa-spinner animate-spin text-sm'></i>
-      ) : (
-        <i className='fa-solid fa-circle-check text-sm text-green-500'></i>
-      );
-    },
-  };
   return (
     <div
       className={
-        'grid h-full ' + (isTouchDevice() ? ' grid-rows-[40px_auto]' : ' grid-rows-[auto_1fr_40px]')
+        'grid h-full ' +
+        (isTouchDevice() ? ' grid-rows-[40px_auto]' : ' grid-rows-[40px_auto_42px]')
       }
     >
-      {isTouchDevice() && (
-        <div className='flex items-center justify-between'>
-          <button
-            className='not-active'
-            onClick={() => {
-              onBack();
-            }}
-          >
-            <i className='fa-solid fa-chevron-left text-lg'></i>
-          </button>
-          <UndoRedo editor={editor} />
-        </div>
-      )}
-      {isTouchDevice() || <ToolBar editor={editor} isKeyboardOpen={isKeyboardOpen} />}
-      <div className='tiptap no_scrollbar grid grid-rows-[70px_auto] gap-5 overflow-auto border-t  border-zinc-200 p-3'>
-        <div className='space-y-3'>
-          <input
-            type='text'
-            placeholder='Note Title'
-            className='w-full appearance-none border-none bg-transparent text-4xl font-bold text-[rgb(48,48,48)] outline-none sm:text-[40px]'
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-          {isTouchDevice() && (
-            <p className='flex items-center gap-2 text-xs text-text-tertiary'>
-              <span>
-                {updateDate &&
-                  new Intl.DateTimeFormat('en-US', {
-                    dateStyle: 'medium',
-                    timeStyle: 'short',
-                  }).format(new Date(updateDate))}
-              </span>
-              <span className='h-3 w-[1px] bg-text-tertiary '></span>
-              <span>{noteInfo.characters} characters</span>
-              <span className='h-3 w-[1px] bg-text-tertiary '></span>
-              <span>{noteInfo.getStatus()}</span>
-            </p>
-          )}
-        </div>
+      <ActionBar editor={editor} onBack={() => handleBack($id, title, content)} />
+      <div className='tiptap no_scrollbar grid grid-rows-[70px_auto] gap-5 overflow-auto p-3'>
+        <NoteInfo
+          editor={editor}
+          updateDate={updateDate}
+          isSaving={isSaving}
+          title={title}
+          setTitle={setTitle}
+        />
         <EditorContent editor={editor} />
       </div>
-      {isTouchDevice() && (
-        <ToolBar
-          editor={editor}
-          isKeyboardOpen={isKeyboardOpen}
-        />
-      )}
-      {isTouchDevice() || <Footer noteInfo={noteInfo} />}
+      {<ToolBar editor={editor} isKeyboardOpen={isKeyboardOpen} />}
 
       {editor && (
         <BubbleMenu
@@ -169,6 +120,36 @@ export default function TipTap({
           <CustomBubbleMenu editor={editor} />
         </BubbleMenu>
       )}
+    </div>
+  );
+}
+
+function NoteInfo({ editor, updateDate, isSaving, title, setTitle }) {
+  if (!editor || !updateDate) return null;
+  return (
+    <div className='space-y-3'>
+      <input
+        type='text'
+        placeholder='Note Title'
+        className='w-full appearance-none border-none bg-transparent text-4xl font-bold text-[rgb(48,48,48)] outline-none sm:text-[40px]'
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+      />
+
+      <p className='flex items-center gap-2 text-xs text-text-tertiary'>
+        <span>
+          {new Intl.DateTimeFormat('en-US', {
+            dateStyle: 'medium',
+            timeStyle: 'short',
+          }).format(new Date(updateDate))}
+        </span>
+        <span className='h-3 w-[1px] bg-text-tertiary '></span>
+        <span>{editor.storage?.characterCount?.characters()} characters</span>
+        <span className='h-3 w-[1px] bg-text-tertiary '></span>
+        <span>{editor.storage?.characterCount?.words()} words</span>
+        <span className='h-3 w-[1px] bg-text-tertiary '></span>
+        <span>{isSaving ? 'Saving...' : 'Saved'}</span>
+      </p>
     </div>
   );
 }

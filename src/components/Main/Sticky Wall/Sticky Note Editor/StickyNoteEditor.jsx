@@ -2,18 +2,16 @@ import { useMemo, useState } from 'react';
 import TipTap from '../Tip Tap/TipTap';
 import { BackgroundColorPicker } from './BackgroundColorPicker';
 import { TextColorPicker } from './TextColorPicker';
-import { StickyNoteHeader } from './StickyNoteHeader';
 import { useStickyNotes } from '../../../../hooks/useStickyNotes';
 import { DropDown } from '../../../Common/DropDown';
 import { ConfirmationModal } from '../../../Common/ConfirmationModal';
 
-export function StickyNoteEditor({ currentNote, onBack }) {
-  const { stickyNotes, handleAddStickyNote, handleUpdateStickyNote, handleDeleteStickyNote } =
+export function StickyNoteEditor({ currentNote }) {
+  const { stickyNotes, handleAddStickyNote, handleUpdateStickyNote } =
     useStickyNotes();
 
   const [title, setTitle] = useState(currentNote?.title);
   const [content, setContent] = useState(currentNote?.content);
-  const [description, setDescription] = useState(currentNote?.description);
   const [textColor, setTextColor] = useState(currentNote?.textColor);
   const [bgColor, setBgColor] = useState(currentNote?.bgColor);
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
@@ -30,7 +28,6 @@ export function StickyNoteEditor({ currentNote, onBack }) {
       handleAddStickyNote({
         title: !title || title.trim() === '' ? 'Untitled' : title,
         content,
-        description,
         bgColor,
         textColor,
       });
@@ -45,14 +42,11 @@ export function StickyNoteEditor({ currentNote, onBack }) {
       setIsSaving,
     );
   }
-  function handleDeleteNote(deletePermanently, noToast) {
-    handleDeleteStickyNote(currentNote?.$id, deletePermanently, noToast);
-    onBack();
-  }
+
 
   return (
     <>
-      <div className=' grid flex-[0.99] overflow-auto bg-background-primary' id='editor'>
+      <div className=' grid flex-1 overflow-auto bg-background-primary' id='editor'>
         {/* <div
           className='relative grid grid-cols-[100px_auto_100px] place-content-center  items-center  rounded-t-lg px-4 '
           style={{
@@ -63,7 +57,7 @@ export function StickyNoteEditor({ currentNote, onBack }) {
           <button
             className='place-self-start'
             onClick={() => {
-              if (!title && isElementEmpty(content) && !description) handleDeleteNote(true, true);
+              if (!title && isElementEmpty(content)) handleDeleteNote(true, true);
               onBack();
             }}
           >
@@ -116,12 +110,13 @@ export function StickyNoteEditor({ currentNote, onBack }) {
             </DropDown>
           </div>
         </div> */}
-        <div className='relative flex h-full flex-col overflow-hidden rounded-lg border-zinc-200 '>
+        <div className='relative flex h-full flex-col overflow-hidden rounded-lg border- border-zinc-200 '>
           <TipTap
             onUpdateContent={(content) => {
               handleUpdateNote('content', content);
               setContent(content);
             }}
+            $id={currentNote?.$id}
             content={content}
             updateDate={currentNote?.$updatedAt}
             isSaving={isSaving}
@@ -133,7 +128,7 @@ export function StickyNoteEditor({ currentNote, onBack }) {
           />
         </div>
       </div>
-      {isConfirmationModalOpen && (
+      {/* {isConfirmationModalOpen && (
         <ConfirmationModal
           sentence='Are you sure you want to delete this note?'
           confirmText='Delete'
@@ -146,13 +141,8 @@ export function StickyNoteEditor({ currentNote, onBack }) {
           checked={deletePermanently}
           setChecked={setDeletePermanently}
         />
-      )}
+      )} */}
     </>
   );
 }
 
-function isElementEmpty(htmlElement) {
-  const tempElement = document.createElement('div');
-  tempElement.innerHTML = htmlElement;
-  return !tempElement.textContent.trim();
-}

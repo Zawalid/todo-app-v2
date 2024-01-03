@@ -24,7 +24,7 @@ export const AddLink = ({ editor }) => {
     <CustomTippy
       content={
         <div className='relative'>
-          <form onSubmit={(e) => handleSubmit(e)} className=' flex flex-col gap-1'>
+          <form onSubmit={(e) => handleSubmit(e)} className='p-2 flex flex-col gap-1'>
             <label className='text-text-secondary'>Add link</label>
             <input
               className='rounded-md bg-background-secondary px-2 py-1 text-text-secondary focus:outline-none'

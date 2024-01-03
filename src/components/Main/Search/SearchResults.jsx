@@ -8,13 +8,15 @@ import { useAutoAnimate } from '@formkit/auto-animate/react';
 
 export default function SearchResults() {
   const { searchResults, currentSearchTab, setCurrentSearchTab, searchQuery } = useSearch();
-  const { setCurrentNote, setIsStickyNoteOpened, setIsStickyNoteEditorOpen } = useStickyNotes();
+  const { setCurrentNote, setIsStickyNoteEditorOpen } = useStickyNotes();
   const [parent] = useAutoAnimate({
     duration: 500,
   });
 
   return (
-    <div className='relative flex h-full flex-col overflow-auto p-4'>
+    <div className='relative flex h-full flex-col overflow-auto p-4'
+    ref={parent}
+    >
       <Tabs
         tabs={['All', 'Today', 'Upcoming', 'Sticky Wall']}
         currentTab={currentSearchTab}
@@ -35,17 +37,17 @@ export default function SearchResults() {
         <ul
           className={
             'mt-5 overflow-y-auto pr-3 ' +
-            (currentSearchTab === 'sticky-wall'
-              ? 'grid grid-cols-[repeat(auto-fill,minmax(270px,1fr))] place-content-start gap-6'
+            (currentSearchTab === 'stickyWall'
+              ? 'grid grid-cols-[repeat(auto-fill,minmax(270px,1fr))] place-content-start gap-4'
               : 'space-y-2 ')
           }
           ref={parent}
         >
           {searchResults.map((result) => {
-            if (currentSearchTab !== 'sticky-wall') {
+            if (currentSearchTab !== 'stickyWall') {
               return <Task key={result.$id} task={result} />;
             }
-            if (currentSearchTab === 'sticky-wall') {
+            if (currentSearchTab === 'stickyWall') {
               return (
                 <StickyNote
                   key={result.$id}
@@ -53,7 +55,6 @@ export default function SearchResults() {
                   onClick={() => {
                     setCurrentNote(result);
                     setIsStickyNoteEditorOpen(true);
-                    setIsStickyNoteOpened(true);
                   }}
                 />
               );

@@ -38,7 +38,7 @@ const tabs = {
 export function Main() {
   const { tasks, isTasksLoading, todayTasks, upcomingTasks } = useTasks();
   const { lists } = useLists();
-  const { stickyNotes, isStickyNoteOpened, isNotesLoading } = useStickyNotes();
+  const { stickyNotes, isStickyNoteEditorOpen, isNotesLoading } = useStickyNotes();
   const { searchResults } = useSearch();
   const { trashLength } = useTrash();
   const activeTab = useHref().split('/app/')[1];
@@ -88,8 +88,8 @@ export function Main() {
       className='relative flex flex-1 flex-col overflow-hidden rounded-xl bg-background-primary pl-2'
       ref={parent}
     >
-      {/* <Title title={title} count={count} /> */}
-      {isLoading ? (
+{      isStickyNoteEditorOpen || <Title title={title} count={count} />
+}      {isLoading ? (
         tabs[activeTab]?.skeleton || <TasksSkeleton number={6} />
       ) : (
         <>
@@ -102,9 +102,9 @@ export function Main() {
             />
           )}
           {activeTab === 'upcoming' && <Upcoming />}
-          {(activeTab === 'sticky-wall' || isStickyNoteOpened) && <StickyWall />}
-          {activeTab === 'search' && !isStickyNoteOpened && <SearchResults />}
-          {activeTab === 'trash' && !isStickyNoteOpened && <Trash />}
+          {(activeTab === 'sticky-wall' || isStickyNoteEditorOpen) && <StickyWall />}
+          {activeTab === 'search' && !isStickyNoteEditorOpen && <SearchResults />}
+          {activeTab === 'trash' && !isStickyNoteEditorOpen && <Trash />}
         </>
       )}
     </main>

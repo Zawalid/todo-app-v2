@@ -193,7 +193,7 @@ function Actions({
   return (
     <div className='flex gap-3'>
       <button
-        className='grid h-8 w-8 place-content-center rounded-full bg-background-primary text-text-tertiary transition-colors duration-300 hover:bg-background-secondary'
+        className='not-active'
         onClick={() => {
           setIsSelecting(!isSelecting);
           setIsDeleteMultipleModalOpen(false);
@@ -229,7 +229,7 @@ function Actions({
         placement='bottom'
         maxWidth='auto'
       >
-        <button className='h-8 w-8 rounded-full bg-background-primary text-text-tertiary transition-colors duration-300 hover:bg-background-secondary'>
+        <button className='not-active'>
           <i className='fa-solid fa-ellipsis-v text-xl'></i>
         </button>
       </Tippy>

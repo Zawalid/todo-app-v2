@@ -10,31 +10,21 @@ export default function StickyWallActions({
     direction,
     setDirection,
     setIsConfirmationModalOpen,
-    setIsSelecting
+    setIsSelecting,
   },
 }) {
   return (
     <div className='flex items-center justify-between'>
       <div className='flex gap-3'>
         <button
-          className={
-            'h-8 w-8 rounded-full bg-background-primary transition-colors duration-300 hover:bg-background-secondary ' +
-            (view === 'list'
-              ? 'bg-background-secondary  text-text-secondary'
-              : 'text-text-tertiary ')
-          }
+          className={view === 'list' ? 'is-active' : 'not-active'}
           onClick={() => setView('list')}
         >
           <i className='fa-solid fa-list'></i>
         </button>
         <button
-          className={
-            'grid h-8 w-8 place-content-center rounded-full bg-background-primary  transition-colors duration-300 hover:bg-background-secondary ' +
-            (view === 'grid'
-              ? 'bg-background-secondary  text-text-secondary'
-              : 'text-text-tertiary ')
-          }
-          onClick={() => setView('grid')}
+          className={view === 'grid' ? 'is-active' : 'not-active'}
+         onClick={() => setView('grid')}
         >
           <svg
             stroke='currentColor'
@@ -50,8 +40,9 @@ export default function StickyWallActions({
         </button>
       </div>
       <div className='flex gap-3'>
-        <button className='grid h-8 w-8 place-content-center rounded-full bg-background-primary text-text-tertiary transition-colors duration-300 hover:bg-background-secondary'
-          onClick={() => setIsSelecting(prev => !prev)}
+        <button
+          className='not-active'
+          onClick={() => setIsSelecting((prev) => !prev)}
         >
           <svg
             stroke='currentColor'
@@ -67,7 +58,7 @@ export default function StickyWallActions({
         </button>
         <DropDown
           toggler={<i className='fa-solid fa-ellipsis-v text-xl'></i>}
-          togglerClassName='h-8 w-8 rounded-full bg-background-primary text-text-tertiary transition-colors duration-300 hover:bg-background-secondary'
+          togglerClassName='not-active'
           options={{ className: 'w-52 max-h-[100%]', shouldCloseOnClick: false }}
         >
           <SortNotes

@@ -12,7 +12,7 @@ const STICKY_NOTES_COLLECTION_ID = appWriteConfig.stickyNotesCollectionId;
 
 export const StickyNotesContext = createContext();
 
-function StickyNotesProvider({ children }) {
+export default function StickyNotesProvider({ children }) {
   const [stickyNotes, setStickyNotes] = useState([]);
   const [currentNote, setCurrentNote] = useState(null);
   const [isStickyNoteOpened, setIsStickyNoteOpened] = useState(false);
@@ -188,6 +188,13 @@ function StickyNotesProvider({ children }) {
     }
   }
 
+  function handleBack($id, title, content ) {
+    if (!title && isElementEmpty(content) ) handleDeleteStickyNote($id, true, true);
+    setIsStickyNoteEditorOpen(false);
+    setIsStickyNoteOpened(false);
+    setCurrentNote(null);
+  }
+
   return (
     <StickyNotesContext.Provider
       value={{
@@ -208,10 +215,16 @@ function StickyNotesProvider({ children }) {
         setSelectedNotes,
         isNotesLoading,
         setIsNotesLoading,
+        handleBack
       }}
     >
       {children}
     </StickyNotesContext.Provider>
   );
 }
-export default StickyNotesProvider;
+
+function isElementEmpty(htmlElement) {
+  const tempElement = document.createElement('div');
+  tempElement.innerHTML = htmlElement;
+  return !tempElement.textContent.trim();
+}

@@ -14,7 +14,6 @@ export default function StickyWall() {
     stickyNotes,
     currentNote,
     setCurrentNote,
-    setIsStickyNoteOpened,
     isStickyNoteEditorOpen,
     setIsStickyNoteEditorOpen,
     handleAddStickyNote,
@@ -44,7 +43,7 @@ export default function StickyWall() {
   });
 
   const [parent] = useAutoAnimate({
-    duration: 500,
+    duration: 600,
   });
 
   useEffect(() => {
@@ -64,7 +63,6 @@ export default function StickyWall() {
 
   function handleBack() {
     setIsStickyNoteEditorOpen(false);
-    setIsStickyNoteOpened(false);
     setCurrentNote(null);
   }
 
@@ -158,7 +156,6 @@ export default function StickyWall() {
             const note = {
               title: '',
               content: '<p></p>',
-              description: '',
               bgColor: '#ff922b',
               textColor: '#fff',
             };

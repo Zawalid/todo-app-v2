@@ -28,9 +28,7 @@ const SearchProvider = ({ children }) => {
       : stickyNotes;
 
   const searchResults = searchSection.filter((result) =>
-    `${result.title ?? ''} ${
-      result[currentSearchTab === 'sticky-wall' ? 'content' : 'note'] ?? ''
-    } ${result.description ?? ''}}`
+    `${result.title ?? ''} ${result[currentSearchTab === 'sticky-wall' ? 'content' : 'note'] ?? ''}`
       .toLowerCase()
       .includes(searchQuery?.toLowerCase()),
   );

@@ -22,7 +22,10 @@ export function Search() {
         placeholder='Search'
         autoComplete='off'
         value={searchQuery || ''}
-        onChange={(e) => setSearchQuery(e.target.value)}
+        onChange={(e) => {
+          setSearchQuery(e.target.value);
+          e.target.value === '' && search('');
+        }}
       />
       {!searchQuery ||
         (searchQuery?.trim() !== '' && (

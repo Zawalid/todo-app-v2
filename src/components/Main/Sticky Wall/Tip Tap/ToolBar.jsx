@@ -5,8 +5,9 @@ import { Highlighter } from './Highlighter';
 import { TextColor } from './TextColor';
 import { useEffect, useState } from 'react';
 import { isTouchDevice } from '../../../../utils/helpers';
+import { DropDown } from '../../../Common/DropDown';
 
-export const ToolBar = ({ editor, isKeyboardOpen, className }) => {
+export const ToolBar = ({ editor, isKeyboardOpen }) => {
   const [keyboardHeight, setKeyboardHeight] = useState(0);
 
   useEffect(() => {
@@ -23,15 +24,14 @@ export const ToolBar = ({ editor, isKeyboardOpen, className }) => {
   return (
     <div
       className={
-        'flex w-full justify-between gap-3 overflow-auto bg-background-primary ' + (isTouchDevice()
-          ? 'fixed left-0 z-[1000] border-t shadow-lg'
-          : '')
+        ' w-full gap-3 border-t bg-background-primary pt-2 ' +
+        (isTouchDevice() ? 'fixed left-0 z-[1000] px-3 pb-2 shadow-lg' : 'overflow-auto')
       }
       style={{
         bottom: `${isKeyboardOpen ? keyboardHeight : 0}px`,
       }}
     >
-      <div className='no_scrollbar  flex w-full gap-3 overflow-auto px-3 py-2  sm:flex-wrap'>
+      <div className='no_scrollbar flex gap-3 overflow-auto'>
         <div className='flex items-center gap-2'>
           <CustomTippy content='Bold'>
             <button
@@ -111,33 +111,37 @@ export const ToolBar = ({ editor, isKeyboardOpen, className }) => {
         </div>
         <span className='w-[2px] bg-background-tertiary'></span>
         <div className='flex items-center gap-2'>
-          <CustomTippy content='Heading 1'>
-            <button
-              onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-              className={editor.isActive('heading', { level: 1 }) ? 'is-active' : 'not-active'}
-            >
-              <i className='fa-solid fa-heading'></i>
-              <span className='text-[10px]'>1</span>
-            </button>
-          </CustomTippy>
-          <CustomTippy content='Heading 2'>
-            <button
-              onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-              className={editor.isActive('heading', { level: 2 }) ? 'is-active' : 'not-active'}
-            >
-              <i className='fa-solid fa-heading'></i>
-              <span className='text-[10px]'>2</span>
-            </button>
-          </CustomTippy>
-          <CustomTippy content='Heading 3'>
-            <button
-              onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-              className={editor.isActive('heading', { level: 3 }) ? 'is-active' : 'not-active'}
-            >
-              <i className='fa-solid fa-heading'></i>
-              <span className='text-[10px]'>3</span>
-            </button>
-          </CustomTippy>
+          <DropDown
+            options={{
+              className: 'w-fit',
+            }}
+            toggler={
+              <CustomTippy content='Heading'>
+                <i className='fa-solid fa-heading'></i>
+              </CustomTippy>
+            }
+            togglerClassName={editor.isActive('heading') ? 'is-active' : 'not-active'}
+          >
+            {Array.from({ length: 6 }).map((_, i) => (
+              <DropDown.Button
+                key={i}
+                size='small'
+                isCurrent={editor.isActive('heading', { level: i + 1 })}
+                onClick={() =>
+                  editor
+                    .chain()
+                    .focus()
+                    .toggleHeading({ level: i + 1 })
+                    .run()
+                }
+              >
+                <span>
+                  <i className='fa-solid fa-heading'></i>
+                  <span className='text-[10px] font-bold'>{i + 1}</span>
+                </span>
+              </DropDown.Button>
+            ))}
+          </DropDown>
           <CustomTippy content='Paragraph'>
             <button
               onClick={() => editor.chain().focus().setParagraph().run()}
@@ -272,15 +276,25 @@ export const ToolBar = ({ editor, isKeyboardOpen, className }) => {
           </CustomTippy>
         </div>
       </div>
-      {isTouchDevice() || <UndoRedo editor={editor} />}
     </div>
   );
 };
 
-export function UndoRedo({ editor }) {
+export function ActionBar({ editor,onBack }) {
+  const [isFullScreen, setIsFullScreen] = useState(document.fullscreenElement);
+
   if (!editor) return null;
   return (
-    <div className='flex items-center gap-2  border-background-tertiary px-3 py-2'>
+    <div className='flex items-center justify-between'>
+        <button
+          className='not-active'
+          onClick={() => {
+            onBack();
+          }}
+        >
+          <i className='fa-solid fa-chevron-left text-lg'></i>
+        </button>
+    <div className='flex items-center gap-2 border-background-tertiary '>
       <CustomTippy content='Undo'>
         <button
           onClick={() => editor.chain().undo().run()}
@@ -319,24 +333,29 @@ export function UndoRedo({ editor }) {
           </svg>
         </button>
       </CustomTippy>
-      <CustomTippy content={document.fullscreenElement ? 'Exit Fullscreen' : 'Enter Fullscreen'}>
+      <CustomTippy content={isFullScreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}>
         <button
           onClick={() => {
-            document.fullscreenElement
-              ? document.exitFullscreen()
-              : document.getElementById('editor').requestFullscreen();
+            isFullScreen
+              ? (document.exitFullscreen(), setIsFullScreen(false))
+              : (document.documentElement.requestFullscreen(), setIsFullScreen(true));
+
             document.fullscreenerror &&
               toast.error('Your browser does not support fullscreen mode');
           }}
           className='not-active cursor-pointer'
         >
-          {document.fullscreenElement ? (
+          {isFullScreen ? (
             <i className='fa-solid fa-compress'></i>
           ) : (
             <i className='fa-solid fa-expand'></i>
           )}
         </button>
       </CustomTippy>
+      <button className='not-active'>
+        <i className='fa-solid fa-ellipsis-v'></i>
+      </button>
+    </div>
     </div>
   );
 }

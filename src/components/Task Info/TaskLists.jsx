@@ -35,7 +35,7 @@ export function TaskLists({ taskListId, setTaskListId }) {
             onClick={() => setTaskListId(list.$id)}
             isCurrent={taskListId === list.$id}
           >
-            <span>{list.title}</span>
+            <span className='truncate'>{list.title}</span>
           </DropDown.Button>
         ))}
       </DropDown>

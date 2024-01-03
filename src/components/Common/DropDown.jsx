@@ -1,7 +1,7 @@
 import Tippy from '@tippyjs/react';
 
 const defaultOptions = {
-  className: 'w-36 max-h-[200px]',
+  className: 'w-36  overflow-auto  max-h-[200px]',
   placement: 'bottom-end',
   trigger: 'click',
   shouldCloseOnClick: true,
@@ -9,7 +9,7 @@ const defaultOptions = {
 export function DropDown({ children, toggler, togglerClassName, options, onOpen, onClose }) {
   return (
     <Tippy
-      content={<ul className='grid  gap-1 overflow-auto p-2'>{children}</ul>}
+      content={<ul className='grid gap-1 p-2'>{children}</ul>}
       className={
         'border border-zinc-200 p-0 shadow-md ' + (options?.className || defaultOptions.className)
       }
@@ -34,9 +34,9 @@ function Button({ children, onClick, className, isDeleteButton, size = 'default'
   return (
     <li
       className={
-        'relative flex w-full cursor-pointer items-center gap-3 overflow-auto rounded-md transition-colors duration-300 hover:bg-background-secondary ' +
+        'relative flex w-full cursor-pointer items-center gap-3 overflow-hidden rounded-md transition-colors duration-300 hover:bg-background-secondary ' +
         className +
-        (size === 'small' ? 'px-2 py-1 ' : ' px-3 py-2 ') +
+        (size === 'small' ? ' px-2 py-1 ' : ' px-3 py-2 ') +
         (isDeleteButton ? 'hover:bg-red-500 hover:text-white ' : '') +
         (isCurrent
           ? 'bg-background-secondary text-text-secondary'
