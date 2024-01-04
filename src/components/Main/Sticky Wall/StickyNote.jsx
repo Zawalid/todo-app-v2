@@ -48,7 +48,7 @@ export function StickyNote({
           )}
         </div>
 
-        <div className='flex transition-[transform,height] duration-500 group-hover:scale-90 h-7 w-full items-center justify-between '>
+        <div className='flex h-7 w-full items-center justify-between transition-[transform,height] duration-500 group-hover:scale-90 '>
           <span
             className='text-[10px] font-medium sm:text-xs'
             style={{

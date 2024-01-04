@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import CustomTippy from '../../../Common/CustomTippy';
+import CustomTippy from '../../../../Common/CustomTippy';
 
 function Colors({ onClick }) {
   const colors = [
@@ -36,7 +36,15 @@ function Colors({ onClick }) {
   );
 }
 
-export function ColorPicker({ editor, children, cssProperty, color, setColor, tiptapClass }) {
+export function ColorPicker({
+  editor,
+  children,
+  cssProperty,
+  color,
+  setColor,
+  tiptapClass,
+  disabled,
+}) {
   function handleColorChange(e) {
     const chosenColor = e.target.value;
     setColor(chosenColor);
@@ -79,8 +87,9 @@ export function ColorPicker({ editor, children, cssProperty, color, setColor, ti
         <div
           className='grid place-items-end rounded-sm bg-black px-[2px]'
           style={{
-            backgroundColor: color,
+            backgroundColor: disabled ? '#cacaca' : color,
           }}
+          disabled={disabled}
         >
           <i className='fa-solid fa-chevron-down cursor-pointer text-xs text-white '></i>
         </div>

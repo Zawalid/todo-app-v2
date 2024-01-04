@@ -46,8 +46,8 @@ export function Menu() {
           <>
             <div className='mb-3 flex items-center justify-between gap-8 pb-3 pr-3'>
               <Profile />
-              <button onClick={() => setIsOpen(false)} id='closeMenu'>
-                <i className='fa-solid fa-angles-left cursor-pointer text-text-secondary'></i>
+              <button className='not-active small' onClick={() => setIsOpen(false)} id='closeMenu'>
+                <i className='fa-solid fa-angles-left cursor-pointer'></i>
               </button>
             </div>
             <div className='mb-3 overflow-y-auto overflow-x-hidden pr-3'>

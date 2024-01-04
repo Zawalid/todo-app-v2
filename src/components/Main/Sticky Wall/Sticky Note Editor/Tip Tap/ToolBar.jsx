@@ -1,14 +1,15 @@
-import { toast } from 'sonner';
-import CustomTippy from '../../../Common/CustomTippy';
+import CustomTippy from '../../../../Common/CustomTippy';
 import { AddLink } from './AddLink';
 import { Highlighter } from './Highlighter';
 import { TextColor } from './TextColor';
 import { useEffect, useState } from 'react';
-import { isTouchDevice } from '../../../../utils/helpers';
-import { DropDown } from '../../../Common/DropDown';
+import { isTouchDevice } from '../../../../../utils/helpers';
+import { DropDown } from '../../../../Common/DropDown';
+import { useHref } from 'react-router';
 
-export const ToolBar = ({ editor, isKeyboardOpen }) => {
+export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
   const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const activeTab = useHref().split('/app/')[1];
 
   useEffect(() => {
     if ('virtualKeyboard' in navigator && isKeyboardOpen) {
@@ -25,7 +26,9 @@ export const ToolBar = ({ editor, isKeyboardOpen }) => {
     <div
       className={
         ' w-full gap-3 border-t bg-background-primary pt-2 ' +
-        (isTouchDevice() ? 'fixed left-0 z-[1000] px-3 pb-2 shadow-lg' : 'overflow-auto')
+        (isTouchDevice() && activeTab === 'sticky-wall'
+          ? 'fixed left-0 z-[1000] px-3 pb-2 shadow-lg'
+          : 'overflow-auto')
       }
       style={{
         bottom: `${isKeyboardOpen ? keyboardHeight : 0}px`,
@@ -36,7 +39,7 @@ export const ToolBar = ({ editor, isKeyboardOpen }) => {
           <CustomTippy content='Bold'>
             <button
               onClick={() => editor.chain().focus().toggleBold().run()}
-              disabled={!editor.can().chain().focus().toggleBold().run()}
+              disabled={readonly || !editor.can().chain().focus().toggleBold().run()}
               className={editor.isActive('bold') ? 'is-active' : 'not-active '}
             >
               <i className='fa-solid fa-bold'></i>
@@ -45,7 +48,7 @@ export const ToolBar = ({ editor, isKeyboardOpen }) => {
           <CustomTippy content='Italic'>
             <button
               onClick={() => editor.chain().focus().toggleItalic().run()}
-              disabled={!editor.can().chain().focus().toggleItalic().run()}
+              disabled={readonly || !editor.can().chain().focus().toggleItalic().run()}
               className={editor.isActive('italic') ? 'is-active' : 'not-active'}
             >
               <i className='fa-solid fa-italic'></i>
@@ -54,7 +57,7 @@ export const ToolBar = ({ editor, isKeyboardOpen }) => {
           <CustomTippy content='Strike'>
             <button
               onClick={() => editor.chain().focus().toggleStrike().run()}
-              disabled={!editor.can().chain().focus().toggleStrike().run()}
+              disabled={readonly || !editor.can().chain().focus().toggleStrike().run()}
               className={editor.isActive('strike') ? 'is-active' : 'not-active'}
             >
               <i className='fa-solid fa-strikethrough'></i>
@@ -63,7 +66,7 @@ export const ToolBar = ({ editor, isKeyboardOpen }) => {
           <CustomTippy content='Underline'>
             <button
               onClick={() => editor.chain().focus().toggleUnderline().run()}
-              disabled={!editor.can().chain().focus().toggleUnderline().run()}
+              disabled={readonly || !editor.can().chain().focus().toggleUnderline().run()}
               className={editor.isActive('underline') ? 'is-active' : 'not-active'}
             >
               <i className='fa-solid fa-underline'></i>
@@ -72,18 +75,18 @@ export const ToolBar = ({ editor, isKeyboardOpen }) => {
           <CustomTippy content='Code'>
             <button
               onClick={() => editor.chain().focus().toggleCode().run()}
-              disabled={!editor.can().chain().focus().toggleCode().run()}
+              disabled={readonly || !editor.can().chain().focus().toggleCode().run()}
               className={editor.isActive('code') ? 'is-active' : 'not-active'}
             >
               <i className='fa-solid fa-code'></i>
             </button>
           </CustomTippy>
-          <Highlighter editor={editor} />
-          <TextColor editor={editor} />
+          <Highlighter editor={editor} readonly={readonly} />
+          <TextColor editor={editor} readonly={readonly} />
           <CustomTippy content='Superscript'>
             <button
               onClick={() => editor.chain().focus().toggleSuperscript().run()}
-              disabled={!editor.can().chain().focus().toggleSuperscript().run()}
+              disabled={readonly || !editor.can().chain().focus().toggleSuperscript().run()}
               className={editor.isActive('superscript') ? 'is-active' : 'not-active'}
             >
               <i className='fa-solid fa-superscript'></i>
@@ -92,17 +95,17 @@ export const ToolBar = ({ editor, isKeyboardOpen }) => {
           <CustomTippy content='Subscript'>
             <button
               onClick={() => editor.chain().focus().toggleSubscript().run()}
-              disabled={!editor.can().chain().focus().toggleSubscript().run()}
+              disabled={readonly || !editor.can().chain().focus().toggleSubscript().run()}
               className={editor.isActive('subscript') ? 'is-active' : 'not-active'}
             >
               <i className='fa-solid fa-subscript'></i>
             </button>
           </CustomTippy>
-          <AddLink editor={editor} />
+          <AddLink editor={editor} readonly={readonly} />
           <CustomTippy content='Unlink'>
             <button
               onClick={() => editor.chain().focus().unsetLink().run()}
-              disabled={!editor.isActive('link')}
+              disabled={readonly || !editor.isActive('link')}
               className={editor.isActive('link') ? 'is-active' : 'not-active'}
             >
               <i className='fa-solid fa-link-slash'></i>
@@ -121,6 +124,7 @@ export const ToolBar = ({ editor, isKeyboardOpen }) => {
               </CustomTippy>
             }
             togglerClassName={editor.isActive('heading') ? 'is-active' : 'not-active'}
+            togglerDisabled={readonly}
           >
             {Array.from({ length: 6 }).map((_, i) => (
               <DropDown.Button
@@ -146,6 +150,7 @@ export const ToolBar = ({ editor, isKeyboardOpen }) => {
             <button
               onClick={() => editor.chain().focus().setParagraph().run()}
               className={editor.isActive('paragraph') ? 'is-active' : 'not-active'}
+              disabled={readonly}
             >
               <i className='fa-solid fa-paragraph'></i>
             </button>
@@ -154,6 +159,7 @@ export const ToolBar = ({ editor, isKeyboardOpen }) => {
             <button
               onClick={() => editor.chain().focus().toggleBulletList().run()}
               className={editor.isActive('bulletList') ? 'is-active' : 'not-active'}
+              disabled={readonly}
             >
               <i className='fa-solid fa-list-ul'></i>
             </button>
@@ -162,6 +168,7 @@ export const ToolBar = ({ editor, isKeyboardOpen }) => {
             <button
               onClick={() => editor.chain().focus().toggleOrderedList().run()}
               className={editor.isActive('orderedList') ? 'is-active' : 'not-active'}
+              disabled={readonly}
             >
               <i className='fa-solid fa-list-ol'></i>
             </button>
@@ -170,6 +177,7 @@ export const ToolBar = ({ editor, isKeyboardOpen }) => {
             <button
               onClick={() => editor.chain().focus().toggleTaskList().run()}
               className={editor.isActive('taskList') ? 'is-active' : 'not-active'}
+              disabled={readonly}
             >
               <i className='fa-regular fa-check-square'></i>
             </button>
@@ -178,6 +186,7 @@ export const ToolBar = ({ editor, isKeyboardOpen }) => {
             <button
               onClick={() => editor.chain().focus().toggleCodeBlock().run()}
               className={editor.isActive('codeBlock') ? 'is-active' : 'not-active'}
+              disabled={readonly}
             >
               <svg
                 xmlns='http://www.w3.org/2000/svg'
@@ -201,6 +210,7 @@ export const ToolBar = ({ editor, isKeyboardOpen }) => {
             <button
               onClick={() => editor.chain().focus().toggleBlockquote().run()}
               className={editor.isActive('blockquote') ? 'is-active' : 'not-active'}
+              disabled={readonly}
             >
               <i className='fa-solid fa-quote-right'></i>
             </button>
@@ -209,6 +219,7 @@ export const ToolBar = ({ editor, isKeyboardOpen }) => {
             <button
               onClick={() => editor.chain().focus().setHorizontalRule().run()}
               className='not-active'
+              disabled={readonly}
             >
               <svg
                 xmlns='http://www.w3.org/2000/svg'
@@ -232,6 +243,7 @@ export const ToolBar = ({ editor, isKeyboardOpen }) => {
             <button
               onClick={() => editor.chain().focus().setTextAlign('left').run()}
               className={editor.isActive({ textAlign: 'left' }) ? 'is-active' : 'not-active'}
+              disabled={readonly}
             >
               <i className='fa-solid fa-align-left'></i>
             </button>
@@ -240,6 +252,7 @@ export const ToolBar = ({ editor, isKeyboardOpen }) => {
             <button
               onClick={() => editor.chain().focus().setTextAlign('center').run()}
               className={editor.isActive({ textAlign: 'center' }) ? 'is-active' : 'not-active'}
+              disabled={readonly}
             >
               <i className='fa-solid fa-align-center'></i>
             </button>
@@ -248,6 +261,7 @@ export const ToolBar = ({ editor, isKeyboardOpen }) => {
             <button
               onClick={() => editor.chain().focus().setTextAlign('right').run()}
               className={editor.isActive({ textAlign: 'right' }) ? 'is-active' : 'not-active'}
+              disabled={readonly}
             >
               <i className='fa-solid fa-align-right'></i>
             </button>
@@ -260,6 +274,7 @@ export const ToolBar = ({ editor, isKeyboardOpen }) => {
             <button
               onClick={() => editor.chain().focus().setHardBreak().run()}
               className='not-active'
+              disabled={readonly}
             >
               <svg xmlns='http://www.w3.org/2000/svg' fill='currentColor' viewBox='0 0 24 24'>
                 <g>
@@ -270,7 +285,11 @@ export const ToolBar = ({ editor, isKeyboardOpen }) => {
             </button>
           </CustomTippy>
           <CustomTippy content='Clear Content'>
-            <button className='not-active' onClick={() => editor.commands.clearContent()}>
+            <button
+              className='not-active'
+              onClick={() => editor.commands.clearContent()}
+              disabled={readonly}
+            >
               <i className='fa-solid fa-text-slash'></i>
             </button>
           </CustomTippy>
@@ -279,83 +298,3 @@ export const ToolBar = ({ editor, isKeyboardOpen }) => {
     </div>
   );
 };
-
-export function ActionBar({ editor,onBack }) {
-  const [isFullScreen, setIsFullScreen] = useState(document.fullscreenElement);
-
-  if (!editor) return null;
-  return (
-    <div className='flex items-center justify-between'>
-        <button
-          className='not-active'
-          onClick={() => {
-            onBack();
-          }}
-        >
-          <i className='fa-solid fa-chevron-left text-lg'></i>
-        </button>
-    <div className='flex items-center gap-2 border-background-tertiary '>
-      <CustomTippy content='Undo'>
-        <button
-          onClick={() => editor.chain().undo().run()}
-          disabled={!editor.can().chain().undo().run()}
-          className='not-active cursor-pointer'
-        >
-          <svg
-            stroke='currentColor'
-            fill='currentColor'
-            strokeWidth='0'
-            viewBox='0 0 24 24'
-            height='20px'
-            width='20px'
-            xmlns='http://www.w3.org/2000/svg'
-          >
-            <path d='M7.18,4,8.6,5.44,6.06,8h9.71a6,6,0,0,1,0,12h-2V18h2a4,4,0,0,0,0-8H6.06L8.6,12.51,7.18,13.92,2.23,9Z'></path>
-          </svg>
-        </button>
-      </CustomTippy>
-      <CustomTippy content='Redo'>
-        <button
-          onClick={() => editor.chain().redo().run()}
-          disabled={!editor.can().chain().redo().run()}
-          className='not-active cursor-pointer'
-        >
-          <svg
-            stroke='currentColor'
-            fill='currentColor'
-            strokeWidth='0'
-            viewBox='0 0 24 24'
-            height='20px'
-            width='20px'
-            xmlns='http://www.w3.org/2000/svg'
-          >
-            <path d='M16.82,4,15.4,5.44,17.94,8H8.23a6,6,0,0,0,0,12h2V18h-2a4,4,0,0,1,0-8h9.71L15.4,12.51l1.41,1.41L21.77,9Z'></path>
-          </svg>
-        </button>
-      </CustomTippy>
-      <CustomTippy content={isFullScreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}>
-        <button
-          onClick={() => {
-            isFullScreen
-              ? (document.exitFullscreen(), setIsFullScreen(false))
-              : (document.documentElement.requestFullscreen(), setIsFullScreen(true));
-
-            document.fullscreenerror &&
-              toast.error('Your browser does not support fullscreen mode');
-          }}
-          className='not-active cursor-pointer'
-        >
-          {isFullScreen ? (
-            <i className='fa-solid fa-compress'></i>
-          ) : (
-            <i className='fa-solid fa-expand'></i>
-          )}
-        </button>
-      </CustomTippy>
-      <button className='not-active'>
-        <i className='fa-solid fa-ellipsis-v'></i>
-      </button>
-    </div>
-    </div>
-  );
-}

@@ -1,14 +1,13 @@
-import { useRef, useState } from 'react';
+import {  useState } from 'react';
 import Drawer from '../../Common/Drawer';
 
 export default function TaskActions({ isOpen,onClose,  onDelete, onCopy, date, lists, onMove }) {
-  const overlayRef = useRef(null);
   const [listSelectionOpen, setListSelectionOpen] = useState(false);
 
   if(!isOpen) return null
   
   return (
-    <Drawer onClose={onClose} overlayRef={overlayRef} shouldClose={!listSelectionOpen}>
+    <Drawer onClose={onClose} shouldClose={!listSelectionOpen}>
       <div>
         <button className='menu_element w-full justify-items-start' onClick={onCopy}>
           <i className='fa-solid fa-clone  text-lg text-text-secondary'></i>

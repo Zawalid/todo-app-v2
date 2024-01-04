@@ -78,8 +78,8 @@ export default function Trash() {
           </div>
         )}
       </ul>
-      {isConfirmationModalOpen && (
         <ConfirmationModal
+       isOpen={isConfirmationModalOpen}
           sentence={`Are you sure you want to   ${
             whichDelete.current === 'item'
               ? 'delete this ' +
@@ -107,7 +107,6 @@ export default function Trash() {
           element={whichDelete.current === 'all' ? 'Trash' : 'Permanently'}
           showCheckBox={false}
         />
-      )}
       <div className='mt-auto flex-wrap gap-x-5 gap-y-2 flex items-center justify-between border-t-2 pt-3'>
         <button
           className={

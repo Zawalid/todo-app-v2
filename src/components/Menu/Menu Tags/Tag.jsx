@@ -32,8 +32,8 @@ export function Tag({ tag, showDeleteButton, customClassName, onDeleteTag, onSel
          {tag.title}
         </li>
       </div>
-      {isConfirmationModalOpen && (
         <ConfirmationModal
+       isOpen={isConfirmationModalOpen}
           sentence={`Are you sure you want to delete this tag ? `}
           confirmText={'Delete'}
           onConfirm={() => {
@@ -45,7 +45,6 @@ export function Tag({ tag, showDeleteButton, customClassName, onDeleteTag, onSel
           checked={deletePermanently}
           setChecked={setDeletePermanently}
         />
-      )}
     </>
   );
 }

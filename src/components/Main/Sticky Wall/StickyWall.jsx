@@ -12,7 +12,6 @@ import { useSearchParams } from 'react-router-dom';
 export default function StickyWall() {
   const {
     stickyNotes,
-    currentNote,
     setCurrentNote,
     isStickyNoteEditorOpen,
     setIsStickyNoteEditorOpen,
@@ -59,15 +58,9 @@ export default function StickyWall() {
         },
         { replace: true },
       );
-  }, [sortBy, direction,setSearchParams]);
+  }, [sortBy, direction, setSearchParams]);
 
-  function handleBack() {
-    setIsStickyNoteEditorOpen(false);
-    setCurrentNote(null);
-  }
-
-  if (isStickyNoteEditorOpen)
-    return <StickyNoteEditor currentNote={currentNote} onBack={handleBack} />;
+  if (isStickyNoteEditorOpen) return <StickyNoteEditor />;
 
   return (
     <div className='flex h-full flex-col gap-3 overflow-hidden'>
@@ -158,6 +151,7 @@ export default function StickyWall() {
               content: '<p></p>',
               bgColor: '#ff922b',
               textColor: '#fff',
+              readonly : false,
             };
             handleAddStickyNote(note);
             setCurrentNote((prev) => ({ ...prev, ...note }));
@@ -168,31 +162,30 @@ export default function StickyWall() {
         </button>
       )}
       {stickyNotes.length > 0 && Pagination}
-      {isConfirmationModalOpen && (
-        <ConfirmationModal
-          sentence={`Are you sure you want to ${
-            whichDelete.current === 'selected'
-              ? `delete ${
-                  selectedNotes.length > 1 ? `${selectedNotes.length} notes` : 'this note'
-                } `
-              : 'delete all notes?'
-          } `}
-          confirmText={whichDelete.current === 'selected' ? 'Delete' : 'Delete All'}
-          onConfirm={() => {
-            whichDelete.current === 'selected'
-              ? handleDeleteMultipleNotes(deletePermanently)
-              : handleDeleteAllNotes(deletePermanently);
 
-            setIsConfirmationModalOpen(false);
-            setIsDeleteMultipleModalOpen(false);
-            setIsSelecting(false);
-          }}
-          onCancel={() => setIsConfirmationModalOpen(false)}
-          element='Notes'
-          checked={deletePermanently}
-          setChecked={setDeletePermanently}
-        />
-      )}
+      <ConfirmationModal
+        isOpen={isConfirmationModalOpen}
+        sentence={`Are you sure you want to ${
+          whichDelete.current === 'selected'
+            ? `delete ${selectedNotes.length > 1 ? `${selectedNotes.length} notes` : 'this note'} `
+            : 'delete all notes?'
+        } `}
+        confirmText={whichDelete.current === 'selected' ? 'Delete' : 'Delete All'}
+        onConfirm={() => {
+          whichDelete.current === 'selected'
+            ? handleDeleteMultipleNotes(deletePermanently)
+            : handleDeleteAllNotes(deletePermanently);
+
+          setIsConfirmationModalOpen(false);
+          setIsDeleteMultipleModalOpen(false);
+          setIsSelecting(false);
+        }}
+        onCancel={() => setIsConfirmationModalOpen(false)}
+        element='Notes'
+        checked={deletePermanently}
+        setChecked={setDeletePermanently}
+      />
+
       {Modal}
     </div>
   );

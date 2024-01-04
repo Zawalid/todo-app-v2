@@ -10,7 +10,7 @@ export function List({ list }) {
   const { tasks } = useTasks();
   const [isRenameInputOpen, setIsRenameInputOpen] = useState(false);
   const [isNewTitleTaken, setTitle] = useIsTitleTaken($id, title);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [listColor, setListColor] = useState(color);
   const [deletePermanently, setDeletePermanently] = useState(false);
   const tasksCount = useMemo(
@@ -34,7 +34,6 @@ export function List({ list }) {
     };
   }, []);
 
-
   function openRenameInput() {
     setIsRenameInputOpen(true);
     setTimeout(() => newListTitle.current.focus(), 50);
@@ -50,7 +49,7 @@ export function List({ list }) {
   }
   return (
     <>
-      <li className='relative flex gap-1 pr-2 '>
+      <li className='relative flex items-center gap-1 pr-2 '>
         <NavLink to={title} className='menu_element group flex-1  grid-cols-[30px_auto_35px] '>
           <div
             className='h-5 w-5 rounded-[3px]'
@@ -67,7 +66,7 @@ export function List({ list }) {
         </NavLink>
 
         <ListAction
-          onDelete={() => setIsDeleteModalOpen(true)}
+          onDelete={() => setIsConfirmationModalOpen(true)}
           onChangeColor={(color) => {
             setListColor(color);
             handleChangeListColor($id, color);
@@ -96,25 +95,24 @@ export function List({ list }) {
           )}
         </div>
       </li>
-      {isDeleteModalOpen && (
-        <ConfirmationModal
-          sentence='Are you sure you want to delete this list?'
-          confirmText='Delete'
-          onConfirm={() => {
-            setIsDeleteModalOpen(false);
-            handleDeleteList($id, deletePermanently);
-            path?.replace(/%20/g, ' ') === title && navigate('/app');
-            // To delete all the tasks of the deleted list
-            // const tasksToDelete = tasks.filter((task) => task.listId === $id);
-            // if (tasksToDelete.length === 0) return;
-            // tasksToDelete.forEach(async (task) => await handleDeleteTask(task.$id));
-          }}
-          onCancel={() => setIsDeleteModalOpen(false)}
-          element='List'
-          checked={deletePermanently}
-          setChecked={setDeletePermanently}
-        />
-      )}
+      <ConfirmationModal
+        isOpen={isConfirmationModalOpen}
+        sentence='Are you sure you want to delete this list?'
+        confirmText='Delete'
+        onConfirm={() => {
+          setIsConfirmationModalOpen(false);
+          handleDeleteList($id, deletePermanently);
+          path?.replace(/%20/g, ' ') === title && navigate('/app');
+          // To delete all the tasks of the deleted list
+          // const tasksToDelete = tasks.filter((task) => task.listId === $id);
+          // if (tasksToDelete.length === 0) return;
+          // tasksToDelete.forEach(async (task) => await handleDeleteTask(task.$id));
+        }}
+        onCancel={() => setIsConfirmationModalOpen(false)}
+        element='List'
+        checked={deletePermanently}
+        setChecked={setDeletePermanently}
+      />
     </>
   );
 }

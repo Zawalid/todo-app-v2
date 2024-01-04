@@ -1,7 +1,7 @@
 import { useColorPicker } from '../../../../hooks/useColorPicker';
 
-export function TextColorPicker({ onChange }) {
-  const colorsDiv = useColorPicker(onChange);
+export function TextColorPicker({ onChange, textColor }) {
+  const colorsDiv = useColorPicker(onChange, textColor);
 
   return (
     <div className=' flex h-auto gap-2' ref={colorsDiv}>

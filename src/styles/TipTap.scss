@@ -30,12 +30,12 @@
     font-weight: 100;
     font-size: medium;
   }
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
+  h1:not(.m-0),
+  h2:not(.m-0),
+  h3:not(.m-0),
+  h4:not(.m-0),
+  h5:not(.m-0),
+  h6:not(.m-0) {
     font-size: revert;
     margin: revert;
     font-weight: revert;

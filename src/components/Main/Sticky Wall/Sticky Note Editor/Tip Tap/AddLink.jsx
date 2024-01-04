@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import CustomTippy from '../../../Common/CustomTippy';
+import CustomTippy from '../../../../Common/CustomTippy';
 
-export const AddLink = ({ editor }) => {
+export const AddLink = ({ editor,readonly }) => {
   const [url, setUrl] = useState('');
 
   const handleSetLink = (url) => {
@@ -39,6 +39,7 @@ export const AddLink = ({ editor }) => {
                 bg-background-secondary text-text-secondary
               '
               onClick={() => handleSubmit}
+              
             >
               Add
             </button>
@@ -52,7 +53,7 @@ export const AddLink = ({ editor }) => {
       placement='bottom'
     >
       <button
-        disabled={!editor.can().chain().focus().toggleLink().run()}
+        disabled={readonly || !editor.can().chain().focus().toggleLink().run()}
         className={editor.isActive('link') ? 'is-active' : 'not-active'}
         onClick={() => setUrl(editor.isActive('link') ? editor.getAttributes('link').href : '')}
       >

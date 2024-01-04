@@ -94,8 +94,8 @@ export default function TasksList({ dueDate, listId, condition, activeTab }) {
         <NoTasksMessage activeTab={activeTab} />
       )}
 
-      {isConfirmationModalOpen && (
         <ConfirmationModal
+       isOpen={isConfirmationModalOpen}
           sentence={`Are you sure you want to ${
             whichDelete.current === 'selected'
               ? `delete ${
@@ -118,7 +118,6 @@ export default function TasksList({ dueDate, listId, condition, activeTab }) {
           checked={deletePermanently}
           setChecked={setDeletePermanently}
         />
-      )}
 
       {filteredTasks.filter((task) => condition(task)).length > 0 && Pagination}
       {Modal}

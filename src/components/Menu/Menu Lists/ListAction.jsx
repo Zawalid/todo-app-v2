@@ -8,7 +8,7 @@ export function ListAction({ onDelete, onChangeColor, onOpenRenameInput }) {
   return (
     <DropDown
       toggler={<i className='fas fa-ellipsis-vertical text-text-tertiary '></i>}
-      togglerClassName='cursor-pinter  relative rounded-md px-2 text-center transition-colors duration-300 hover:bg-background-primary'
+      togglerClassName='not-active small'
       options={{
         className: 'w-52',
       }}

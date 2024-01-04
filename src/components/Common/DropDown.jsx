@@ -6,7 +6,15 @@ const defaultOptions = {
   trigger: 'click',
   shouldCloseOnClick: true,
 };
-export function DropDown({ children, toggler, togglerClassName, options, onOpen, onClose }) {
+export function DropDown({
+  children,
+  toggler,
+  togglerClassName,
+  togglerDisabled,
+  options,
+  onOpen,
+  onClose,
+}) {
   return (
     <Tippy
       content={<ul className='grid gap-1 p-2'>{children}</ul>}
@@ -25,7 +33,13 @@ export function DropDown({ children, toggler, togglerClassName, options, onOpen,
       }}
       onHidden={onClose}
     >
-      <button className={togglerClassName}>{toggler}</button>
+      <button
+        onClick={(e) => e.stopPropagation()}
+        className={togglerClassName}
+        disabled={togglerDisabled}
+      >
+        {toggler}
+      </button>
     </Tippy>
   );
 }
@@ -34,13 +48,11 @@ function Button({ children, onClick, className, isDeleteButton, size = 'default'
   return (
     <li
       className={
-        'relative flex w-full cursor-pointer items-center gap-3 overflow-hidden rounded-md transition-colors duration-300 hover:bg-background-secondary ' +
+        'relative flex w-full cursor-pointer items-center gap-3 overflow-hidden rounded-md font-medium text-text-secondary transition-colors duration-300 hover:bg-background-secondary ' +
         className +
         (size === 'small' ? ' px-2 py-1 ' : ' px-3 py-2 ') +
         (isDeleteButton ? 'hover:bg-red-500 hover:text-white ' : '') +
-        (isCurrent
-          ? 'bg-background-secondary text-text-secondary'
-          : 'bg-background-primary text-text-tertiary')
+        (isCurrent ? 'bg-background-secondary ' : 'bg-background-primary ')
       }
       onClick={onClick}
     >
