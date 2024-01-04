@@ -14,7 +14,11 @@ export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
   useEffect(() => {
     if ('virtualKeyboard' in navigator && isKeyboardOpen) {
       navigator.virtualKeyboard.overlaysContent = true;
-      const handleKeyboard = (e) => setKeyboardHeight(e.target.boundingRect.height);
+      const handleKeyboard = (e) => {
+        const { height } = e.target.boundingRect;
+        setKeyboardHeight(height);
+        document.querySelector('.tiptap').style.height = `calc(100% - ${height}px)`;
+      };
       navigator.virtualKeyboard.addEventListener('geometrychange', handleKeyboard);
 
       return () => navigator.virtualKeyboard.removeEventListener('geometrychange', handleKeyboard);

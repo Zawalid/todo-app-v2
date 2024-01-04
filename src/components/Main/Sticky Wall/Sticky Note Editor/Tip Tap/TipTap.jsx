@@ -19,6 +19,71 @@ import '../../../../../styles/TipTap.scss';
 import { DropDown } from '../../../../Common/DropDown';
 
 const turndownService = new TurndownService();
+const DEFAULT_FONT_FAMILY = `'Lexend Deca', sans-serif`;
+
+const exportAs = (format, editor, title) => {
+  const formats = {
+    text: {
+      filename: `${title}.txt`,
+      content: editor.getText(),
+      type: 'text/plain',
+    },
+    html: {
+      filename: `${title}.html`,
+      content: `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${title}</title>
+</head>
+<body>
+  <h1>${title}</h1>
+  ${editor.getHTML()}
+</body>
+</html>
+      `,
+      type: 'text/html',
+    },
+    markdown: {
+      filename: `${title}.md`,
+      content: turndownService.turndown(
+        `<h1>${title}</h1>
+         ---
+        ${editor.getHTML()}`,
+      ),
+      type: 'text/markdown',
+    },
+  };
+
+  if (format === 'pdf') return exportAsPDF(editor.getHTML(), title);
+
+  const { filename, content, type } = formats[format];
+
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(url);
+};
+const exportAsPDF = (html, title) => {
+  const content = document.querySelector('.tiptap');
+  content.querySelector('#info').classList.add('hidden');
+  const doc = new jsPDF();
+  doc.html(content, {
+    callback: function (doc) {
+      doc.save(`${title}.pdf`);
+      content.querySelector('#info').classList.remove('hidden');
+    },
+    x: 15,
+    y: 15,
+    width: 170,
+    windowWidth: 650,
+  });
+};
 
 export default function TipTap() {
   const {
@@ -29,7 +94,8 @@ export default function TipTap() {
     handleDeleteStickyNote,
     handleBack,
   } = useStickyNotes();
-  const { $id, content, $updatedAt, bgColor, textColor } = currentNote || {};
+  const { $id, content, $updatedAt, bgColor, textColor, fontFamily } = currentNote || {};
+
   const [title, setTitle] = useState(currentNote?.title);
   const [isSaving, setIsSaving] = useState(false);
   const [isActionsOpen, setIsActionsOpen] = useState(true);
@@ -65,7 +131,7 @@ export default function TipTap() {
     content,
     editorProps: {
       attributes: {
-        class: 'text-text-secondary focus:outline-none ',
+        class: 'text-text-secondary focus:outline-none pb-10',
       },
     },
     onUpdate: ({ editor }) => handleUpdateNote('content', editor.getHTML()),
@@ -80,6 +146,11 @@ export default function TipTap() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editor, readonly]);
 
+  useEffect(() => {
+    if (!document.querySelector('.tiptap')) return;
+    document.querySelector('.tiptap').style.fontFamily = fontFamily || DEFAULT_FONT_FAMILY;
+  }, [fontFamily]);
+
   return (
     <div
       className={
@@ -92,6 +163,7 @@ export default function TipTap() {
         currentNote={currentNote}
         isOpen={isActionsOpen}
         readonly={readonly}
+        fontFamily={fontFamily || DEFAULT_FONT_FAMILY}
         handlers={{
           onClose: () => setIsActionsOpen(false),
           onCopy: () => {
@@ -110,16 +182,20 @@ export default function TipTap() {
           onBack,
           onReadOnly: () => setReadonly(!readonly),
           onExport: (format) => exportAs(format, editor, title),
+          onChangeFontFamily: (fontFamily) => {
+            document.querySelector('.tiptap').style.fontFamily = fontFamily;
+            handleUpdateNote('fontFamily', fontFamily);
+          },
         }}
       >
-        <div className='flex flex-col gap-1'>
+        <div className='space-y-2'>
           <span className='text-sm  font-medium text-text-secondary'>Background Color</span>
           <BackgroundColorPicker
             onChange={(color) => handleUpdateNote('bgColor', color)}
             bgColor={bgColor}
           />
         </div>
-        <div className='flex flex-col gap-1'>
+        <div className='space-y-2'>
           <span className='text-sm  font-medium text-text-secondary'>Text Color</span>
           <TextColorPicker
             onChange={(color) => handleUpdateNote('textColor', color)}
@@ -194,14 +270,15 @@ function Actions({
   currentNote,
   isOpen,
   readonly,
-  handlers: { onClose, onCopy, onDelete, onBack, onReadOnly, onExport },
+  fontFamily,
+  handlers: { onClose, onCopy, onDelete, onBack, onReadOnly, onExport, onChangeFontFamily },
 }) {
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [deletePermanently, setDeletePermanently] = useState(false);
   return (
     <div
       className={
-        'fixed top-0 z-[10001] h-full w-full sm:w-[300px] flex flex-col border bg-background-primary p-3 shadow-md transition-[right]  ' +
+        'fixed top-0 z-[10001] flex h-full w-full flex-col border bg-background-primary p-3 shadow-md transition-[right] sm:w-[300px]  ' +
         (isOpen ? 'right-0 duration-700' : '-right-full duration-[.9s] ')
       }
     >
@@ -215,7 +292,13 @@ function Actions({
         </button>
       </div>
       <hr className='border border-zinc-200' />
-      <div className='mt-2 flex overflow-auto flex-1 flex-col gap-2'>
+      <div className='mt-2 flex flex-1 flex-col gap-2 overflow-auto'>
+        <div className='space-y-3'>
+          <FontFamilies fontFamily={fontFamily} onChangeFontFamily={onChangeFontFamily} />
+          {children}
+        </div>
+        <hr className='border border-zinc-200' />
+
         <div>
           <div className='flex items-center justify-between rounded-md px-3 py-2 transition-colors duration-300 hover:bg-background-secondary '>
             <label
@@ -276,7 +359,7 @@ function Actions({
               <span>PDF</span>
             </DropDown.Button>
             <DropDown.Button className='text-center' onClick={() => onExport('text')}>
-              <i className='fa-brands fa-t w-4'></i>
+              <i className='fa-solid fa-file-lines w-4'></i>
               <span>Text</span>
             </DropDown.Button>
             <DropDown.Button className='text-center' onClick={() => onExport('html')}>
@@ -296,11 +379,6 @@ function Actions({
             <span className='text-start'>Delete Note</span>
           </button>
         </div>
-        <hr className='border border-zinc-200' />
-        <label className='font-medium  text-text-tertiary'>
-          <span>Style</span>
-        </label>
-        {children}
 
         <div className='mt-auto'>
           <hr className='mb-2 border border-zinc-200' />
@@ -338,67 +416,46 @@ function Actions({
   );
 }
 
-function exportAs(format, editor, title) {
-  const formats = {
-    text: {
-      filename: `${title}.txt`,
-      content: editor.getText(),
-      type: 'text/plain',
+function FontFamilies({ fontFamily, onChangeFontFamily }) {
+  const families = [
+    {
+      name: DEFAULT_FONT_FAMILY,
+      label: 'Default',
     },
-    html: {
-      filename: `${title}.html`,
-      content: `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${title}</title>
-</head>
-<body>
-  <h1>${title}</h1>
-  ${editor.getHTML()}
-</body>
-</html>
-      `,
-      type: 'text/html',
+    {
+      name: 'serif',
+      label: 'Serif',
     },
-    markdown: {
-      filename: `${title}.md`,
-      content: turndownService.turndown(
-        `<h1>${title}</h1>
-         ---
-        ${editor.getHTML()}`,
-      ),
-      type: 'text/markdown',
+    {
+      name: 'monospace',
+      label: 'Mono',
     },
-  };
-
-  if (format === 'pdf') return exportAsPDF(editor.getHTML(), title);
-
-  const { filename, content, type } = formats[format];
-
-  const blob = new Blob([content], { type });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = filename;
-  link.click();
-  URL.revokeObjectURL(url);
-}
-
-function exportAsPDF(html, title) {
-  const content = document.querySelector('.tiptap');
-  content.querySelector('#info').classList.add('hidden');
-  const doc = new jsPDF();
-  doc.html(content, {
-    callback: function (doc) {
-      doc.save(`${title}.pdf`);
-      content.querySelector('#info').classList.remove('hidden');
+    {
+      name: 'cursive',
+      label: 'Cursive',
     },
-    x: 15,
-    y: 15,
-    width: 170,
-    windowWidth: 650,
-  });
+  ];
+  return (
+    <div className='space-y-2'>
+      <span className='text-sm  font-medium text-text-secondary'>Font Family</span>
+      <div className='flex gap-3'>
+        {families.map(({ name, label }) => (
+          <div className='text-center ' key={name} onClick={() => onChangeFontFamily(name)}>
+            <button
+              className={
+                'h-16 w-16 rounded-md border p-3 text-lg font-medium transition-colors duration-300 hover:border-primary hover:text-primary sm:h-14 sm:w-14 ' +
+                (fontFamily === name
+                  ? 'border-primary text-primary'
+                  : 'border-zinc-200 text-text-secondary')
+              }
+              style={{ fontFamily: name }}
+            >
+              Ag
+            </button>
+            <span className='text-xs  text-text-tertiary'>{label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
