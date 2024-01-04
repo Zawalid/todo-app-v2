@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { BubbleMenu, EditorContent, useEditor } from '@tiptap/react';
 import { extensions } from './extensions';
 import TurndownService from 'turndown';
-const turndownService = new TurndownService();
+import { jsPDF } from 'jspdf';
 
 import { ToolBar } from './ToolBar';
 import { ActionBar } from './ActionBar';
@@ -18,6 +18,8 @@ import { ConfirmationModal } from '../../../../Common/ConfirmationModal';
 import '../../../../../styles/TipTap.scss';
 import { DropDown } from '../../../../Common/DropDown';
 
+const turndownService = new TurndownService();
+
 export default function TipTap() {
   const {
     currentNote,
@@ -30,7 +32,7 @@ export default function TipTap() {
   const { $id, content, $updatedAt, bgColor, textColor } = currentNote || {};
   const [title, setTitle] = useState(currentNote?.title);
   const [isSaving, setIsSaving] = useState(false);
-  const [isPropertiesOpen, setIsPropertiesOpen] = useState(true);
+  const [isActionsOpen, setIsActionsOpen] = useState(true);
   const [readonly, setReadonly] = useState(currentNote?.readonly || false);
   const exists = useMemo(() => stickyNotes.find((note) => note.$id === $id), [stickyNotes, $id]);
 
@@ -85,17 +87,13 @@ export default function TipTap() {
         (isTouchDevice() ? ' grid-rows-[40px_auto]' : ' grid-rows-[40px_auto_42px]')
       }
     >
-      <ActionBar
-        editor={editor}
-        onBack={onBack}
-        onOpenProperties={() => setIsPropertiesOpen(true)}
-      />
-      <Properties
+      <ActionBar editor={editor} onBack={onBack} onOpenActions={() => setIsActionsOpen(true)} />
+      <Actions
         currentNote={currentNote}
-        isOpen={isPropertiesOpen}
+        isOpen={isActionsOpen}
         readonly={readonly}
         handlers={{
-          onClose: () => setIsPropertiesOpen(false),
+          onClose: () => setIsActionsOpen(false),
           onCopy: () => {
             navigator.clipboard.writeText(`
           ${title}
@@ -115,20 +113,20 @@ export default function TipTap() {
         }}
       >
         <div className='flex flex-col gap-1'>
-          <span className='text-sm  text-text-tertiary'>Background Color</span>
+          <span className='text-sm  font-medium text-text-secondary'>Background Color</span>
           <BackgroundColorPicker
             onChange={(color) => handleUpdateNote('bgColor', color)}
             bgColor={bgColor}
           />
         </div>
         <div className='flex flex-col gap-1'>
-          <span className='text-sm  text-text-tertiary'>Text Color</span>
+          <span className='text-sm  font-medium text-text-secondary'>Text Color</span>
           <TextColorPicker
             onChange={(color) => handleUpdateNote('textColor', color)}
             textColor={textColor}
           />
         </div>
-      </Properties>
+      </Actions>
       <div className='tiptap no_scrollbar grid grid-rows-[90px_auto] gap-3 overflow-auto p-3'>
         <NoteInfo
           editor={editor}
@@ -173,7 +171,7 @@ function NoteInfo({ editor, updateDate, isSaving, title, setTitle }) {
         onChange={(e) => setTitle(e.target.value)}
       />
 
-      <p className='flex flex-wrap items-center gap-2 text-xs text-text-tertiary'>
+      <p id='info' className='flex flex-wrap items-center gap-2 text-xs text-text-tertiary'>
         <span>
           {new Intl.DateTimeFormat('en-US', {
             dateStyle: 'medium',
@@ -191,7 +189,7 @@ function NoteInfo({ editor, updateDate, isSaving, title, setTitle }) {
   );
 }
 
-function Properties({
+function Actions({
   children,
   currentNote,
   isOpen,
@@ -203,42 +201,45 @@ function Properties({
   return (
     <div
       className={
-        'fixed top-0 z-[10001]  h-full w-[300px] rounded-lg border bg-background-primary p-3 shadow-md transition-[right]  ' +
-        (isOpen ? 'right-0 duration-700' : '-right-full duration-1000 ')
+        'fixed top-0 z-[10001] h-full w-full sm:w-[300px] flex flex-col border bg-background-primary p-3 shadow-md transition-[right]  ' +
+        (isOpen ? 'right-0 duration-700' : '-right-full duration-[.9s] ')
       }
     >
       <div className='flex items-center justify-between pb-2'>
-        <h3 className='m-0  text-lg font-semibold text-text-secondary sm:text-xl'>Properties</h3>
-        <button className='not-active small' onClick={onClose}>
-          <i className='fa-solid fa-times text-lg'></i>
+        <h3 className='m-0  text-lg font-semibold text-text-primary sm:text-xl'>Actions</h3>
+        <button
+          className='text-xs font-medium text-primary transition-colors duration-300 hover:text-primary-hover'
+          onClick={onClose}
+        >
+          Done{' '}
         </button>
       </div>
       <hr className='border border-zinc-200' />
-      <div className='mt-5 flex flex-col gap-3'>
-        <div className='space-y-3'>
-          <div className='flex items-center justify-between'>
+      <div className='mt-2 flex overflow-auto flex-1 flex-col gap-2'>
+        <div>
+          <div className='flex items-center justify-between rounded-md px-3 py-2 transition-colors duration-300 hover:bg-background-secondary '>
             <label
-              className='grid grid-cols-[15px_auto] items-center gap-2 text-sm font-medium  text-text-tertiary'
+              className=' grid grid-cols-[15px_auto] items-center gap-2 text-sm font-medium  text-text-secondary'
               htmlFor='pin'
             >
               <i className='fa-solid fa-thumbtack'></i> <span>Pin</span>
             </label>
             <Switch id='pin' />
           </div>
-          <div className='flex items-center justify-between'>
+          <div className='flex items-center justify-between rounded-md px-3 py-2 transition-colors duration-300 hover:bg-background-secondary '>
             <label
-              className='grid grid-cols-[15px_auto] items-center gap-2 text-sm font-medium  text-text-tertiary'
+              className=' grid grid-cols-[15px_auto] items-center gap-2 text-sm font-medium  text-text-secondary'
               htmlFor='readonly'
             >
               <svg
                 viewBox='0 0 24 24'
                 width='17px'
                 height='17px'
-                className='text-text-tertiary'
+                className='text-text-secondary'
                 fill='currentColor'
               >
                 <path
-                  className='text-text-tertiary'
+                  className='text-text-secondary'
                   d='M16.1,9L17,9.9L7.9,19H7V18.1L16.1,9M19.7,3C19.5,3 19.2,3.1 19,3.3L17.2,5.1L20.9,8.9L22.7,7C23.1,6.6 23.1,6 22.7,5.6L20.4,3.3C20.2,3.1 19.9,3 19.7,3M16.1,6.2L5,17.2V21H8.8L19.8,9.9L16.1,6.2M8,5V4.5C8,3.1 6.9,2 5.5,2C4.1,2 3,3.1 3,4.5V5C2.4,5 2,5.4 2,6V10C2,10.6 2.4,11 3,11H8C8.6,11 9,10.6 9,10V6C9,5.4 8.6,5 8,5M7,5H4V4.5C4,3.7 4.7,3 5.5,3C6.3,3 7,3.7 7,4.5V5Z'
                 ></path>
               </svg>
@@ -248,9 +249,9 @@ function Properties({
           </div>
         </div>
         <hr className='border border-zinc-200' />
-        <div className='flex flex-col gap-3'>
+        <div className='gap- flex flex-col'>
           <button
-            className='grid grid-cols-[15px_auto] items-center gap-2 text-sm font-medium  text-text-tertiary transition-colors duration-300 hover:text-text-secondary'
+            className='grid grid-cols-[15px_auto] items-center gap-2 rounded-md px-3  py-2 text-sm font-medium text-text-secondary transition-colors duration-300 hover:bg-background-secondary hover:text-text-primary'
             onClick={onCopy}
           >
             <i className='fa-solid fa-clone'></i>
@@ -259,31 +260,36 @@ function Properties({
 
           <DropDown
             toggler={
-              <button className='grid  w-full grid-cols-[15px_auto_15px] items-center gap-2 text-sm font-medium  text-text-tertiary transition-colors duration-300 hover:text-text-secondary'>
+              <>
                 <i className='fa-solid fa-file-export'></i>
                 <span className='text-start'>Export As</span>
-              </button>
+              </>
             }
+            togglerClassName='grid grid-cols-[15px_auto] items-center gap-2 text-sm font-medium  text-text-secondary transition-colors duration-300 hover:text-text-primary hover:bg-background-secondary py-2 px-3 rounded-md'
             options={{
               className: 'w-[260px]',
               placement: 'bottom-start',
             }}
           >
+            <DropDown.Button className='text-center' onClick={() => onExport('pdf')}>
+              <i className='fa-solid fa-file-pdf w-4'></i>
+              <span>PDF</span>
+            </DropDown.Button>
             <DropDown.Button className='text-center' onClick={() => onExport('text')}>
               <i className='fa-brands fa-t w-4'></i>
-              <span> Text</span>
+              <span>Text</span>
             </DropDown.Button>
             <DropDown.Button className='text-center' onClick={() => onExport('html')}>
               <i className='fa-brands fa-html5 w-4'></i>
-              <span> HTML</span>
+              <span>HTML</span>
             </DropDown.Button>
             <DropDown.Button className='text-center' onClick={() => onExport('markdown')}>
               <i className='fa-brands fa-markdown w-4'></i>
-              <span> Markdown</span>
+              <span>Markdown</span>
             </DropDown.Button>
           </DropDown>
           <button
-            className='grid grid-cols-[15px_auto] items-center gap-2 text-sm font-medium  text-red-500 transition-colors duration-300 hover:text-text-error'
+            className='grid grid-cols-[15px_auto] items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-red-500 transition-colors duration-300 hover:bg-background-secondary hover:text-text-error'
             onClick={() => setIsConfirmationModalOpen(true)}
           >
             <i className='fa-solid fa-trash-can'></i>
@@ -291,19 +297,22 @@ function Properties({
           </button>
         </div>
         <hr className='border border-zinc-200' />
+        <label className='font-medium  text-text-tertiary'>
+          <span>Style</span>
+        </label>
         {children}
-        <hr className='border border-zinc-200' />
 
-        <div>
-          <p className='mb-1 text-xs font-medium text-text-tertiary '>
-            Created at :{' '}
+        <div className='mt-auto'>
+          <hr className='mb-2 border border-zinc-200' />
+          <p className='mb-1 text-xs font-medium text-text-secondary '>
+            Created :{' '}
             {new Intl.DateTimeFormat('en-US', {
               dateStyle: 'medium',
               timeStyle: 'short',
             }).format(new Date(currentNote?.$createdAt || Date.now()))}
           </p>
-          <p className='text-xs font-medium text-text-tertiary '>
-            Last modified at :{' '}
+          <p className='text-xs font-medium text-text-secondary '>
+            Last modified :{' '}
             {new Intl.DateTimeFormat('en-US', {
               dateStyle: 'medium',
               timeStyle: 'short',
@@ -365,6 +374,8 @@ function exportAs(format, editor, title) {
     },
   };
 
+  if (format === 'pdf') return exportAsPDF(editor.getHTML(), title);
+
   const { filename, content, type } = formats[format];
 
   const blob = new Blob([content], { type });
@@ -374,4 +385,20 @@ function exportAs(format, editor, title) {
   link.download = filename;
   link.click();
   URL.revokeObjectURL(url);
+}
+
+function exportAsPDF(html, title) {
+  const content = document.querySelector('.tiptap');
+  content.querySelector('#info').classList.add('hidden');
+  const doc = new jsPDF();
+  doc.html(content, {
+    callback: function (doc) {
+      doc.save(`${title}.pdf`);
+      content.querySelector('#info').classList.remove('hidden');
+    },
+    x: 15,
+    y: 15,
+    width: 170,
+    windowWidth: 650,
+  });
 }

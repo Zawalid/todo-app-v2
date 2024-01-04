@@ -35,7 +35,7 @@ function App() {
         <Route path='*' element={<NotFound />} />
       </Routes>
       <Toaster
-        position={window.innerWidth < 768 ? 'bottom-center' : 'top-right'}
+        position={window.innerWidth < 768 ? 'bottom-center' : 'bottom-right'}
         loadingIcon={
           <i className='fa-solid fa-spinner animate-spin text-lg text-text-secondary'></i>
         }

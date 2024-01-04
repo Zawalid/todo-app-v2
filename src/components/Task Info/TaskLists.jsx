@@ -23,8 +23,8 @@ export function TaskLists({ taskListId, setTaskListId }) {
           onClick={() => setTaskListId('none')}
           className={
             taskListId === 'none'
-              ? 'bg-background-secondary text-text-secondary'
-              : 'bg-background-primary text-text-tertiary'
+              ? 'bg-background-secondary text-text-primary'
+              : 'bg-background-primary text-text-secondary'
           }
         >
           <span>None</span>

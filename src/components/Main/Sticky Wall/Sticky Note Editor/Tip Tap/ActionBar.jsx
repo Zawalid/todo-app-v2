@@ -2,7 +2,7 @@ import { toast } from 'sonner';
 import CustomTippy from '../../../../Common/CustomTippy';
 import { useState } from 'react';
 
-export function ActionBar({ editor, onBack, onOpenProperties }) {
+export function ActionBar({ editor, onBack, onOpenActions }) {
   const [isFullScreen, setIsFullScreen] = useState(document.fullscreenElement);
 
   if (!editor) return null;
@@ -74,7 +74,7 @@ export function ActionBar({ editor, onBack, onOpenProperties }) {
             )}
           </button>
         </CustomTippy>
-        <button onClick={onOpenProperties} className='not-active'>
+        <button onClick={onOpenActions} className='not-active'>
           <i className='fas fa-ellipsis-v text-lg'></i>
         </button>
       </div>

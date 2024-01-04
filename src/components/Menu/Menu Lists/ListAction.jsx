@@ -2,8 +2,8 @@ import { Colors } from '../../Common/Colors';
 import { DropDown } from '../../Common/DropDown';
 import { useColorPicker } from '../../../hooks/useColorPicker';
 
-export function ListAction({ onDelete, onChangeColor, onOpenRenameInput }) {
-  const colorsDiv = useColorPicker(onChangeColor);
+export function ListAction({ onDelete, onChangeColor, color,onOpenRenameInput }) {
+  const colorsDiv = useColorPicker(onChangeColor,color);
 
   return (
     <DropDown

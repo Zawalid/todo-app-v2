@@ -8,6 +8,7 @@ import { ConfirmationModal } from '../../Common/ConfirmationModal';
 import useDeleteMultiple from '../useDeleteMultiple';
 import { usePagination } from '../usePagination';
 import { useSearchParams } from 'react-router-dom';
+import { isTouchDevice } from '../../../utils/helpers';
 
 export default function StickyWall() {
   const {
@@ -21,7 +22,7 @@ export default function StickyWall() {
     setSelectedNotes,
     handleDeleteMultipleNotes,
   } = useStickyNotes();
-  const [view, setView] = useState('grid');
+  const [view, setView] = useState(isTouchDevice() ? 'list' : 'grid');
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [deletePermanently, setDeletePermanently] = useState(false);
   const whichDelete = useRef(null);

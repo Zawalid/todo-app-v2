@@ -71,6 +71,7 @@ export function List({ list }) {
             setListColor(color);
             handleChangeListColor($id, color);
           }}
+          color={listColor}
           onOpenRenameInput={openRenameInput}
         />
         <div
