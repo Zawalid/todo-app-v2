@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Colors } from '../../Common/Colors';
 import { useTags } from '../../../hooks/useTags';
+import { useColorPicker } from '../../../hooks/useColorPicker';
 
 export function AddNewTag({ reference, isOpen }) {
   const { handleAddTag } = useTags();
@@ -8,24 +9,9 @@ export function AddNewTag({ reference, isOpen }) {
   const [bgColor, setBgColor] = useState('#ff6b6b');
   const [textColor, setTextColor] = useState('#ffffff');
   const inputEl = useRef(null);
-  const bgColorsDiv = useRef(null);
-  const textColorsDiv = useRef(null);
+  const bgColorsDiv = useColorPicker((color) => setBgColor(color), bgColor);
+  const textColorsDiv = useColorPicker((color) => setTextColor(color), textColor);
 
-  useEffect(() => {
-    inputEl.current.focus();
-    function handleClick(e) {
-      if (isOpen && bgColorsDiv.current && bgColorsDiv.current.contains(e.target)) {
-        const color = e.target.dataset.color;
-        color && setBgColor(color);
-      }
-      if (isOpen && textColorsDiv.current && textColorsDiv.current.contains(e.target)) {
-        const color = e.target.dataset.color;
-        setTextColor(color);
-      }
-    }
-    document.addEventListener('click', handleClick);
-    return () => document.removeEventListener('click', handleClick);
-  }, [isOpen]);
   useEffect(() => {
     function handleKeyDown(e) {
       e.key === 'Enter' && isOpen && e.target.tagName !== 'INPUT' && handleAdd();
@@ -41,7 +27,7 @@ export function AddNewTag({ reference, isOpen }) {
     setValue('');
   }
   return (
-    <div className='mt-5 rounded-lg w-fit border-2 border-zinc-200 p-3' ref={reference}>
+    <div className='mt-5 w-fit rounded-lg border-2 border-zinc-200 p-3' ref={reference}>
       <div className='flex items-center gap-2 '>
         <div className='flex flex-col gap-1' ref={textColorsDiv}>
           <span

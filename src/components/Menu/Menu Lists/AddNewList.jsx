@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Colors } from '../../Common/Colors';
 import { useIsTitleTaken } from '../../../hooks/useIsTitleTaken';
 import { useLists } from '../../../hooks/useLists';
+import { useColorPicker } from '../../../hooks/useColorPicker';
 
 export function AddNewList({ reference, isOpen }) {
   const { lists, handleAddList } = useLists();
@@ -13,20 +14,8 @@ export function AddNewList({ reference, isOpen }) {
   const [value, setValue] = useState('');
   const [color, setColor] = useState('#ff6b6b');
   const inputEl = useRef(null);
-  const colorsDiv = useRef(null);
+  const colorsDiv = useColorPicker((color) => setColor(color), color);
   const [isTitleTaken, , setTitle] = useIsTitleTaken(lists);
-
-  useEffect(() => {
-    inputEl.current.focus();
-    function handleClick(e) {
-      if (isOpen && e.target.tagName === 'SPAN') {
-        const color = e.target.dataset.color;
-        setColor(color);
-      }
-    }
-    document.addEventListener('click', handleClick);
-    return () => document.removeEventListener('click', handleClick);
-  }, [isOpen]);
 
   useEffect(() => {
     function handleKeyDown(e) {
@@ -45,7 +34,7 @@ export function AddNewList({ reference, isOpen }) {
   }
 
   return (
-    <div className='rounded-lg  border-2 w-fit border-zinc-200 p-3' ref={reference}>
+    <div className='w-fit  rounded-lg border-2 border-zinc-200 p-3' ref={reference}>
       <div className='flex items-center gap-2 rounded-lg border border-zinc-200 px-2'>
         <span className='h-5 w-5 rounded-[3px]' style={{ backgroundColor: color }}></span>
         <form

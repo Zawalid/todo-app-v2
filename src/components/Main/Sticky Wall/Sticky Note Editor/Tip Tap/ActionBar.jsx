@@ -1,19 +1,9 @@
 import { toast } from 'sonner';
 import CustomTippy from '../../../../Common/CustomTippy';
 import { useState } from 'react';
-import { DropDown } from '../../../../Common/DropDown';
-import { BackgroundColorPicker } from '../BackgroundColorPicker';
-import { TextColorPicker } from '../TextColorPicker';
-import { ConfirmationModal } from '../../../../Common/ConfirmationModal';
 
-export function ActionBar({
-  editor,
-  handlers: { onBack, onChangeBg, onChangeText, onDelete, onOpenProperties },
-  colors: { bgColor, textColor },
-}) {
+export function ActionBar({ editor, onBack, onOpenProperties }) {
   const [isFullScreen, setIsFullScreen] = useState(document.fullscreenElement);
-  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
-  const [deletePermanently, setDeletePermanently] = useState(false);
 
   if (!editor) return null;
   return (
@@ -84,48 +74,10 @@ export function ActionBar({
             )}
           </button>
         </CustomTippy>
-        {/* <DropDown
-          toggler={<i className='fas fa-ellipsis-v text-lg'></i>}
-          togglerClassName='not-active'
-          options={{
-            className: 'w-52 cursor-auto',
-          }}
-        >
-          <div className='space-y-2 pb-1 text-start'>
-            <DropDown.Title>Background Color</DropDown.Title>
-            <BackgroundColorPicker onChange={(color) => onChangeBg(color)} bgColor={bgColor} />
-          </div>
-          <DropDown.Divider />
-          <div className=' space-y-2 py-1  text-start'>
-            <DropDown.Title>Text Color</DropDown.Title>
-            <TextColorPicker onChange={(color) => onChangeText(color)} textColor={textColor} />
-          </div>
-          <DropDown.Divider />
-          <DropDown.Button onClick={() => setIsConfirmationModalOpen(true)} isDeleteButton={true}>
-            <i className='fa-solid fa-trash-can '></i>
-            <span>Delete Note</span>
-          </DropDown.Button>
-        </DropDown> */}
         <button onClick={onOpenProperties} className='not-active'>
           <i className='fas fa-ellipsis-v text-lg'></i>
         </button>
       </div>
-      {
-        <ConfirmationModal
-          isOpen={isConfirmationModalOpen}
-          sentence='Are you sure you want to delete this note?'
-          confirmText='Delete'
-          onConfirm={() => {
-            onDelete(deletePermanently);
-            setIsConfirmationModalOpen(false);
-            onBack();
-          }}
-          onCancel={() => setIsConfirmationModalOpen(false)}
-          element='Note'
-          checked={deletePermanently}
-          setChecked={setDeletePermanently}
-        />
-      }
     </div>
   );
 }

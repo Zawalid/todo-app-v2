@@ -4,8 +4,8 @@ export function useColorPicker(onChange, initialColor) {
   const colorsDiv = useRef(null);
 
   function changeOpacity(color) {
-    colorsDiv.current.querySelectorAll('.color').forEach((c) => c.classList.add('opacity-50'));
-    colorsDiv.current.querySelector(`[data-color="${color}"]`).classList.remove('opacity-50',);
+    colorsDiv.current.querySelectorAll('.color').forEach((c) => c?.classList.add('opacity-50'));
+    colorsDiv.current.querySelector(`[data-color="${color}"]`)?.classList.remove('opacity-50');
   }
 
   useEffect(() => {
