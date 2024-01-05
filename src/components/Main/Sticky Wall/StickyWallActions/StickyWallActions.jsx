@@ -15,7 +15,7 @@ export default function StickyWallActions({
 }) {
   return (
     <div className='flex items-center justify-between'>
-      <div className='flex gap-3'>
+      <div className='flex items-center gap-3'>
         <button
           className={view === 'list' ? 'is-active' : 'not-active'}
           onClick={() => setView('list')}

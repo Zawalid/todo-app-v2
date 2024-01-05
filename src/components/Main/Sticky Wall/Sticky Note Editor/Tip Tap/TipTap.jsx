@@ -98,8 +98,9 @@ export default function TipTap() {
 
   const [title, setTitle] = useState(currentNote?.title);
   const [isSaving, setIsSaving] = useState(false);
-  const [isActionsOpen, setIsActionsOpen] = useState(true);
+  const [isActionsOpen, setIsActionsOpen] = useState(false);
   const [readonly, setReadonly] = useState(currentNote?.readonly || false);
+  const [pinned, setPinned] = useState(currentNote?.pinned || false);
   const exists = useMemo(() => stickyNotes.find((note) => note.$id === $id), [stickyNotes, $id]);
 
   function handleUpdateNote(field, value) {
@@ -110,6 +111,8 @@ export default function TipTap() {
         bgColor,
         textColor,
         readonly,
+        pinned,
+        fontFamily: fontFamily || DEFAULT_FONT_FAMILY,
       });
       return;
     }
@@ -163,6 +166,7 @@ export default function TipTap() {
         currentNote={currentNote}
         isOpen={isActionsOpen}
         readonly={readonly}
+        pinned={pinned}
         fontFamily={fontFamily || DEFAULT_FONT_FAMILY}
         handlers={{
           onClose: () => setIsActionsOpen(false),
@@ -181,6 +185,10 @@ export default function TipTap() {
           },
           onBack,
           onReadOnly: () => setReadonly(!readonly),
+          onPin: () => {
+            setPinned(!pinned);
+            handleUpdateNote('pinned', !pinned);
+          },
           onExport: (format) => exportAs(format, editor, title),
           onChangeFontFamily: (fontFamily) => {
             document.querySelector('.tiptap').style.fontFamily = fontFamily;
@@ -270,8 +278,9 @@ function Actions({
   currentNote,
   isOpen,
   readonly,
+  pinned,
   fontFamily,
-  handlers: { onClose, onCopy, onDelete, onBack, onReadOnly, onExport, onChangeFontFamily },
+  handlers: { onClose, onCopy, onDelete, onBack, onReadOnly, onPin, onExport, onChangeFontFamily },
 }) {
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [deletePermanently, setDeletePermanently] = useState(false);
@@ -307,7 +316,7 @@ function Actions({
             >
               <i className='fa-solid fa-thumbtack'></i> <span>Pin</span>
             </label>
-            <Switch id='pin' />
+            <Switch id='pin' checked={pinned} onChange={onPin} />
           </div>
           <div className='flex items-center justify-between rounded-md px-3 py-2 transition-colors duration-300 hover:bg-background-secondary '>
             <label
