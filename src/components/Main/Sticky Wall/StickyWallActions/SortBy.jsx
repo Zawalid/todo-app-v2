@@ -1,10 +1,20 @@
 import { DropDown } from '../../../Common/DropDown';
 
-export default function SortNotes({ options: { sortBy, setSortBy, direction, setDirection } }) {
-  
+export default function SortBy({ sortBy, setSortBy }) {
   return (
-    <>
-      <DropDown.Title>Sort by</DropDown.Title>
+    <DropDown.NestedMenu
+      toggler={
+        <DropDown.Button className='justify-between'>
+        <i className='fa-solid fa-arrow-down-wide-short'></i>{' '}
+        <span className='flex-1 text-start'>Sort By</span>
+        <i className='fa-solid fa-chevron-right'></i>
+      </DropDown.Button>
+      }
+      options={{
+        className: 'w-60',
+        placement: 'right-start',
+      }}
+    >
       <DropDown.Button onClick={() => setSortBy('createdAt')} className='justify-between'>
         <span>Creation date</span>
         {sortBy === 'createdAt' && <i className='fa-solid fa-check'></i>}
@@ -17,16 +27,6 @@ export default function SortNotes({ options: { sortBy, setSortBy, direction, set
         <span>Title</span>
         {sortBy === 'title' && <i className='fa-solid fa-check'></i>}
       </DropDown.Button>
-      <DropDown.Divider />
-      <DropDown.Title>Sort direction</DropDown.Title>
-      <DropDown.Button onClick={() => setDirection('asc')} className='justify-between'>
-        <span>Ascending</span>
-        {direction === 'asc' && <i className='fa-solid fa-check'></i>}
-      </DropDown.Button>
-      <DropDown.Button onClick={() => setDirection('desc')} className='justify-between'>
-        <span>Descending</span>
-        {direction === 'desc' && <i className='fa-solid fa-check'></i>}
-      </DropDown.Button>
-    </>
+    </DropDown.NestedMenu>
   );
 }

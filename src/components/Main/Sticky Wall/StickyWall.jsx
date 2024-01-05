@@ -31,6 +31,7 @@ export default function StickyWall() {
   const [searchParams, setSearchParams] = useSearchParams();
   const sortBy = searchParams.get('sortBy') || 'updatedAt';
   const direction = searchParams.get('direction') || 'desc';
+  const groupBy = searchParams.get('groupBy') || 'default';
 
   const { isSelecting, setIsSelecting, setIsDeleteMultipleModalOpen, Modal } = useDeleteMultiple({
     selectedItems: selectedNotes,
@@ -45,6 +46,17 @@ export default function StickyWall() {
   const [parent] = useAutoAnimate({
     duration: 600,
   });
+
+  const setParam = (param) => {
+    const params = { sortBy, direction, groupBy };
+    setSearchParams(
+      {
+        ...params,
+        ...param,
+      },
+      { replace: true },
+    );
+  };
 
   const render = (notes) =>
     notes
@@ -70,6 +82,7 @@ export default function StickyWall() {
   useEffect(() => {
     if (
       !['createdAt', 'updatedAt', 'title'].includes(sortBy) ||
+      !['asc', 'desc'].includes(direction) ||
       (sortBy === 'updatedAt' && direction === 'desc')
     )
       setSearchParams(
@@ -81,6 +94,17 @@ export default function StickyWall() {
         { replace: true },
       );
   }, [sortBy, direction, setSearchParams]);
+
+  useEffect(() => {
+    if (!['year', 'month', 'day', 'a-z', 'color'].includes(groupBy))
+      setSearchParams(
+        (prev) => {
+          prev.delete('groupBy');
+          return prev;
+        },
+        { replace: true },
+      );
+  }, [groupBy, setSearchParams]);
 
   if (isStickyNoteEditorOpen) return <StickyNoteEditor />;
 
@@ -103,15 +127,20 @@ export default function StickyWall() {
           view,
           setView,
           sortBy,
-          setSortBy: (sortBy) => setSearchParams({ sortBy, direction }, { replace: true }),
+          setSortBy: (sortBy) => setParam({ sortBy }),
           direction,
-          setDirection: (direction) => setSearchParams({ sortBy, direction }, { replace: true }),
+          setDirection: (direction) => setParam({ direction }),
+          groupBy,
+          setGroupBy: (groupBy) => setParam({ groupBy }),
           setIsConfirmationModalOpen,
           setIsSelecting,
         }}
       />
 
-      <div className='flex-1 space-y-3 overflow-auto pr-3 rounded-lg border border-zinc-200   p-3 sm:p-5' ref={parent}>
+      <div
+        className='flex-1 space-y-3 overflow-auto rounded-lg border border-zinc-200 p-3   pr-3 sm:p-5'
+        ref={parent}
+      >
         {/* <button className='flex w-full items-center justify-between rounded-md bg-background-secondary px-3 py-0.5 text-start text-sm font-medium text-text-secondary'>
           <span>Pinned</span>
           <i className='fa-solid fa-chevron-down ml-1 text-xs'></i>
@@ -296,11 +325,11 @@ function NotesGroup({ render, group, view, isSelecting, parent, condition }) {
         onClick={() => setIsGroupOpen((prev) => !prev)}
       >
         <span>{group}</span>
-        {
-          isGroupOpen 
-          ? <i className='fa-solid fa-chevron-up ml-1 text-xs'></i> 
-           : <i className='fa-solid fa-chevron-down ml-1 text-xs'></i>
-        }
+        {isGroupOpen ? (
+          <i className='fa-solid fa-chevron-up ml-1 text-xs'></i>
+        ) : (
+          <i className='fa-solid fa-chevron-down ml-1 text-xs'></i>
+        )}
       </button>
       <div
         className={

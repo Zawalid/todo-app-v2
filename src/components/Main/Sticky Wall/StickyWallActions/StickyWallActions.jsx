@@ -1,5 +1,7 @@
 import { DropDown } from '../../../Common/DropDown';
-import SortNotes from './SortNotes';
+import GroupBy from './GroupBy';
+import OrderBy from './OrderBy';
+import SortBy from './SortBy';
 
 export default function StickyWallActions({
   options: {
@@ -8,6 +10,8 @@ export default function StickyWallActions({
     sortBy,
     setSortBy,
     direction,
+    groupBy,
+    setGroupBy,
     setDirection,
     setIsConfirmationModalOpen,
     setIsSelecting,
@@ -15,6 +19,37 @@ export default function StickyWallActions({
 }) {
   return (
     <div className='flex items-center justify-between'>
+      <div className='flex gap-3'>
+        <DropDown
+          toggler={<i className='fa-solid fa-arrow-up-wide-short text-xl'></i>}
+          togglerClassName='not-active'
+          options={{ className: 'w-60 max-h-[100%]', shouldCloseOnClick: false }}
+        >
+          <SortBy sortBy={sortBy} setSortBy={setSortBy} />
+          <OrderBy direction={direction} setDirection={setDirection} sortBy={sortBy} />
+          <GroupBy groupBy={groupBy} setGroupBy={setGroupBy} />
+
+          <DropDown.Divider />
+
+          <DropDown.Button onClick={() => setIsConfirmationModalOpen(true)} isDeleteButton={true}>
+            <i className='fa-solid fa-trash-can '></i>
+            <span>Delete All</span>
+          </DropDown.Button>
+        </DropDown>
+        <button className='not-active' onClick={() => setIsSelecting((prev) => !prev)}>
+          <svg
+            stroke='currentColor'
+            fill='currentColor'
+            strokeWidth='0'
+            viewBox='0 0 256 256'
+            height='20px'
+            width='20px'
+            xmlns='http://www.w3.org/2000/svg'
+          >
+            <path d='M228,128a12,12,0,0,1-12,12H128a12,12,0,0,1,0-24h88A12,12,0,0,1,228,128ZM128,76h88a12,12,0,0,0,0-24H128a12,12,0,0,0,0,24Zm88,104H128a12,12,0,0,0,0,24h88a12,12,0,0,0,0-24ZM79.51,39.51,56,63l-7.51-7.52a12,12,0,0,0-17,17l16,16a12,12,0,0,0,17,0l32-32a12,12,0,0,0-17-17Zm0,64L56,127l-7.51-7.52a12,12,0,1,0-17,17l16,16a12,12,0,0,0,17,0l32-32a12,12,0,0,0-17-17Zm0,64L56,191l-7.51-7.52a12,12,0,1,0-17,17l16,16a12,12,0,0,0,17,0l32-32a12,12,0,0,0-17-17Z'></path>
+          </svg>
+        </button>
+      </div>
       <div className='flex items-center gap-3'>
         <button
           className={view === 'list' ? 'is-active' : 'not-active'}
@@ -24,7 +59,7 @@ export default function StickyWallActions({
         </button>
         <button
           className={view === 'grid' ? 'is-active' : 'not-active'}
-         onClick={() => setView('grid')}
+          onClick={() => setView('grid')}
         >
           <svg
             stroke='currentColor'
@@ -38,44 +73,7 @@ export default function StickyWallActions({
             <path d='M204 240H68a36 36 0 01-36-36V68a36 36 0 0136-36h136a36 36 0 0136 36v136a36 36 0 01-36 36zm240 0H308a36 36 0 01-36-36V68a36 36 0 0136-36h136a36 36 0 0136 36v136a36 36 0 01-36 36zM204 480H68a36 36 0 01-36-36V308a36 36 0 0136-36h136a36 36 0 0136 36v136a36 36 0 01-36 36zm240 0H308a36 36 0 01-36-36V308a36 36 0 0136-36h136a36 36 0 0136 36v136a36 36 0 01-36 36z'></path>
           </svg>
         </button>
-      </div>
-      <div className='flex gap-3'>
-        <button
-          className='not-active'
-          onClick={() => setIsSelecting((prev) => !prev)}
-        >
-          <svg
-            stroke='currentColor'
-            fill='currentColor'
-            strokeWidth='0'
-            viewBox='0 0 256 256'
-            height='20px'
-            width='20px'
-            xmlns='http://www.w3.org/2000/svg'
-          >
-            <path d='M228,128a12,12,0,0,1-12,12H128a12,12,0,0,1,0-24h88A12,12,0,0,1,228,128ZM128,76h88a12,12,0,0,0,0-24H128a12,12,0,0,0,0,24Zm88,104H128a12,12,0,0,0,0,24h88a12,12,0,0,0,0-24ZM79.51,39.51,56,63l-7.51-7.52a12,12,0,0,0-17,17l16,16a12,12,0,0,0,17,0l32-32a12,12,0,0,0-17-17Zm0,64L56,127l-7.51-7.52a12,12,0,1,0-17,17l16,16a12,12,0,0,0,17,0l32-32a12,12,0,0,0-17-17Zm0,64L56,191l-7.51-7.52a12,12,0,1,0-17,17l16,16a12,12,0,0,0,17,0l32-32a12,12,0,0,0-17-17Z'></path>
-          </svg>
-        </button>
-        <DropDown
-          toggler={<i className='fa-solid fa-ellipsis-v text-xl'></i>}
-          togglerClassName='not-active'
-          options={{ className: 'w-52 max-h-[100%]', shouldCloseOnClick: false }}
-        >
-          <SortNotes
-            options={{
-              sortBy,
-              setSortBy,
-              direction,
-              setDirection,
-            }}
-          />
-          <DropDown.Divider />
-          <DropDown.Button onClick={() => setIsConfirmationModalOpen(true)} isDeleteButton={true}>
-            <i className='fa-solid fa-trash-can '></i>
-            <span>Delete All</span>
-          </DropDown.Button>
-        </DropDown>
-      </div>
+      </div>{' '}
     </div>
   );
 }
