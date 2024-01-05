@@ -3,6 +3,11 @@ import GroupBy from './GroupBy';
 import OrderBy from './OrderBy';
 import SortBy from './SortBy';
 
+const options = {
+  className: 'w-60',
+  placement: 'auto-start',
+};
+
 export default function StickyWallActions({
   options: {
     view,
@@ -10,9 +15,11 @@ export default function StickyWallActions({
     sortBy,
     setSortBy,
     direction,
+    setDirection,
     groupBy,
     setGroupBy,
-    setDirection,
+    isCompact,
+    setIsCompact,
     setIsConfirmationModalOpen,
     setIsSelecting,
   },
@@ -25,9 +32,14 @@ export default function StickyWallActions({
           togglerClassName='not-active'
           options={{ className: 'w-60 max-h-[100%]', shouldCloseOnClick: false }}
         >
-          <SortBy sortBy={sortBy} setSortBy={setSortBy} />
-          <OrderBy direction={direction} setDirection={setDirection} sortBy={sortBy} />
-          <GroupBy groupBy={groupBy} setGroupBy={setGroupBy} />
+          <SortBy sortBy={sortBy} setSortBy={setSortBy} options={options} />
+          <OrderBy
+            direction={direction}
+            setDirection={setDirection}
+            sortBy={sortBy}
+            options={options}
+          />
+          <GroupBy groupBy={groupBy} setGroupBy={setGroupBy} options={options} />
 
           <DropDown.Divider />
 
@@ -51,6 +63,13 @@ export default function StickyWallActions({
         </button>
       </div>
       <div className='flex items-center gap-3'>
+        <button className='not-active' onClick={() => setIsCompact(!isCompact)}>
+          {isCompact ? (
+            <i className='fa-solid fa-table-list'></i>
+          ) : (
+            <i className='fa-solid fa-rectangle-list'></i>
+          )}
+        </button>
         <button
           className={view === 'list' ? 'is-active' : 'not-active'}
           onClick={() => setView('list')}

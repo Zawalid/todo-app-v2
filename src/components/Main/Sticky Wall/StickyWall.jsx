@@ -25,6 +25,7 @@ export default function StickyWall() {
   const [view, setView] = useState(isTouchDevice() ? 'list' : 'grid');
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [deletePermanently, setDeletePermanently] = useState(false);
+  const [isCompact, setIsCompact] = useState(false);
   const whichDelete = useRef(null);
   const { Pagination, currentPage, rowsPerPage } = usePagination(stickyNotes.length);
 
@@ -58,8 +59,8 @@ export default function StickyWall() {
     );
   };
 
-  const render = (notes) =>
-    notes
+  const render = () =>
+    stickyNotes
       .toSorted((a, b) => {
         if (sortBy === 'updatedAt') {
           return direction === 'asc'
@@ -132,6 +133,8 @@ export default function StickyWall() {
           setDirection: (direction) => setParam({ direction }),
           groupBy,
           setGroupBy: (groupBy) => setParam({ groupBy }),
+          isCompact,
+          setIsCompact,
           setIsConfirmationModalOpen,
           setIsSelecting,
         }}
@@ -226,33 +229,43 @@ export default function StickyWall() {
             </div>
           </>
         ))} */}
-        <NotesGroup
-          render={render}
-          group='Pinned'
-          view={view}
-          isSelecting={isSelecting}
-          parent={parent}
-          condition={(note) => note.pinned}
-        />
-        <NotesGroup
-          render={render}
-          group='Recent'
-          view={view}
-          isSelecting={isSelecting}
-          parent={parent}
-          condition={(note) => !note.pinned}
-        />
-        {[...new Set(stickyNotes.map((n) => n.title[0].toUpperCase()))].map((t) => (
-          <NotesGroup
-            key={t}
-            render={render}
-            group={t}
-            view={view}
-            isSelecting={isSelecting}
-            parent={parent}
-            condition={(note) => note.title[0].toUpperCase() === t}
-          />
-        ))}
+
+        {groupBy === 'default'
+          ? [
+              {
+                group: 'Pinned',
+                condition: (note) => note.pinned,
+              },
+              {
+                group: 'Recent',
+                condition: (note) => !note.pinned,
+              },
+            ].map(({ group, condition }) => (
+              <NotesGroup
+                key={group}
+                render={render}
+                group={group}
+                view={view}
+                isSelecting={isSelecting}
+                isCompact={isCompact}
+                parent={parent}
+                condition={condition}
+              />
+            ))
+          : [...new Set(stickyNotes.map((n) => groups[groupBy].getSet(n)))]
+              .toSorted((a, b) => groupBy === 'a-z' && a.localeCompare(b))
+              .map((t) => (
+                <NotesGroup
+                  key={t}
+                  render={render}
+                  group={t}
+                  view={view}
+                  isSelecting={isSelecting}
+                  isCompact={isCompact}
+                  parent={parent}
+                  condition={(note) => groups[groupBy].condition(note, t)}
+                />
+              ))}
       </div>
 
       {!isSelecting && (
@@ -306,7 +319,7 @@ export default function StickyWall() {
   );
 }
 
-function NotesGroup({ render, group, view, isSelecting, parent, condition }) {
+function NotesGroup({ render, group, view, isSelecting, isCompact, parent, condition }) {
   const [isGroupOpen, setIsGroupOpen] = useState(true);
   const {
     stickyNotes,
@@ -316,15 +329,24 @@ function NotesGroup({ render, group, view, isSelecting, parent, condition }) {
     setSelectedNotes,
   } = useStickyNotes();
 
-  if (!stickyNotes.some(condition)) return null;
+  useEffect(() => {
+    setIsGroupOpen(!isCompact);
+  }, [isCompact]);
+
+
+  if (!stickyNotes.some(condition) || !group) return null;
 
   return (
     <>
       <button
-        className='flex w-full items-center justify-between rounded-md bg-background-secondary px-3 py-0.5 text-start text-sm font-medium text-text-secondary'
+        className='flex w-full items-center justify-between rounded-md bg-background-secondary px-3 py-1 text-start text-sm font-medium  text-text-secondary'
         onClick={() => setIsGroupOpen((prev) => !prev)}
       >
-        <span>{group}</span>
+        <span>
+          {group === 'Recent' && <i className='fa-solid fa-clock-rotate-left mr-2'></i>}
+          {group === 'Pinned' && <i className='fa-solid fa-thumbtack mr-2'></i>}
+          {group}
+        </span>
         {isGroupOpen ? (
           <i className='fa-solid fa-chevron-up ml-1 text-xs'></i>
         ) : (
@@ -341,7 +363,7 @@ function NotesGroup({ render, group, view, isSelecting, parent, condition }) {
         }
         ref={parent}
       >
-        {render(stickyNotes)
+        {render()
           .filter(condition)
           .map((stickyNote) => {
             const isSelected =
@@ -371,3 +393,37 @@ function NotesGroup({ render, group, view, isSelecting, parent, condition }) {
     </>
   );
 }
+
+const groups = {
+  year: {
+    condition: (note, group) => new Date(note.$createdAt).getFullYear() === group,
+    getSet: (note) => new Date(note.$createdAt).getFullYear(),
+  },
+  month: {
+    condition: (note, group) =>
+      new Date(note.$createdAt).getMonth() === new Date(group).getMonth() &&
+      new Date(note.$createdAt).getFullYear() === new Date(group).getFullYear(),
+    getSet: (note) =>
+      new Date(note.$createdAt).toLocaleDateString(undefined, { month: 'long', year: 'numeric' }),
+  },
+  day: {
+    condition: (note, group) =>
+      new Date(note.$createdAt).getDate() === new Date(group).getDate() &&
+      new Date(note.$createdAt).getMonth() === new Date(group).getMonth() &&
+      new Date(note.$createdAt).getFullYear() === new Date(group).getFullYear(),
+    getSet: (note) =>
+      new Date(note.$createdAt).toLocaleDateString(undefined, {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+      }),
+  },
+  'a-z': {
+    condition: (note, group) => note.title[0]?.trim().toUpperCase() === group,
+    getSet: (note) => note.title[0]?.trim().toUpperCase(),
+  },
+  color: {
+    condition: (note, group) => note.bgColor === group,
+    getSet: (note) => note.bgColor,
+  },
+};

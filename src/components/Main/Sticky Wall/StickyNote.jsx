@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 export function StickyNote({
-  stickyNote: { title, content, $updatedAt = new Date(), bgColor, textColor },
+  stickyNote: { title, content, $createdAt = new Date(), bgColor, textColor },
   onClick,
   listView,
   isSelecting,
@@ -58,7 +58,7 @@ export function StickyNote({
             {new Intl.DateTimeFormat('en-US', {
               dateStyle: 'medium',
               timeStyle: 'short',
-            }).format(new Date($updatedAt))}
+            }).format(new Date($createdAt))}
           </span>
 
           <span

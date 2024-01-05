@@ -104,18 +104,18 @@ export default function TipTap() {
   const exists = useMemo(() => stickyNotes.find((note) => note.$id === $id), [stickyNotes, $id]);
 
   function handleUpdateNote(field, value) {
-    if (!exists) {
-      handleAddStickyNote({
-        title: !title || title.trim() === '' ? 'Untitled' : title,
-        content,
-        bgColor,
-        textColor,
-        readonly,
-        pinned,
-        fontFamily: fontFamily || DEFAULT_FONT_FAMILY,
-      });
-      return;
-    }
+    // if (!exists) {
+    //   handleAddStickyNote({
+    //     title: !title || title.trim() === '' ? 'Untitled' : title,
+    //     content,
+    //     bgColor,
+    //     textColor,
+    //     readonly,
+    //     pinned,
+    //     fontFamily: fontFamily || DEFAULT_FONT_FAMILY,
+    //   });
+    //   return;
+    // }
     if (currentNote[field] === value) return;
     handleUpdateStickyNote(
       $id,

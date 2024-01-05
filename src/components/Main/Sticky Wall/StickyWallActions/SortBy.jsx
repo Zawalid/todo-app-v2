@@ -1,6 +1,6 @@
 import { DropDown } from '../../../Common/DropDown';
 
-export default function SortBy({ sortBy, setSortBy }) {
+export default function SortBy({ sortBy, setSortBy,options }) {
   return (
     <DropDown.NestedMenu
       toggler={
@@ -10,10 +10,7 @@ export default function SortBy({ sortBy, setSortBy }) {
         <i className='fa-solid fa-chevron-right'></i>
       </DropDown.Button>
       }
-      options={{
-        className: 'w-60',
-        placement: 'right-start',
-      }}
+      options={options}
     >
       <DropDown.Button onClick={() => setSortBy('createdAt')} className='justify-between'>
         <span>Creation date</span>

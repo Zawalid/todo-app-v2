@@ -1,6 +1,6 @@
 import { DropDown } from '../../../Common/DropDown';
 
-export default function OrderBy({  direction, setDirection, sortBy }) {
+export default function OrderBy({  direction, setDirection, sortBy,options }) {
   return (
     <DropDown.NestedMenu
       toggler={ <DropDown.Button className='justify-between'>
@@ -8,10 +8,8 @@ export default function OrderBy({  direction, setDirection, sortBy }) {
       <span className='flex-1 text-start'>Order By</span>
       <i className='fa-solid fa-chevron-right'></i>
     </DropDown.Button>}
-      options={{
-        className: 'w-60',
-        placement: 'right-start',
-      }}
+            options={options}
+
     >
       <DropDown.Button onClick={() => setDirection('asc')} className='justify-between'>
         <span>{sortBy === 'title' ? 'A-Z' : 'Oldest-Newest'}</span>

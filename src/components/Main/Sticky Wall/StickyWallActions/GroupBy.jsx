@@ -1,6 +1,6 @@
 import { DropDown } from '../../../Common/DropDown';
 
-export default function GroupBy({ groupBy, setGroupBy }) {
+export default function GroupBy({ groupBy, setGroupBy,options }) {
   return (
     <DropDown.NestedMenu
       toggler={
@@ -10,10 +10,8 @@ export default function GroupBy({ groupBy, setGroupBy }) {
           <i className='fa-solid fa-chevron-right'></i>
         </DropDown.Button>
       }
-      options={{
-        className: 'w-60',
-        placement: 'right-start',
-      }}
+      options={options}
+
     >
       <DropDown.Button onClick={() => setGroupBy('default')} className='justify-between'>
         <span>Default</span>
