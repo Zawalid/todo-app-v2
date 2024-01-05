@@ -56,13 +56,13 @@ export default function StickyNotesProvider({ children }) {
     setCurrentProcessedNote(id);
     try {
       setIsSaving(true);
-      setStickyNotes((notes) => notes.map((n) => (n.$id === id ? { ...n, ...note } : n)));
       const newNote = await databases.updateDocument(
         DATABASE_ID,
         STICKY_NOTES_COLLECTION_ID,
         id,
         note,
-      );
+        );
+        setStickyNotes((notes) => notes.map((n) => (n.$id === id ? newNote : n)));
       if (currentNote?.$id === id) setCurrentNote(newNote);
     } catch (error) {
       toast.error('Failed to update the note.', {

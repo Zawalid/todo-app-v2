@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BubbleMenu, EditorContent, useEditor } from '@tiptap/react';
 import { extensions } from './extensions';
 import TurndownService from 'turndown';
@@ -57,7 +57,7 @@ const exportAs = (format, editor, title) => {
     },
   };
 
-  if (format === 'pdf') return exportAsPDF(editor.getHTML(), title);
+  if (format === 'pdf') return exportAsPDF(title);
 
   const { filename, content, type } = formats[format];
 
@@ -69,7 +69,7 @@ const exportAs = (format, editor, title) => {
   link.click();
   URL.revokeObjectURL(url);
 };
-const exportAsPDF = (html, title) => {
+const exportAsPDF = (title) => {
   const content = document.querySelector('.tiptap');
   content.querySelector('#info').classList.add('hidden');
   const doc = new jsPDF();
@@ -86,36 +86,20 @@ const exportAsPDF = (html, title) => {
 };
 
 export default function TipTap() {
-  const {
-    currentNote,
-    stickyNotes,
-    handleAddStickyNote,
-    handleUpdateStickyNote,
-    handleDeleteStickyNote,
-    handleBack,
-  } = useStickyNotes();
-  const { $id, content, $updatedAt, bgColor, textColor, fontFamily } = currentNote || {};
+  const { currentNote, handleUpdateStickyNote, handleDeleteStickyNote, handleBack } =
+    useStickyNotes();
+  const { $id, content, $updatedAt } = currentNote || {};
 
   const [title, setTitle] = useState(currentNote?.title);
-  const [isSaving, setIsSaving] = useState(false);
+  const [bgColor, setBgColor] = useState(currentNote?.bgColor || '#ff922b');
+  const [textColor, setTextColor] = useState(currentNote?.textColor || '#fff');
+  const [fontFamily, setFontFamily] = useState(currentNote?.fontFamily || DEFAULT_FONT_FAMILY);
   const [isActionsOpen, setIsActionsOpen] = useState(false);
   const [readonly, setReadonly] = useState(currentNote?.readonly || false);
   const [pinned, setPinned] = useState(currentNote?.pinned || false);
-  const exists = useMemo(() => stickyNotes.find((note) => note.$id === $id), [stickyNotes, $id]);
+  const [isSaving, setIsSaving] = useState(false);
 
   function handleUpdateNote(field, value) {
-    // if (!exists) {
-    //   handleAddStickyNote({
-    //     title: !title || title.trim() === '' ? 'Untitled' : title,
-    //     content,
-    //     bgColor,
-    //     textColor,
-    //     readonly,
-    //     pinned,
-    //     fontFamily: fontFamily || DEFAULT_FONT_FAMILY,
-    //   });
-    //   return;
-    // }
     if (currentNote[field] === value) return;
     handleUpdateStickyNote(
       $id,
@@ -125,7 +109,10 @@ export default function TipTap() {
       setIsSaving,
     );
   }
-  const onBack = () => handleBack(currentNote.$id, title, content);
+  const onBack = () => {
+    if (!title) handleUpdateNote('title', 'Untitled');
+    handleBack(currentNote.$id, title, content);
+  };
 
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
 
@@ -191,6 +178,7 @@ export default function TipTap() {
           },
           onExport: (format) => exportAs(format, editor, title),
           onChangeFontFamily: (fontFamily) => {
+            setFontFamily(fontFamily);
             document.querySelector('.tiptap').style.fontFamily = fontFamily;
             handleUpdateNote('fontFamily', fontFamily);
           },
@@ -199,14 +187,20 @@ export default function TipTap() {
         <div className='space-y-2'>
           <span className='text-sm  font-medium text-text-secondary'>Background Color</span>
           <BackgroundColorPicker
-            onChange={(color) => handleUpdateNote('bgColor', color)}
+            onChange={(color) => {
+              setBgColor(color);
+              handleUpdateNote('bgColor', color);
+            }}
             bgColor={bgColor}
           />
         </div>
         <div className='space-y-2'>
           <span className='text-sm  font-medium text-text-secondary'>Text Color</span>
           <TextColorPicker
-            onChange={(color) => handleUpdateNote('textColor', color)}
+            onChange={(color) => {
+              setTextColor(color);
+              handleUpdateNote('textColor', color);
+            }}
             textColor={textColor}
           />
         </div>

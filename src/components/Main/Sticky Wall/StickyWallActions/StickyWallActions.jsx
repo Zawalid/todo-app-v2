@@ -28,7 +28,7 @@ export default function StickyWallActions({
     <div className='flex items-center justify-between'>
       <div className='flex gap-3'>
         <DropDown
-          toggler={<i className='fa-solid fa-arrow-up-wide-short text-xl'></i>}
+          toggler={<i className='fa-solid fa-ellipsis-v text-xl'></i>}
           togglerClassName='not-active'
           options={{ className: 'w-60 max-h-[100%]', shouldCloseOnClick: false }}
         >
