@@ -44,16 +44,29 @@ export function DropDown({
   );
 }
 
-function Button({ children, onClick, className, isDeleteButton, size = 'default', isCurrent }) {
+function Button({
+  children,
+  onClick,
+  className,
+  isDeleteButton,
+  size = 'default',
+  isCurrent,
+  disabled,
+}) {
   return (
     <li
-      className={
-        'relative flex w-full cursor-pointer items-center gap-3 overflow-hidden rounded-md font-medium text-text-secondary  transition-colors duration-300 hover:bg-background-secondary ' +
-        className +
-        (size === 'small' ? ' px-2 py-1 ' : ' px-3 py-2 ') +
-        (isDeleteButton ? 'hover:bg-red-500 hover:text-white ' : 'hover:text-text-primary ') +
-        (isCurrent ? 'bg-background-secondary ' : 'bg-background-primary ')
-      }
+      className={`' + className + relative flex w-full cursor-pointer items-center gap-3  overflow-hidden rounded-md font-medium text-text-secondary transition-colors
+        duration-300 
+        ${size === 'small' ? ' px-2 py-1 ' : ' px-3 py-2 '}
+        ${isDeleteButton && !disabled ? 'hover:bg-red-500 hover:text-white ' : ' '}
+        ${isCurrent ? 'bg-background-secondary ' : 'bg-background-primary '}
+        ${
+          disabled
+            ? 'cursor-not-allowed opacity-50 '
+            : 'hover:bg-background-secondary hover:text-text-primary'
+        }
+        ${className}
+        `}
       onClick={onClick}
     >
       {children}

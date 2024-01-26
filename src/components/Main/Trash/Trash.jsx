@@ -3,11 +3,12 @@ import { useRef, useState } from 'react';
 import { ConfirmationModal } from '../../Common/ConfirmationModal';
 import trashIcon from '../../../assets/trash.png';
 import { Item } from './Item';
-import { useRestoreElement, useLists, useTrash } from '../../../hooks/';
+import { useRestoreElement, useLists, useTrash } from '../../../hooks';
 import { toast } from 'sonner';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
+import { DropDown } from '../../Common/DropDown';
 
-export default function Trash() {
+export default function Trash({ onClose }) {
   const {
     trash,
     currentTab,
@@ -39,12 +40,37 @@ export default function Trash() {
   };
 
   return (
-    <div className='relative flex h-full flex-col overflow-auto '>
-      <Tabs
-        tabs={['Tasks', 'Lists', 'Tags', 'Sticky Notes']}
-        currentTab={currentTab}
-        setCurrentTab={setCurrentTab}
-      />
+    <div className='fixed md:static left-0 top-0 z-[9999] flex h-full w-full flex-col gap-5 overflow-auto rounded-lg border border-zinc-200 bg-background-primary px-5 py-3 shadow-md md:h-[350px] md:w-[500px]'>
+      <div className='flex items-start  justify-between gap-5'>
+        <Tabs
+          tabs={['Tasks', 'Lists', 'Tags', 'Sticky Notes']}
+          currentTab={currentTab}
+          setCurrentTab={setCurrentTab}
+          className='gap-5 sm:gap-8'
+        />
+        <div className='flex gap-2'>
+          <Actions
+            trash={trash}
+            currentTab={currentTab}
+            trashLength={trashLength}
+            onDeleteAll={() => {
+              if (trash[currentTab].length === 0) return;
+              setIsConfirmationModalOpen(true);
+              whichDelete.current = 'type';
+            }}
+            onEmptyTrash={() => {
+              if (trashLength === 0) return;
+              setIsConfirmationModalOpen(true);
+              whichDelete.current = 'all';
+            }}
+          />
+          {onClose && (
+            <button className='icon-button not-active small' onClick={onClose}>
+              <i className='fa-solid fa-xmark'></i>
+            </button>
+          )}
+        </div>
+      </div>
       <Items
         trash={trash}
         currentTab={currentTab}
@@ -56,21 +82,8 @@ export default function Trash() {
         onRestore={onRestore}
         setCurrentItem={setCurrentItem}
       />
-      <Footer
-        trash={trash}
-        currentTab={currentTab}
-        trashLength={trashLength}
-        onDeleteAll={() => {
-          if (trash[currentTab].length === 0) return;
-          setIsConfirmationModalOpen(true);
-          whichDelete.current = 'type';
-        }}
-        onEmptyTrash={() => {
-          if (trashLength === 0) return;
-          setIsConfirmationModalOpen(true);
-          whichDelete.current = 'all';
-        }}
-      />
+      <Info />
+
       <ConfirmationModal
         isOpen={isConfirmationModalOpen}
         sentence={`Are you sure you want to   ${
@@ -108,10 +121,7 @@ function Items({ trash, currentTab, onDelete, onRestore }) {
   const [parent] = useAutoAnimate({ duration: 500 });
 
   return (
-    <ul
-      className='flex h-[170px] flex-1 flex-col  gap-2 overflow-auto overflow-x-hidden py-5'
-      ref={parent}
-    >
+    <ul className='flex flex-1  flex-col gap-2 overflow-auto overflow-x-hidden' ref={parent}>
       {trash[currentTab]?.length > 0 &&
         trash[currentTab]?.map((item) => (
           <Item
@@ -133,37 +143,44 @@ function Items({ trash, currentTab, onDelete, onRestore }) {
   );
 }
 
-function Footer({ trash, currentTab, trashLength, onDeleteAll, onEmptyTrash }) {
+function Actions({ trash, currentTab, trashLength, onDeleteAll, onRestoreAll, onEmptyTrash }) {
   return (
-    <>
-      <div className='mt-auto flex flex-wrap items-center justify-between gap-x-5 gap-y-2 border-t-2 pt-3'>
-        <button
-          className={
-            'min-w-[140px] flex-1 rounded-lg bg-text-error px-4 py-2 text-sm text-white sm:flex-none ' +
-            (trash[currentTab]?.length === 0 ? 'cursor-not-allowed opacity-50' : '')
-          }
-          onClick={onDeleteAll}
-        >
-          <i className='fa-solid fa-trash-can '></i>
-          <span className='ml-2'>Delete All </span>
-        </button>
-        <button
-          className={
-            'min-w-[140px] flex-1 rounded-lg bg-text-error px-4 py-2 text-sm text-white sm:flex-none ' +
-            (trashLength === 0 ? 'cursor-not-allowed opacity-50' : '')
-          }
-          onClick={onEmptyTrash}
-        >
-          <i className='fa-solid fa-ban '></i>
-          <span className='ml-2'>Empty Trash</span>
-        </button>
-      </div>
-      <div className='mt-3 flex items-center justify-center gap-2'>
-        <i className='fa-solid fa-info-circle text-blue-400'></i>
-        <p className='text-[10px] font-medium text-text-tertiary sm:text-xs '>
-          Items in the trash will be automatically cleared after 30 days.
-        </p>
-      </div>
-    </>
+    <DropDown
+      toggler={<i className='fa-solid fa-ellipsis-v'></i>}
+      togglerClassName='icon-button not-active small'
+      options={{ className: 'w-60 max-h-[100%]', shouldCloseOnClick: false }}
+    >
+      <DropDown.Button
+        isDeleteButton={true}
+        disabled={trash[currentTab]?.length === 0}
+        onClick={onDeleteAll}
+      >
+        <i className='fa-solid fa-trash-can '></i>
+        <span>Delete All</span>
+      </DropDown.Button>
+      <DropDown.Button
+        isDeleteButton={true}
+        disabled={trash[currentTab]?.length === 0}
+        onClick={onRestoreAll}
+      >
+        <i className='fa-solid fa-trash-can '></i>
+        <span>Restore All</span>
+      </DropDown.Button>
+      <DropDown.Button isDeleteButton={true} disabled={trashLength === 0} onClick={onEmptyTrash}>
+        <i className='fa-solid fa-trash-can '></i>
+        <span>Empty Trash</span>
+      </DropDown.Button>
+    </DropDown>
+  );
+}
+
+function Info() {
+  return (
+    <div className='flex items-center justify-center gap-2'>
+      <i className='fa-solid fa-info-circle text-blue-400'></i>
+      <p className='text-[10px] font-medium text-text-tertiary sm:text-xs '>
+        Items in the trash will be automatically cleared after 30 days.
+      </p>
+    </div>
   );
 }

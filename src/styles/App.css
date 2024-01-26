@@ -149,7 +149,7 @@ input[type='checkbox'].task {
   }
 
   &.small {
-    @apply h-6 w-6;
+    @apply h-7 w-7;
     & > i {
       @apply text-sm;
     }

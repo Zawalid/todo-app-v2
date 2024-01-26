@@ -5,11 +5,10 @@ import TasksList from './Tasks/TasksList';
 import Upcoming from './Tasks/Upcoming';
 import StickyWall from './Sticky Wall/StickyWall';
 import SearchResults from './Search/SearchResults';
-import Trash from './Trash/Trash';
 import { Title } from './Title';
 import { checkIfToday } from '../../utils/Moment';
-import { useTasks, useSearch, useLists, useStickyNotes, useTrash } from '../../hooks';
-import { TasksSkeleton, UpcomingSkeleton, StickyWallSkeleton, TrashSkeleton } from '../Skeletons';
+import { useTasks, useSearch, useLists, useStickyNotes } from '../../hooks';
+import { TasksSkeleton, UpcomingSkeleton, StickyWallSkeleton } from '../Skeletons';
 import { SpinnerLoader } from '../Common/SpinnerLoader';
 
 const tabs = {
@@ -29,10 +28,6 @@ const tabs = {
     title: 'Search Results',
     skeleton: <SpinnerLoader size='large' />,
   },
-  trash: {
-    title: 'Trash',
-    skeleton: <TrashSkeleton />,
-  },
 };
 
 export function Main() {
@@ -40,7 +35,6 @@ export function Main() {
   const { lists } = useLists();
   const { stickyNotes, isStickyNoteEditorOpen, isNotesLoading } = useStickyNotes();
   const { searchResults } = useSearch();
-  const { trashLength } = useTrash();
   const activeTab = useHref().split('/app/')[1];
   const [parent] = useAutoAnimate({
     duration: 300,
@@ -60,7 +54,6 @@ export function Main() {
     if (activeTab === 'upcoming') return upcomingTasks.length;
     if (activeTab === 'sticky-wall') return stickyNotes.length;
     if (activeTab === 'search') return searchResults.length;
-    if (activeTab === 'trash') return trashLength;
     if (listId) return tasks.filter((task) => task.listId === listId).length;
     return 0;
   }, [
@@ -71,7 +64,6 @@ export function Main() {
     todayTasks,
     upcomingTasks,
     searchResults,
-    trashLength,
   ]);
   const condition = (task) => {
     if (listId) return task.listId === listId;
@@ -93,7 +85,7 @@ export function Main() {
         tabs[activeTab]?.skeleton || <TasksSkeleton number={6} />
       ) : (
         <>
-          {!['upcoming', 'sticky-wall', 'search', 'trash'].includes(activeTab) && (
+          {!['upcoming', 'sticky-wall', 'search'].includes(activeTab) && (
             <TasksList
               dueDate={activeTab === 'today' && new Date().toISOString().split('T')[0]}
               listId={listId}
@@ -104,7 +96,6 @@ export function Main() {
           {activeTab === 'upcoming' && <Upcoming />}
           {(activeTab === 'sticky-wall' || isStickyNoteEditorOpen) && <StickyWall />}
           {activeTab === 'search' && !isStickyNoteEditorOpen && <SearchResults />}
-          {activeTab === 'trash' && !isStickyNoteEditorOpen && <Trash />}
         </>
       )}
     </main>
