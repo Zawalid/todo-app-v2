@@ -18,7 +18,7 @@ export function TextColor({ editor, readonly }) {
         <button
           onClick={() => editor.chain().focus().setColor(color).run()}
           disabled={disabled}
-          className='not-active'
+          className='icon-button not-active'
         >
           <i className='fa-solid fa-paintbrush'></i>
         </button>

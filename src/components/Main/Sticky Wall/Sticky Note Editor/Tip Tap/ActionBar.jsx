@@ -9,19 +9,19 @@ export function ActionBar({ editor, onBack, onOpenActions }) {
   return (
     <div className='flex items-center justify-between'>
       <button
-        className='not-active'
+        className='icon-button not-active'
         onClick={() => {
           onBack();
         }}
       >
-        <i className='fa-solid fa-chevron-left text-lg'></i>
+        <i className='fa-solid fa-chevron-left'></i>
       </button>
       <div className='flex items-center gap-2 border-background-tertiary '>
         <CustomTippy content='Undo'>
           <button
             onClick={() => editor.chain().undo().run()}
             disabled={!editor.can().chain().undo().run()}
-            className='not-active cursor-pointer'
+            className='icon-button not-active cursor-pointer'
           >
             <svg
               stroke='currentColor'
@@ -40,7 +40,7 @@ export function ActionBar({ editor, onBack, onOpenActions }) {
           <button
             onClick={() => editor.chain().redo().run()}
             disabled={!editor.can().chain().redo().run()}
-            className='not-active cursor-pointer'
+            className='icon-button not-active cursor-pointer'
           >
             <svg
               stroke='currentColor'
@@ -65,7 +65,7 @@ export function ActionBar({ editor, onBack, onOpenActions }) {
               document.fullscreenerror &&
                 toast.error('Your browser does not support fullscreen mode');
             }}
-            className='not-active cursor-pointer'
+            className='icon-button not-active cursor-pointer'
           >
             {isFullScreen ? (
               <i className='fa-solid fa-compress'></i>
@@ -74,7 +74,7 @@ export function ActionBar({ editor, onBack, onOpenActions }) {
             )}
           </button>
         </CustomTippy>
-        <button onClick={onOpenActions} className='not-active'>
+        <button onClick={onOpenActions} className='icon-button not-active'>
           <i className='fas fa-ellipsis-v text-lg'></i>
         </button>
       </div>

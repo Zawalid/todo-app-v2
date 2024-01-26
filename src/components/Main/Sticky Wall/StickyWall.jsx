@@ -25,7 +25,7 @@ export default function StickyWall() {
   const [view, setView] = useState(isTouchDevice() ? 'list' : 'grid');
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [deletePermanently, setDeletePermanently] = useState(false);
-  const [isCompact, setIsCompact] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const whichDelete = useRef(null);
   const { Pagination, currentPage, rowsPerPage } = usePagination(stickyNotes.length);
 
@@ -133,10 +133,19 @@ export default function StickyWall() {
           setDirection: (direction) => setParam({ direction }),
           groupBy,
           setGroupBy: (groupBy) => setParam({ groupBy }),
-          isCompact,
-          setIsCompact,
+          isCollapsed,
+          setIsCollapsed,
           setIsConfirmationModalOpen,
+          // Selection
+          isSelecting,
           setIsSelecting,
+          selectAll() {
+            setSelectedNotes(stickyNotes.map((n) => ({ $id: n.$id, title: n.title })));
+          },
+          unSelectAll() {
+            setSelectedNotes([]);
+          },
+          allSelected: selectedNotes.length === stickyNotes.length,
         }}
       />
 
@@ -247,7 +256,7 @@ export default function StickyWall() {
                 group={group}
                 view={view}
                 isSelecting={isSelecting}
-                isCompact={isCompact}
+                isCollapsed={isCollapsed}
                 parent={parent}
                 condition={condition}
               />
@@ -261,7 +270,7 @@ export default function StickyWall() {
                   group={t}
                   view={view}
                   isSelecting={isSelecting}
-                  isCompact={isCompact}
+                  isCollapsed={isCollapsed}
                   parent={parent}
                   condition={(note) => groups[groupBy].condition(note, t)}
                 />
@@ -295,8 +304,8 @@ export default function StickyWall() {
         isOpen={isConfirmationModalOpen}
         sentence={`Are you sure you want to ${
           whichDelete.current === 'selected'
-            ? `delete ${selectedNotes.length > 1 ? `${selectedNotes.length} notes` : 'this note'} `
-            : 'delete all notes?'
+            ? `delete ${selectedNotes.length > 1 ? `${selectedNotes.length} sticky notes` : 'this sticky note'} `
+            : 'delete all sticky notes?'
         } `}
         confirmText={whichDelete.current === 'selected' ? 'Delete' : 'Delete All'}
         onConfirm={() => {
@@ -309,7 +318,7 @@ export default function StickyWall() {
           setIsSelecting(false);
         }}
         onCancel={() => setIsConfirmationModalOpen(false)}
-        element='Notes'
+        element='Sticky Notes'
         checked={deletePermanently}
         setChecked={setDeletePermanently}
       />
@@ -319,7 +328,7 @@ export default function StickyWall() {
   );
 }
 
-function NotesGroup({ render, group, view, isSelecting, isCompact, parent, condition }) {
+function NotesGroup({ render, group, view, isSelecting, isCollapsed, parent, condition }) {
   const [isGroupOpen, setIsGroupOpen] = useState(true);
   const {
     stickyNotes,
@@ -330,8 +339,8 @@ function NotesGroup({ render, group, view, isSelecting, isCompact, parent, condi
   } = useStickyNotes();
 
   useEffect(() => {
-    setIsGroupOpen(!isCompact);
-  }, [isCompact]);
+    setIsGroupOpen(!isCollapsed);
+  }, [isCollapsed]);
 
   if (!stickyNotes.some(condition) || !group) return null;
 

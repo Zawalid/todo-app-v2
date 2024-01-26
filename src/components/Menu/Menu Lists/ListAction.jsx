@@ -8,7 +8,7 @@ export function ListAction({ onDelete, onChangeColor, color,onOpenRenameInput })
   return (
     <DropDown
       toggler={<i className='fas fa-ellipsis-vertical text-text-tertiary '></i>}
-      togglerClassName='not-active small'
+      togglerClassName='icon-button not-active small'
       options={{
         className: 'w-52',
       }}

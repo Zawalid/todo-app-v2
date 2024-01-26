@@ -18,7 +18,7 @@ export function Highlighter({ editor, readonly }) {
         <button
           onClick={() => editor.chain().focus().toggleHighlight({ color }).run()}
           disabled={disabled}
-          className={editor.isActive('highlight') ? 'is-active' : 'not-active'}
+          className={editor.isActive('highlight') ? 'icon-button active' : 'icon-button not-active'}
         >
           <i className='fa-solid fa-highlighter'></i>
         </button>

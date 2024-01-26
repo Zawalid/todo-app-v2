@@ -10,6 +10,11 @@ export function isTouchDevice() {
     window.matchMedia('(pointer: coarse)').matches
   );
 }
+export function isElementEmpty(htmlElement) {
+  const tempElement = document.createElement('div');
+  tempElement.innerHTML = htmlElement;
+  return !tempElement.textContent.trim();
+}
 
 export const exportAs = (format, editor, title) => {
   const formats = {

@@ -2,9 +2,7 @@ import { createContext, useState } from 'react';
 import { databases, appWriteConfig, setPermissions } from '../lib/appwrite/config';
 import { ID } from 'appwrite';
 import { useDeleteElement } from '../hooks/useDeleteElement';
-import { useLoadElements } from '../hooks/useLoadElements';
 import { toast } from 'sonner';
-import { useTrash } from '../hooks/useTrash';
 import { useUser } from '../hooks/useUser';
 
 const DATABASE_ID = appWriteConfig.databaseId;
@@ -16,8 +14,6 @@ function ListsProvider({ children }) {
   const [lists, setLists] = useState();
   const [isListsLoading, setIsListsLoading] = useState(true);
   const { handleDeleteElement } = useDeleteElement();
-  const { handleLoadElements } = useLoadElements();
-  const { handleRestoreFromTrash } = useTrash();
   const { user } = useUser();
   const [currentProcessedList, setCurrentProcessedList] = useState(null);
 
@@ -101,18 +97,7 @@ function ListsProvider({ children }) {
         loading: 'Deleting list...',
         success: () => {
           toast.dismiss(toastId);
-          toast.success('List has been successfully deleted.', {
-            duration: 4000,
-            action: deletePermanently
-              ? null
-              : {
-                  label: 'Undo',
-                  onClick: async () => {
-                    await handleRestoreFromTrash('lists', id, true);
-                    await handleLoadElements(user, LISTS_COLLECTION_ID, setLists);
-                  },
-                },
-          });
+          toast.success('List has been successfully deleted.');
         },
         error: () => {
           toast.dismiss(toastId);

@@ -2,9 +2,7 @@ import { createContext, useState } from 'react';
 import { databases, appWriteConfig, setPermissions } from '../lib/appwrite/config';
 import { ID } from 'appwrite';
 import { useDeleteElement } from '../hooks/useDeleteElement';
-import { useLoadElements } from '../hooks/useLoadElements';
 import { toast } from 'sonner';
-import { useTrash } from '../hooks/useTrash';
 import { useUser } from '../hooks/useUser';
 
 const DATABASE_ID = appWriteConfig.databaseId;
@@ -16,8 +14,6 @@ function TagsProvider({ children }) {
   const [tags, setTags] = useState([]);
   const [isTagsLoading, setIsTagsLoading] = useState(true);
   const { handleDeleteElement } = useDeleteElement();
-  const { handleLoadElements } = useLoadElements();
-  const { handleRestoreFromTrash } = useTrash();
   const { user } = useUser();
 
   async function handleAddTag(title, bgColor, textColor) {
@@ -62,18 +58,7 @@ function TagsProvider({ children }) {
         loading: 'Deleting tag...',
         success: () => {
           toast.dismiss(toastId);
-          toast.success('Tag  has been successfully deleted.', {
-            duration: 4000,
-            action: deletePermanently
-              ? null
-              : {
-                  label: 'Undo',
-                  onClick: async () => {
-                    await handleRestoreFromTrash('tags', id, true);
-                    await handleLoadElements(user, TAGS_COLLECTION_ID, setTags);
-                  },
-                },
-          });
+          toast.success('Tag  has been successfully deleted.');
         },
         error: () => {
           toast.dismiss(toastId);

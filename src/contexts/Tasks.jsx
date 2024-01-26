@@ -3,7 +3,7 @@ import { ID } from 'appwrite';
 import { databases, appWriteConfig, setPermissions } from '../lib/appwrite/config';
 import { toast } from 'sonner';
 import { checkIfToday, checkIfTomorrow, isDateInCurrentWeek } from '../utils/Moment';
-import { useDeleteElement, useLoadElements, useTrash, useUser } from '../hooks';
+import { useDeleteElement, useUser } from '../hooks';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 const TASKS_COLLECTION_ID = appWriteConfig.tasksCollectionId;
@@ -18,8 +18,6 @@ function TasksProvider({ children }) {
   const [isAddingTask, setIsAddingTask] = useState(false);
   const [selectedTasks, setSelectedTasks] = useState([]);
   const { handleDeleteElement } = useDeleteElement();
-  const { handleLoadElements } = useLoadElements();
-  const { handleRestoreFromTrash } = useTrash();
   const { user } = useUser();
   const [currentProcessedTask, setCurrentProcessedTask] = useState(null);
 
@@ -119,17 +117,7 @@ function TasksProvider({ children }) {
         loading: 'Deleting task...',
         success: () => {
           toast.dismiss(toastId);
-          toast.success(getDeletionMessage('success', true), {
-            duration: 4000,
-            action: deletePermanently
-              ? null
-              : {
-                  label: 'Undo',
-                  onClick: () => {
-                    undoDelete(async () => handleRestoreFromTrash('tasks', id, true));
-                  },
-                },
-          });
+          toast.success(getDeletionMessage('success', true));
         },
         error: () => {
           toast.dismiss(toastId);
@@ -170,21 +158,7 @@ function TasksProvider({ children }) {
         loading: 'Clearing all tasks...',
         success: () => {
           toast.dismiss(toastId);
-          toast.success(getDeletionMessage('success', false, false), {
-            duration: 4000,
-            action: deletePermanently
-              ? null
-              : {
-                  label: 'Undo',
-                  onClick: () => {
-                    undoDelete(async () => {
-                      await Promise.all(
-                        deletedTasks.map((task) => handleRestoreFromTrash('tasks', task.$id, true)),
-                      );
-                    });
-                  },
-                },
-          });
+          toast.success(getDeletionMessage('success', false, false));
         },
         error: () => {
           toast.dismiss(toastId);
@@ -228,20 +202,6 @@ function TasksProvider({ children }) {
           toast.dismiss(toastId);
           toast.success(getDeletionMessage('success', false, true, selectedTasks.length), {
             duration: 4000,
-            action: deletePermanently
-              ? null
-              : {
-                  label: 'Undo',
-                  onClick: () => {
-                    undoDelete(async () => {
-                      await Promise.all(
-                        selectedTasks.map((task) =>
-                          handleRestoreFromTrash('tasks', task.$id, true),
-                        ),
-                      );
-                    });
-                  },
-                },
           });
         },
         error: () => {
@@ -267,11 +227,6 @@ function TasksProvider({ children }) {
       setCurrentTask(tasks.find((task) => task.$id === id));
       setIsTaskOpen(true);
     }
-  }
-
-  async function undoDelete(fn) {
-    await fn();
-    await handleLoadElements(user, TASKS_COLLECTION_ID, setTasks);
   }
 
   return (

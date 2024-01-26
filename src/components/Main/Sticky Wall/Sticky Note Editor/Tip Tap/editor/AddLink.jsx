@@ -54,7 +54,7 @@ export const AddLink = ({ editor,readonly }) => {
     >
       <button
         disabled={readonly || !editor.can().chain().focus().toggleLink().run()}
-        className={editor.isActive('link') ? 'is-active' : 'not-active'}
+        className={editor.isActive('link') ? 'icon-button active' : 'icon-button not-active'}
         onClick={() => setUrl(editor.isActive('link') ? editor.getAttributes('link').href : '')}
       >
         <i className='fa-solid fa-link'></i>

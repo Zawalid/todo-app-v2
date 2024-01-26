@@ -12,7 +12,7 @@ export function SideBar({ currentTab, setCurrentTab }) {
   return (
     <>
       <button
-        className='not-active small absolute right-12 top-4 sm:hidden'
+        className='icon-button not-active small absolute right-12 top-4 sm:hidden'
         onClick={() => setIsOpen(!isOpen)}
       >
         <i

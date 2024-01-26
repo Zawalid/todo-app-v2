@@ -1,10 +1,5 @@
 import { appWriteConfig } from '../lib/appwrite/config';
-import { useTasks } from './useTasks';
-import { useTags } from './useTags';
-import { useLists } from './useLists';
-import { useStickyNotes } from './useStickyNotes';
-import { useLoadElements } from './useLoadElements';
-import { useUser } from './useUser';
+import { useTasks, useLists, useStickyNotes, useTags, useUser, useLoadElements } from './index';
 
 const { tasksCollectionId, listsCollectionId, tagsCollectionId, stickyNotesCollectionId } =
   appWriteConfig;
@@ -18,11 +13,11 @@ const collectionsIds = {
 
 export function useRestoreElement() {
   const { setTasks } = useTasks();
-  const { setTags } = useTags();
   const { setLists } = useLists();
   const { setStickyNotes } = useStickyNotes();
+  const { setTags } = useTags();
+  const { user } = useUser();
   const { handleLoadElements } = useLoadElements();
-const { user } = useUser();
 
   const setters = {
     tasks: setTasks,
@@ -32,7 +27,7 @@ const { user } = useUser();
   };
 
   async function handleRestoreElement(type) {
-    await handleLoadElements(user,collectionsIds[type], setters[type]);
+    await handleLoadElements(user, collectionsIds[type], setters[type]);
   }
   return { handleRestoreElement };
 }

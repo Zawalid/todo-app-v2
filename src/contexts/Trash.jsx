@@ -88,7 +88,7 @@ function reducer(state, action) {
   }
 }
 
-function TrashProvider({ children }) {
+export default function TrashProvider({ children }) {
   const [currentTab, setCurrentTab] = useState('tasks');
   const [{ trash, isUpdated, $id, creationDate, lastCleanedUp }, dispatch] = useReducer(
     reducer,
@@ -174,7 +174,7 @@ function TrashProvider({ children }) {
     });
   }
   // To delete an item from trash and restore the corresponding element:
-  async function handleRestoreFromTrash(type, itemId, isUndo, updateFunction) {
+  async function handleRestoreFromTrash(type, itemId) {
     if (
       (currentProcessedItem?.itemId === itemId && currentProcessedItem?.type === type) ||
       currentProcessedItem === 'all'
@@ -183,35 +183,20 @@ function TrashProvider({ children }) {
     setCurrentProcessedItem({ itemId, type });
 
     const element = formatItemName(type, true);
-    const toastId = isUndo ? null : toast.loading(`Restoring ${element}...`);
+    const toastId = toast.loading(`Restoring ${element}...`);
     try {
       // Restore the element
       await restoreElement(type, itemId);
       // Delete the element from trash
       await deleteItem(type, itemId);
-      isUndo ||
-        toast.success(`${element} has been successfully restored.`, {
-          id: toastId,
-          action: {
-            label: 'Undo',
-            onClick: async () => {
-              await handleAddToTrash(
-                type,
-                JSON.parse(trash[type].find((el) => JSON.parse(el).id === itemId)),
-              );
-              // Revert the restore operation (isTrashed: true)
-              await restoreElement(type, itemId, true);
-              updateFunction(type);
-            },
-          },
-        });
+      toast.success(`${element} has been successfully restored.`, { id: toastId });
     } catch (err) {
       toast.error(`Failed to restore ${element}. Please try again`, {
         id: toastId,
         action: {
           label: 'Try Again',
           onClick: () => {
-            handleRestoreFromTrash(type, itemId, isUndo, updateFunction);
+            handleRestoreFromTrash(type, itemId);
           },
         },
       });
@@ -369,4 +354,3 @@ function formatItemName(type, singular) {
     ? 'Sticky notes'
     : type[0].toUpperCase() + type.slice(1, type.length - (singular ? 1 : 0));
 }
-export default TrashProvider;

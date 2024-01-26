@@ -192,7 +192,7 @@ function Actions({
   return (
     <div className='flex gap-3'>
       <button
-        className='not-active'
+        className='icon-button not-active'
         onClick={() => {
           setIsSelecting(!isSelecting);
           setIsDeleteMultipleModalOpen(false);
@@ -228,7 +228,7 @@ function Actions({
         placement='bottom'
         maxWidth='auto'
       >
-        <button className='not-active'>
+        <button className='icon-button not-active'>
           <i className='fa-solid fa-ellipsis-v text-xl'></i>
         </button>
       </Tippy>
