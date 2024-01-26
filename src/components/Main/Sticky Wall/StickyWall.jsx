@@ -363,11 +363,11 @@ function NotesGroup({ render, group, view, isSelecting, isCollapsed, parent, con
       </button>
       <div
         className={
-          ' flex-1 overflow-auto ' +
+          ' flex-1  h-auto transition-[max-height]  overflow-auto ' +
           (view === 'list'
             ? 'space-y-3 '
             : ' grid grid-cols-[repeat(auto-fill,minmax(270px,1fr))] gap-4 ') +
-          (isGroupOpen ? '' : 'hidden')
+          (isGroupOpen ? 'max-h-[999px] duration-[2s] ' : 'duration-[1s] max-h-0')
         }
         ref={parent}
       >

@@ -4,7 +4,7 @@ import { ID } from 'appwrite';
 import { useDeleteElement } from '../hooks/useDeleteElement';
 import { toast } from 'sonner';
 import { useUser } from '../hooks/useUser';
-import { isElementEmpty } from '../utils/helpers';
+import { getDeletionMessage, isElementEmpty } from '../utils/helpers';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 const STICKY_NOTES_COLLECTION_ID = appWriteConfig.stickyNotesCollectionId;
@@ -106,11 +106,12 @@ export default function StickyNotesProvider({ children }) {
         loading: 'Deleting note...',
         success: () => {
           toast.dismiss(toastId);
-          toast.success('Sticky note has been successfully deleted.');
+          toast.success(getDeletionMessage('sticky note','success', true));
+
         },
         error: () => {
           toast.dismiss(toastId);
-          toast.error('Failed to delete the sticky note.', {
+          toast.error(getDeletionMessage('sticky note','error', true), {
             duration: 4000,
             action: {
               label: 'Try again',
@@ -123,67 +124,69 @@ export default function StickyNotesProvider({ children }) {
         finally: () => setCurrentProcessedNote(null),
       },
     );
-   
   }
 
   async function handleDeleteAllNotes(deletePermanently) {
     setCurrentProcessedNote('multiple');
-    const toastId = toast.loading('Deleting notes...', {
-      duration: 10000,
-    });
-    try {
-      await Promise.all(
+    const toastId = toast.promise(
+      Promise.all(
         stickyNotes.map(async (note) => {
           await handleDeleteStickyNote(note.$id, deletePermanently, true);
         }),
-      );
-      toast.success('Notes have been successfully deleted.', {
-        id: toastId,
-      });
-    } catch (error) {
-      toast.error('Failed to delete the notes.', {
-        duration: 4000,
-        id: toastId,
-        action: {
-          label: 'Try again',
-          onClick: async () => {
-            await handleDeleteAllNotes(deletePermanently);
-          },
+      ),
+      {
+        loading: 'Deleting sticky notes...',
+        success: () => {
+          toast.dismiss(toastId);
+          toast.success(getDeletionMessage('sticky note','success', false, false));
         },
-      });
-    } finally {
-      setCurrentProcessedNote(null);
-    }
+        error: () => {
+          toast.dismiss(toastId);
+          toast.error(getDeletionMessage('sticky note','error', false, false), {
+            duration: 4000,
+            action: {
+              label: 'Try again',
+              onClick: async () => {
+                await handleDeleteAllNotes(deletePermanently);
+              },
+            },
+          });
+        },
+        finally: () => setCurrentProcessedNote(null),
+      },
+    );
   }
 
   async function handleDeleteMultipleNotes(deletePermanently) {
     setCurrentProcessedNote('multiple');
-    const toastId = toast.loading('Deleting notes...', {
-      duration: 10000,
-    });
-    try {
-      await Promise.all(
+
+    const toastId = toast.promise(
+      Promise.all(
         selectedNotes.map(async (note) => {
           await handleDeleteStickyNote(note.$id, deletePermanently, true);
         }),
-      );
-      toast.success('Notes have been successfully deleted.', {
-        id: toastId,
-      });
-    } catch (error) {
-      toast.error('Failed to delete the notes.', {
-        duration: 4000,
-        id: toastId,
-        action: {
-          label: 'Try again',
-          onClick: async () => {
-            await handleDeleteMultipleNotes(deletePermanently);
-          },
+      ),
+      {
+        loading: 'Deleting sticky notes...',
+        success: () => {
+          toast.dismiss(toastId);
+          toast.success(getDeletionMessage('sticky note','success', false, true, selectedNotes.length));
         },
-      });
-    } finally {
-      setCurrentProcessedNote(null);
-    }
+        error: () => {
+          toast.dismiss(toastId);
+          toast.error(getDeletionMessage('sticky note','error', false, true, selectedNotes.length), {
+            duration: 4000,
+            action: {
+              label: 'Try again',
+              onClick: async () => {
+                await handleDeleteMultipleNotes(deletePermanently);
+              },
+            },
+          });
+        },
+        finally: () => setCurrentProcessedNote(null),
+      },
+    );
   }
 
   function handleBack($id, title, content) {
@@ -220,4 +223,3 @@ export default function StickyNotesProvider({ children }) {
     </StickyNotesContext.Provider>
   );
 }
-
