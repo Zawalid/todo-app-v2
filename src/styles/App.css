@@ -33,7 +33,7 @@ input[type='checkbox'].task {
 }
 
 .color {
-  @apply h-5 w-5 cursor-pointer rounded-[3px] border border-zinc-200 transition-opacity duration-300 hover:opacity-100 hover:shadow-md;
+  @apply h-5 w-5 cursor-pointer rounded-[3px] border border-zinc-200 transition-all duration-300 hover:shadow-md;
 }
 .note_text {
   display: -webkit-box;

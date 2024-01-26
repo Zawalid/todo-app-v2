@@ -1,7 +1,7 @@
 import CustomTippy from '../../../../Common/CustomTippy';
-import { AddLink } from './AddLink';
-import { Highlighter } from './Highlighter';
-import { TextColor } from './TextColor';
+import { AddLink } from './editor/AddLink';
+import { Highlighter } from './editor/Highlighter';
+import { TextColor } from './editor/TextColor';
 import { useEffect, useState } from 'react';
 import { isTouchDevice } from '../../../../../utils/helpers';
 import { DropDown } from '../../../../Common/DropDown';

@@ -2,7 +2,7 @@ import { Drawer as D } from 'vaul';
 
 export default function Drawer({ children, open = true, onClose, shouldClose = true }) {
   return (
-    <D.Root onClose={onClose} open={open} dismissible={shouldClose}>
+    <D.Root onClose={onClose} open={open} dismissible={shouldClose} >
       <D.Portal>
         <D.Overlay className='fixed inset-0 z-[100] bg-black/40' />
         <D.Content className='fixed bottom-0 left-0 right-0 z-[100] flex flex-col rounded-t-[10px] bg-background-primary p-3 outline-none'>

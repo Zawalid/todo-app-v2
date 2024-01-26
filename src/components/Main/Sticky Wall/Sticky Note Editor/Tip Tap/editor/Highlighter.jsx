@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ColorPicker } from './ColorPicker';
-import CustomTippy from '../../../../Common/CustomTippy';
+import CustomTippy from '../../../../../Common/CustomTippy';
 
 export function Highlighter({ editor, readonly }) {
   const [color, setColor] = useState('#ffda77');

@@ -124,7 +124,7 @@ export default function StickyWall() {
   return (
     <div className='flex h-full flex-col gap-3 overflow-hidden'>
       <StickyWallActions
-        options={{
+        {...{
           view,
           setView,
           sortBy,
@@ -332,7 +332,6 @@ function NotesGroup({ render, group, view, isSelecting, isCompact, parent, condi
   useEffect(() => {
     setIsGroupOpen(!isCompact);
   }, [isCompact]);
-
 
   if (!stickyNotes.some(condition) || !group) return null;
 

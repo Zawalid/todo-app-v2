@@ -129,6 +129,7 @@
 
   .colorHighlight {
     white-space: nowrap;
+    color :  var(--color);
 
     &::before {
       background-color: var(--color);

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import CustomTippy from '../../../../Common/CustomTippy';
+import CustomTippy from '../../../../../Common/CustomTippy';
 
 export const AddLink = ({ editor,readonly }) => {
   const [url, setUrl] = useState('');
