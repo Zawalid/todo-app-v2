@@ -134,17 +134,14 @@ input[type='checkbox'].task {
 }
 
 .icon-button {
-  @apply flex h-8 w-8 items-center transition-all duration-300 justify-center rounded-[4px]  p-1;
-
-  &:disabled {
-    @apply cursor-not-allowed bg-[#f5f5f5] text-[#cacaca];
-  }
+  @apply flex h-8 w-8 items-center justify-center rounded-[4px] p-1 transition-all  duration-300
+  disabled:cursor-not-allowed disabled:bg-[#f5f5f5] disabled:text-[#cacaca];
 
   &.active {
     @apply bg-text-secondary  text-white;
   }
 
-  &.not-active {
+  &:not(:disabled).not-active {
     @apply bg-background-secondary text-text-tertiary hover:bg-background-tertiary;
   }
 

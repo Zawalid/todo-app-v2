@@ -67,7 +67,7 @@ function Button({
         }
         `}
       disabled={disabled}
-      onClick={() => disabled || onClick()}
+      onClick={() => disabled || onClick?.()}
     >
       {children}
     </li>
