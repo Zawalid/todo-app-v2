@@ -43,6 +43,7 @@ export function Menu() {
     if (activeTab === 'sticky-wall') removeListeners();
 
     return removeListeners;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
 
   return (

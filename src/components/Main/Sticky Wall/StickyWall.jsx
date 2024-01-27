@@ -118,6 +118,12 @@ export default function StickyWall() {
         <p className='text-sm font-medium text-text-tertiary'>
           Click the plus icon below to add a new sticky note
         </p>
+        <AddNote
+          isSelecting={isSelecting}
+          handleAddStickyNote={handleAddStickyNote}
+          setCurrentNote={setCurrentNote}
+          setIsStickyNoteEditorOpen={setIsStickyNoteEditorOpen}
+        />
       </div>
     );
 
@@ -153,92 +159,6 @@ export default function StickyWall() {
         className='flex-1 space-y-3 overflow-auto rounded-lg border border-zinc-200 p-3   pr-3 sm:p-5'
         ref={parent}
       >
-        {/* <button className='flex w-full items-center justify-between rounded-md bg-background-secondary px-3 py-0.5 text-start text-sm font-medium text-text-secondary'>
-          <span>Pinned</span>
-          <i className='fa-solid fa-chevron-down ml-1 text-xs'></i>
-        </button>
-        <div
-          className={
-            ' flex-1 overflow-auto rounded-lg border border-zinc-200 p-3 sm:p-5 ' +
-            (view === 'list'
-              ? 'space-y-3'
-              : ' grid grid-cols-[repeat(auto-fill,minmax(270px,1fr))] gap-4 ')
-          }
-          ref={parent}
-        >
-          {render(stickyNotes).map((stickyNote) => {
-            const isSelected =
-              selectedNotes.filter((note) => note.$id === stickyNote.$id).length > 0;
-            return (
-              <StickyNote
-                key={stickyNote.$id}
-                stickyNote={stickyNote}
-                onClick={() => {
-                  if (isSelecting) {
-                    setSelectedNotes((prev) => {
-                      if (isSelected) return prev.filter((t) => t.$id !== stickyNote.$id);
-                      else return [...prev, { $id: stickyNote.$id, title: stickyNote.title }];
-                    });
-                  } else {
-                    setCurrentNote(stickyNote);
-                    setIsStickyNoteEditorOpen(true);
-                  }
-                }}
-                listView={view === 'list'}
-                isSelecting={isSelecting}
-                isSelected={isSelected}
-              />
-            );
-          })}
-        </div>
-        {[...new Set(stickyNotes.map((n) => n.title[0].toUpperCase()))].map((t) => (
-          <>
-            <button
-              className='flex w-full items-center justify-between rounded-md bg-background-secondary px-3 py-0.5 text-start text-sm font-medium text-text-secondary'
-              key={t}
-            >
-              <span>{t}</span>
-              <i className='fa-solid fa-chevron-down ml-1 text-xs'></i>
-            </button>
-            <div
-              className={
-                ' flex-1 overflow-auto rounded-lg border border-zinc-200 p-3 sm:p-5 ' +
-                (view === 'list'
-                  ? 'space-y-3'
-                  : ' grid grid-cols-[repeat(auto-fill,minmax(270px,1fr))] gap-4 ')
-              }
-              ref={parent}
-            >
-              {render(stickyNotes)
-                .filter((n) => n.title[0].toUpperCase() === t)
-                .map((stickyNote) => {
-                  const isSelected =
-                    selectedNotes.filter((note) => note.$id === stickyNote.$id).length > 0;
-                  return (
-                    <StickyNote
-                      key={stickyNote.$id}
-                      stickyNote={stickyNote}
-                      onClick={() => {
-                        if (isSelecting) {
-                          setSelectedNotes((prev) => {
-                            if (isSelected) return prev.filter((t) => t.$id !== stickyNote.$id);
-                            else return [...prev, { $id: stickyNote.$id, title: stickyNote.title }];
-                          });
-                        } else {
-                          setCurrentNote(stickyNote);
-                          setIsStickyNoteEditorOpen(true);
-                        }
-                      }}
-                      listView={view === 'list'}
-                      isSelecting={isSelecting}
-                      isSelected={isSelected}
-                    />
-                  );
-                })}
-            </div>
-          </>
-        ))} */}
-
         {groupBy === 'default'
           ? [
               {
@@ -277,34 +197,24 @@ export default function StickyWall() {
               ))}
       </div>
 
-      {!isSelecting && (
-        <button
-          className='fixed bottom-14 right-5 z-10 grid h-12 w-12 place-content-center rounded-full bg-primary p-2 shadow-lg transition-colors duration-300 hover:bg-primary-hover sm:right-8'
-          onClick={() => {
-            const note = {
-              title: '',
-              content: '<p></p>',
-              bgColor: '#ff922b',
-              textColor: '#fff',
-              readonly: false,
-              pinned: false,
-              fontFamily: `'Lexend Deca', sans-serif`,
-            };
-            handleAddStickyNote(note);
-            setCurrentNote((prev) => ({ ...prev, ...note }));
-            setIsStickyNoteEditorOpen(true);
-          }}
-        >
-          <i className='fa-regular fa-plus text-xl text-white'></i>
-        </button>
-      )}
       {Pagination}
+
+      <AddNote
+        isSelecting={isSelecting}
+        handleAddStickyNote={handleAddStickyNote}
+        setCurrentNote={setCurrentNote}
+        setIsStickyNoteEditorOpen={setIsStickyNoteEditorOpen}
+      />
 
       <ConfirmationModal
         isOpen={isConfirmationModalOpen}
         sentence={`Are you sure you want to ${
           whichDelete.current === 'selected'
-            ? `delete ${selectedNotes.length > 1 ? `${selectedNotes.length} sticky notes` : 'this sticky note'} `
+            ? `delete ${
+                selectedNotes.length > 1
+                  ? `${selectedNotes.length} sticky notes`
+                  : 'this sticky note'
+              } `
             : 'delete all sticky notes?'
         } `}
         confirmText={whichDelete.current === 'selected' ? 'Delete' : 'Delete All'}
@@ -363,11 +273,11 @@ function NotesGroup({ render, group, view, isSelecting, isCollapsed, parent, con
       </button>
       <div
         className={
-          ' flex-1  h-auto transition-[max-height]  overflow-auto ' +
+          ' h-auto  flex-1 overflow-auto  transition-[max-height] ' +
           (view === 'list'
             ? 'space-y-3 '
             : ' grid grid-cols-[repeat(auto-fill,minmax(270px,1fr))] gap-4 ') +
-          (isGroupOpen ? 'max-h-[999px] duration-[2s] ' : 'duration-[1s] max-h-0')
+          (isGroupOpen ? 'max-h-[999px] duration-[2s] ' : 'max-h-0 duration-[1s]')
         }
         ref={parent}
       >
@@ -400,6 +310,31 @@ function NotesGroup({ render, group, view, isSelecting, isCollapsed, parent, con
       </div>
     </>
   );
+}
+
+function AddNote({ isSelecting, handleAddStickyNote, setCurrentNote, setIsStickyNoteEditorOpen }) {
+  if (!isSelecting)
+    return (
+      <button
+        className='fixed bottom-14 right-5 z-10 grid h-12 w-12 place-content-center rounded-full bg-primary p-2 shadow-lg transition-colors duration-300 hover:bg-primary-hover sm:right-8'
+        onClick={() => {
+          const note = {
+            title: '',
+            content: '<p></p>',
+            bgColor: '#ff922b',
+            textColor: '#fff',
+            readonly: false,
+            pinned: false,
+            fontFamily: `'Lexend Deca', sans-serif`,
+          };
+          handleAddStickyNote(note);
+          setCurrentNote((prev) => ({ ...prev, ...note }));
+          setIsStickyNoteEditorOpen(true);
+        }}
+      >
+        <i className='fa-regular fa-plus text-xl text-white'></i>
+      </button>
+    );
 }
 
 const groups = {

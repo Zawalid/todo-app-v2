@@ -18,12 +18,15 @@ export default function Trash({ isOpen, onClose }) {
     handleEmptyTrash,
     setCurrentTab,
     handleRestoreFromTrash,
+    handleRestoreType,
   } = useTrash();
   const { lists } = useLists();
   const { handleRestoreElement } = useRestoreElement();
   const [currentItem, setCurrentItem] = useState(null);
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const whichDelete = useRef(null);
+  const [parent] = useAutoAnimate({ duration: 300 });
+
 
   const onRestore = async (item) => {
     if (currentTab === 'lists') {
@@ -43,6 +46,7 @@ export default function Trash({ isOpen, onClose }) {
     <div
       className={`fixed left-0 top-0 z-[9999] flex h-full w-full flex-col gap-5 overflow-auto rounded-lg border border-zinc-200 bg-background-primary px-5 py-3 shadow-md transition-transform duration-300 md:static md:h-[350px] md:w-[500px]
     ${isOpen || !onClose ? 'scale-100' : 'scale-0'}`}
+      ref={parent}
     >
       <div className='flex items-start justify-between gap-5'>
         <Tabs
@@ -65,6 +69,10 @@ export default function Trash({ isOpen, onClose }) {
               if (trashLength === 0) return;
               setIsConfirmationModalOpen(true);
               whichDelete.current = 'all';
+            }}
+            onRestoreAll={async () => {
+              await handleRestoreType(currentTab);
+              handleRestoreElement(currentTab);
             }}
           />
           {onClose && (
@@ -123,25 +131,26 @@ export default function Trash({ isOpen, onClose }) {
 function Items({ trash, currentTab, onDelete, onRestore }) {
   const [parent] = useAutoAnimate({ duration: 500 });
 
+  if (trash[currentTab]?.length === 0)
+    return (
+      <div className='grid h-full place-content-center justify-items-center '>
+        <img src={trashIcon} alt='trash' className='w-20' />
+        <span className='text-center text-sm font-bold text-text-tertiary'>
+          No {currentTab === 'stickyNotes' ? 'sticky notes' : currentTab} in trash
+        </span>
+      </div>
+    );
+
   return (
     <ul className='flex flex-1  flex-col gap-2 overflow-auto overflow-x-hidden' ref={parent}>
-      {trash[currentTab]?.length > 0 &&
-        trash[currentTab]?.map((item) => (
-          <Item
-            key={JSON.parse(item).id}
-            title={JSON.parse(item).title}
-            onDelete={onDelete}
-            onRestore={() => onRestore(item)}
-          />
-        ))}
-      {trash[currentTab]?.length === 0 && (
-        <div className='grid h-full place-content-center justify-items-center '>
-          <img src={trashIcon} alt='trash' className='w-20' />
-          <span className='text-center text-sm font-bold text-text-tertiary'>
-            No {currentTab === 'stickyNotes' ? 'sticky notes' : currentTab} in trash
-          </span>
-        </div>
-      )}
+      {trash[currentTab]?.map((item) => (
+        <Item
+          key={JSON.parse(item).id}
+          title={JSON.parse(item).title}
+          onDelete={onDelete}
+          onRestore={() => onRestore(item)}
+        />
+      ))}
     </ul>
   );
 }
@@ -161,11 +170,7 @@ function Actions({ trash, currentTab, trashLength, onDeleteAll, onRestoreAll, on
         <i className='fa-solid fa-trash-can '></i>
         <span>Delete All</span>
       </DropDown.Button>
-      <DropDown.Button
-        isDeleteButton={true}
-        disabled={trash[currentTab]?.length === 0}
-        onClick={onRestoreAll}
-      >
+      <DropDown.Button disabled={trash[currentTab]?.length === 0} onClick={onRestoreAll}>
         <i className='fa-solid fa-trash-can '></i>
         <span>Restore All</span>
       </DropDown.Button>

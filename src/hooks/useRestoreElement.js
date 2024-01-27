@@ -1,15 +1,7 @@
-import { appWriteConfig } from '../lib/appwrite/config';
+import { COLLECTIONS_IDS } from '../utils/constants';
 import { useTasks, useLists, useStickyNotes, useTags, useUser, useLoadElements } from './index';
 
-const { tasksCollectionId, listsCollectionId, tagsCollectionId, stickyNotesCollectionId } =
-  appWriteConfig;
-
-const collectionsIds = {
-  tasks: tasksCollectionId,
-  lists: listsCollectionId,
-  tags: tagsCollectionId,
-  stickyNotes: stickyNotesCollectionId,
-};
+//* Im using this hook to fetch the elements from the database and set them in the state once i restore them and the reason i can't use this function in the Trash context is the providers are not mounted yet 
 
 export function useRestoreElement() {
   const { setTasks } = useTasks();
@@ -27,7 +19,7 @@ export function useRestoreElement() {
   };
 
   async function handleRestoreElement(type) {
-    await handleLoadElements(user, collectionsIds[type], setters[type]);
+    await handleLoadElements(user, COLLECTIONS_IDS[type], setters[type]);
   }
   return { handleRestoreElement };
 }

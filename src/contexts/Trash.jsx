@@ -2,24 +2,9 @@ import { createContext, useEffect, useMemo, useReducer, useState } from 'react';
 import { databases, appWriteConfig, setPermissions } from '../lib/appwrite/config';
 import { ID, Query } from 'appwrite';
 import { toast } from 'sonner';
+import { COLLECTIONS_IDS, TRASH_CLEANUP_INTERVAL } from '../utils/constants';
 
-const {
-  databaseId: DATABASE_ID,
-  trashCollectionId: TRASH_COLLECTION_ID,
-  tasksCollectionId,
-  listsCollectionId,
-  tagsCollectionId,
-  stickyNotesCollectionId,
-} = appWriteConfig;
-
-const collectionsIds = {
-  tasks: tasksCollectionId,
-  lists: listsCollectionId,
-  tags: tagsCollectionId,
-  stickyNotes: stickyNotesCollectionId,
-};
-
-const TRASH_CLEANUP_INTERVAL = 30 * 24 * 60 * 60 * 1000; //(30 days in milliseconds)
+const { databaseId: DATABASE_ID, trashCollectionId: TRASH_COLLECTION_ID } = appWriteConfig;
 
 export const TrashContext = createContext();
 
@@ -129,7 +114,7 @@ export default function TrashProvider({ children }) {
   // --- Deletion ---
   // To delete a (task, list, tag, stickyNote) permanently:
   async function deleteElement(type, itemId) {
-    await databases.deleteDocument(DATABASE_ID, collectionsIds[type], itemId);
+    await databases.deleteDocument(DATABASE_ID, COLLECTIONS_IDS[type], itemId);
   }
   // To delete an item from trash:
   async function deleteItem(type, itemId) {
@@ -169,7 +154,7 @@ export default function TrashProvider({ children }) {
   // --- Restoration ---
   // To update an element (task, list, tag, stickyNote) from trash (isTrashed: true)
   async function restoreElement(type, itemId, revert) {
-    await databases.updateDocument(DATABASE_ID, collectionsIds[type], itemId, {
+    await databases.updateDocument(DATABASE_ID, COLLECTIONS_IDS[type], itemId, {
       isTrashed: revert ? true : false,
     });
   }
@@ -204,6 +189,43 @@ export default function TrashProvider({ children }) {
       setCurrentProcessedItem(null);
     }
   }
+  // To restore all type items from trash:
+  async function handleRestoreType(type) {
+    if (currentProcessedItem?.type === type || currentProcessedItem === 'all') return;
+    setCurrentProcessedItem({ type });
+
+    const element = formatItemName(type);
+
+    const toastId = toast.promise(
+      Promise.all(
+        trash[type].map(async (item) => {
+          const itemId = JSON.parse(item).id;
+          await restoreElement(type, itemId);
+          await deleteItem(type, itemId);
+        }),
+      ),
+      {
+        loading: `Restoring ${element}...`,
+        success: () => {
+          dispatch({ type: 'EMPTY_TYPE', payload: type });
+          return `${element} have been successfully restored.`;
+        },
+        error: () => {
+          toast.dismiss(toastId);
+          toast.error(`Failed to restore ${element}. Please try again`, {
+            action: {
+              label: 'Try Again',
+              onClick: () => {
+                handleRestoreType(type);
+              },
+            },
+          });
+        },
+        finally: () => setCurrentProcessedItem(null),
+      },
+    );
+  }
+
   // --- Emptying ---
   async function handleEmptyType(type) {
     if (currentProcessedItem?.type === type || currentProcessedItem === 'all') return;
@@ -341,6 +363,7 @@ export default function TrashProvider({ children }) {
         handleEmptyType,
         handleEmptyTrash,
         handleRestoreFromTrash,
+        handleRestoreType,
         handleGetTrash,
       }}
     >
