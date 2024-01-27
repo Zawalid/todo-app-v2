@@ -29,6 +29,11 @@ export function getDeletionMessage(element, status, singular, selected, number) 
   }
 }
 
+export function checkIsEmailValid(email) {
+  const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
+  return emailRegex.test(email);
+}
+
 export const exportAs = (format, editor, title) => {
   const formats = {
     text: {

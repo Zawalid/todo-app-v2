@@ -5,8 +5,9 @@ import { Button } from '../Common/Button';
 import { UploadImage } from './UploadImage';
 import { UserVerificationModal } from './UserVerificationModal';
 import { InputField } from '../Common/InputField';
+import { checkIsEmailValid } from '../../utils/helpers';
 
-export function EditProfile() {
+export function Account() {
   const { user, handleUpdateProfile } = useUser();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -15,7 +16,7 @@ export function EditProfile() {
     file: null,
     type: '',
   });
-  const [isUpdated, setIsUpdated] = useState(false);
+  const [isUpdated, setIsUpdated] = useState({ name: false, email: false, avatar: false });
   const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
 
   useEffect(() => {
@@ -27,13 +28,31 @@ export function EditProfile() {
   }, [user]);
 
   useEffect(() => {
-    if (!name || !email) setIsUpdated(false);
+    if (!name || !email)
+      setIsUpdated((prev) => {
+        return {
+          ...prev,
+          name: false,
+          email: false,
+        };
+      });
   }, [name, email]);
+
+  const onUpdate = async (password) => {
+    setIsUpdated({
+      name: false,
+      email: false,
+      avatar: false,
+    });
+    await handleUpdateProfile(name, email, password, avatar);
+  };
 
   function handleSaveChanges() {
     if (name.length < 3) return toast.error('Name must be at least 3 characters long');
     if (!checkIsEmailValid(email)) return toast.error('Please enter a valid email');
-    setIsVerificationModalOpen(true);
+    // This will open the verification modal if the user is updating their email
+    if (isUpdated.email) return setIsVerificationModalOpen(true);
+    onUpdate('');
   }
 
   return (
@@ -45,52 +64,60 @@ export function EditProfile() {
             avatar={avatar.src}
             onChange={(avatar) => {
               setAvatar(avatar);
-              setIsUpdated(user?.avatar !== avatar.src);
+              setIsUpdated((prev) => {
+                return { ...prev, avatar: user?.avatar !== avatar.src };
+              });
             }}
           />
         </div>
         <div>
           <h3 className='mb-3 font-bold text-text-secondary'>Name</h3>
-           <InputField
-          type='text'
-          placeholder='Name'
-          value={name}
-          onChange={(e) => {
-            setName(e.target.value);
-            setIsUpdated(user?.name.trim() !== e.target.value.trim());
-          }}
-        />
+          <InputField
+            type='text'
+            placeholder='Name'
+            value={name}
+            onChange={(e) => {
+              setName(e.target.value);
+              setIsUpdated((prev) => {
+                return { ...prev, name: user?.name.trim() !== e.target.value.trim() };
+              });
+            }}
+          />
         </div>
         <div>
           <h3 className='mb-3 font-bold text-text-secondary'>Email</h3>
-           <InputField
-          type='email'
-          placeholder='Email'
-          value={email}
-          onChange={(e) => {
-            setEmail(e.target.value);
-            setIsUpdated(user?.email.trim() !== e.target.value.trim());
-          }}
-        />
+          <InputField
+            type='email'
+            placeholder='Email'
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setIsUpdated((prev) => {
+                return { ...prev, email: user?.email.trim() !== e.target.value.trim() };
+              });
+            }}
+          />
         </div>
       </div>
-      <Button text='Save Changes' disabled={!isUpdated} onClick={handleSaveChanges} className='mr-0 px-3'/>
+      <Button
+        text='Save Changes'
+        disabled={
+          Object.values(isUpdated).every((value) => !value) || (!avatar.file && !avatar.src)
+        }
+        onClick={handleSaveChanges}
+        className='mr-0 px-3'
+      />
       {isVerificationModalOpen && (
         <UserVerificationModal
           onClose={() => setIsVerificationModalOpen(false)}
           onConfirm={async (password) => {
+            if (password.length < 8)
+              return toast.error('Password must be at least 8 characters long');
             setIsVerificationModalOpen(false);
-            setIsUpdated(false);
-            const toastId = toast.loading('Updating profile...');
-            await handleUpdateProfile(name, email, password, avatar, toastId);
+            onUpdate(password);
           }}
         />
       )}
     </>
   );
-}
-
-function checkIsEmailValid(email) {
-  const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
-  return emailRegex.test(email);
 }

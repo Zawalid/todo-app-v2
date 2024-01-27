@@ -1,13 +1,9 @@
 import { useState } from 'react';
-import { ConfirmationModal } from '../Common/ConfirmationModal';
 import { useUser } from '../../hooks';
-import { useNavigate } from 'react-router-dom';
 
 export function SideBar({ currentTab, setCurrentTab }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
-  const { user, handleDeleteAccount, handleSendVerificationEmail } = useUser();
-  const navigate = useNavigate();
+  const { user, handleSendVerificationEmail } = useUser();
 
   return (
     <>
@@ -57,39 +53,19 @@ export function SideBar({ currentTab, setCurrentTab }) {
           <i className='fa-solid fa-laptop'></i>
           <span className='font-medium '>Sessions</span>
         </button>
-        <div className=' bottom-0 mt-auto w-full space-y-4 border-t border-zinc-300 pt-3'>
-          {!user?.emailVerification && (
+        {!user?.emailVerification && (
+          <div className='mt-auto'>
+            <hr className='mb-2 w-full border-zinc-300' />
             <button
-              className='grid grid-cols-[30px_1fr] items-center justify-items-start'
+              className='grid w-full grid-cols-[30px_1fr] items-center justify-items-start rounded-md px-3 py-2   transition-colors duration-300 hover:bg-background-tertiary'
               onClick={handleSendVerificationEmail}
             >
               <i className='fa-solid fa-user-check text-text-tertiary'></i>
               <span className='text-sm font-semibold text-text-secondary'>Verify Account</span>
             </button>
-          )}
-          <button
-            className='grid w-full grid-cols-[30px_1fr] items-center justify-items-start rounded-lg px-3 py-2 text-text-error transition-colors duration-300 hover:bg-red-500 hover:text-white'
-            onClick={() => setIsConfirmationModalOpen(true)}
-          >
-            <i className='fa-solid fa-trash-can  '></i>
-            <span className='text-sm font-semibold'>Delete Account</span>
-          </button>
-        </div>
+          </div>
+        )}
       </aside>
-
-      <ConfirmationModal
-        isOpen={isConfirmationModalOpen}
-        sentence='Deleting your account will delete all of your data. This action cannot be undone. Are you sure you want to proceed?'
-        element='Account'
-        confirmText='Delete'
-        showCheckBox={false}
-        onConfirm={() => {
-          setIsConfirmationModalOpen(false);
-          handleDeleteAccount();
-          navigate('/sign-in');
-        }}
-        onCancel={() => setIsConfirmationModalOpen(false)}
-      />
     </>
   );
 }

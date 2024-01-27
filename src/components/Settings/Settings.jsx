@@ -8,7 +8,7 @@ export function Settings({ isOpen, onClose }) {
   return (
     <div
       className={`fixed left-0 top-0  flex h-full w-full items-center justify-center bg-black bg-opacity-25 backdrop-blur-[1px] ${
-        isOpen ? 'opacity-100 z-[9999]' : '-z-10 opacity-0'
+        isOpen ? 'z-[9999] opacity-100' : '-z-10 opacity-0'
       } `}
     >
       <div
@@ -24,3 +24,4 @@ export function Settings({ isOpen, onClose }) {
     </div>
   );
 }
+

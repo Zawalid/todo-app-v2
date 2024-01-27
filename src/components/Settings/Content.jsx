@@ -1,10 +1,10 @@
-import { EditProfile } from './Account';
+import { Account } from './Account';
 import { Password } from './Password';
 import { Sessions } from './Sessions';
 
 export function Content({ currentTab }) {
   const tabs = {
-    account: <EditProfile />,
+    account: <Account />, 
     password: <Password />,
     sessions: <Sessions />,
   };

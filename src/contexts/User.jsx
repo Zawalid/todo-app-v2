@@ -11,7 +11,7 @@ const USERS_COLLECTION_ID = appWriteConfig.usersCollectionId;
 
 export const UserContext = createContext();
 
-function UserProvider({ children }) {
+export default function UserProvider({ children }) {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [searchParams] = useSearchParams();
@@ -249,7 +249,17 @@ function UserProvider({ children }) {
     }
   }
 
-  async function handleUpdateProfile(name, email, password, avatar, toastId) {
+  async function handleUpdateProfile(name, email, password, avatar) {
+    const updatedField = getUpdatedField(
+      {
+        name: user.name,
+        email: user.email,
+        avatar: user.avatar,
+      },
+      { name, email, avatar: avatar.src },
+    );
+
+    const toastId = toast.loading('Updating profile...');
     try {
       if (user.name !== name) await handleUpdateName(name);
       if (user.email !== email) await handleUpdateEmail(email, password);
@@ -260,17 +270,17 @@ function UserProvider({ children }) {
       }
 
       toast.success(
-        user.name !== name
+        updatedField === 'multiple'
+          ? 'Your profile has been updated'
+          : updatedField === 'name'
           ? 'Your name has been updated'
-          : user.email !== email
+          : updatedField === 'email'
           ? 'Your email has been updated'
-          : user.avatar !== avatar.src
-          ? 'Your avatar has been updated'
-          : 'Your profile has been updated',
+          : 'Your avatar has been updated',
         { id: toastId },
       );
     } catch (error) {
-      toast.error('Your password is incorrect. Please try again.');
+      toast.error('Your password is incorrect. Please try again.', { id: toastId });
     }
   }
 
@@ -328,16 +338,6 @@ function UserProvider({ children }) {
     }
   }
 
-  //? Since appwrite doesn't provide a way to delete and account i'll just block it and delete the user from the database
-  async function handleDeleteAccount() {
-    try {
-      await databases.deleteDocument(DATABASE_ID, USERS_COLLECTION_ID, user.$id);
-      await account.updateStatus();
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
   useEffect(() => {
     if (!checkIsUserAuthenticated()) return;
     // Get the current user
@@ -364,7 +364,6 @@ function UserProvider({ children }) {
         handleGetSessions,
         handleDeleteSession,
         handleDeleteSessions,
-        handleDeleteAccount,
         handleSendVerificationEmail,
         handleVerifyAccount,
         handleResetPassword,
@@ -378,7 +377,6 @@ function UserProvider({ children }) {
 
 function getErrorMessage(err) {
   const errorMessage = err.message.includes(':') ? err.message.split(':')[0] : err.message;
-  console.log(errorMessage);
   switch (errorMessage) {
     case 'Invalid `password` param':
       return 'Your password is invalid. Password must be at least 8 characters long.';
@@ -402,4 +400,14 @@ function getErrorMessage(err) {
       return 'Something went wrong. Please try again.';
   }
 }
-export default UserProvider;
+function getUpdatedField(oldProfile, newProfile) {
+  return Object.entries(oldProfile).reduce((updated, el) => {
+    const key = el[0];
+    const val = el[1];
+
+    if (newProfile[key] !== val && !updated) return key;
+    if (newProfile[key] !== val) return 'multiple';
+
+    return updated;
+  }, false);
+}
