@@ -17,7 +17,6 @@ export function Menu() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isTrashOpen, setIsTrashOpen] = useState(false);
   const menu = useRef(null);
-
   const { handleSignOut } = useUser();
   const { trashLength } = useTrash();
   const activeTab = useHref().split('/app/')[1];
@@ -28,11 +27,23 @@ export function Menu() {
   }, [activeTab]);
 
   useEffect(() => {
+    if (activeTab === 'sticky-wall') return
+
     const body = document.body;
     body.addEventListener('touchstart', onSwipeStart);
     body.addEventListener('touchmove', (e) => onSwipeLeft(e, () => setIsOpen(false)));
     body.addEventListener('touchmove', (e) => onSwipeRight(e, () => setIsOpen(true)));
-  }, []);
+
+    const removeListeners = () => {
+      body.removeEventListener('touchstart', onSwipeStart);
+      body.removeEventListener('touchmove', (e) => onSwipeLeft(e, () => setIsOpen(false)));
+      body.removeEventListener('touchmove', (e) => onSwipeRight(e, () => setIsOpen(true)));
+    };
+
+    if (activeTab === 'sticky-wall') removeListeners();
+
+    return removeListeners;
+  }, [activeTab]);
 
   return (
     <aside
