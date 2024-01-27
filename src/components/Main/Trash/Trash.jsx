@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { DropDown } from '../../Common/DropDown';
 
-export default function Trash({ onClose }) {
+export default function Trash({ isOpen, onClose }) {
   const {
     trash,
     currentTab,
@@ -40,8 +40,11 @@ export default function Trash({ onClose }) {
   };
 
   return (
-    <div className='fixed md:static left-0 top-0 z-[9999] flex h-full w-full flex-col gap-5 overflow-auto rounded-lg border border-zinc-200 bg-background-primary px-5 py-3 shadow-md md:h-[350px] md:w-[500px]'>
-      <div className='flex items-start  justify-between gap-5'>
+    <div
+      className={`fixed left-0 top-0 z-[9999] flex h-full w-full flex-col gap-5 overflow-auto rounded-lg border border-zinc-200 bg-background-primary px-5 py-3 shadow-md transition-transform duration-300 md:static md:h-[350px] md:w-[500px]
+    ${isOpen || !onClose ? 'scale-100' : 'scale-0'}`}
+    >
+      <div className='flex items-start justify-between gap-5'>
         <Tabs
           tabs={['Tasks', 'Lists', 'Tags', 'Sticky Notes']}
           currentTab={currentTab}

@@ -49,7 +49,9 @@ export function Menu() {
         <>
           <ProfileAndCloseMenu onClose={() => setIsOpen(false)} />
           <NavigationMenu />
-          <UserActionMenu {...{ setIsSettingsOpen, isTrashOpen,setIsTrashOpen, trashLength, handleSignOut }} />
+          <UserActionMenu
+            {...{ setIsSettingsOpen, isTrashOpen, setIsTrashOpen, trashLength, handleSignOut }}
+          />
         </>
       )}
 
@@ -82,7 +84,13 @@ function NavigationMenu() {
   );
 }
 
-function UserActionMenu({ setIsSettingsOpen,isTrashOpen, setIsTrashOpen, trashLength, handleSignOut }) {
+function UserActionMenu({
+  setIsSettingsOpen,
+  isTrashOpen,
+  setIsTrashOpen,
+  trashLength,
+  handleSignOut,
+}) {
   return (
     <div className='mt-auto space-y-1 pr-2'>
       <Tippy
@@ -134,12 +142,16 @@ function MenuToggleAndModals({
 }) {
   return (
     <>
-      {isSettingsOpen &&
-        createPortal(<Settings onClose={() => setIsSettingsOpen(false)} />, document.body)}
+      {createPortal(
+        <Settings isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />,
+        document.body,
+      )}
 
       {window.matchMedia('(max-width: 768px)').matches &&
-        isTrashOpen &&
-        createPortal(<Trash onClose={() => setIsTrashOpen(false)} />, document.body)}
+        createPortal(
+          <Trash isOpen={isTrashOpen} onClose={() => setIsTrashOpen(false)} />,
+          document.body,
+        )}
 
       {isOpen ||
         createPortal(
