@@ -55,7 +55,7 @@ function Button({
 }) {
   return (
     <li
-      className={`' + className + relative flex w-full cursor-pointer items-center gap-3  overflow-hidden rounded-md font-medium text-text-secondary transition-colors
+      className={`${className} relative flex w-full  items-center gap-3 overflow-hidden rounded-md font-medium text-text-secondary transition-colors
         duration-300 
         ${size === 'small' ? ' px-2 py-1 ' : ' px-3 py-2 '}
         ${isDeleteButton && !disabled ? 'hover:bg-red-500 hover:text-white ' : ' '}
@@ -63,11 +63,11 @@ function Button({
         ${
           disabled
             ? 'cursor-not-allowed opacity-50 '
-            : 'hover:bg-background-secondary hover:text-text-primary'
+            : 'cursor-pointer hover:bg-background-secondary hover:text-text-primary'
         }
-        ${className}
         `}
-      onClick={onClick}
+      disabled={disabled}
+      onClick={() => disabled || onClick()}
     >
       {children}
     </li>

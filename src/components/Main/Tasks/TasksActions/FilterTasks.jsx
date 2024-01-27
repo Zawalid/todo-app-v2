@@ -22,9 +22,9 @@ export function FilterTasks() {
         'completed',
         'uncompleted',
         'overdue',
-        'highPriority',
-        'mediumPriority',
-        'lowPriority',
+        'high-priority',
+        'medium-priority',
+        'low-priority',
       ].includes(filter)
     )
       setSearchParams(
@@ -60,7 +60,7 @@ export function FilterTasks() {
         <>
           <i className='fas fa-filter absolute left-3 top-2 text-text-tertiary '></i>
           <span className='ml-2 capitalize text-text-tertiary'>
-            {filters.find(({ value }) => value === filter)?.value || 'All'}
+            {filters.find(( f) => f === filter) || 'All'}
           </span>
         </>
       }

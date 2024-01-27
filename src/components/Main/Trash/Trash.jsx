@@ -44,7 +44,7 @@ export default function Trash({ isOpen, onClose }) {
 
   return (
     <div
-      className={`fixed left-0 top-0 z-[9999] flex h-full w-full flex-col gap-5 overflow-auto rounded-lg border border-zinc-200 bg-background-primary px-5 py-3 shadow-md transition-transform duration-300 md:static md:h-[350px] md:w-[500px]
+      className={`fixed left-0 top-0 z-[9999] flex h-full w-full flex-col gap-5 overflow-auto rounded-lg border border-zinc-200 bg-background-primary px-5 py-3 shadow-md transition-transform duration-500 md:static md:h-[350px] md:w-[500px]
     ${isOpen || !onClose ? 'scale-100' : 'scale-0'}`}
       ref={parent}
     >
@@ -61,12 +61,10 @@ export default function Trash({ isOpen, onClose }) {
             currentTab={currentTab}
             trashLength={trashLength}
             onDeleteAll={() => {
-              if (trash[currentTab].length === 0) return;
               setIsConfirmationModalOpen(true);
               whichDelete.current = 'type';
             }}
             onEmptyTrash={() => {
-              if (trashLength === 0) return;
               setIsConfirmationModalOpen(true);
               whichDelete.current = 'all';
             }}

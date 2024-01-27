@@ -10,6 +10,7 @@ import { useTasks } from '../../../hooks/useTasks';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import useDeleteMultiple from '../useDeleteMultiple';
 import { usePagination } from '../usePagination';
+import SelectionIcons from '../../Common/SelectionIcons';
 
 const filtersConditions = {
   all: () => true,
@@ -67,12 +68,22 @@ export default function TasksList({ dueDate, listId, condition, activeTab }) {
           <AddTask dueDate={dueDate} listId={listId} disabled={isSelecting} />
         </div>
         <Actions
-          filteredTasks={filteredTasks}
-          isSelecting={isSelecting}
-          setIsSelecting={setIsSelecting}
-          setIsDeleteMultipleModalOpen={setIsDeleteMultipleModalOpen}
-          whichDelete={whichDelete}
-          setIsConfirmationModalOpen={setIsConfirmationModalOpen}
+          {...{
+            filteredTasks,
+            isSelecting,
+            setIsSelecting,
+            setIsDeleteMultipleModalOpen,
+            whichDelete,
+            setIsConfirmationModalOpen,
+            selectAll: () =>
+              setSelectedTasks(
+                filteredTasks.map((task) => {
+                  return { $id: task.$id, title: task.title, listId: task.listId };
+                }),
+              ),
+            unSelectAll: () => setSelectedTasks([]),
+            allSelected: selectedTasks.length === filteredTasks.length,
+          }}
         />
       </div>
       {tasks.filter((task) => condition(task)).length > 0 ? (
@@ -94,30 +105,28 @@ export default function TasksList({ dueDate, listId, condition, activeTab }) {
         <NoTasksMessage activeTab={activeTab} />
       )}
 
-        <ConfirmationModal
-       isOpen={isConfirmationModalOpen}
-          sentence={`Are you sure you want to ${
-            whichDelete.current === 'selected'
-              ? `delete ${
-                  selectedTasks.length > 1 ? `${selectedTasks.length} tasks` : 'this task'
-                } `
-              : 'delete all tasks?'
-          } `}
-          confirmText={whichDelete.current === 'selected' ? 'Delete' : 'Delete All'}
-          onConfirm={() => {
-            whichDelete.current === 'selected'
-              ? handleDeleteMultipleTasks(deletePermanently)
-              : handleDeleteAllTasks(condition, filtersConditions[filter], deletePermanently);
+      <ConfirmationModal
+        isOpen={isConfirmationModalOpen}
+        sentence={`Are you sure you want to ${
+          whichDelete.current === 'selected'
+            ? `delete ${selectedTasks.length > 1 ? `${selectedTasks.length} tasks` : 'this task'} `
+            : 'delete all tasks?'
+        } `}
+        confirmText={whichDelete.current === 'selected' ? 'Delete' : 'Delete All'}
+        onConfirm={() => {
+          whichDelete.current === 'selected'
+            ? handleDeleteMultipleTasks(deletePermanently)
+            : handleDeleteAllTasks(condition, filtersConditions[filter], deletePermanently);
 
-            setIsConfirmationModalOpen(false);
-            setIsDeleteMultipleModalOpen(false);
-            setIsSelecting(false);
-          }}
-          onCancel={() => setIsConfirmationModalOpen(false)}
-          element='Tasks'
-          checked={deletePermanently}
-          setChecked={setDeletePermanently}
-        />
+          setIsConfirmationModalOpen(false);
+          setIsDeleteMultipleModalOpen(false);
+          setIsSelecting(false);
+        }}
+        onCancel={() => setIsConfirmationModalOpen(false)}
+        element='Tasks'
+        checked={deletePermanently}
+        setChecked={setDeletePermanently}
+      />
 
       {filteredTasks.filter((task) => condition(task)).length > 0 && Pagination}
       {Modal}
@@ -185,31 +194,24 @@ function Actions({
   filteredTasks,
   isSelecting,
   setIsSelecting,
+  allSelected,
   setIsDeleteMultipleModalOpen,
   whichDelete,
   setIsConfirmationModalOpen,
+  selectAll,
+  unSelectAll,
 }) {
   return (
-    <div className='flex gap-3'>
-      <button
-        className='icon-button not-active'
-        onClick={() => {
-          setIsSelecting(!isSelecting);
-          setIsDeleteMultipleModalOpen(false);
-        }}
-      >
-        <svg
-          stroke='currentColor'
-          fill='currentColor'
-          strokeWidth='0'
-          viewBox='0 0 256 256'
-          height='20px'
-          width='20px'
-          xmlns='http://www.w3.org/2000/svg'
-        >
-          <path d='M228,128a12,12,0,0,1-12,12H128a12,12,0,0,1,0-24h88A12,12,0,0,1,228,128ZM128,76h88a12,12,0,0,0,0-24H128a12,12,0,0,0,0,24Zm88,104H128a12,12,0,0,0,0,24h88a12,12,0,0,0,0-24ZM79.51,39.51,56,63l-7.51-7.52a12,12,0,0,0-17,17l16,16a12,12,0,0,0,17,0l32-32a12,12,0,0,0-17-17Zm0,64L56,127l-7.51-7.52a12,12,0,1,0-17,17l16,16a12,12,0,0,0,17,0l32-32a12,12,0,0,0-17-17Zm0,64L56,191l-7.51-7.52a12,12,0,1,0-17,17l16,16a12,12,0,0,0,17,0l32-32a12,12,0,0,0-17-17Z'></path>
-        </svg>{' '}
-      </button>
+    <SelectionIcons
+      isSelecting={isSelecting}
+      allSelected={allSelected}
+      onSelect={() => {
+        setIsSelecting(!isSelecting);
+        setIsDeleteMultipleModalOpen(false);
+      }}
+      onSelectAll={selectAll}
+      onUnSelectAll={unSelectAll}
+    >
       <Tippy
         content={
           <TasksActions
@@ -232,7 +234,7 @@ function Actions({
           <i className='fa-solid fa-ellipsis-v text-xl'></i>
         </button>
       </Tippy>
-    </div>
+    </SelectionIcons>
   );
 }
 
