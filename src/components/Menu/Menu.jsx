@@ -48,7 +48,7 @@ export function Menu() {
   return (
     <aside
       className={
-        'fixed top-0 z-[9999] flex h-full w-full  flex-col bg-background-primary transition-[width,opacity,left] duration-500 sm:bg-background-secondary lg:static lg:rounded-xl ' +
+        'fixed top-0 z-[9999] flex h-full w-full  flex-col bg-background-primary  sm:bg-background-secondary lg:static lg:rounded-xl ' +
         (isOpen
           ? 'left-0 items-stretch p-4 pr-1 sm:w-[300px] '
           : '-left-full items-center p-0 lg:w-0  ')
@@ -124,7 +124,7 @@ function UserActionMenu({
           onClick={() => setIsTrashOpen(!isTrashOpen)}
         >
           <i className='fa-solid fa-trash-can text-text-tertiary'></i>
-          <span className='text-sm  text-text-secondary transition-[font-weight] duration-100 group-hover:font-bold'>
+          <span className='text-sm  text-text-secondary  group-hover:font-bold'>
             Trash
           </span>
           <div className='count justify-self-stretch'>
@@ -151,7 +151,7 @@ function ThemeToggler() {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
   return (
     <button
-      className='relative h-4 w-10 justify-self-center text-text-secondary transition-colors duration-200 hover:text-text-tertiary'
+      className='relative h-4 w-10 justify-self-center text-text-secondary   hover:text-text-tertiary'
       onClick={toggleDarkMode}
     >
       <svg
@@ -161,7 +161,7 @@ function ThemeToggler() {
         viewBox='0 0 16 16'
         height='1em'
         width='1em'
-        className={`absolute left-[18px] top-0 transition-transform duration-300 ${
+        className={`absolute left-[18px] top-0   ${
           isDarkMode ? 'scale-0' : 'scale-100 '
         }`}
         xmlns='http://www.w3.org/2000/svg'
@@ -178,7 +178,7 @@ function ThemeToggler() {
         strokeLinejoin='round'
         height='1.2em'
         width='1.2em'
-        className={`absolute left-[18px] top-0 transition-transform duration-300 ${
+        className={`absolute left-[18px] top-0   ${
           isDarkMode ? 'scale-100' : 'scale-0 '
         }`}
         xmlns='http://www.w3.org/2000/svg'

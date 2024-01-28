@@ -8,7 +8,7 @@ export function TasksActions({ tasksLength, onDeleteAll }) {
         <FilterTasks />
         <button
           className={
-            'rounded-lg px-6 py-1 font-semibold text-white transition-colors duration-300 ' +
+            'rounded-lg px-6 py-1 font-semibold text-white  ' +
             (tasksLength > 0 ? 'bg-red-500 hover:bg-red-600' : 'cursor-not-allowed bg-gray-300')
           }
           onClick={() => tasksLength > 0 && onDeleteAll()}

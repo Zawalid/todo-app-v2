@@ -36,7 +36,7 @@ export default function useDeleteMultiple({
 
     Modal: (
       <div
-        className={`fixed left-1/2 z-[999999] flex w-[90%] -translate-x-1/2 items-center justify-between rounded-lg border border-border bg-background-primary px-5 py-3 shadow-lg transition-[bottom] duration-500 sm:w-[500px]  ${
+        className={`fixed left-1/2 z-[999999] flex w-[90%] -translate-x-1/2 items-center justify-between rounded-lg border border-border bg-background-primary px-5 py-3 shadow-lg sm:w-[500px]  ${
           isDeleteMultipleModalOpen ? 'bottom-11' : '-bottom-[100px]'
         }`}
       >
@@ -48,7 +48,7 @@ export default function useDeleteMultiple({
         </h2>
         <div className='flex items-center  gap-3 '>
           <button
-            className='rounded-lg bg-background-secondary px-2 py-2 text-xs font-semibold text-text-secondary transition-colors duration-300 hover:bg-background-tertiary sm:px-4'
+            className='rounded-lg bg-background-secondary px-2 py-2 text-xs font-semibold text-text-secondary  hover:bg-background-tertiary sm:px-4'
             onClick={() => {
               setIsDeleteMultipleModalOpen(false);
               setIsSelecting(false);
@@ -57,7 +57,7 @@ export default function useDeleteMultiple({
             Cancel
           </button>
           <button
-            className='rounded-lg bg-red-500 px-3 py-2 text-xs font-semibold text-white transition-colors duration-300 hover:bg-red-600 sm:px-4'
+            className='rounded-lg bg-red-500 px-3 py-2 text-xs font-semibold text-white  hover:bg-red-600 sm:px-4'
             onClick={onConfirm}
           >
             Delete

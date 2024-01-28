@@ -54,6 +54,16 @@
 }
 
 /** Tippy */
+[data-tippy-root] {
+  &,
+  .tippy-arrow {
+    transition: none !important;
+    -webkit-transition: none !important;
+    -moz-transition: none !important;
+    -ms-transition: none !important;
+    -o-transition: none !important;
+  }
+}
 .tippy-box[data-theme~='light'] {
   @apply rounded-lg bg-background-primary p-0 text-sm text-text-primary shadow-md  !important;
 }

@@ -11,24 +11,15 @@ export function Actions({
   readonly,
   pinned,
   fontFamily,
-  handlers: {
-    onClose,
-    onCopy,
-    onDelete,
-    onBack,
-    onReadOnly,
-    onPin,
-    onExport,
-    onChangeFontFamily,
-  },
+  handlers: { onClose, onCopy, onDelete, onBack, onReadOnly, onPin, onExport, onChangeFontFamily },
 }) {
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [deletePermanently, setDeletePermanently] = useState(false);
   return (
     <div
       className={
-        'fixed top-0 z-[10001] flex h-full w-full flex-col border border-border bg-background-primary p-3 shadow-md transition-[right] sm:w-[300px]  ' +
-        (isOpen ? 'right-0 duration-700' : '-right-full duration-[.9s] ')
+        'fixed top-0 z-[10001] flex h-full w-full flex-col border border-border bg-background-primary p-3 shadow-md sm:w-[300px]  ' +
+        (isOpen ? 'right-0 ' : '-right-full')
       }
     >
       <div className='flex items-center justify-between pb-2'>

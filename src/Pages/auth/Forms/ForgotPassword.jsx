@@ -12,7 +12,7 @@ export default function ForgotPassword() {
   return (
     <section className='flex h-full flex-col items-center justify-center gap-10 px-8  sm:px-16'>
       <button
-        className='flex cursor-pointer items-center gap-2 self-start rounded-lg border border-border px-2 py-1 transition-colors duration-300 bg-background-primary'
+        className='flex cursor-pointer items-center gap-2 self-start rounded-lg border border-border px-2 py-1  bg-background-primary'
         onClick={() => navigate(-1)}
       >
         <i className='fa-solid fa-arrow-left text-text-tertiary'></i>

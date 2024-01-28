@@ -24,7 +24,7 @@ export function StickyNote({ stickyNote, onClick, listView, isSelecting, isSelec
         <>
           <div
             className={
-              'grid w-full flex-1 space-y-3 transition-[transform,height] duration-500 group-hover:scale-90 ' +
+              'grid w-full flex-1 space-y-3   group-hover:scale-[.95] ' +
               (!firstParagraph && !listView
                 ? ' place-content-center'
                 : 'place-content-start text-start')
@@ -39,7 +39,7 @@ export function StickyNote({ stickyNote, onClick, listView, isSelecting, isSelec
             )}
           </div>
 
-          <div className='flex h-7 w-full items-center justify-between transition-[transform,height] duration-500 group-hover:scale-90 '>
+          <div className='flex h-7 w-full items-center justify-between   group-hover:scale-[.95] '>
             <span
               className='text-[10px] font-medium sm:text-xs'
               style={{
@@ -54,7 +54,7 @@ export function StickyNote({ stickyNote, onClick, listView, isSelecting, isSelec
 
             <span
               className={
-                'transition-transform duration-500 ' + (isSelecting ? 'scale-1' : 'scale-0')
+                '  ' + (isSelecting ? 'scale-1' : 'scale-0')
               }
               style={{
                 color: textColor,

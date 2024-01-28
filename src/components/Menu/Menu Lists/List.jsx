@@ -57,7 +57,7 @@ export function List({ list }) {
               backgroundColor: `var(${listColor})`,
             }}
           ></div>
-          <span className='truncate  text-sm text-text-secondary outline-none transition-[color,font-weight] duration-100 group-hover:font-bold'>
+          <span className='truncate  text-sm text-text-secondary outline-none   group-hover:font-bold'>
             {title}
           </span>
           <div className='count mx-1'>

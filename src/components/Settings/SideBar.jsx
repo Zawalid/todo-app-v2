@@ -12,13 +12,13 @@ export function SideBar({ currentTab, setCurrentTab }) {
         onClick={() => setIsOpen(!isOpen)}
       >
         <i
-          className={`fa-solid fa-chevron-right  text-text-tertiary transition-transform duration-500
+          className={`fa-solid fa-chevron-right  text-text-tertiary  
           ${isOpen ? 'rotate-180' : ''}
            `}
         ></i>
       </button>
       <aside
-        className={`absolute top-0 z-[100] flex h-full flex-col items-start gap-3 bg-background-secondary  p-3 shadow-md transition-[left] duration-500 sm:static border-r border-border sm:shadow-none ${
+        className={`absolute top-0 z-[100] flex h-full flex-col items-start gap-3 bg-background-secondary  p-3 shadow-md  sm:static border-r border-border sm:shadow-none ${
           isOpen ? 'left-0' : '-left-full'
         }`}
       >
@@ -55,7 +55,7 @@ export function SideBar({ currentTab, setCurrentTab }) {
         </button>
         <div className='mt-auto w-full border-t border-border pt-2'>
           <button
-            className='grid w-full grid-cols-[30px_1fr] items-center justify-items-start rounded-md px-3 py-2   transition-colors duration-300 hover:bg-background-tertiary'
+            className='grid w-full grid-cols-[30px_1fr] items-center justify-items-start rounded-md px-3 py-2    hover:bg-background-tertiary'
             onClick={handleSignOut}
           >
             <i className='fa-solid fa-sign-out  text-red-500'></i>
@@ -63,7 +63,7 @@ export function SideBar({ currentTab, setCurrentTab }) {
           </button>
           {!user?.emailVerification && (
             <button
-              className='grid w-full grid-cols-[30px_1fr] items-center justify-items-start rounded-md px-3 py-2   transition-colors duration-300 hover:bg-background-tertiary'
+              className='grid w-full grid-cols-[30px_1fr] items-center justify-items-start rounded-md px-3 py-2    hover:bg-background-tertiary'
               onClick={handleSendVerificationEmail}
             >
               <i className='fa-solid fa-user-check text-text-tertiary'></i>

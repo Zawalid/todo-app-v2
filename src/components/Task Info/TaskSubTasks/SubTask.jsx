@@ -28,7 +28,7 @@ export function SubTask({ title, onEdit, onDelete, isCompleted, onComplete }) {
       />
       <div className='ml-5 flex items-center'>
         <button
-          className='grid h-8 w-8 place-content-center rounded-full bg-background-primary text-sm text-text-tertiary transition-colors duration-300 hover:bg-background-secondary'
+          className='grid h-8 w-8 place-content-center rounded-full bg-background-primary text-sm text-text-tertiary  hover:bg-background-secondary'
           onClick={(e) => {
             e.target.parentElement.parentElement.parentElement
               .querySelector('[type="text"]')
@@ -39,7 +39,7 @@ export function SubTask({ title, onEdit, onDelete, isCompleted, onComplete }) {
           <i className='fas fa-pen cursor-pointer'></i>
         </button>
         <button
-          className='grid h-8 w-8 place-content-center rounded-full bg-background-primary text-sm text-text-tertiary transition-colors duration-300 hover:bg-background-secondary'
+          className='grid h-8 w-8 place-content-center rounded-full bg-background-primary text-sm text-text-tertiary  hover:bg-background-secondary'
           onClick={onDelete}
         >
           <i className='fas fa-trash cursor-pointer'></i>

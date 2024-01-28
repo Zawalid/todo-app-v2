@@ -12,7 +12,7 @@ export function MenuTasks() {
         <li>
           <Link to='' className={'menu_element group ' + (!currentTab ? 'active' : '')}>
             <i className='fas fa-angles-right text-text-tertiary'></i>
-            <span className='text-sm text-text-secondary transition-[font-weight] duration-100 group-hover:font-bold'>
+            <span className='text-sm text-text-secondary  group-hover:font-bold'>
               All Tasks
             </span>
             <div className='count'>
@@ -23,7 +23,7 @@ export function MenuTasks() {
         <li>
           <NavLink to='upcoming' className='menu_element group'>
             <i className='fas fa-angles-right text-text-tertiary'></i>
-            <span className='text-sm text-text-secondary transition-[font-weight] duration-100 group-hover:font-bold'>
+            <span className='text-sm text-text-secondary  group-hover:font-bold'>
               Upcoming
             </span>
             <div className='count'>
@@ -36,7 +36,7 @@ export function MenuTasks() {
         <li>
           <NavLink to='today' className='menu_element  group'>
             <i className='fas fa-list-check text-text-tertiary'></i>
-            <span className='text-sm text-text-secondary transition-[font-weight] duration-100 group-hover:font-bold'>
+            <span className='text-sm text-text-secondary  group-hover:font-bold'>
               Today
             </span>
             <div className='count'>
@@ -47,7 +47,7 @@ export function MenuTasks() {
         <li>
           <NavLink to='sticky-wall' className='menu_element group'>
             <i className='fas fa-note-sticky text-text-tertiary'></i>
-            <span className='text-sm text-text-secondary transition-[font-weight] duration-100 group-hover:font-bold'>
+            <span className='text-sm text-text-secondary  group-hover:font-bold'>
               Sticky Wall
             </span>
             <div className='count'>

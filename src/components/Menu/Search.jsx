@@ -31,7 +31,7 @@ export function Search() {
         (searchQuery?.trim() !== '' && (
           <button
             type='button'
-            className='absolute right-9 top-[6px] cursor-pointer rounded-sm  px-[5px]  text-text-tertiary transition-colors duration-300 hover:bg-background-tertiary'
+            className='absolute right-9 top-[6px] cursor-pointer rounded-sm  px-[5px]  text-text-tertiary  hover:bg-background-tertiary'
             onClick={() => {
               setSearchQuery('');
               search('');
@@ -40,7 +40,7 @@ export function Search() {
             <i className='fas fa-xmark'></i>
           </button>
         ))}
-      <button className='absolute right-2 top-[6px] cursor-pointer rounded-sm  px-1 py-[2px] text-sm text-text-tertiary transition-colors duration-300 hover:bg-background-tertiary'>
+      <button className='absolute right-2 top-[6px] cursor-pointer rounded-sm  px-1 py-[2px] text-sm text-text-tertiary  hover:bg-background-tertiary'>
         <i className='fas fa-search '></i>
       </button>
     </form>

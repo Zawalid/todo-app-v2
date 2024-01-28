@@ -316,7 +316,7 @@ function AddNote({ isSelecting, handleAddStickyNote, setCurrentNote, setIsSticky
   if (!isSelecting)
     return (
       <button
-        className='fixed bottom-14 right-5 z-10 grid h-12 w-12 place-content-center rounded-full bg-primary p-2 shadow-lg transition-colors duration-300 hover:bg-primary-hover sm:right-8'
+        className='fixed bottom-14 right-5 z-10 grid h-12 w-12 place-content-center rounded-full bg-primary p-2 shadow-lg  hover:bg-primary-hover sm:right-8'
         onClick={() => {
           const note = {
             title: '',

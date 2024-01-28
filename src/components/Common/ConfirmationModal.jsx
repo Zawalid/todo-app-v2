@@ -35,7 +35,7 @@ export function ConfirmationModal({
         )}
         <div className='flex items-center  justify-end gap-3 mt-3 border-t border-border pt-3'>
           <button
-            className='rounded-lg bg-red-500 px-4 py-2 text-sm font-semibold text-white transition-colors duration-300 hover:bg-red-600'
+            className='rounded-lg bg-red-500 px-4 py-2 text-sm font-semibold text-white  hover:bg-red-600'
             onClick={() => {
               onConfirm();
               setChecked && setChecked(false);
@@ -44,7 +44,7 @@ export function ConfirmationModal({
             {confirmText}
           </button>
           <button
-            className='rounded-lg  bg-background-secondary px-4 py-2  text-sm font-semibold text-text-secondary transition-colors duration-300 hover:bg-background-tertiary'
+            className='rounded-lg  bg-background-secondary px-4 py-2  text-sm font-semibold text-text-secondary  hover:bg-background-tertiary'
             onClick={() => {
               onCancel();
               setChecked && setChecked(false);

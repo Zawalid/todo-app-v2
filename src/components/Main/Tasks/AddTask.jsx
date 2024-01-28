@@ -30,7 +30,7 @@ export function AddTask({ dueDate, listId, className, disabled, onAdd }) {
       <form className='w-full' onSubmit={handleSubmit}>
         <input
           type='text'
-          className='w-full bg-transparent p-2 text-sm text-text-primary  transition-opacity duration-300 placeholder:text-text-tertiary focus:outline-none disabled:opacity-50'
+          className='w-full bg-transparent p-2 text-sm text-text-primary    placeholder:text-text-tertiary focus:outline-none disabled:opacity-50'
           placeholder='Add New Task'
           name='task'
           value={value}

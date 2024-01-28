@@ -70,7 +70,7 @@ export function TaskDueDate({ taskDueDate, setTaskDueDate }) {
               <DropDown.Button>
                 <i className='fa-solid fa-calendar  text-text-tertiary'></i>
                 <span className='flex-1 text-start text-text-primary '>Pick a date</span>
-                <i className='fa-solid fa-chevron-down text-text-tertiary transition-transform duration-300'></i>
+                <i className='fa-solid fa-chevron-down text-text-tertiary  '></i>
               </DropDown.Button>
             }
             options={{ className: 'w-52', placement: 'bottom', shouldCloseOnClick: false }}

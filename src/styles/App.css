@@ -33,7 +33,7 @@
 /* Buttons */
 .icon-button {
   @apply disabled:bg-background-disabled disabled:text-text-disabled flex h-8 w-8 items-center justify-center rounded-[4px]  p-1
-  transition-transform duration-500 disabled:cursor-not-allowed;
+    disabled:cursor-not-allowed;
 
   &:not(:disabled).active {
     @apply bg-primary  text-white;
@@ -52,7 +52,7 @@
 }
 
 .dropDown-button {
-  @apply relative flex w-full  cursor-pointer items-center gap-3 overflow-hidden rounded-md bg-background-primary px-3 py-2 font-medium text-text-secondary transition-colors duration-300 hover:bg-background-secondary hover:text-text-primary;
+  @apply relative flex w-full  cursor-pointer items-center gap-3 overflow-hidden rounded-md bg-background-primary px-3 py-2 font-medium text-text-secondary  hover:bg-background-secondary hover:text-text-primary;
 
   &.small {
     @apply px-2 py-1;

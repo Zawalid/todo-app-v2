@@ -47,7 +47,7 @@ export default function TaskActions({ isOpen,onClose,  onDelete, onCopy, date, l
       </div>
       <div
         className={
-          'absolute top-0 h-full w-full bg-background-primary p-3 pt-11 transition-[left] duration-700 ' +
+          'absolute top-0 h-full w-full bg-background-primary p-3 pt-11  ' +
           (listSelectionOpen ? 'left-0' : 'left-full')
         }
       >
