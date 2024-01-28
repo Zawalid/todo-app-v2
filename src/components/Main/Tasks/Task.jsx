@@ -87,7 +87,7 @@ export function Task({
     >
       <button
         className={
-          ' grid min-h-[49px] w-full select-none grid-cols-[20px_auto] items-center gap-3 rounded-lg border-b border-zinc-200 px-3 py-2  text-start transition-all duration-500 hover:translate-y-1 hover:shadow-[2px_2px_0px_rgb(228_228_231)] sm:px-5   ' +
+          ' grid min-h-[49px] w-full select-none grid-cols-[20px_auto] items-center gap-3 rounded-lg border-b border-border px-3 py-2  text-start transition-all duration-500 hover:translate-y-1 hover:shadow-[2px_2px_0px_rgb(228_228_231)] sm:px-5   ' +
           (checked ? 'bg-background-tertiary ' : 'bg-slate-50 ')
         }
       >

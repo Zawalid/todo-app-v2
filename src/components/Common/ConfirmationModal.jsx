@@ -15,8 +15,8 @@ export function ConfirmationModal({
   if (!isOpen) return null;
   return createPortal(
     <div className='fixed left-0 top-0 z-[999999] grid h-full w-full place-items-center bg-black bg-opacity-25 backdrop-blur-[1px]'>
-      <div className='flex w-[90%] flex-col gap-5 rounded-lg bg-white px-5 py-3 sm:w-[500px] sm:px-8 sm:py-4'>
-        <div className='flex items-center gap-3 border-b pb-3'>
+      <div className='flex w-[90%] flex-col shadow-sm border border-border gap-5 rounded-lg bg-background-primary px-5 py-3 sm:w-[500px] sm:px-8 sm:py-4'>
+        <div className='flex items-center gap-3 border-border border-b pb-3'>
           <div className='grid  h-6 w-6 place-content-center rounded-full bg-[#F57800] sm:h-8 sm:w-8'>
             <i className='fa-solid fa-triangle-exclamation text-sm text-white sm:text-base'></i>
           </div>
@@ -33,9 +33,9 @@ export function ConfirmationModal({
             </label>
           </div>
         )}
-        <div className='flex items-center  justify-end gap-3 border-t pt-3'>
+        <div className='flex items-center  justify-end gap-3 border-border border-t pt-3'>
           <button
-            className='rounded-lg bg-red-500 px-4 py-2 text-sm font-semibold text-background-secondary transition-colors duration-300 hover:bg-red-600'
+            className='rounded-lg bg-red-500 px-4 py-2 text-sm font-semibold text-white transition-colors duration-300 hover:bg-red-600'
             onClick={() => {
               onConfirm();
               setChecked && setChecked(false);

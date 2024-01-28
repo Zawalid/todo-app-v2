@@ -34,13 +34,13 @@ function AppLayout() {
   return (
     <>
       {checkIsUserAuthenticated() ? (
-        <div className='flex h-full gap-2 bg-background-primary p-2'>
+        <>
           <SearchProvider>
             <Menu />
             <Main />
           </SearchProvider>
           <TaskInfo />
-        </div>
+        </>
       ) : (
         <Navigate to='/sign-in' replace={true} />
       )}

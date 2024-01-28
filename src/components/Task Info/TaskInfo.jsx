@@ -175,17 +175,17 @@ export function TaskInfo() {
       {!isTouchDevice() && (
         <div className='mt-auto flex gap-3 pt-3'>
           <button
-            className='flex-1 cursor-pointer rounded-lg border  border-zinc-200 bg-red-500 py-2 text-center text-sm font-semibold text-background-secondary transition-colors duration-300 hover:bg-red-600'
+            className='flex-1 cursor-pointer rounded-lg bg-red-500 py-2 text-center text-sm font-semibold text-white transition-colors duration-300 hover:bg-red-600'
             onClick={openModal}
           >
             Delete Task
           </button>
           <button
             className={
-              'flex-1 rounded-lg border border-zinc-200 py-2 text-center  text-sm font-semibold transition-colors duration-500 ' +
+              'flex-1 rounded-lg border  py-2 text-center  text-sm font-semibold transition-colors duration-500 ' +
               (isChanged
-                ? 'cursor-pointer bg-primary text-background-secondary hover:bg-primary-hover '
-                : 'cursor-not-allowed bg-background-tertiary text-text-tertiary')
+                ? 'cursor-pointer bg-primary border-primary text-white hover:bg-primary-hover '
+                : 'cursor-not-allowed border-border bg-background-disabled text-text-disabled')
             }
             onClick={handleSaveChanges}
           >
@@ -206,7 +206,7 @@ export function TaskInfo() {
           className={
             'ml-auto  flex flex-col transition-[width,opacity] duration-500 lg:relative lg:first-line:rounded-xl ' +
             (isTaskOpen
-              ? 'fixed right-0 top-0 z-10 h-full w-full items-stretch  border border-zinc-200 bg-background-primary p-4 shadow-md sm:w-[380px]'
+              ? 'fixed right-0 top-0 z-10 h-full w-full items-stretch  border border-border bg-background-primary p-4 shadow-md sm:w-[380px]'
               : 'w-0 items-center overflow-hidden bg-background-primary p-0')
           }
           id='taskInfo'

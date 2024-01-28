@@ -19,7 +19,7 @@ export function DropDown({
     <Tippy
       content={<ul className='grid gap-1 p-2'>{children}</ul>}
       className={
-        'border border-zinc-200 p-0 shadow-md ' + (options?.className || defaultOptions.className)
+        'border border-border p-0 shadow-md ' + (options?.className || defaultOptions.className)
       }
       theme='light'
       trigger={options?.trigger || defaultOptions.trigger}
@@ -76,7 +76,7 @@ function Button({
 
 function Toggler({ children }) {
   return (
-    <span className='flex w-36 cursor-pointer items-center justify-between rounded-lg border border-zinc-200  bg-background-secondary p-2 text-start  text-sm text-text-secondary  focus:outline-none'>
+    <span className='flex w-36 cursor-pointer items-center justify-between rounded-lg border border-border  bg-background-secondary p-2 text-start  text-sm text-text-secondary  focus:outline-none'>
       {children}
     </span>
   );
@@ -87,7 +87,7 @@ function Title({ children }) {
 }
 
 function Divider() {
-  return <hr className='border border-zinc-200' />;
+  return <hr className='border border-border' />;
 }
 
 function NestedMenu({ children, toggler, togglerClassName, options }) {

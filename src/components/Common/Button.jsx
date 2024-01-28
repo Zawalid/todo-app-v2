@@ -1,7 +1,7 @@
 export function Button({ text, children, isLoading, disabled, onClick, className }) {
   return (
     <button
-      className={`mx-auto mt-auto flex  justify-center rounded-lg py-2 font-medium text-white transition-colors duration-500 ${className} ${
+      className={`mx-auto text-sm mt-auto flex  justify-center rounded-lg py-2 font-medium text-white transition-colors duration-500 ${className} ${
         disabled ? 'bg-zinc-200' : 'bg-primary  hover:bg-primary-hover'
       }`}
       disabled={disabled}

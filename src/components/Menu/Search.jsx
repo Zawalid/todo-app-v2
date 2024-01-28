@@ -18,7 +18,7 @@ export function Search() {
     >
       <input
         type='text'
-        className='w-full rounded-lg border border-zinc-200  bg-background-secondary py-2  pl-3 pr-16 text-sm text-text-tertiary placeholder:text-text-tertiary focus:outline-none'
+        className='w-full rounded-lg border border-border  bg-background-secondary py-2  pl-3 pr-16 text-sm text-text-tertiary placeholder:text-text-tertiary focus:outline-none'
         placeholder='Search'
         autoComplete='off'
         value={searchQuery || ''}

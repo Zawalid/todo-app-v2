@@ -1,12 +1,6 @@
 import { useEffect } from 'react';
 
-export function StickyNote({
-  stickyNote,
-  onClick,
-  listView,
-  isSelecting,
-  isSelected,
-}) {
+export function StickyNote({ stickyNote, onClick, listView, isSelecting, isSelected }) {
   const { title, content, $createdAt = new Date(), bgColor, textColor } = stickyNote;
   const firstParagraph = content.match(/<p>([^<]*)<\/p>/)?.[1];
 
@@ -22,7 +16,7 @@ export function StickyNote({
           (listView ? 'h-[130px]' : 'h-[270px] ')
         }
         style={{
-          backgroundColor: bgColor,
+          backgroundColor: `var(${bgColor})`,
           color: textColor,
         }}
         onClick={onClick}
@@ -39,12 +33,7 @@ export function StickyNote({
             <h2 className='truncate text-xl font-bold sm:text-2xl'>{title || 'Untitled'}</h2>
 
             {firstParagraph && (
-              <p
-                className={
-                  'note_text overflow-hidden text-xs font-medium sm:text-sm ' +
-                  (textColor === '#fff' ? 'text-background-tertiary' : 'text-text-tertiary')
-                }
-              >
+              <p className='note_text overflow-hidden text-xs font-medium text-text-secondary sm:text-sm '>
                 {firstParagraph}
               </p>
             )}
@@ -80,7 +69,6 @@ export function StickyNote({
           </div>
         </>
       </button>
-      
     </>
   );
 }

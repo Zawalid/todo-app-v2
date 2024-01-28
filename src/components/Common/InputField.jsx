@@ -3,7 +3,7 @@ export function InputField({ type, placeholder, value, onChange, className }) {
     <input
       type={type}
       className={
-        'focus-border-none w-full rounded-md border bg-background-primary p-2 text-text-secondary placeholder-text-tertiary focus:outline-none ' +
+        'focus-border-none w-full rounded-md border border-border bg-background-primary p-2 text-text-secondary placeholder-text-tertiary focus:outline-none ' +
         className
       }
       placeholder={placeholder}

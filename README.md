@@ -1,8 +1,29 @@
-# React + Vite
+# Can't Find a name yet (Ido for now) 
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Ido is a task management application designed to streamline your productivity and keep you organized. 
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+
+
+
+## Stack
+* React Js
+* Vite
+* Tailwind css
+* Saas
+* React Router
+* TipTap for the text editor
+* Appwrite For the backend
+
+
+## What I learned
+
+* Mostly everything i learned about react this app was a way for me to put all that knowledge i have into code 
+  * Managing state
+  * Hooks
+  * Context
+  * Routing
+  * More familiarity with Tailwind
+  * Advanced css features 
+  * And more...

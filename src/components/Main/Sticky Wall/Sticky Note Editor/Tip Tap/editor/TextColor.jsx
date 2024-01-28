@@ -3,7 +3,9 @@ import { ColorPicker } from './ColorPicker';
 import CustomTippy from '../../../../../Common/CustomTippy';
 
 export function TextColor({ editor, readonly }) {
-  const [color, setColor] = useState('#444');
+  const [color, setColor] = useState(
+    document.documentElement.style.getPropertyValue('--editor-text-color'),
+  );
   const disabled = readonly || !editor?.can().chain().focus().setColor(color).run();
   return (
     <ColorPicker

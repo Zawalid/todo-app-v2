@@ -3,9 +3,75 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --primary: #6366f1;
+  --primary-hover: #4f46e5;
+
+  /** Light Mode */
+  --background-primary: #fff;
+  --background-secondary: #f4f4f4;
+  --background-tertiary: #ebebeb;
+  --background-disabled: #f4f4f4;
+  --text-primary: #212529;
+  --text-secondary: #444444;
+  --text-tertiary: #7c7c7c;
+  --text-disabled: #b3b3b3;
+  --text-error: #ff0000;
+  --border: rgb(229, 231, 235);
+
+  /* Colors */
+  --custom-1: #ff6b6b;
+  --custom-2: #da77f2;
+  --custom-3: #9775fa;
+  --custom-4: #64c37e;
+  --custom-5: #66d9e8;
+  --custom-6: #8ce99a;
+  --custom-7: #ffd43b;
+  --custom-8: #ff922b;
+  --custom-9: #ffb6b9;
+  --custom-10: #d9a7f3;
+  --custom-11: #b0a1f5;
+  --custom-12: #75e0a3;
+  --custom-13: #7ed1d9;
+  --custom-14: #a7f0b2;
+  --custom-15: #ffda77;
+  --custom-16: #ffc77f;
+  --custom-17: #c8ff2d;
+  --custom-18: #605050;
+
+  /** Dark Mode */
+  --background-primary: #0d0d0d;
+  --background-secondary: #191919;
+  --background-tertiary: #212121;
+  --background-disabled: #141111;
+  --text-primary: #fff;
+  --text-secondary: #cacaca;
+  --text-tertiary: #b3b3b3;
+  --text-disabled: #444444;
+  --text-error: rgb(239 68 68);
+  --border: rgba(255, 255, 255, 0.1); 
+  --custom-1: #b34a4a;
+  --custom-2: #9c4bd1;
+  --custom-3: #6c56c9;
+  --custom-4: #468f67;
+  --custom-5: #46a8b2;
+  --custom-6: #6cb87a;
+  --custom-7: #b2a434;
+  --custom-8: #b26a24;
+  --custom-9: #b28080;
+  --custom-10: #9c75c2;
+  --custom-11: #7e73b3;
+  --custom-12: #539476;
+  --custom-13: #56a0a7;
+  --custom-14: #7cb88e;
+  --custom-15: #b2a756;
+  --custom-16: #b28a56;
+  --custom-17: #a0b224;
+  --custom-18: #424242;
+}
 * {
   box-sizing: border-box;
-  @apply transition-[height] duration-500
+  @apply transition-[height] duration-500;
 }
 body {
   font-family: 'Lexend Deca', sans-serif;
@@ -13,16 +79,16 @@ body {
   overflow: hidden;
 }
 #root {
-  height: 100%;
+  @apply flex h-full gap-2 bg-background-primary p-2;
 }
 ::-webkit-scrollbar {
   width: 3px;
   height: 2px;
 }
+
 ::-webkit-scrollbar-thumb {
-  @apply bg-text-tertiary;
+  background-color: var(--text-tertiary);
 }
 ::-webkit-scrollbar-track {
-  @apply bg-background-primary;
+  background-color: var(--border);
 }
-

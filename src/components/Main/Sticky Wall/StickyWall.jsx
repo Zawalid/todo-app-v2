@@ -156,7 +156,7 @@ export default function StickyWall() {
       />
 
       <div
-        className='flex-1 space-y-3 overflow-auto rounded-lg border border-zinc-200 p-3   pr-3 sm:p-5'
+        className='flex-1 space-y-3 overflow-auto rounded-lg border border-border p-3   pr-3 sm:p-5'
         ref={parent}
       >
         {groupBy === 'default'

@@ -27,16 +27,20 @@ export function AddNewTag({ reference, isOpen }) {
     setValue('');
   }
   return (
-    <div className='mt-5 w-fit rounded-lg border-2 border-zinc-200 p-3' ref={reference}>
+    <div className='mt-5 w-fit rounded-lg border-2 border-border p-3' ref={reference}>
       <div className='flex items-center gap-2 '>
         <div className='flex flex-col gap-1' ref={textColorsDiv}>
           <span
-            className='h-4 w-4 cursor-pointer rounded-full bg-text-secondary shadow-md'
-            data-color='#444'
+            className='color h-4 w-4 cursor-pointer rounded-full bg-text-primary shadow-md'
+            data-color={getComputedStyle(document.documentElement)
+              .getPropertyValue('--text-primary')
+              .trim()}
           ></span>
           <span
-            className='h-4 w-4 cursor-pointer rounded-full bg-background-primary shadow-md'
-            data-color='#fff'
+            className='color h-4 w-4 cursor-pointer rounded-full bg-background-primary shadow-md'
+            data-color={getComputedStyle(document.documentElement)
+              .getPropertyValue('--background-primary')
+              .trim()}
           ></span>
         </div>
         <form

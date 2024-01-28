@@ -1,6 +1,6 @@
 export function StickyWallSkeleton() {
   return (
-    <div className='grid h-full animate-pulse grid-cols-[repeat(auto-fill,minmax(270px,1fr))] place-content-start gap-4 overflow-auto rounded-lg border border-zinc-200 p-5'>
+    <div className='grid h-full animate-pulse grid-cols-[repeat(auto-fill,minmax(270px,1fr))] place-content-start gap-4 overflow-auto rounded-lg border border-border p-5'>
       <StickyNote />
       <StickyNote />
       <StickyNote />

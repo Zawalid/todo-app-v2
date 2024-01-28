@@ -11,7 +11,17 @@ export function Actions({
   readonly,
   pinned,
   fontFamily,
-  handlers: { onClose, onCopy, onDelete, onBack, onReadOnly, onPin, onExport, onChangeFontFamily },
+  handlers: {
+    onClose,
+    onCopy,
+    onDelete,
+    onBack,
+    onReadOnly,
+    onPin,
+    onExport,
+    onChangeFontFamily,
+    onToggleDarkMode,
+  },
 }) {
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [deletePermanently, setDeletePermanently] = useState(false);
@@ -31,13 +41,13 @@ export function Actions({
           Done{' '}
         </button>
       </div>
-      <hr className='border border-zinc-200' />
+      <hr className='border border-border' />
       <div className='mt-2 flex flex-1 flex-col gap-2 overflow-auto'>
         <div className='space-y-3'>
           <FontFamilies fontFamily={fontFamily} onChangeFontFamily={onChangeFontFamily} />
           {children}
         </div>
-        <hr className='border border-zinc-200' />
+        <hr className='border border-border' />
 
         <div>
           <div className='flex items-center justify-between rounded-md px-3 py-2 transition-colors duration-300 hover:bg-background-secondary '>
@@ -70,8 +80,30 @@ export function Actions({
             </label>
             <Switch id='readonly' checked={readonly} onChange={onReadOnly} />
           </div>
+          <div className='flex items-center justify-between rounded-md px-3 py-2 transition-colors duration-300 hover:bg-background-secondary '>
+            <label
+              className=' grid grid-cols-[15px_auto] items-center gap-2 text-sm font-medium  text-text-secondary'
+              htmlFor='darkMode'
+            >
+              <svg
+                stroke='currentColor'
+                fill='currentColor'
+                strokeWidth='0'
+                viewBox='0 0 16 16'
+                height='1em'
+                width='1em'
+                className='text-text-secondary'
+                xmlns='http://www.w3.org/2000/svg'
+              >
+                <path d='M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278zM4.858 1.311A7.269 7.269 0 0 0 1.025 7.71c0 4.02 3.279 7.276 7.319 7.276a7.316 7.316 0 0 0 5.205-2.162c-.337.042-.68.063-1.029.063-4.61 0-8.343-3.714-8.343-8.29 0-1.167.242-2.278.681-3.286z'></path>
+                <path d='M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.734 1.734 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.734 1.734 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.734 1.734 0 0 0 1.097-1.097l.387-1.162zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.156 1.156 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.156 1.156 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732L13.863.1z'></path>
+              </svg>
+              <span>Dark Mode</span>
+            </label>
+            <Switch id='darkMode'  onChange={onToggleDarkMode} />
+          </div>
         </div>
-        <hr className='border border-zinc-200' />
+        <hr className='border border-border' />
         <div className='gap- flex flex-col'>
           <button
             className='grid grid-cols-[15px_auto] items-center gap-2 rounded-md px-3  py-2 text-sm font-medium text-text-secondary transition-colors duration-300 hover:bg-background-secondary hover:text-text-primary'
@@ -121,7 +153,7 @@ export function Actions({
         </div>
 
         <div className='mt-auto'>
-          <hr className='mb-2 border border-zinc-200' />
+          <hr className='mb-2 border border-border' />
           <p className='mb-1 text-xs font-medium text-text-secondary '>
             Created :{' '}
             {new Intl.DateTimeFormat('en-US', {
@@ -140,7 +172,7 @@ export function Actions({
       </div>
       <ConfirmationModal
         isOpen={isConfirmationModalOpen}
-        sentence='Are you sure you want to delete this note?'
+        sentence='Are you sure you want to delete this sticky note?'
         confirmText='Delete'
         onConfirm={() => {
           onDelete(deletePermanently);
@@ -148,7 +180,7 @@ export function Actions({
           onBack();
         }}
         onCancel={() => setIsConfirmationModalOpen(false)}
-        element='Note'
+        element='Sticky Note'
         checked={deletePermanently}
         setChecked={setDeletePermanently}
       />
@@ -186,7 +218,7 @@ function FontFamilies({ fontFamily, onChangeFontFamily }) {
                 'h-16 w-16 rounded-md border p-3 text-lg font-medium transition-colors duration-300 hover:border-primary hover:text-primary sm:h-14 sm:w-14 ' +
                 (fontFamily === name
                   ? 'border-primary text-primary'
-                  : 'border-zinc-200 text-text-secondary')
+                  : 'border-border text-text-secondary')
               }
               style={{ fontFamily: name }}
             >

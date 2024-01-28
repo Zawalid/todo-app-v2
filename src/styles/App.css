@@ -25,7 +25,7 @@ aside::-webkit-scrollbar-track {
 }
 
 input[type='checkbox'] {
-  @apply shrink-0 cursor-pointer appearance-none rounded-[4px] border border-[#dddddd] checked:border-0 checked:bg-text-tertiary focus:outline-none;
+  @apply shrink-0 cursor-pointer appearance-none rounded-[4px] border border-border checked:border-0 checked:bg-primary focus:outline-none;
 }
 
 input[type='checkbox'].task {
@@ -33,7 +33,7 @@ input[type='checkbox'].task {
 }
 
 .color {
-  @apply h-5 w-5 cursor-pointer rounded-[3px] border border-zinc-200 transition-all duration-300 hover:shadow-md;
+  @apply border-border h-5 w-5 cursor-pointer rounded-[3px] border transition-all duration-300 hover:shadow-md;
 }
 .note_text {
   display: -webkit-box;
@@ -87,7 +87,7 @@ input[type='checkbox'].task {
 }
 
 .pagination-button {
-  @apply ml-0 flex  h-full border-collapse items-center justify-center border px-2 py-1.5 text-xs font-medium text-text-secondary shadow-sm transition-colors duration-300  hover:bg-background-tertiary disabled:cursor-not-allowed disabled:text-opacity-30 disabled:hover:bg-transparent sm:text-sm;
+  @apply ml-0 flex  h-full border-collapse items-center justify-center border border-border w-20 px-2 py-1.5 text-xs font-medium text-text-secondary shadow-sm transition-colors duration-300  hover:bg-background-tertiary disabled:cursor-not-allowed disabled:text-opacity-30 disabled:hover:bg-transparent sm:text-sm;
 }
 
 #menu:has(#closeMenu:hover) {
@@ -150,5 +150,17 @@ input[type='checkbox'].task {
     & > i {
       @apply text-sm;
     }
+  }
+
+/* For editor buttons  */
+  #root.dark-editor #editor & {
+    @apply disabled:bg-[#141111] disabled:text-[#444];
+  }
+
+  #root.dark-editor #editor &:not(:disabled).not-active {
+    @apply bg-[#121212] hover:bg-[#191919];
+  }
+  #root.dark-editor #editor &.active {
+    @apply bg-white text-[#121212];
   }
 }

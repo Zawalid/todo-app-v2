@@ -29,7 +29,7 @@ export default function TaskActions({ isOpen,onClose,  onDelete, onCopy, date, l
           <span className='font-semibold '>Delete Task</span>
         </button>
       </div>
-      <div className='mt-2 border-t-2 border-zinc-200 pt-3'>
+      <div className='mt-2 border-t-2 border-border pt-3'>
         <p className='mb-1 text-xs font-medium text-text-tertiary '>
           Created :{' '}
           {new Intl.DateTimeFormat('en-US', {

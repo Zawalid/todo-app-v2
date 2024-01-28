@@ -21,7 +21,7 @@ export function Tag({ tag, showDeleteButton, customClassName, onDeleteTag, onSel
               onDeleteTag ? onDeleteTag(tag.$id) : setIsConfirmationModalOpen(true);
             }}
           >
-            <i className='fas fa-xmark text-red-600'></i>
+            <i className='fas fa-xmark text-text-error'></i>
           </button>
         )}
         <li

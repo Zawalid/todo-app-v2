@@ -12,7 +12,7 @@ export function TaskTitleAndNote({ taskTitle, setTaskTitle, taskNote, setTaskNot
       />
      
       <textarea
-        className='mt-2 h-32 w-full resize-none  rounded-lg  border  border-zinc-200 bg-background-secondary p-2 text-sm text-text-secondary placeholder:text-text-tertiary focus:outline-none'
+        className='mt-2 h-32 w-full resize-none  rounded-lg  border  border-border bg-background-secondary p-2 text-sm text-text-secondary placeholder:text-text-tertiary focus:outline-none'
         placeholder='Note'
         value={taskNote || ''}
         onChange={(e) => setTaskNote(e.target.value)}

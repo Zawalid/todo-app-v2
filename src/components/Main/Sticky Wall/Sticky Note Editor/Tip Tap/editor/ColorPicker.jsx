@@ -3,21 +3,21 @@ import CustomTippy from '../../../../../Common/CustomTippy';
 
 function Colors({ onClick }) {
   const colors = [
-    '#ff6b6b',
-    '#da77f2',
-    '#9775fa',
-    '#64c37e',
-    '#ffda77',
-    '#ffc77f',
+    '#cacaca',
     '#c8ff2d',
-    '#605050',
-    '#000000',
-    '#ffffff',
-    '#f5222d',
-    '#fa541c',
-    '#fa8c16',
-    '#faad14',
     '#fadb14',
+    '#faad14',
+    '#ffda77',
+    '#fa8c16',
+    '#ffc77f',
+    '#fa541c',
+    '#f5222d',
+    '#ff6b6b',
+    '#64c37e',
+    '#9775fa',
+    '#da77f2',
+    '#444444',
+    '#000000',
   ];
 
   return (
@@ -55,7 +55,7 @@ export function ColorPicker({
   }, [color, cssProperty]);
 
   return (
-    <div className='flex gap-1 rounded-md bg-background-tertiary'>
+    <div className='flex gap-1 rounded-md'>
       {children}
       <CustomTippy
         content={
@@ -85,14 +85,12 @@ export function ColorPicker({
         maxWidth={175}
       >
         <div
-          className='grid place-items-end rounded-sm bg-black px-[2px]'
+          className=' cursor-pointer rounded-sm px-1'
           style={{
             backgroundColor: disabled ? '#cacaca' : color,
           }}
           disabled={disabled}
-        >
-          <i className='fa-solid fa-chevron-down cursor-pointer text-xs text-white '></i>
-        </div>
+        ></div>
       </CustomTippy>
     </div>
   );

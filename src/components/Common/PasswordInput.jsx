@@ -6,7 +6,7 @@ export function PasswordInput({ password, setPassword, placeholder }) {
     <div className='relative'>
       <input
         type={showPassword ? 'text' : 'password'}
-        className='focus-border-none  w-full rounded-md border bg-background-primary p-2 text-text-secondary placeholder-text-tertiary focus:outline-none'
+        className='focus-border-none  w-full rounded-md border border-border bg-background-primary p-2 text-text-secondary placeholder-text-tertiary focus:outline-none'
         placeholder={placeholder || 'Password'}
         autoComplete='off'
         value={password}

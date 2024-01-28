@@ -1,25 +1,21 @@
 :root {
-  --text-secondary: #444444;
-  --text-tertiary: #b46262;
-  --background-primary: #fff;
-  --background-secondary: #f4f4f4;
-  --background-tertiary: #ebebeb;
+  --editor-theme-color: #fff;
+  --editor-text-color: #444;
   --highlight-color: #c8ff2d;
 }
+
 .tiptap {
+  background-color: var(--editor-theme-color);
+  color: var(--editor-text-color);
+
   > * + * {
     margin-top: 0.75em;
-  }
-
-  [contenteditable='true'] {
-    background-color: var(--background-primary);
   }
 
   div:has(> .ProseMirror) {
     margin: 0;
     overflow: auto;
     display: grid;
-    
   }
 
   .tiptap p.is-editor-empty:first-child::before {
@@ -129,7 +125,7 @@
 
   .colorHighlight {
     white-space: nowrap;
-    color :  var(--color);
+    color: var(--color);
 
     &::before {
       background-color: var(--color);
@@ -146,16 +142,51 @@
   }
 }
 
-
-
 // Bubble menu and link tooltip
 .tippy-box:is([data-theme~='bubbleMenu'], [data-theme~='addLink']) {
-  background-color: white;
+  background-color: #202020;
   color: white;
   border-radius: 0.5rem;
-  box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.1);
+  // border : 1px solid var(--border);
+  box-shadow: 0 0 0.5rem rgba(13, 13, 13, 0.1);
   -webkit-border-radius: 0.5rem;
   -moz-border-radius: 0.5rem;
   -ms-border-radius: 0.5rem;
   -o-border-radius: 0.5rem;
+}
+
+// Change the editor theme
+#root {
+  &:has(#editor) {
+    background-color: var(--editor-theme-color);
+    & main,
+    #editor {
+      background-color: var(--editor-theme-color);
+    }
+  }
+}
+#root.dark-editor {
+  .tiptap {
+    --text-primary: #cacaca;
+  }
+  .tiptap,.toolbar {
+    --border: rgba(255, 255, 255, 0.1);
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--text-tertiary);
+  }
+  ::-webkit-scrollbar-track {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+#root,
+main,
+#editor,
+.tiptap {
+  transition: background-color 0.3s ease-in-out;
+  -webkit-transition: background-color 0.3s ease-in-out;
+  -moz-transition: background-color 0.3s ease-in-out;
+  -ms-transition: background-color 0.3s ease-in-out;
+  -o-transition: background-color 0.3s ease-in-out;
 }

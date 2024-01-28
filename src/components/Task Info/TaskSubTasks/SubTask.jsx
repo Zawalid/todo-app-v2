@@ -19,7 +19,7 @@ export function SubTask({ title, onEdit, onDelete, isCompleted, onComplete }) {
         className={
           ' flex-1 truncate rounded-md  p-1 text-sm font-medium text-text-secondary outline-none ' +
           (checked ? 'line-through ' : '') +
-          (isEditing ? 'border border-zinc-200' : '')
+          (isEditing ? 'border border-border' : '')
         }
         readOnly={!isEditing}
         value={subtask}

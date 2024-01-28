@@ -43,7 +43,7 @@ export function UploadImage({ avatar, onChange }) {
   return (
     <div className='flex items-center gap-5'>
       <img
-        className='h-20 w-20 rounded-full border text-center text-xs text-text-tertiary '
+        className='h-20 w-20 rounded-full border border-border text-center text-xs text-text-tertiary '
         src={avatar ? avatar : user?.avatar}
         alt={user?.name}
       />

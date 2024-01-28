@@ -98,7 +98,7 @@ export function Sessions() {
           await handleDeleteSessions();
           navigate('/sign-in');
         }}
-        className='mr-0 px-3'
+        className='mr-0 px-3 text-sm'
       />
     </>
   );
@@ -120,7 +120,7 @@ function Session({ session, onDelete }) {
   );
 
   return (
-    <div className='flex items-center justify-between gap-4 border-t pt-3'>
+    <div className='flex items-center justify-between gap-4 border-t border-border pt-3'>
       <div className='grid h-12 w-12 place-content-center rounded-lg bg-background-tertiary p-1'>
         <img src={browserImage?.image} alt={browserName} />
       </div>
@@ -141,7 +141,7 @@ function Session({ session, onDelete }) {
         </p>
       </div>
       <button
-        className='rounded-lg border px-3 py-2 text-sm font-medium text-text-primary shadow-sm transition-colors duration-300 hover:bg-primary hover:text-white'
+        className='rounded-lg border border-border px-3 py-2 text-sm font-medium text-text-primary shadow-sm transition-colors duration-300 hover:bg-primary hover:text-white'
         onClick={() => onDelete(current ? 'current' : $id)}
       >
         Revoke
