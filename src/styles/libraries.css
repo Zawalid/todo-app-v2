@@ -1,0 +1,89 @@
+/** Sonner */
+[data-sonner-toaster] {
+  --normal-bg: var(--background-primary) !important;
+  --normal-border: var(--border) !important;
+}
+
+.sonner-toast:not([data-type='loading']) {
+  & [data-icon] {
+    height: calc(100% + 1px);
+    position: absolute;
+    left: 0;
+    width: 45px;
+    justify-content: center;
+    color: white;
+    border-radius: 8px 0 0 8px;
+
+    & svg {
+      width: 25px;
+      height: 25px;
+    }
+  }
+
+  & [data-content] {
+    margin-left: 40px;
+  }
+}
+.sonner-toast[data-type='success'] [data-icon] {
+  background-color: limegreen;
+}
+.sonner-toast[data-type='error'] [data-icon] {
+  background-color: #ff0000;
+}
+.sonner-toast[data-type='loading'] [data-icon] {
+  width: 20px;
+  margin-right: 15px;
+}
+
+.sonner-toast [data-content] {
+  color: var(--text-primary);
+}
+
+.sonner-toast [data-close-button] {
+  left: 90%;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #f4f4f4;
+  color: #444444;
+}
+.sonner-toast [data-button] {
+  background-color: var(--background-secondary);
+  color: var(--text-primary);
+  font-weight: 500;
+  border: 1px solid var(--border);
+}
+
+/** Tippy */
+.tippy-box[data-theme~='light'] {
+  @apply rounded-lg bg-background-primary p-0 text-sm text-text-primary shadow-md  !important;
+}
+
+.tippy-content {
+  @apply p-0 !important;
+}
+
+.tippy-box[data-theme~='custom'] {
+  @apply bg-text-primary font-medium text-background-primary;
+}
+.tippy-box:is([data-theme~='bubbleMenu'], [data-theme~='custom']) {
+  @apply p-2;
+}
+
+/* Tooltip arrow */
+.tippy-box[data-theme~='custom'][data-placement^='top'] > .tippy-arrow::before {
+  @apply border-t-text-primary;
+}
+.tippy-box[data-theme~='custom'][data-placement^='bottom'] > .tippy-arrow::before {
+  @apply border-b-text-primary;
+}
+.tippy-box[data-theme~='custom'][data-placement^='left'] > .tippy-arrow::before {
+  @apply border-l-text-primary;
+}
+.tippy-box[data-theme~='custom'][data-placement^='right'] > .tippy-arrow::before {
+  @apply border-r-text-primary;
+}
+
+/** Vaul  */
+[vaul-overlay][vaul-drawer-visible='true'] {
+  opacity: 1 !important;
+}

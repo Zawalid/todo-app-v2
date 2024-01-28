@@ -6,7 +6,7 @@ import { MenuLists } from './Menu Lists/MenuLists';
 import { MenuTags } from './Menu Tags/MenuTags';
 import { MenuTasks } from './MenuTasks';
 import { Search } from './Search';
-import { useTrash, useUser } from '../../hooks';
+import { useDarkMode, useTrash } from '../../hooks';
 import { Profile } from './Profile';
 import { Settings } from '../Settings/Settings';
 import { useSwipe } from '../../hooks/useSwipe';
@@ -17,7 +17,6 @@ export function Menu() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isTrashOpen, setIsTrashOpen] = useState(false);
   const menu = useRef(null);
-  const { handleSignOut } = useUser();
   const { trashLength } = useTrash();
   const activeTab = useHref().split('/app/')[1];
   const { onSwipeStart, onSwipeLeft, onSwipeRight } = useSwipe(300);
@@ -27,7 +26,7 @@ export function Menu() {
   }, [activeTab]);
 
   useEffect(() => {
-    if (activeTab === 'sticky-wall') return
+    if (activeTab === 'sticky-wall') return;
 
     const body = document.body;
     body.addEventListener('touchstart', onSwipeStart);
@@ -43,7 +42,7 @@ export function Menu() {
     if (activeTab === 'sticky-wall') removeListeners();
 
     return removeListeners;
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
 
   return (
@@ -62,7 +61,12 @@ export function Menu() {
           <ProfileAndCloseMenu onClose={() => setIsOpen(false)} />
           <NavigationMenu />
           <UserActionMenu
-            {...{ setIsSettingsOpen, isTrashOpen, setIsTrashOpen, trashLength, handleSignOut }}
+            {...{
+              setIsSettingsOpen,
+              isTrashOpen,
+              setIsTrashOpen,
+              trashLength,
+            }}
           />
         </>
       )}
@@ -101,7 +105,6 @@ function UserActionMenu({
   isTrashOpen,
   setIsTrashOpen,
   trashLength,
-  handleSignOut,
 }) {
   return (
     <div className='mt-auto space-y-1 pr-2'>
@@ -117,30 +120,80 @@ function UserActionMenu({
       >
         <button
           to='trash'
-          className='menu_element group w-full justify-items-start  pt-3'
+          className='menu_element  group w-full justify-items-start  pt-3'
           onClick={() => setIsTrashOpen(!isTrashOpen)}
         >
           <i className='fa-solid fa-trash-can text-text-tertiary'></i>
           <span className='text-sm  text-text-secondary transition-[font-weight] duration-100 group-hover:font-bold'>
             Trash
           </span>
-          <div className='count grid place-content-center rounded-sm bg-background-tertiary py-[1px] transition-colors  duration-300 group-hover:bg-background-primary'>
+          <div className='count justify-self-stretch'>
             <span className='text-xs font-semibold text-text-secondary'>{trashLength}</span>
           </div>
         </button>
       </Tippy>
-      <button
-        className='menu_element w-full justify-items-start'
-        onClick={() => setIsSettingsOpen(true)}
-      >
-        <i className='fa-solid fa-gear  text-text-tertiary'></i>
-        <span className='text-sm font-medium text-text-secondary'>Settings</span>
-      </button>
-      <button className='menu_element w-full justify-items-start' onClick={handleSignOut}>
-        <i className='fa-solid fa-sign-out  text-text-error'></i>
-        <span className='text-sm font-medium text-text-error'>Sign Out</span>
-      </button>
+      <div className='grid grid-cols-[auto_50px] items-center gap-8  pr-2'>
+        <button
+          className='menu_element w-full justify-items-start'
+          onClick={() => setIsSettingsOpen(true)}
+        >
+          <i className='fa-solid fa-gear  text-text-tertiary'></i>
+          <span className='text-sm font-medium text-text-secondary'>Settings</span>
+        </button>
+        <ThemeToggler />
+      </div>
+      
     </div>
+  );
+}
+
+function ThemeToggler() {
+  const { isDarkMode, toggleDarkMode } = useDarkMode();
+  return (
+    <button
+      className='relative h-4 w-10 justify-self-center text-text-secondary transition-colors duration-200 hover:text-text-tertiary'
+      onClick={toggleDarkMode}
+    >
+      <svg
+        stroke='currentColor'
+        fill='currentColor'
+        strokeWidth='0'
+        viewBox='0 0 16 16'
+        height='1em'
+        width='1em'
+        className={`absolute left-[18px] top-0 transition-transform duration-300 ${
+          isDarkMode ? 'scale-0' : 'scale-100 '
+        }`}
+        xmlns='http://www.w3.org/2000/svg'
+      >
+        <path d='M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278zM4.858 1.311A7.269 7.269 0 0 0 1.025 7.71c0 4.02 3.279 7.276 7.319 7.276a7.316 7.316 0 0 0 5.205-2.162c-.337.042-.68.063-1.029.063-4.61 0-8.343-3.714-8.343-8.29 0-1.167.242-2.278.681-3.286z'></path>
+        <path d='M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.734 1.734 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.734 1.734 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.734 1.734 0 0 0 1.097-1.097l.387-1.162zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.156 1.156 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.156 1.156 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732L13.863.1z'></path>
+      </svg>
+      <svg
+        stroke='currentColor'
+        fill='none'
+        strokeWidth='2'
+        viewBox='0 0 24 24'
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        height='1.2em'
+        width='1.2em'
+        className={`absolute left-[18px] top-0 transition-transform duration-300 ${
+          isDarkMode ? 'scale-100' : 'scale-0 '
+        }`}
+        xmlns='http://www.w3.org/2000/svg'
+      >
+        <circle cx='12' cy='12' r='4'></circle>
+        <path d='M12 2v2'></path>
+        <path d='M12 20v2'></path>
+        <path d='m4.93 4.93 1.41 1.41'></path>
+        <path d='m17.66 17.66 1.41 1.41'></path>
+        <path d='M2 12h2'></path>
+        <path d='M20 12h2'></path>
+        <path d='m6.34 17.66-1.41 1.41'></path>
+        <path d='m19.07 4.93-1.41 1.41'></path>
+      </svg>
+    </button>
   );
 }
 
@@ -176,3 +229,4 @@ function MenuToggleAndModals({
     </>
   );
 }
+

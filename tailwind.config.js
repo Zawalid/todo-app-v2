@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
@@ -14,7 +15,6 @@ export default {
         'text-secondary': 'var(--text-secondary)',
         'text-tertiary': 'var(--text-tertiary)',
         'text-disabled': 'var(--text-disabled)',
-        'text-error': 'var(--text-error)',
         border: 'var(--border)',
         'custom-1': 'var(--custom-1)',
         'custom-2': 'var(--custom-2)',
@@ -51,5 +51,22 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    function ({ addUtilities }) {
+      const newUtilities = {
+        '.child-padding': {
+          '> *': {
+            paddingInline : '1.25rem',
+            
+          },
+          '@media (min-width: 640px)': {
+            '> *': {
+              paddingInline: '2rem',
+            },
+          },
+        },
+      };
+      addUtilities(newUtilities);
+    },
+  ],
 };

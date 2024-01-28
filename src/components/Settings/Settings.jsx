@@ -12,7 +12,7 @@ export function Settings({ isOpen, onClose }) {
       } `}
     >
       <div
-        className={`relative flex h-full w-full flex-col overflow-hidden rounded-lg  bg-background-primary transition-transform duration-500  sm:flex-row md:h-[90%] md:w-3/4 
+        className={`relative md:border md:border-border flex h-full w-full flex-col overflow-hidden rounded-lg  bg-background-primary transition-transform duration-500  sm:flex-row md:h-[90%] md:w-3/4 
         ${isOpen ? 'scale-100' : 'scale-0'}`}
       >
         <button className='icon-button not-active small absolute right-4 top-4' onClick={onClose}>

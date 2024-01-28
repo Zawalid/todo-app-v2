@@ -1,13 +1,12 @@
 :root {
-  --editor-theme-color: #fff;
-  --editor-text-color: #444;
   --highlight-color: #c8ff2d;
+  --shadow-color: rgb(0, 0, 0, 0.16);
+  &.dark {
+    --shadow-color: rgb(0, 0, 0, 0.9);
+  }
 }
 
 .tiptap {
-  background-color: var(--editor-theme-color);
-  color: var(--editor-text-color);
-
   > * + * {
     margin-top: 0.75em;
   }
@@ -125,11 +124,10 @@
 
   .colorHighlight {
     white-space: nowrap;
-    color: var(--color);
 
     &::before {
       background-color: var(--color);
-      border: 1px solid rgba(128, 128, 128, 0.3);
+      border: 1px solid var(--border);
       border-radius: 2px;
       content: ' ';
       display: inline-block;
@@ -144,49 +142,13 @@
 
 // Bubble menu and link tooltip
 .tippy-box:is([data-theme~='bubbleMenu'], [data-theme~='addLink']) {
-  background-color: #202020;
+  background-color: var(--background-primary);
   color: white;
   border-radius: 0.5rem;
-  // border : 1px solid var(--border);
-  box-shadow: 0 0 0.5rem rgba(13, 13, 13, 0.1);
+  border: 1px solid var(--border);
   -webkit-border-radius: 0.5rem;
   -moz-border-radius: 0.5rem;
   -ms-border-radius: 0.5rem;
   -o-border-radius: 0.5rem;
-}
-
-// Change the editor theme
-#root {
-  &:has(#editor) {
-    background-color: var(--editor-theme-color);
-    & main,
-    #editor {
-      background-color: var(--editor-theme-color);
-    }
-  }
-}
-#root.dark-editor {
-  .tiptap {
-    --text-primary: #cacaca;
-  }
-  .tiptap,.toolbar {
-    --border: rgba(255, 255, 255, 0.1);
-  }
-  ::-webkit-scrollbar-thumb {
-    background-color: var(--text-tertiary);
-  }
-  ::-webkit-scrollbar-track {
-    background-color: rgba(255, 255, 255, 0.1);
-  }
-}
-
-#root,
-main,
-#editor,
-.tiptap {
-  transition: background-color 0.3s ease-in-out;
-  -webkit-transition: background-color 0.3s ease-in-out;
-  -moz-transition: background-color 0.3s ease-in-out;
-  -ms-transition: background-color 0.3s ease-in-out;
-  -o-transition: background-color 0.3s ease-in-out;
+  box-shadow: -1px 7px 16px 0px var(--shadow-color);
 }

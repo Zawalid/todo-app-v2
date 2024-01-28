@@ -1,6 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
 import { Toaster } from 'sonner';
-import { useSaveListsTitlesInLocalStorage } from './hooks/';
+import { useDarkMode, useSaveListsTitlesInLocalStorage } from './hooks/';
 import { Suspense, lazy } from 'react';
 import { SpinnerLoader } from './components/Common/SpinnerLoader';
 import './styles/App.css';
@@ -15,17 +15,16 @@ const AuthLayout = lazy(() => import('./Pages/auth/AuthLayout'));
 
 function App() {
   const listsTitles = useSaveListsTitlesInLocalStorage();
+  const {isDarkMode} = useDarkMode();
 
   return (
     <Suspense fallback={<SpinnerLoader />}>
       <Routes>
         <Route path='/' element={<HomePage />} />
         <Route path='app' element={<AppLayout />}>
-          {['all', 'today', 'sticky-wall', 'search', 'upcoming', ...listsTitles].map(
-            (tab) => (
-              <Route path={`${tab}`} element={<AppLayout />} key={tab} />
-            ),
-          )}
+          {['all', 'today', 'sticky-wall', 'search', 'upcoming', ...listsTitles].map((tab) => (
+            <Route path={`${tab}`} element={<AppLayout />} key={tab} />
+          ))}
         </Route>
         <Route element={<AuthLayout />}>
           <Route path='sign-in' element={<SignInForm />} />
@@ -34,14 +33,16 @@ function App() {
         </Route>
         <Route path='*' element={<NotFound />} />
       </Routes>
+
       <Toaster
         position={window.innerWidth < 768 ? 'bottom-center' : 'bottom-right'}
+        theme={isDarkMode ? 'dark' : 'light'}
         loadingIcon={
           <i className='fa-solid fa-spinner animate-spin text-lg text-text-secondary'></i>
         }
         toastOptions={{
           className: 'sonner-toast',
-          duration : 2000,
+          duration: 2000,
         }}
       />
     </Suspense>

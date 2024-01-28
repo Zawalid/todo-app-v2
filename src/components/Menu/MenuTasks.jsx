@@ -15,7 +15,7 @@ export function MenuTasks() {
             <span className='text-sm text-text-secondary transition-[font-weight] duration-100 group-hover:font-bold'>
               All Tasks
             </span>
-            <div className='count grid place-content-center rounded-sm bg-background-tertiary py-[1px] transition-colors  duration-300 group-hover:bg-background-primary'>
+            <div className='count'>
               <span className='text-xs font-semibold text-text-secondary'>{tasks.length}</span>
             </div>
           </Link>
@@ -26,7 +26,7 @@ export function MenuTasks() {
             <span className='text-sm text-text-secondary transition-[font-weight] duration-100 group-hover:font-bold'>
               Upcoming
             </span>
-            <div className='count grid place-content-center rounded-sm bg-background-tertiary py-[1px] transition-colors  duration-300 group-hover:bg-background-primary'>
+            <div className='count'>
               <span className='text-xs font-semibold text-text-secondary'>
                 {upcomingTasks.length}
               </span>
@@ -39,7 +39,7 @@ export function MenuTasks() {
             <span className='text-sm text-text-secondary transition-[font-weight] duration-100 group-hover:font-bold'>
               Today
             </span>
-            <div className='count grid place-content-center rounded-sm bg-background-tertiary py-[1px] transition-colors  duration-300 group-hover:bg-background-primary'>
+            <div className='count'>
               <span className='text-xs font-semibold text-text-secondary'>{todayTasks.length}</span>
             </div>
           </NavLink>
@@ -50,7 +50,7 @@ export function MenuTasks() {
             <span className='text-sm text-text-secondary transition-[font-weight] duration-100 group-hover:font-bold'>
               Sticky Wall
             </span>
-            <div className='count grid place-content-center rounded-sm bg-background-tertiary py-[1px] transition-colors  duration-300 group-hover:bg-background-primary'>
+            <div className='count'>
               <span className='text-xs font-semibold text-text-secondary'>
                 {stickyNotes.length}
               </span>

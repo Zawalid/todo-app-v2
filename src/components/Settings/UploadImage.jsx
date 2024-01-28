@@ -48,17 +48,20 @@ export function UploadImage({ avatar, onChange }) {
         alt={user?.name}
       />
       <div>
-        <div className='flex flex-wrap gap-y-2 gap-x-5'>
+        <div className='flex flex-wrap gap-x-5 gap-y-2'>
           <button
-            className='flex-1 rounded-lg border px-3 py-2 text-sm font-medium text-text-primary shadow-sm transition-colors duration-300 hover:bg-primary hover:text-white'
+            className='flex-1 rounded-lg border border-border px-3 py-2 text-sm font-medium text-text-primary transition-colors duration-300 hover:border-primary hover:bg-primary hover:text-white'
             onClick={() => openFilePicker()}
           >
             Upload
           </button>
           <button
             className={
-              'flex-1 rounded-lg min-w-[105px] border px-3 py-2 text-sm font-medium text-text-primary shadow-sm transition-colors duration-300  ' +
-              (isInitialsAvatar ? 'bg-zinc-200 text-white' : 'hover:bg-primary hover:text-white')
+              'min-w-[105px] flex-1 rounded-lg border border-border px-3 py-2 text-sm font-medium  transition-colors duration-300  ' +
+              (isInitialsAvatar
+                ? 'bg-background-disabled text-text-disabled'
+                : 'text-text-primary hover:bg-primary hover:text-white'
+                )
             }
             disabled={isInitialsAvatar}
             onClick={async () => {

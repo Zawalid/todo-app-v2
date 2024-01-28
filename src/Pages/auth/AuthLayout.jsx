@@ -11,7 +11,7 @@ function AuthLayout() {
       {checkIsUserAuthenticated() ? (
         <Navigate to='/app' replace={true} />
       ) : (
-        <div className='sm:grid h-full w-full grid-cols-[auto_1fr] bg-background-secondary p-5 sm:grid-cols-2'>
+        <div className='rounded-xl sm:grid h-full w-full grid-cols-[auto_1fr] bg-background-secondary p-5 sm:grid-cols-2'>
           <section className='hidden place-content-center rounded-xl bg-black sm:grid'>
             <img src={bgImage} alt='bg' className='w-[300px]' />
           </section>

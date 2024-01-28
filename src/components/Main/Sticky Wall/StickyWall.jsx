@@ -273,11 +273,11 @@ function NotesGroup({ render, group, view, isSelecting, isCollapsed, parent, con
       </button>
       <div
         className={
-          ' h-auto  flex-1 overflow-auto  transition-[max-height] ' +
+          'flex-1 overflow-auto ' +
           (view === 'list'
             ? 'space-y-3 '
             : ' grid grid-cols-[repeat(auto-fill,minmax(270px,1fr))] gap-4 ') +
-          (isGroupOpen ? 'max-h-[999px] duration-[2s] ' : 'max-h-0 duration-[1s]')
+          (isGroupOpen ? 'h-auto' : 'h-0')
         }
         ref={parent}
       >
@@ -321,7 +321,7 @@ function AddNote({ isSelecting, handleAddStickyNote, setCurrentNote, setIsSticky
           const note = {
             title: '',
             content: '<p></p>',
-            bgColor: '#ff922b',
+            bgColor: '--custom-1',
             textColor: '#fff',
             readonly: false,
             pinned: false,

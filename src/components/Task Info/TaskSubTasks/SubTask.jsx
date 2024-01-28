@@ -17,7 +17,7 @@ export function SubTask({ title, onEdit, onDelete, isCompleted, onComplete }) {
       <input
         type='text'
         className={
-          ' flex-1 truncate rounded-md  p-1 text-sm font-medium text-text-secondary outline-none ' +
+          ' flex-1 truncate rounded-md  p-1 bg-transparent text-sm font-medium text-text-secondary outline-none ' +
           (checked ? 'line-through ' : '') +
           (isEditing ? 'border border-border' : '')
         }

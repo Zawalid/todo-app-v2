@@ -8,7 +8,7 @@ export default function Switch({ id, checked, onChange }) {
         checked={checked}
         onChange={onChange}
       />
-      <div className="peer h-5 w-9 rounded-full bg-background-tertiary after:absolute after:start-[2px] after:top-[2px] after:h-4 after:w-4 after:rounded-full after:border  after:bg-background-primary  after:transition-all after:duration-300  after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none rtl:peer-checked:after:-translate-x-full  dark:after:bg-background-primary"></div>
+      <div className="peer h-5 w-9 rounded-full bg-background-tertiary after:absolute after:start-[2px] after:top-[2px] after:h-4 after:w-4 after:rounded-full   after:bg-white  after:transition-all after:duration-300  after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full  peer-focus:outline-none rtl:peer-checked:after:-translate-x-full "></div>
     </label>
   );
 }

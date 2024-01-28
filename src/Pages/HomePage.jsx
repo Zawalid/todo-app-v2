@@ -10,7 +10,7 @@ const HomePage = () => {
   const isResetPassword = searchParams.get('userId') && searchParams.get('secret');
 
   return (
-    <div className='flex min-h-screen flex-col bg-background-secondary'>
+    <div className='flex min-h-screen w-full flex-col'>
       <header className='flex h-14 items-center px-4 lg:px-6'>
         <Logo />
         {!isResetPassword && (
@@ -23,7 +23,10 @@ const HomePage = () => {
                 Sign Out
               </button>
             ) : (
-              <Link className=' flex h-9 items-center border-r pr-4 font-medium' to='sign-in'>
+              <Link
+                className=' flex h-9 items-center border-r border-border pr-4 font-medium text-text-primary'
+                to='sign-in'
+              >
                 Sign In
               </Link>
             )}

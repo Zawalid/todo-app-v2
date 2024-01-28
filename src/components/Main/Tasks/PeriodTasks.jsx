@@ -6,7 +6,7 @@ import { useAutoAnimate } from '@formkit/auto-animate/react';
 
 export function PeriodTasks({ title, period, parentRef, isToday }) {
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const {  todayTasks, tomorrowTasks, thisWeekTasks } = useTasks();
+  const { todayTasks, tomorrowTasks, thisWeekTasks } = useTasks();
   const [parent] = useAutoAnimate({
     duration: 500,
   });
@@ -33,7 +33,7 @@ export function PeriodTasks({ title, period, parentRef, isToday }) {
         (isToday ? 'w-full basis-auto' : '')
       }
     >
-      <h1 className='mb-3 border-b p-4 pb-3 text-xl font-bold text-text-primary sm:text-2xl'>
+      <h1 className='mb-3 border-b border-border p-4 pb-3 text-xl font-bold text-text-primary sm:text-2xl'>
         {title}
         {title === 'This Week' && (
           <span className='ml-3 text-xs text-text-tertiary'>(Mon - Sun)</span>
@@ -41,7 +41,7 @@ export function PeriodTasks({ title, period, parentRef, isToday }) {
       </h1>
       <i
         className={
-          'fa-solid absolute right-3 top-5 cursor-pointer ' +
+          'fa-solid absolute right-3 text-text-primary top-5 cursor-pointer ' +
           (isFullScreen
             ? 'fa-down-left-and-up-right-to-center'
             : 'fa-up-right-and-down-left-from-center ')
@@ -49,10 +49,7 @@ export function PeriodTasks({ title, period, parentRef, isToday }) {
         onClick={() => setIsFullScreen((prev) => !prev)}
       ></i>
 
-      <div className='mx-4 mb-3 flex items-center gap-3 rounded-xl border border-border px-5 py-1'>
-        <i className='fa-solid fa-plus text-xl text-text-tertiary'></i>
-        <AddTask dueDate={period.dueDate} />
-      </div>
+      <AddTask dueDate={period.dueDate} className='mx-4 mb-3' />
       <ul
         className={
           ' flex-1 space-y-2 overflow-auto overflow-x-hidden  px-4 ' +

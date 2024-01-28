@@ -3,7 +3,7 @@ import { useUser } from '../../hooks';
 
 export function SideBar({ currentTab, setCurrentTab }) {
   const [isOpen, setIsOpen] = useState(false);
-  const { user, handleSendVerificationEmail } = useUser();
+  const { user, handleSignOut, handleSendVerificationEmail } = useUser();
 
   return (
     <>
@@ -18,7 +18,7 @@ export function SideBar({ currentTab, setCurrentTab }) {
         ></i>
       </button>
       <aside
-        className={`absolute top-0 z-[100] flex h-full flex-col items-start gap-3 bg-zinc-50  p-3 shadow-md transition-[left] duration-500 sm:static  sm:shadow-none ${
+        className={`absolute top-0 z-[100] flex h-full flex-col items-start gap-3 bg-background-secondary  p-3 shadow-md transition-[left] duration-500 sm:static border-r border-border sm:shadow-none ${
           isOpen ? 'left-0' : '-left-full'
         }`}
       >
@@ -53,9 +53,15 @@ export function SideBar({ currentTab, setCurrentTab }) {
           <i className='fa-solid fa-laptop'></i>
           <span className='font-medium '>Sessions</span>
         </button>
-        {!user?.emailVerification && (
-          <div className='mt-auto'>
-            <hr className='mb-2 w-full border-zinc-300' />
+        <div className='mt-auto w-full border-t border-border pt-2'>
+          <button
+            className='grid w-full grid-cols-[30px_1fr] items-center justify-items-start rounded-md px-3 py-2   transition-colors duration-300 hover:bg-background-tertiary'
+            onClick={handleSignOut}
+          >
+            <i className='fa-solid fa-sign-out  text-red-500'></i>
+            <span className='text-sm font-semibold text-red-500'>Sign Out</span>
+          </button>
+          {!user?.emailVerification && (
             <button
               className='grid w-full grid-cols-[30px_1fr] items-center justify-items-start rounded-md px-3 py-2   transition-colors duration-300 hover:bg-background-tertiary'
               onClick={handleSendVerificationEmail}
@@ -63,8 +69,8 @@ export function SideBar({ currentTab, setCurrentTab }) {
               <i className='fa-solid fa-user-check text-text-tertiary'></i>
               <span className='text-sm font-semibold text-text-secondary'>Verify Account</span>
             </button>
-          </div>
-        )}
+          )}
+        </div>
       </aside>
     </>
   );

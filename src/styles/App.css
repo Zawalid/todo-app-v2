@@ -1,95 +1,28 @@
+@import url(./libraries.css);
 :root {
   --line-clamp: 8;
 }
+
+/* Menu */
 .menu_element {
-  @apply grid cursor-pointer  grid-cols-[30px_auto_35px] items-center rounded-lg p-2 transition-colors duration-500 hover:bg-background-tertiary;
-}
-.menu_element.active {
-  @apply bg-background-tertiary;
-}
-
-.menu_element.active span {
-  @apply font-bold;
-}
-
-.menu_element.active .count {
-  @apply bg-background-primary;
+  @apply grid cursor-pointer  grid-cols-[30px_auto_35px] items-center rounded-lg p-2  hover:bg-background-tertiary;
+  &.active {
+    @apply bg-background-tertiary;
+  }
+  &.active span {
+    @apply font-bold;
+  }
+  & .count {
+    @apply grid place-content-center rounded-sm bg-background-tertiary py-[1px]  group-hover:bg-background-primary;
+  }
+  &:is(:hover, .active) .count {
+    @apply bg-background-primary;
+  }
 }
 
 .menu_tag_element {
   @apply rounded-md px-3 py-2 text-xs font-semibold;
 }
-
-aside::-webkit-scrollbar-track {
-  @apply bg-background-secondary;
-}
-
-input[type='checkbox'] {
-  @apply shrink-0 cursor-pointer appearance-none rounded-[4px] border border-border checked:border-0 checked:bg-primary focus:outline-none;
-}
-
-input[type='checkbox'].task {
-  @apply h-5 w-5;
-}
-
-.color {
-  @apply border-border h-5 w-5 cursor-pointer rounded-[3px] border transition-all duration-300 hover:shadow-md;
-}
-.note_text {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: var(--line-clamp);
-}
-
-.full_screen {
-  @apply absolute  z-10 h-full max-h-full  w-full !important;
-}
-
-.sonner-toast:not([data-type='loading']) [data-icon] {
-  height: calc(100% + 1px);
-  position: absolute;
-  left: 0;
-  width: 45px;
-  justify-content: center;
-  color: white;
-  border-radius: 8px 0 0 8px;
-}
-.sonner-toast:not([data-type='loading']) [data-icon] svg {
-  width: 25px;
-  height: 25px;
-}
-.sonner-toast[data-type='success'] [data-icon] {
-  background-color: limegreen;
-}
-.sonner-toast[data-type='error'] [data-icon] {
-  background-color: #ff0000;
-}
-
-.sonner-toast [data-content] {
-  color: #444444;
-}
-.sonner-toast:not([data-type='loading']) [data-content] {
-  margin-left: 40px;
-}
-
-.sonner-toast [data-close-button] {
-  left: 90%;
-  top: 50%;
-  transform: translateY(-50%);
-  background-color: #f4f4f4;
-  color: #444444;
-}
-.sonner-toast [data-button] {
-  background-color: #f4f4f4;
-  color: #444444;
-  font-weight: 500;
-  box-shadow: -1px 1px 1px 0px #e5e5e5b0;
-}
-
-.pagination-button {
-  @apply ml-0 flex  h-full border-collapse items-center justify-center border border-border w-20 px-2 py-1.5 text-xs font-medium text-text-secondary shadow-sm transition-colors duration-300  hover:bg-background-tertiary disabled:cursor-not-allowed disabled:text-opacity-30 disabled:hover:bg-transparent sm:text-sm;
-}
-
 #menu:has(#closeMenu:hover) {
   @apply lg:opacity-50;
 }
@@ -97,48 +30,13 @@ input[type='checkbox'].task {
   @apply lg:opacity-50;
 }
 
-.tippy-box[data-theme~='light'] {
-  @apply rounded-lg bg-background-primary p-0 text-sm text-text-primary shadow-md  !important;
-}
-.tippy-content {
-  @apply p-0 !important;
-}
-
-.tippy-box[data-theme~='custom'] {
-  @apply bg-text-secondary;
-}
-.tippy-box:is([data-theme~='bubbleMenu'], [data-theme~='custom']) {
-  @apply p-2;
-}
-
-/* Tooltip arrow */
-.tippy-box[data-theme~='custom'][data-placement^='top'] > .tippy-arrow::before {
-  @apply border-t-text-secondary;
-}
-.tippy-box[data-theme~='custom'][data-placement^='bottom'] > .tippy-arrow::before {
-  @apply border-b-text-secondary;
-}
-.tippy-box[data-theme~='custom'][data-placement^='left'] > .tippy-arrow::before {
-  @apply border-l-text-secondary;
-}
-.tippy-box[data-theme~='custom'][data-placement^='right'] > .tippy-arrow::before {
-  @apply border-r-text-secondary;
-}
-
-[vaul-overlay][vaul-drawer-visible='true'] {
-  opacity: 1 !important;
-}
-
-.no_scrollbar::-webkit-scrollbar {
-  display: none;
-}
-
+/* Buttons */
 .icon-button {
-  @apply flex h-8 w-8 items-center justify-center rounded-[4px] p-1 transition-all  duration-300
-  disabled:cursor-not-allowed disabled:bg-[#f5f5f5] disabled:text-[#cacaca];
+  @apply disabled:bg-background-disabled disabled:text-text-disabled flex h-8 w-8 items-center justify-center rounded-[4px]  p-1
+  transition-transform duration-500 disabled:cursor-not-allowed;
 
-  &.active {
-    @apply bg-text-secondary  text-white;
+  &:not(:disabled).active {
+    @apply bg-primary  text-white;
   }
 
   &:not(:disabled).not-active {
@@ -151,16 +49,51 @@ input[type='checkbox'].task {
       @apply text-sm;
     }
   }
+}
 
-/* For editor buttons  */
-  #root.dark-editor #editor & {
-    @apply disabled:bg-[#141111] disabled:text-[#444];
-  }
+.dropDown-button {
+  @apply relative flex w-full  cursor-pointer items-center gap-3 overflow-hidden rounded-md bg-background-primary px-3 py-2 font-medium text-text-secondary transition-colors duration-300 hover:bg-background-secondary hover:text-text-primary;
 
-  #root.dark-editor #editor &:not(:disabled).not-active {
-    @apply bg-[#121212] hover:bg-[#191919];
+  &.small {
+    @apply px-2 py-1;
   }
-  #root.dark-editor #editor &.active {
-    @apply bg-white text-[#121212];
+  &.current {
+    @apply bg-background-secondary;
   }
+  &:not(.disabled).delete {
+    @apply hover:bg-red-500 hover:text-white;
+  }
+  &.disabled {
+    @apply text-text-disabled  bg-background-disabled cursor-not-allowed ; 
+  }
+}
+
+.pagination-button {
+  @apply ml-0 flex h-full w-20 border-collapse items-center justify-center border border-border px-2 py-1.5 text-xs font-medium text-text-secondary shadow-sm  hover:bg-background-tertiary sm:text-sm;
+
+  &:disabled {
+    @apply text-text-disabled bg-background-disabled cursor-not-allowed;
+  }
+}
+
+input[type='checkbox'] {
+  @apply shrink-0 cursor-pointer appearance-none rounded-[4px] border border-border checked:border-0 checked:bg-primary focus:outline-none;
+
+  &.task {
+    @apply h-5 w-5;
+  }
+}
+
+
+.color {
+  @apply h-5 w-5 cursor-pointer rounded-[3px] border border-border  hover:shadow-md;
+}
+.note_text {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--line-clamp);
+}
+
+.full_screen {
+  @apply absolute  z-10 h-full max-h-full  w-full !important;
 }

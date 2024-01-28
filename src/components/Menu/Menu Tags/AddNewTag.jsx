@@ -6,7 +6,7 @@ import { useColorPicker } from '../../../hooks/useColorPicker';
 export function AddNewTag({ reference, isOpen }) {
   const { handleAddTag } = useTags();
   const [value, setValue] = useState('');
-  const [bgColor, setBgColor] = useState('#ff6b6b');
+  const [bgColor, setBgColor] = useState('--custom-1');
   const [textColor, setTextColor] = useState('#ffffff');
   const inputEl = useRef(null);
   const bgColorsDiv = useColorPicker((color) => setBgColor(color), bgColor);
@@ -54,7 +54,7 @@ export function AddNewTag({ reference, isOpen }) {
             type='text'
             className='w-full rounded-lg p-2 text-sm  placeholder:text-white focus:outline-none'
             placeholder='Tag Name'
-            style={{ backgroundColor: bgColor, color: textColor }}
+            style={{ backgroundColor: `var(${bgColor})`, color: textColor }}
             name='tag'
             value={value}
             onChange={(e) => setValue(e.target.value)}

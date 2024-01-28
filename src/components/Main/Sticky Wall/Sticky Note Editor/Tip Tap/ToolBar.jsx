@@ -29,7 +29,7 @@ export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
   return (
     <div
       className={
-        'toolbar w-full gap-3 border-t border-border pt-2 ' +
+        'toolbar w-full gap-3 border-t bg-background-primary border-border pt-2 ' +
         (isTouchDevice() && activeTab === 'sticky-wall'
           ? 'fixed left-0 z-[1000] px-3 pb-2 shadow-lg'
           : 'overflow-auto')

@@ -125,7 +125,7 @@ function Session({ session, onDelete }) {
         <img src={browserImage?.image} alt={browserName} />
       </div>
       <div className='flex-1 space-y-1'>
-        <h4 className='text-sm font-semibold sm:text-base'>
+        <h4 className='text-sm text-text-primary font-semibold sm:text-base'>
           {browserName || 'Unknown Browser'} on{' '}
           {deviceName[0].toUpperCase() + deviceName.slice(1) || 'Unknown Device'}
         </h4>
@@ -141,7 +141,7 @@ function Session({ session, onDelete }) {
         </p>
       </div>
       <button
-        className='rounded-lg border border-border px-3 py-2 text-sm font-medium text-text-primary shadow-sm transition-colors duration-300 hover:bg-primary hover:text-white'
+        className='rounded-lg border border-border px-3 py-2 text-sm font-medium text-text-primary hover:border-primary transition-colors duration-300 hover:bg-primary hover:text-white'
         onClick={() => onDelete(current ? 'current' : $id)}
       >
         Revoke

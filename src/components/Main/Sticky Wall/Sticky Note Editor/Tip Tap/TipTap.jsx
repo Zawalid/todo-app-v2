@@ -41,7 +41,6 @@ export default function TipTap() {
   const onBack = () => {
     if (!title) handleUpdateNote('title', 'Untitled');
     handleBack(currentNote.$id, title, content);
-    ToggleEditorDarkMode(false);
   };
 
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
@@ -51,7 +50,7 @@ export default function TipTap() {
     content,
     editorProps: {
       attributes: {
-        class: 'focus:outline-none pb-10',
+        class: 'focus:outline-none text-text-primary pb-10',
       },
     },
     onUpdate: ({ editor }) => handleUpdateNote('content', editor.getHTML()),
@@ -112,7 +111,6 @@ export default function TipTap() {
             document.querySelector('.tiptap').style.fontFamily = fontFamily;
             handleUpdateNote('fontFamily', fontFamily);
           },
-          onToggleDarkMode: (e) => ToggleEditorDarkMode(e.target.checked),
         }}
       >
         <div className='space-y-2'>
@@ -198,8 +196,3 @@ function NoteInfo({ editor, updateDate, isSaving, title, setTitle }) {
   );
 }
 
-function ToggleEditorDarkMode(isDark) {
-  document.documentElement.style.setProperty('--editor-theme-color', isDark ? '#191919' : '#fff');
-  document.documentElement.style.setProperty('--editor-text-color', isDark ? '#cacaca' : '#444');
-  document.querySelector('#root').classList[isDark ? 'add' : 'remove']('dark-editor');
-}

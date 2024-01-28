@@ -129,7 +129,7 @@ export function TaskInfo() {
   const taskInfo = (
     <>
       <div className='grid grid-cols-[auto_40px] items-center gap-5 pb-3'>
-        <h2 className='text-xl truncate font-bold text-text-secondary'>
+        <h2 className='truncate text-xl font-bold text-text-secondary'>
           {taskTitle ? taskTitle : 'Untitled'}
         </h2>
         {isTouchDevice() ? (
@@ -175,17 +175,17 @@ export function TaskInfo() {
       {!isTouchDevice() && (
         <div className='mt-auto flex gap-3 pt-3'>
           <button
-            className='flex-1 cursor-pointer rounded-lg bg-red-500 py-2 text-center text-sm font-semibold text-white transition-colors duration-300 hover:bg-red-600'
+            className='flex-1 cursor-pointer rounded-lg bg-red-500 py-2 text-center text-sm font-semibold text-white hover:bg-red-600'
             onClick={openModal}
           >
             Delete Task
           </button>
           <button
             className={
-              'flex-1 rounded-lg border  py-2 text-center  text-sm font-semibold transition-colors duration-500 ' +
+              'flex-1 rounded-lg border  py-2 text-center  text-sm font-semibold ' +
               (isChanged
-                ? 'cursor-pointer bg-primary border-primary text-white hover:bg-primary-hover '
-                : 'cursor-not-allowed border-border bg-background-disabled text-text-disabled')
+                ? 'cursor-pointer border-primary bg-primary text-white hover:bg-primary-hover '
+                : 'bg-background-disabled text-text-disabled cursor-not-allowed border-border')
             }
             onClick={handleSaveChanges}
           >
@@ -203,12 +203,11 @@ export function TaskInfo() {
 
       {!isTouchDevice() && (
         <aside
-          className={
-            'ml-auto  flex flex-col transition-[width,opacity] duration-500 lg:relative lg:first-line:rounded-xl ' +
-            (isTaskOpen
-              ? 'fixed right-0 top-0 z-10 h-full w-full items-stretch  border border-border bg-background-primary p-4 shadow-md sm:w-[380px]'
-              : 'w-0 items-center overflow-hidden bg-background-primary p-0')
-          }
+          className={`ml-auto lg:rounded-xl flex flex-col bg-background-primary transition-[width,opacity] duration-500 lg:relative lg:first-line:rounded-xl ${
+            isTaskOpen
+              ? 'fixed right-0 top-0 z-10 h-full w-full items-stretch  border border-border  p-4 shadow-md sm:w-[380px]'
+              : 'w-0 items-center overflow-hidden  p-0'
+          }`}
           id='taskInfo'
         >
           {isTaskOpen && taskInfo}

@@ -13,15 +13,15 @@ export default function TaskActions({ isOpen,onClose,  onDelete, onCopy, date, l
           <i className='fa-solid fa-clone  text-lg text-text-secondary'></i>
           <span className='font-semibold text-text-primary'>Copy to clipboard</span>
         </button>
-        <button
+        <button    
           className='menu_element w-full justify-items-start'
           onClick={() => setListSelectionOpen(true)}
         >
-          <i className='fa-solid fa-arrow-right-from-bracket text-lg'></i>
-          <span className='font-semibold '>Move Task To</span>
+          <i className='fa-solid fa-arrow-right-from-bracket text-text-secondary text-lg'></i>
+          <span className='font-semibold text-text-primary'>Move Task To</span>
         </button>
         <button
-          className='menu_element w-full justify-items-start text-text-error
+          className='menu_element w-full justify-items-start text-red-500
            hover:bg-red-500 hover:text-white'
           onClick={onDelete}
         >

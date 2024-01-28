@@ -54,13 +54,13 @@ export function List({ list }) {
           <div
             className='h-5 w-5 rounded-[3px]'
             style={{
-              backgroundColor: listColor,
+              backgroundColor: `var(${listColor})`,
             }}
           ></div>
           <span className='truncate  text-sm text-text-secondary outline-none transition-[color,font-weight] duration-100 group-hover:font-bold'>
             {title}
           </span>
-          <div className='count mx-1 grid place-content-center rounded-sm bg-background-tertiary py-[1px] transition-colors duration-300 group-hover:bg-background-primary'>
+          <div className='count mx-1'>
             <span className='text-xs font-semibold text-text-secondary'>{tasksCount}</span>
           </div>
         </NavLink>
@@ -76,13 +76,13 @@ export function List({ list }) {
         />
         <div
           className={
-            'absolute  left-0 top-full z-10 w-[95%]  items-center overflow-hidden rounded-lg bg-background-primary px-3 shadow-[-4px_4px_1px_#EBEBEB] ' +
+            'absolute  left-0 top-full z-10 w-[95%]  items-center overflow-hidden rounded-lg bg-background-primary px-3 shadow-[-4px_4px_1px_rgb(0,0,0,0.16)] ' +
             (isRenameInputOpen ? 'flex' : 'hidden')
           }
         >
           <input
             type='text'
-            className='w-full  border-none  py-2 text-sm  focus:outline-none '
+            className='w-full  border-none text-text-primary bg-transparent py-2 text-sm  focus:outline-none '
             defaultValue={title}
             ref={newListTitle}
             onBlur={renameList}
@@ -90,7 +90,7 @@ export function List({ list }) {
             onKeyDown={(e) => e.key === 'Enter' && !isNewTitleTaken && e.target.blur()}
           />
           {isNewTitleTaken ? (
-            <i className='fa-regular fa-circle-xmark text-text-error'></i>
+            <i className='fa-regular fa-circle-xmark text-red-500'></i>
           ) : (
             <i className='fa-regular fa-circle-check text-green-500'></i>
           )}

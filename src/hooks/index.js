@@ -10,4 +10,5 @@ export { useSearch } from './useSearch';
 export { useUser } from './useUser';
 export { useIsTitleTaken } from './useIsTitleTaken';
 export { useSaveListsTitlesInLocalStorage } from './useSaveListsTitlesInLocalStorage';
-
+export { useLocalStorageState } from './useLocalStorageState';
+export { useDarkMode } from './useDarkMode';

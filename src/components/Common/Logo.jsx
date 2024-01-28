@@ -5,7 +5,7 @@ export function Logo() {
   return (
     <Link className='flex items-center justify-center' to='/'>
       <img src={Img} alt='I Do' className='h-8 shadow-md rounded-md' />
-      <span className='font-bold ml-2'>I Do</span>
+      <span className='font-bold text-text-primary ml-2'>I Do</span>
     </Link>
   );
 }

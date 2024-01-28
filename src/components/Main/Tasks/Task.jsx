@@ -87,8 +87,8 @@ export function Task({
     >
       <button
         className={
-          ' grid min-h-[49px] w-full select-none grid-cols-[20px_auto] items-center gap-3 rounded-lg border-b border-border px-3 py-2  text-start transition-all duration-500 hover:translate-y-1 hover:shadow-[2px_2px_0px_rgb(228_228_231)] sm:px-5   ' +
-          (checked ? 'bg-background-tertiary ' : 'bg-slate-50 ')
+          ' grid min-h-[49px] w-full select-none grid-cols-[20px_auto] items-center gap-3 rounded-lg border border-border px-3 py-2  text-start transition-transform duration-500 hover:translate-y-1  sm:px-5   ' +
+          (checked ? 'bg-background-tertiary ' : '')
         }
       >
         <TaskCheckbox
@@ -121,7 +121,7 @@ export function Task({
 
             {isPassed && !checked && (
               <CustomTippy content='Overdue'>
-                <i className='fa-solid  fa-calendar-xmark text-lg text-text-error'></i>
+                <i className='fa-solid  fa-calendar-xmark text-lg text-red-500'></i>
               </CustomTippy>
             )}
           </div>
@@ -185,13 +185,13 @@ function TaskDueDate({ dueDate, isPassed, checked }) {
       <i
         className={
           'fas fa-calendar-alt  ' +
-          (isPassed && !checked ? 'text-text-error' : 'text-text-tertiary')
+          (isPassed && !checked ? 'text-red-500' : 'text-text-tertiary')
         }
       ></i>
       <span
         className={
           'text-xs font-semibold ' +
-          (isPassed && !checked ? 'text-text-error' : 'text-text-secondary')
+          (isPassed && !checked ? 'text-red-500' : 'text-text-secondary')
         }
       >
         {checkIfToday(dueDate)
@@ -261,7 +261,7 @@ function TaskList({ listId, listName, listColor }) {
   if (!listId || listId === 'none') return null;
   return (
     <div className='grid grid-cols-[16px_auto] items-center gap-2 overflow-hidden'>
-      <span className='h-4 w-4 rounded-sm' style={{ backgroundColor: listColor }}></span>
+      <span className='h-4 w-4 rounded-sm' style={{ backgroundColor: `var(${listColor})` }}></span>
       <span className='truncate text-xs font-semibold text-text-secondary'>{listName}</span>
     </div>
   );

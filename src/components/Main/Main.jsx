@@ -33,7 +33,7 @@ const tabs = {
 export function Main() {
   const { tasks, isTasksLoading, todayTasks, upcomingTasks } = useTasks();
   const { lists } = useLists();
-  const { stickyNotes, isStickyNoteEditorOpen, isNotesLoading } = useStickyNotes();
+  const { stickyNotes, isStickyNoteEditorOpen, setIsStickyNoteEditorOpen,isNotesLoading } = useStickyNotes();
   const { searchResults } = useSearch();
   const activeTab = useHref().split('/app/')[1];
   const [parent] = useAutoAnimate({
@@ -47,6 +47,13 @@ export function Main() {
   useEffect(() => {
     document.title = `I Do | ${title}`;
   }, [title]);
+
+  useEffect(() => {
+    if(activeTab !== 'sticky-wall') {
+      setIsStickyNoteEditorOpen(false);
+    }
+  }
+  , [activeTab,setIsStickyNoteEditorOpen]);
 
   const count = useMemo(() => {
     if (!activeTab) return tasks.length;

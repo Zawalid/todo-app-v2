@@ -1,6 +1,6 @@
 export function Tabs({ tabs, currentTab, setCurrentTab, className = 'gap-8 sm:gap-12' }) {
   return (
-    <div className={`flex items-center border-b-2 pb-2 ${className}`}>
+    <div className={`flex items-center border-b-2 border-border pb-2 ${className}`}>
       {tabs.map((tab) => {
         const tabTitle = tab.includes(' ')
           ? tab.split(' ')[0].toLowerCase() + tab.split(' ')[1]

@@ -21,12 +21,12 @@ export function Tag({ tag, showDeleteButton, customClassName, onDeleteTag, onSel
               onDeleteTag ? onDeleteTag(tag.$id) : setIsConfirmationModalOpen(true);
             }}
           >
-            <i className='fas fa-xmark text-text-error'></i>
+            <i className='fas fa-xmark text-red-500'></i>
           </button>
         )}
         <li
           className={'menu_tag_element truncate relative overflow-hidden text-center ' + customClassName}
-          style={{ backgroundColor: tag.bgColor, color: tag.textColor }}
+          style={{ backgroundColor: `var(${tag.bgColor})`, color: tag.textColor }}
           onClick={() => onSelectTag?.(tag.$id)}
         >
          {tag.title}

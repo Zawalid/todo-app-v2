@@ -2,7 +2,7 @@ import { TaskInfo } from '../components/Task Info/TaskInfo';
 import { Menu } from '../components/Menu/Menu';
 import { Main } from '../components/Main/Main';
 import { SearchProvider } from '../contexts';
-import {  useTrash, useUser } from '../hooks';
+import { useTrash, useUser } from '../hooks';
 import { Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useFetchAllElements } from './useFetchAllElements';

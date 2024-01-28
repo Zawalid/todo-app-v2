@@ -14,9 +14,7 @@ export default function SearchResults() {
   });
 
   return (
-    <div className='relative flex h-full flex-col overflow-auto p-4'
-    ref={parent}
-    >
+    <div className='relative flex h-full flex-col overflow-auto p-4' ref={parent}>
       <Tabs
         tabs={['All', 'Today', 'Upcoming', 'Sticky Wall']}
         currentTab={currentSearchTab}
@@ -36,7 +34,7 @@ export default function SearchResults() {
       {searchResults.length > 0 && (
         <ul
           className={
-            'mt-5 overflow-y-auto pr-3 ' +
+            'mt-5 h-full overflow-y-auto pr-3 ' +
             (currentSearchTab === 'stickyWall'
               ? 'grid grid-cols-[repeat(auto-fill,minmax(270px,1fr))] place-content-start gap-4'
               : 'space-y-2 ')
@@ -45,7 +43,7 @@ export default function SearchResults() {
         >
           {searchResults.map((result) => {
             if (currentSearchTab !== 'stickyWall') {
-              return <Task key={result.$id} task={result} />;
+              return <Task key={result.$id} task={result} />
             }
             if (currentSearchTab === 'stickyWall') {
               return (

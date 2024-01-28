@@ -47,26 +47,18 @@ export function DropDown({
 function Button({
   children,
   onClick,
-  className,
+  className = '',
   isDeleteButton,
-  size = 'default',
+  size = '',
   isCurrent,
   disabled,
 }) {
   return (
     <li
-      className={`${className} relative flex w-full  items-center gap-3 overflow-hidden rounded-md font-medium text-text-secondary transition-colors
-        duration-300 
-        ${size === 'small' ? ' px-2 py-1 ' : ' px-3 py-2 '}
-        ${isDeleteButton && !disabled ? 'hover:bg-red-500 hover:text-white ' : ' '}
-        ${isCurrent ? 'bg-background-secondary ' : 'bg-background-primary '}
-        ${
-          disabled
-            ? 'cursor-not-allowed opacity-50 '
-            : 'cursor-pointer hover:bg-background-secondary hover:text-text-primary'
-        }
+      className={`dropDown-button ${size} ${className} ${isDeleteButton ? 'delete' : ' '} ${
+        isCurrent ? 'current' : ''
+      } ${disabled ? 'disabled' : ''}
         `}
-      disabled={disabled}
       onClick={() => disabled || onClick?.()}
     >
       {children}

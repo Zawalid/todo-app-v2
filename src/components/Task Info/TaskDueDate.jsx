@@ -28,7 +28,7 @@ export function TaskDueDate({ taskDueDate, setTaskDueDate }) {
       <div className='flex items-center gap-2'>
         {taskDueDate && (
           <button
-            className={isOverDue ? 'text-text-error' : 'text-text-secondary'}
+            className={isOverDue ? 'text-red-500' : 'text-text-secondary'}
             onClick={() => setTaskDueDate('')}
           >
             <i className='fa-solid fa-xmark'></i>
@@ -37,9 +37,7 @@ export function TaskDueDate({ taskDueDate, setTaskDueDate }) {
         <DropDown
           toggler={
             <DropDown.Toggler>
-              <span
-                className={'text-sm ' + (isOverDue ? 'text-text-error' : 'text-text-secondary')}
-              >
+              <span className={'text-sm ' + (isOverDue ? 'text-red-500' : 'text-text-secondary')}>
                 {!taskDueDate && 'Not set'}
                 {taskDueDate === today.toISOString().split('T')[0]
                   ? 'Today'
@@ -78,15 +76,17 @@ export function TaskDueDate({ taskDueDate, setTaskDueDate }) {
             options={{ className: 'w-52', placement: 'bottom', shouldCloseOnClick: false }}
             togglerClassName='w-full'
           >
-            <input
-              type='date'
-              className='w-full bg-transparent p-2 text-text-primary focus:outline-none'
-              value={date}
-              onChange={(e) => {
-                setDate(e.target.value);
-                handleAddDueDate(e.target.value);
-              }}
-            />
+            <label className='text-text-primary '>
+              <input
+                type='date'
+                className='w-full bg-transparent p-2 focus:outline-none'
+                value={date}
+                onChange={(e) => {
+                  setDate(e.target.value);
+                  handleAddDueDate(e.target.value);
+                }}
+              />
+            </label>
           </DropDown.NestedMenu>
         </DropDown>
       </div>

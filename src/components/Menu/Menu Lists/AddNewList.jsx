@@ -12,7 +12,7 @@ export function AddNewList({ reference, isOpen }) {
   );
 
   const [value, setValue] = useState('');
-  const [color, setColor] = useState('#ff6b6b');
+  const [color, setColor] = useState('--custom-1');
   const inputEl = useRef(null);
   const colorsDiv = useColorPicker((color) => setColor(color), color);
   const [isTitleTaken, , setTitle] = useIsTitleTaken(lists);
@@ -36,7 +36,7 @@ export function AddNewList({ reference, isOpen }) {
   return (
     <div className='w-fit  rounded-lg border border-border p-3' ref={reference}>
       <div className='flex items-center gap-2 rounded-lg border border-border px-2'>
-        <span className='h-5 w-5 rounded-[3px]' style={{ backgroundColor: color }}></span>
+        <span className='h-5 w-5 rounded-[3px]' style={{ backgroundColor: `var(${color})` }}></span>
         <form
           className='flex-1'
           onSubmit={(e) => {
@@ -59,7 +59,7 @@ export function AddNewList({ reference, isOpen }) {
         </form>
         {value.trim() !== '' &&
           (isTitleTaken ? (
-            <i className='fa-regular fa-circle-xmark text-text-error'></i>
+            <i className='fa-regular fa-circle-xmark text-red-500'></i>
           ) : (
             <i className='fa-regular fa-circle-check text-green-500'></i>
           ))}
