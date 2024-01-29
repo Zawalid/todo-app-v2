@@ -39,17 +39,23 @@ export function MenuLists() {
         <ListsSkeleton />
       ) : (
         <>
-          <ul className='space-y-1 '
-          ref={parent}
-          >
+          <ul className='space-y-1 ' ref={parent}>
             {lists?.map((list) => (
-              <List key={list.$id} list={list} currentOpenedList={currentOpenedList} setCurrentOpenedList={setCurrentOpenedList} />
+              <List
+                key={list.$id}
+                list={list}
+                currentOpenedList={currentOpenedList}
+                setCurrentOpenedList={setCurrentOpenedList}
+              />
             ))}
           </ul>
           <button
             className='my-4 flex cursor-pointer items-center text-sm text-text-secondary'
             ref={addNewListToggler}
-            onClick={() => setIsAddNewListOpen(!isAddNewListOpen)}
+            onClick={() => {
+              setIsAddNewListOpen(!isAddNewListOpen);
+              setTimeout(() => addNewListContainer.current.querySelector('input').focus(), 100);
+            }}
           >
             <i className='fas  fa-plus w-10 text-text-tertiary'></i>
             Add New List

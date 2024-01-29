@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { SpinnerLoader } from '../Common/SpinnerLoader';
 import { useUser } from '../../hooks';
 import { Button } from '../Common/Button';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 
 const BROWSERS_IMAGES = [
   {
@@ -40,6 +41,8 @@ export function Sessions() {
   const [isLoading, setIsLoading] = useState(true);
   const { handleGetSessions, handleDeleteSession, handleDeleteSessions } = useUser();
   const navigate = useNavigate();
+  const [parent] = useAutoAnimate({ duration: 300 });
+
 
   useEffect(() => {
     async function fetchSessions() {
@@ -70,7 +73,7 @@ export function Sessions() {
       <h3 className='mt-7 font-bold text-text-secondary'>
         Active Sessions ({sessions?.filter((session) => !session.current)?.length || '-'})
       </h3>
-      <div className='relative mb-5 mt-3 min-h-[150px] space-y-5 overflow-auto pb-3 pr-3'>
+      <div className='relative mb-5 mt-3 min-h-[150px] space-y-5 overflow-auto pb-3 pr-3' ref={parent}>
         {isLoading ? (
           <SpinnerLoader />
         ) : sessions?.length === 0 ? (

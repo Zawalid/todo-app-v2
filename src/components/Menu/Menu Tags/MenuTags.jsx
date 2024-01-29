@@ -43,13 +43,16 @@ export function MenuTags() {
             ))}
             <li
               className='menu_tag_element cursor-pointer bg-background-tertiary text-text-secondary'
-              onClick={() => setIsAddNewTagOpen(!isAddNewTagOpen)}
+              onClick={() => {
+                setIsAddNewTagOpen(!isAddNewTagOpen);
+                setTimeout(() => addNewTagContainer.current.querySelector('input').focus(), 100);
+              }}
               ref={addNewTagToggler}
             >
               + Add Tag
             </li>
           </ul>
-            {isAddNewTagOpen && <AddNewTag reference={addNewTagContainer} isOpen={isAddNewTagOpen} />}
+          {isAddNewTagOpen && <AddNewTag reference={addNewTagContainer} isOpen={isAddNewTagOpen} />}
         </>
       )}
     </div>

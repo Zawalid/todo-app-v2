@@ -203,10 +203,10 @@ export function TaskInfo() {
 
       {!isTouchDevice() && (
         <aside
-          className={`ml-auto lg:rounded-xl flex flex-col bg-background-primary lg:relative lg:first-line:rounded-xl ${
+          className={`ml-auto lg:rounded-xl   border  flex flex-col bg-background-primary lg:relative lg:first-line:rounded-xl ${
             isTaskOpen
-              ? 'fixed right-0 top-0 z-10 h-full w-full items-stretch  border border-border  p-4 shadow-md sm:w-[380px]'
-              : 'w-0 items-center overflow-hidden  p-0'
+              ? 'fixed right-0 top-0 z-10 h-full w-full items-stretch border-border p-4 shadow-md sm:w-[380px]'
+              : 'w-0 items-center overflow-hidden  border-transparent p-0'
           }`}
           id='taskInfo'
         >

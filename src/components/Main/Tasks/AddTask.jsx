@@ -18,19 +18,25 @@ export function AddTask({ dueDate, listId, className, disabled, onAdd }) {
       tagsIds: [],
       priority: 0,
     };
-    onAdd ? onAdd( value) : handleAddTask(newTask);
+    onAdd ? onAdd(value) : handleAddTask(newTask);
     setValue('');
   };
 
   return (
     <div
-      className={`${className} flex items-center gap-3 rounded-md bg-background-secondary  px-5 `}
+      className={`${className} flex items-center gap-3 rounded-md px-5 ${
+        disabled ? 'bg-background-disabled ' : 'bg-background-secondary '
+      }`}
     >
-      <i className='fa-solid fa-plus text-xl text-text-tertiary'></i>
+      <i
+        className={`fa-solid fa-plus text-xl ${
+          disabled ? 'text-text-disabled' : 'text-text-tertiary'
+        }`}
+      ></i>
       <form className='w-full' onSubmit={handleSubmit}>
         <input
           type='text'
-          className='w-full bg-transparent p-2 text-sm text-text-primary    placeholder:text-text-tertiary focus:outline-none disabled:opacity-50'
+          className='w-full bg-transparent p-2 text-sm text-text-primary  placeholder:text-text-tertiary outline-none disabled:text-text-disabled disabled:placeholder:text-text-disabled '
           placeholder='Add New Task'
           name='task'
           value={value}

@@ -38,7 +38,7 @@ export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
         bottom: `${isKeyboardOpen ? keyboardHeight : 0}px`,
       }}
     >
-      <div className='no_scrollbar flex gap-3 overflow-auto'>
+      <div className='no_scrollbar flex 2xl:justify-center gap-3 overflow-auto'>
         <div className='flex items-center gap-2'>
           <CustomTippy content='Bold'>
             <button

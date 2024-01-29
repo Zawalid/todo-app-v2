@@ -97,3 +97,10 @@
 [vaul-overlay][vaul-drawer-visible='true'] {
   opacity: 1 !important;
 }
+[vaul-drawer] {
+  transition: transform .5s cubic-bezier(.32,.72,0,1) !important;
+  -webkit-transition: transform .5s cubic-bezier(.32,.72,0,1) !important;
+  -moz-transition: transform .5s cubic-bezier(.32,.72,0,1) !important;
+  -ms-transition: transform .5s cubic-bezier(.32,.72,0,1) !important;
+  -o-transition: transform .5s cubic-bezier(.32,.72,0,1) !important;
+}

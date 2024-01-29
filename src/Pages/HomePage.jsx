@@ -17,14 +17,14 @@ const HomePage = () => {
           <nav className='ml-auto flex items-center  sm:gap-6'>
             {checkIsUserAuthenticated() ? (
               <button
-                className=' flex h-9 items-center border-r pr-4 font-medium'
+                className=' flex h-9 items-center text-text-primary sm:border-r border-border pr-4 font-medium'
                 onClick={handleSignOut}
               >
                 Sign Out
               </button>
             ) : (
               <Link
-                className=' flex h-9 items-center border-r border-border pr-4 font-medium text-text-primary'
+                className=' flex h-9 items-center sm:border-r border-border pr-4 font-medium text-text-primary'
                 to='sign-in'
               >
                 Sign In

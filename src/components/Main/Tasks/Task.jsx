@@ -158,7 +158,7 @@ function TaskCheckbox({ checked, setChecked, isSelecting, isSelected }) {
         }
       >
         {isSelected ? (
-          <i className='fa-solid fa-circle-check text-lg text-primary'></i>
+          <i className='fa-regular fa-circle-check text-lg text-primary'></i>
         ) : (
           <i className='fa-regular fa-circle text-lg text-text-tertiary'></i>
         )}

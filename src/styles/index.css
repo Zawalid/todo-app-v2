@@ -77,33 +77,23 @@
   }
 }
 * {
-  @apply: box-border;
+  @apply box-border;
   transition:
     all 500ms,
     color 300ms,
     background-color 300ms,
     border-color 300ms !important;
-  -webkit-transition:
-    all 500ms,
-    color 300ms,
-    background-color 300ms,
-    border-color 300ms !important;
-  -moz-transition:
-    all 500ms,
-    color 300ms,
-    background-color 300ms,
-    border-color 300ms !important;
-  -ms-transition:
-    all 500ms,
-    color 300ms,
-    background-color 300ms,
-    border-color 300ms !important;
-  -o-transition:
-    all 500ms,
-    color 300ms,
-    background-color 300ms,
-    border-color 300ms !important;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
 body {
   font-family: 'Lexend Deca', sans-serif;
   @apply h-[100dvh] overflow-hidden bg-background-primary !important;

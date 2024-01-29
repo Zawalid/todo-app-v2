@@ -18,7 +18,7 @@ export function SideBar({ currentTab, setCurrentTab }) {
         ></i>
       </button>
       <aside
-        className={`absolute top-0 z-[100] flex h-full flex-col items-start gap-3 bg-background-secondary  p-3 shadow-md  sm:static border-r border-border sm:shadow-none ${
+        className={`absolute top-0 w-[200px] z-[100] flex h-full flex-col items-start gap-3 bg-background-secondary  p-3 shadow-md  sm:static border-r border-border sm:shadow-none ${
           isOpen ? 'left-0' : '-left-full'
         }`}
       >
