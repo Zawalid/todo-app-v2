@@ -15,7 +15,7 @@ const AuthLayout = lazy(() => import('./Pages/auth/AuthLayout'));
 
 function App() {
   const listsTitles = useSaveListsTitlesInLocalStorage();
-  const {isDarkMode} = useDarkMode();
+  const { isDarkMode } = useDarkMode();
 
   return (
     <Suspense fallback={<SpinnerLoader />}>

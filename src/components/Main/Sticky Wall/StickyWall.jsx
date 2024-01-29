@@ -2,13 +2,13 @@ import { StickyNote } from './StickyNote';
 import { StickyNoteEditor } from './Sticky Note Editor/StickyNoteEditor';
 import { useStickyNotes } from '../../../hooks/useStickyNotes';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import StickyWallActions from './StickyWallActions/StickyWallActions';
-import { ConfirmationModal } from '../../Common/ConfirmationModal';
 import useDeleteMultiple from '../useDeleteMultiple';
 import { usePagination } from '../usePagination';
 import { useSearchParams } from 'react-router-dom';
 import { isTouchDevice } from '../../../utils/helpers';
+import { useModal } from '../../Common/ConfirmationModal';
 
 export default function StickyWall() {
   const {
@@ -23,24 +23,31 @@ export default function StickyWall() {
     handleDeleteMultipleNotes,
   } = useStickyNotes();
   const [view, setView] = useState(isTouchDevice() ? 'list' : 'grid');
-  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
-  const [deletePermanently, setDeletePermanently] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const whichDelete = useRef(null);
   const { Pagination, currentPage, rowsPerPage } = usePagination(stickyNotes.length);
-
   const [searchParams, setSearchParams] = useSearchParams();
   const sortBy = searchParams.get('sortBy') || 'updatedAt';
   const direction = searchParams.get('direction') || 'desc';
   const groupBy = searchParams.get('groupBy') || 'default';
+  const { confirmDelete } = useModal();
 
-  const { isSelecting, setIsSelecting, setIsDeleteMultipleModalOpen, Modal } = useDeleteMultiple({
+  const { isSelecting, setIsSelecting, Modal } = useDeleteMultiple({
     selectedItems: selectedNotes,
     setSelectedItems: setSelectedNotes,
     itemType: 'Note',
     onConfirm: () => {
-      setIsConfirmationModalOpen(true);
-      whichDelete.current = 'selected';
+      confirmDelete({
+        message: `Are you sure you want to delete ${
+          selectedNotes.length > 1 ? `${selectedNotes.length} sticky notes` : 'this sticky note'
+        }
+?`,
+        title: `Delete Sticky Note${selectedNotes.length > 1 ? 's' : ''} `,
+        
+        onConfirm: (deletePermanently) => {
+          handleDeleteMultipleNotes(deletePermanently);
+          setIsSelecting(false);
+        },
+      });
     },
   });
 
@@ -141,7 +148,6 @@ export default function StickyWall() {
           setGroupBy: (groupBy) => setParam({ groupBy }),
           isCollapsed,
           setIsCollapsed,
-          setIsConfirmationModalOpen,
           // Selection
           isSelecting,
           setIsSelecting,
@@ -152,6 +158,18 @@ export default function StickyWall() {
             setSelectedNotes([]);
           },
           allSelected: selectedNotes.length === stickyNotes.length,
+          // Delete
+          deleteAll() {
+            confirmDelete({
+              message: 'Are you sure you want to delete all sticky notes?',
+              title: 'Delete All Sticky Notes',
+              confirmText: 'Delete All',
+              onConfirm: (deletePermanently) => {
+                handleDeleteAllNotes(deletePermanently);
+                setIsSelecting(false);
+              },
+            });
+          },
         }}
       />
 
@@ -204,33 +222,6 @@ export default function StickyWall() {
         handleAddStickyNote={handleAddStickyNote}
         setCurrentNote={setCurrentNote}
         setIsStickyNoteEditorOpen={setIsStickyNoteEditorOpen}
-      />
-
-      <ConfirmationModal
-        isOpen={isConfirmationModalOpen}
-        sentence={`Are you sure you want to ${
-          whichDelete.current === 'selected'
-            ? `delete ${
-                selectedNotes.length > 1
-                  ? `${selectedNotes.length} sticky notes`
-                  : 'this sticky note'
-              } `
-            : 'delete all sticky notes?'
-        } `}
-        confirmText={whichDelete.current === 'selected' ? 'Delete' : 'Delete All'}
-        onConfirm={() => {
-          whichDelete.current === 'selected'
-            ? handleDeleteMultipleNotes(deletePermanently)
-            : handleDeleteAllNotes(deletePermanently);
-
-          setIsConfirmationModalOpen(false);
-          setIsDeleteMultipleModalOpen(false);
-          setIsSelecting(false);
-        }}
-        onCancel={() => setIsConfirmationModalOpen(false)}
-        element='Sticky Notes'
-        checked={deletePermanently}
-        setChecked={setDeletePermanently}
       />
 
       {Modal}

@@ -12,8 +12,8 @@ import completedSoundFile from '../../../assets/completed.mp3';
 import { useTasks, useLists, useTags } from '../../../hooks';
 import { CheckBox } from '../../Common/CheckBox';
 import TaskActions from './TaskActions';
-import { useDeleteTask } from './useDeleteTask';
 import CustomTippy from '../../Common/CustomTippy';
+import { useModal } from '../../Common/ConfirmationModal';
 
 const completedSound = new Audio(completedSoundFile);
 
@@ -53,12 +53,12 @@ export function Task({
   const [checked, setChecked] = useState(isCompleted);
   const { lists } = useLists();
   const { tasks, handleUpdateTask } = useTasks();
-  const { handleOpenTask, handleCompleteTask } = useTasks();
+  const { handleOpenTask, handleCompleteTask, handleDeleteTask } = useTasks();
+  const { confirmDelete, isModalOpen } = useModal();
   const isPassed = isTaskOverdue(dueDate);
   const bind = useLongPress(() => !isModalOpen && !isSelecting && setIsTaskActionsOpen(true), {
     detect: 'touch',
   });
-  const { Modal, openModal, isModalOpen } = useDeleteTask($id);
 
   const listName = useMemo(() => lists?.find((l) => l?.$id === listId)?.title, [listId, lists]);
   const listColor = useMemo(() => lists?.find((l) => l?.$id === listId)?.color, [listId, lists]);
@@ -106,7 +106,7 @@ export function Task({
           >
             {title}
           </span>
-          <div className='flex justify-between gap-5 items-center'>
+          <div className='flex items-center justify-between gap-5'>
             {[listName, dueDate, subtasks?.length > 0, tagsIds?.length > 0, priority !== 0].some(
               (c) => c,
             ) && (
@@ -129,7 +129,14 @@ export function Task({
         <TaskActions
           isOpen={isTaskActionsOpen}
           onClose={() => setIsTaskActionsOpen(false)}
-          onDelete={() => (setIsTaskActionsOpen(false), openModal())}
+          onDelete={() => {
+            setIsTaskActionsOpen(false);
+            confirmDelete({
+              title: 'Delete task',
+              message: 'Are you sure you want to delete this task?',
+              onConfirm: () => handleDeleteTask($id),
+            });
+          }}
           onCopy={() => (
             navigator.clipboard.writeText(title),
             toast.success('Copied to clipboard'),
@@ -142,7 +149,7 @@ export function Task({
           lists={updatedLists}
           onMove={(listId) => handleUpdateTask($id, { listId })}
         />
-        {Modal}
+        {/* {Modal} */}
       </button>
     </li>
   );
@@ -152,10 +159,7 @@ function TaskCheckbox({ checked, setChecked, isSelecting, isSelected }) {
   return (
     <div className='relative flex h-full'>
       <span
-        className={
-          'absolute top-1/2 -translate-y-1/2   ' +
-          (isSelecting ? 'scale-1' : 'scale-0')
-        }
+        className={'absolute top-1/2 -translate-y-1/2   ' + (isSelecting ? 'scale-1' : 'scale-0')}
       >
         {isSelected ? (
           <i className='fa-regular fa-circle-check text-lg text-primary'></i>
@@ -170,10 +174,7 @@ function TaskCheckbox({ checked, setChecked, isSelecting, isSelected }) {
           setChecked(!checked);
           e.target.checked && completedSound.play();
         }}
-        className={
-          'top-1/2 -translate-y-1/2   ' +
-          (isSelecting ? 'scale-0' : 'scale-1')
-        }
+        className={'top-1/2 -translate-y-1/2   ' + (isSelecting ? 'scale-0' : 'scale-1')}
       />
     </div>
   );
@@ -184,14 +185,12 @@ function TaskDueDate({ dueDate, isPassed, checked }) {
     <div className='flex items-center gap-2'>
       <i
         className={
-          'fas fa-calendar-alt  ' +
-          (isPassed && !checked ? 'text-red-500' : 'text-text-tertiary')
+          'fas fa-calendar-alt  ' + (isPassed && !checked ? 'text-red-500' : 'text-text-tertiary')
         }
       ></i>
       <span
         className={
-          'text-xs font-semibold ' +
-          (isPassed && !checked ? 'text-red-500' : 'text-text-secondary')
+          'text-xs font-semibold ' + (isPassed && !checked ? 'text-red-500' : 'text-text-secondary')
         }
       >
         {checkIfToday(dueDate)
@@ -241,7 +240,7 @@ function TaskTags({ tagsIds }) {
 }
 
 function TaskPriority({ priority }) {
-  if (!priority ) return null;
+  if (!priority) return null;
   return (
     <div className='flex items-center gap-2'>
       <i

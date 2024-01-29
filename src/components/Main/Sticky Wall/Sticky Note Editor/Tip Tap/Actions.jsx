@@ -1,8 +1,7 @@
-import { useState } from 'react';
 import Switch from '../../../../Common/Switch';
-import { ConfirmationModal } from '../../../../Common/ConfirmationModal';
 import { DropDown } from '../../../../Common/DropDown';
 import { DEFAULT_FONT_FAMILY } from '../../../../../utils/constants';
+import { useModal } from '../../../../Common/ConfirmationModal';
 
 export function Actions({
   children,
@@ -11,10 +10,10 @@ export function Actions({
   readonly,
   pinned,
   fontFamily,
-  handlers: { onClose, onCopy, onDelete, onBack, onReadOnly, onPin, onExport, onChangeFontFamily },
+  handlers: { onClose, onCopy, onDelete, onReadOnly, onPin, onExport, onChangeFontFamily },
 }) {
-  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
-  const [deletePermanently, setDeletePermanently] = useState(false);
+  const { confirmDelete } = useModal();
+
   return (
     <div
       className={
@@ -113,7 +112,14 @@ export function Actions({
           </DropDown>
           <button
             className='grid grid-cols-[15px_auto] items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-red-500  hover:bg-background-secondary hover:text-red-500'
-            onClick={() => setIsConfirmationModalOpen(true)}
+            onClick={() => {
+              confirmDelete({
+                message: 'Are you sure you want to delete this sticky note?',
+                title: 'Delete Sticky Note',
+                
+                onConfirm: onDelete,
+              });
+            }}
           >
             <i className='fa-solid fa-trash-can'></i>
             <span className='text-start'>Delete Note</span>
@@ -138,20 +144,6 @@ export function Actions({
           </p>
         </div>
       </div>
-      <ConfirmationModal
-        isOpen={isConfirmationModalOpen}
-        sentence='Are you sure you want to delete this sticky note?'
-        confirmText='Delete'
-        onConfirm={() => {
-          onDelete(deletePermanently);
-          setIsConfirmationModalOpen(false);
-          onBack();
-        }}
-        onCancel={() => setIsConfirmationModalOpen(false)}
-        element='Sticky Note'
-        checked={deletePermanently}
-        setChecked={setDeletePermanently}
-      />
     </div>
   );
 }
@@ -199,3 +191,7 @@ function FontFamilies({ fontFamily, onChangeFontFamily }) {
     </div>
   );
 }
+
+
+
+

@@ -2,15 +2,15 @@ import Tippy from '@tippyjs/react';
 import { AddTask } from './AddTask';
 import { Task } from './Task';
 import { TasksActions } from './TasksActions/TasksActions';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { isTaskOverdue } from '../../../utils/Moment';
-import { ConfirmationModal } from '../../Common/ConfirmationModal';
 import { useSearchParams } from 'react-router-dom';
 import { useTasks } from '../../../hooks/useTasks';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import useDeleteMultiple from '../useDeleteMultiple';
 import { usePagination } from '../usePagination';
 import SelectionIcons from '../../Common/SelectionIcons';
+import { useModal } from '../../Common/ConfirmationModal';
 
 const filtersConditions = {
   all: () => true,
@@ -30,21 +30,30 @@ export default function TasksList({ dueDate, listId, condition, activeTab }) {
     selectedTasks,
     setSelectedTasks,
   } = useTasks();
-  const [deletePermanently, setDeletePermanently] = useState(false);
   const [filteredTasks, setFilteredTasks] = useState([]);
-  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [searchParams] = useSearchParams();
   const { Pagination, currentPage, rowsPerPage } = usePagination(filteredTasks.length);
+  const { confirmDelete } = useModal();
+
   const { isSelecting, setIsSelecting, setIsDeleteMultipleModalOpen, Modal } = useDeleteMultiple({
     selectedItems: selectedTasks,
     setSelectedItems: setSelectedTasks,
     itemType: 'Task',
     onConfirm: () => {
-      setIsConfirmationModalOpen(true);
-      whichDelete.current = 'selected';
+      confirmDelete({
+        message: `Are you sure you want to delete ${
+          selectedTasks.length > 1 ? `${selectedTasks.length} tasks` : 'this task'
+        }
+?`,
+        title: `Delete Task${selectedTasks.length > 1 ? 's' : ''} `,
+        
+        onConfirm: (deletePermanently) => {
+          handleDeleteMultipleTasks(deletePermanently);
+          setIsSelecting(false);
+        },
+      });
     },
   });
-  const whichDelete = useRef(null);
   const [parent] = useAutoAnimate({
     duration: 500,
   });
@@ -69,9 +78,7 @@ export default function TasksList({ dueDate, listId, condition, activeTab }) {
             filteredTasks,
             isSelecting,
             setIsSelecting,
-            setIsDeleteMultipleModalOpen,
-            whichDelete,
-            setIsConfirmationModalOpen,
+            allSelected: selectedTasks.length === filteredTasks.length,
             selectAll: () =>
               setSelectedTasks(
                 filteredTasks.map((task) => {
@@ -79,7 +86,17 @@ export default function TasksList({ dueDate, listId, condition, activeTab }) {
                 }),
               ),
             unSelectAll: () => setSelectedTasks([]),
-            allSelected: selectedTasks.length === filteredTasks.length,
+            deleteAll() {
+              confirmDelete({
+                message: `Are you sure you want to delete all tasks?`,
+                title: `Delete All Tasks`,
+                
+                onConfirm: (deletePermanently) => {
+                  handleDeleteAllTasks(condition, filtersConditions[filter], deletePermanently);                  setIsSelecting(false);
+                },
+              });
+            },
+            setIsDeleteMultipleModalOpen,
           }}
         />
       </div>
@@ -101,29 +118,6 @@ export default function TasksList({ dueDate, listId, condition, activeTab }) {
       ) : (
         <NoTasksMessage activeTab={activeTab} />
       )}
-
-      <ConfirmationModal
-        isOpen={isConfirmationModalOpen}
-        sentence={`Are you sure you want to ${
-          whichDelete.current === 'selected'
-            ? `delete ${selectedTasks.length > 1 ? `${selectedTasks.length} tasks` : 'this task'} `
-            : 'delete all tasks?'
-        } `}
-        confirmText={whichDelete.current === 'selected' ? 'Delete' : 'Delete All'}
-        onConfirm={() => {
-          whichDelete.current === 'selected'
-            ? handleDeleteMultipleTasks(deletePermanently)
-            : handleDeleteAllTasks(condition, filtersConditions[filter], deletePermanently);
-
-          setIsConfirmationModalOpen(false);
-          setIsDeleteMultipleModalOpen(false);
-          setIsSelecting(false);
-        }}
-        onCancel={() => setIsConfirmationModalOpen(false)}
-        element='Tasks'
-        checked={deletePermanently}
-        setChecked={setDeletePermanently}
-      />
 
       {filteredTasks.filter((task) => condition(task)).length > 0 && Pagination}
       {Modal}
@@ -192,11 +186,10 @@ function Actions({
   isSelecting,
   setIsSelecting,
   allSelected,
-  setIsDeleteMultipleModalOpen,
-  whichDelete,
-  setIsConfirmationModalOpen,
   selectAll,
   unSelectAll,
+  deleteAll,
+  setIsDeleteMultipleModalOpen,
 }) {
   return (
     <SelectionIcons
@@ -214,8 +207,7 @@ function Actions({
           <TasksActions
             tasksLength={filteredTasks.length}
             onDeleteAll={() => {
-              setIsConfirmationModalOpen(true);
-              whichDelete.current = 'clear';
+              deleteAll();
               setIsDeleteMultipleModalOpen(false);
             }}
           />

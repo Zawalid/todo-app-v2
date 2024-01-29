@@ -156,7 +156,7 @@ export default function TasksProvider({ children }) {
         ),
       ),
       {
-        loading: 'Clearing all tasks...',
+        loading: 'Deleting all tasks...',
         success: () => {
           toast.dismiss(toastId);
           toast.success(getDeletionMessage('task','success', false, false));

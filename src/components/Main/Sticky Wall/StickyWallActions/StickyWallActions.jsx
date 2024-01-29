@@ -21,12 +21,12 @@ export default function StickyWallActions({
   setGroupBy,
   isCollapsed,
   setIsCollapsed,
-  setIsConfirmationModalOpen,
   isSelecting,
   setIsSelecting,
   selectAll,
   unSelectAll,
   allSelected,
+  deleteAll,
 }) {
   return (
     <div className='flex items-center justify-between'>
@@ -57,7 +57,7 @@ export default function StickyWallActions({
 
           <DropDown.Divider />
 
-          <DropDown.Button onClick={() => setIsConfirmationModalOpen(true)} isDeleteButton={true}>
+          <DropDown.Button onClick={deleteAll} isDeleteButton={true}>
             <i className='fa-solid fa-trash-can '></i>
             <span>Delete All</span>
           </DropDown.Button>

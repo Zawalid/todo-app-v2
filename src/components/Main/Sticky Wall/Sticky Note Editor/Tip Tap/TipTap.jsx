@@ -173,7 +173,7 @@ function NoteInfo({ editor, updateDate, isSaving, title, setTitle }) {
       <input
         type='text'
         placeholder='Note Title'
-        className='w-full appearance-none border-none bg-transparent text-4xl font-bold text-text-primary placeholder:text-text-secondary outline-none sm:text-[40px]'
+        className='w-full appearance-none border-none bg-transparent text-4xl font-bold text-text-primary outline-none placeholder:text-text-secondary sm:text-[40px]'
         value={title}
         onChange={(e) => setTitle(e.target.value)}
       />
@@ -195,4 +195,3 @@ function NoteInfo({ editor, updateDate, isSaving, title, setTitle }) {
     </div>
   );
 }
-

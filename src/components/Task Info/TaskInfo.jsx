@@ -7,12 +7,12 @@ import { TaskSubTasks } from './TaskSubTasks/TaskSubTasks';
 import { TaskPriority } from './TaskPriority';
 import { useTasks } from '../../hooks/useTasks';
 import Drawer from '../Common/Drawer';
-import { useDeleteTask } from '../Main/Tasks/useDeleteTask';
 import { isTouchDevice } from '../../utils/helpers';
 import { useHref } from 'react-router-dom';
+import { useModal } from '../Common/ConfirmationModal';
 
 export function TaskInfo() {
-  const { currentTask, isTaskOpen, setIsTaskOpen, handleUpdateTask } = useTasks();
+  const { currentTask, isTaskOpen, setIsTaskOpen, handleUpdateTask, handleDeleteTask } = useTasks();
   const [taskTitle, setTaskTitle] = useState();
   const [taskNote, setTaskNote] = useState();
   const [taskListId, setTaskListId] = useState('none');
@@ -21,8 +21,8 @@ export function TaskInfo() {
   const [taskTagsIds, setTaskTagsIds] = useState();
   const [taskPriority, setTaskPriority] = useState(0);
   const [isChanged, setIsChanged] = useState(false);
-  const { Modal, openModal } = useDeleteTask(currentTask?.$id);
   const activeTab = useHref().split('/app/')[1];
+  const { confirmDelete } = useModal();
 
   useEffect(() => {
     setIsTaskOpen(false);
@@ -176,7 +176,13 @@ export function TaskInfo() {
         <div className='mt-auto flex gap-3 pt-3'>
           <button
             className='flex-1 cursor-pointer rounded-lg bg-red-500 py-2 text-center text-sm font-semibold text-white hover:bg-red-600'
-            onClick={openModal}
+            onClick={() =>
+              confirmDelete({
+                title: 'Delete Task',
+                message: 'Are you sure you want to delete this task?',
+                onConfirm: () => handleDeleteTask(currentTask.$id),
+              })
+            }
           >
             Delete Task
           </button>
@@ -185,7 +191,7 @@ export function TaskInfo() {
               'flex-1 rounded-lg border  py-2 text-center  text-sm font-semibold ' +
               (isChanged
                 ? 'cursor-pointer border-primary bg-primary text-white hover:bg-primary-hover '
-                : 'bg-background-disabled text-text-disabled cursor-not-allowed border-border')
+                : 'cursor-not-allowed border-border bg-background-disabled text-text-disabled')
             }
             onClick={handleSaveChanges}
           >
@@ -203,7 +209,7 @@ export function TaskInfo() {
 
       {!isTouchDevice() && (
         <aside
-          className={`ml-auto lg:rounded-xl   border  flex flex-col bg-background-primary lg:relative lg:first-line:rounded-xl ${
+          className={`ml-auto flex   flex-col  border bg-background-primary lg:relative lg:rounded-xl lg:first-line:rounded-xl ${
             isTaskOpen
               ? 'fixed right-0 top-0 z-10 h-full w-full items-stretch border-border p-4 shadow-md sm:w-[380px]'
               : 'w-0 items-center overflow-hidden  border-transparent p-0'
@@ -213,8 +219,6 @@ export function TaskInfo() {
           {isTaskOpen && taskInfo}
         </aside>
       )}
-
-      {Modal}
     </>
   );
 }

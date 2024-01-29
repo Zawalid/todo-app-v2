@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { NavLink, useHref, useNavigate } from 'react-router-dom';
 import { ListAction } from './ListAction';
-import { ConfirmationModal } from '../../Common/ConfirmationModal';
 import { useIsTitleTaken, useLists, useTasks } from '../../../hooks';
+import { useModal } from '../../Common/ConfirmationModal';
 
 export function List({ list }) {
   const { $id, title, color } = list;
@@ -10,9 +10,8 @@ export function List({ list }) {
   const { tasks } = useTasks();
   const [isRenameInputOpen, setIsRenameInputOpen] = useState(false);
   const [isNewTitleTaken, setTitle] = useIsTitleTaken($id, title);
-  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [listColor, setListColor] = useState(color);
-  const [deletePermanently, setDeletePermanently] = useState(false);
+  const { confirmDelete } = useModal();
   const tasksCount = useMemo(
     () => tasks.filter((task) => task.listId === $id).length,
     [tasks, $id],
@@ -66,7 +65,13 @@ export function List({ list }) {
         </NavLink>
 
         <ListAction
-          onDelete={() => setIsConfirmationModalOpen(true)}
+          onDelete={() =>
+            confirmDelete({
+              title: 'Delete List',
+              message: `Are you sure you want to delete this list ?`,
+              onConfirm: () => handleDeleteList($id),
+            })
+          }
           onChangeColor={(color) => {
             setListColor(color);
             handleChangeListColor($id, color);
@@ -82,7 +87,7 @@ export function List({ list }) {
         >
           <input
             type='text'
-            className='w-full  border-none text-text-primary bg-transparent py-2 text-sm  focus:outline-none '
+            className='w-full  border-none bg-transparent py-2 text-sm text-text-primary  focus:outline-none '
             defaultValue={title}
             ref={newListTitle}
             onBlur={renameList}
@@ -96,24 +101,6 @@ export function List({ list }) {
           )}
         </div>
       </li>
-      <ConfirmationModal
-        isOpen={isConfirmationModalOpen}
-        sentence='Are you sure you want to delete this list?'
-        confirmText='Delete'
-        onConfirm={() => {
-          setIsConfirmationModalOpen(false);
-          handleDeleteList($id, deletePermanently);
-          path?.replace(/%20/g, ' ') === title && navigate('/app');
-          // To delete all the tasks of the deleted list
-          // const tasksToDelete = tasks.filter((task) => task.listId === $id);
-          // if (tasksToDelete.length === 0) return;
-          // tasksToDelete.forEach(async (task) => await handleDeleteTask(task.$id));
-        }}
-        onCancel={() => setIsConfirmationModalOpen(false)}
-        element='List'
-        checked={deletePermanently}
-        setChecked={setDeletePermanently}
-      />
     </>
   );
 }

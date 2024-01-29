@@ -1,12 +1,11 @@
 import { Tabs } from '../../Common/Tabs';
-import { useRef, useState } from 'react';
-import { ConfirmationModal } from '../../Common/ConfirmationModal';
 import trashIcon from '../../../assets/trash.png';
 import { Item } from './Item';
 import { useRestoreElement, useLists, useTrash } from '../../../hooks';
 import { toast } from 'sonner';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
-import { DropDown } from '../../Common/DropDown';
+import { useModal } from '../../Common/ConfirmationModal';
+import { Actions } from './Actions';
 
 export default function Trash({ isOpen, onClose }) {
   const {
@@ -22,11 +21,8 @@ export default function Trash({ isOpen, onClose }) {
   } = useTrash();
   const { lists } = useLists();
   const { handleRestoreElement } = useRestoreElement();
-  const [currentItem, setCurrentItem] = useState(null);
-  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
-  const whichDelete = useRef(null);
   const [parent] = useAutoAnimate({ duration: 300 });
-
+  const { confirmDelete } = useModal();
 
   const onRestore = async (item) => {
     if (currentTab === 'lists') {
@@ -61,12 +57,28 @@ export default function Trash({ isOpen, onClose }) {
             currentTab={currentTab}
             trashLength={trashLength}
             onDeleteAll={() => {
-              setIsConfirmationModalOpen(true);
-              whichDelete.current = 'type';
+              confirmDelete({
+                title: 'Delete All',
+                message: `Are you sure you want to delete all ${
+                  currentTab === 'stickyNotes' ? 'sticky notes' : currentTab
+                } permanently ?`,
+                confirmText: 'Delete All',
+                showCheckBox: false,
+                onConfirm: () => {
+                  handleEmptyType(currentTab);
+                },
+              });
             }}
             onEmptyTrash={() => {
-              setIsConfirmationModalOpen(true);
-              whichDelete.current = 'all';
+              confirmDelete({
+                title: 'Empty Trash',
+                message: 'Are you sure you want to empty trash ?',
+                confirmText: 'Empty',
+                showCheckBox: false,
+                onConfirm: () => {
+                  handleEmptyTrash();
+                },
+              });
             }}
             onRestoreAll={async () => {
               await handleRestoreType(currentTab);
@@ -84,44 +96,22 @@ export default function Trash({ isOpen, onClose }) {
         trash={trash}
         currentTab={currentTab}
         onDelete={(item) => {
-          setCurrentItem(item);
-          setIsConfirmationModalOpen(true);
-          whichDelete.current = 'item';
+          confirmDelete({
+            title: 'Delete',
+            message: `Are you sure you want to delete this ${
+              currentTab === 'stickyNotes'
+                ? 'sticky note'
+                : currentTab.slice(0, currentTab.length - 1)
+            } permanently ?`,
+            showCheckBox: false,
+            onConfirm: () => {
+              handleDeleteFromTrash(currentTab, JSON.parse(item).id);
+            },
+          });
         }}
         onRestore={onRestore}
-        setCurrentItem={setCurrentItem}
       />
       <Info />
-
-      <ConfirmationModal
-        isOpen={isConfirmationModalOpen}
-        sentence={`Are you sure you want to   ${
-          whichDelete.current === 'item'
-            ? 'delete this ' +
-              (currentTab === 'stickyNotes' ? 'sticky notes' : currentTab).slice(
-                0,
-                currentTab.length - 1,
-              ) +
-              ' permanently'
-            : whichDelete.current === 'type'
-            ? 'delete all ' +
-              (currentTab === 'stickyNotes' ? 'sticky notes' : currentTab) +
-              ' permanently'
-            : ' empty trash '
-        } ? `}
-        confirmText={
-          whichDelete.current === 'item' || whichDelete.current === 'type' ? 'Delete' : 'Empty'
-        }
-        onConfirm={() => {
-          if (whichDelete.current === 'item') handleDeleteFromTrash(currentTab, currentItem.id);
-          if (whichDelete.current === 'type') handleEmptyType(currentTab);
-          if (whichDelete.current === 'all') handleEmptyTrash();
-          setIsConfirmationModalOpen(false);
-        }}
-        onCancel={() => setIsConfirmationModalOpen(false)}
-        element={whichDelete.current === 'all' ? 'Trash' : 'Permanently'}
-        showCheckBox={false}
-      />
     </div>
   );
 }
@@ -145,38 +135,11 @@ function Items({ trash, currentTab, onDelete, onRestore }) {
         <Item
           key={JSON.parse(item).id}
           title={JSON.parse(item).title}
-          onDelete={onDelete}
+          onDelete={() => onDelete(item)}
           onRestore={() => onRestore(item)}
         />
       ))}
     </ul>
-  );
-}
-
-function Actions({ trash, currentTab, trashLength, onDeleteAll, onRestoreAll, onEmptyTrash }) {
-  return (
-    <DropDown
-      toggler={<i className='fa-solid fa-ellipsis-v'></i>}
-      togglerClassName='icon-button not-active small'
-      options={{ className: 'w-60 max-h-[100%]', shouldCloseOnClick: false }}
-    >
-      <DropDown.Button
-        isDeleteButton={true}
-        disabled={trash[currentTab]?.length === 0}
-        onClick={onDeleteAll}
-      >
-        <i className='fa-solid fa-trash-can '></i>
-        <span>Delete All</span>
-      </DropDown.Button>
-      <DropDown.Button disabled={trash[currentTab]?.length === 0} onClick={onRestoreAll}>
-        <i className='fa-solid fa-trash-can '></i>
-        <span>Restore All</span>
-      </DropDown.Button>
-      <DropDown.Button isDeleteButton={true} disabled={trashLength === 0} onClick={onEmptyTrash}>
-        <i className='fa-solid fa-trash-can '></i>
-        <span>Empty Trash</span>
-      </DropDown.Button>
-    </DropDown>
   );
 }
 

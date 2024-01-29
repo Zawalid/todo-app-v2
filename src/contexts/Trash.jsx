@@ -133,15 +133,13 @@ export default function TrashProvider({ children }) {
       Promise.all([deleteElement(type, itemId), deleteItem(type, itemId)]),
       {
         loading: `Deleting ${element} permanently...`,
-        success: () => {
-          toast.success(` ${element} has been deleted permanently.`);
-        },
+        success: ` ${element} has been deleted permanently.`,
         error: (error) => {
-          console.log(error)
+          console.log(error);
           toast.dismiss(toastId);
           toast.error(`Failed to delete ${element}!.`, {
             action: {
-            duration: 4000,
+              duration: 4000,
               label: 'Try Again',
               onClick: () => {
                 handleDeleteFromTrash(type, itemId);
@@ -181,7 +179,7 @@ export default function TrashProvider({ children }) {
       toast.error(`Failed to restore ${element}. Please try again`, {
         id: toastId,
         action: {
-            duration: 4000,
+          duration: 4000,
           label: 'Try Again',
           onClick: () => {
             handleRestoreFromTrash(type, itemId);
@@ -217,7 +215,7 @@ export default function TrashProvider({ children }) {
           toast.dismiss(toastId);
           toast.error(`Failed to restore ${element}. Please try again`, {
             action: {
-            duration: 4000,
+              duration: 4000,
               label: 'Try Again',
               onClick: () => {
                 handleRestoreType(type);
@@ -248,7 +246,7 @@ export default function TrashProvider({ children }) {
           toast.dismiss(toastId);
           toast.error(`Failed to empty ${element}. Please try again`, {
             action: {
-            duration: 4000,
+              duration: 4000,
               label: 'Try Again',
               onClick: () => {
                 handleEmptyType(type);
