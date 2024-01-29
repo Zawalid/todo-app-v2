@@ -32,8 +32,8 @@
 
 /* Buttons */
 .icon-button {
-  @apply disabled:bg-background-disabled disabled:text-text-disabled flex h-8 w-8 items-center justify-center rounded-[4px]  p-1
-    disabled:cursor-not-allowed;
+  @apply flex h-8 w-8 items-center justify-center rounded-[4px] p-1 disabled:cursor-not-allowed  disabled:bg-background-disabled
+    disabled:text-text-disabled;
 
   &:not(:disabled).active {
     @apply bg-primary  text-white;
@@ -64,7 +64,7 @@
     @apply hover:bg-red-500 hover:text-white;
   }
   &.disabled {
-    @apply text-text-disabled  bg-background-disabled cursor-not-allowed ; 
+    @apply cursor-not-allowed  bg-background-disabled text-text-disabled;
   }
 }
 
@@ -72,7 +72,7 @@
   @apply ml-0 flex h-full w-20 border-collapse items-center justify-center border border-border px-2 py-1.5 text-xs font-medium text-text-secondary shadow-sm  hover:bg-background-tertiary sm:text-sm;
 
   &:disabled {
-    @apply text-text-disabled bg-background-disabled cursor-not-allowed;
+    @apply cursor-not-allowed bg-background-disabled text-text-disabled;
   }
 }
 
@@ -84,9 +84,8 @@ input[type='checkbox'] {
   }
 }
 
-
 .color {
-  @apply h-5 w-5 cursor-pointer rounded-[3px] border border-border  hover:shadow-md;
+  @apply h-5 w-5 cursor-pointer rounded-[3px] border border-border hover:shadow-md;
 }
 .note_text {
   display: -webkit-box;
@@ -97,3 +96,5 @@ input[type='checkbox'] {
 .full_screen {
   @apply absolute  z-10 h-full max-h-full  w-full !important;
 }
+
+

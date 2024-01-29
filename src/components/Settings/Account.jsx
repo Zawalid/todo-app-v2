@@ -107,17 +107,16 @@ export function Account() {
         onClick={handleSaveChanges}
         className='mr-0 px-3'
       />
-      {isVerificationModalOpen && (
-        <UserVerificationModal
-          onClose={() => setIsVerificationModalOpen(false)}
-          onConfirm={async (password) => {
-            if (password.length < 8)
-              return toast.error('Password must be at least 8 characters long');
-            setIsVerificationModalOpen(false);
-            onUpdate(password);
-          }}
-        />
-      )}
+      <UserVerificationModal
+        isOpen={isVerificationModalOpen}
+        onClose={() => setIsVerificationModalOpen(false)}
+        onConfirm={async (password) => {
+          if (password.length < 8)
+            return toast.error('Password must be at least 8 characters long');
+          setIsVerificationModalOpen(false);
+          onUpdate(password);
+        }}
+      />
     </>
   );
 }

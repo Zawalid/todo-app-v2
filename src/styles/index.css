@@ -82,7 +82,8 @@
     all 500ms,
     color 300ms,
     background-color 300ms,
-    border-color 300ms !important;
+    border-color 300ms,
+    visibility 100ms;
 }
 
 @media (prefers-reduced-motion: reduce) {
