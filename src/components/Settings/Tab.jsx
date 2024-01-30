@@ -13,7 +13,7 @@ export function Tab({ children }) {
   }, []);
   return (
     <div
-      className='flex flex-1 flex-col overflow-auto px-5 py-4 opacity-0 sm:px-8 sm:py-6'
+      className='flex flex-1 flex-col transition-opacity duration-500 overflow-auto px-5 py-4 opacity-0 sm:px-8 sm:py-6'
       ref={parent}
     >
       {children}

@@ -1,12 +1,43 @@
-export function SpinnerLoader({ size }) {
-  const sizeClass =
-    size === 'small' ? 'h-6 w-6 after:h-6 after:w-6' : 'h-12 w-12 after:h-12 after:w-12';
-  const borderClass =
-    size === 'small' ? ' border-[3px] after:border-[3px] ' : ' border-[5px] after:border-[5px]';
+import '../../styles/loader.css';
+
+export function SpinnerLoader() {
   return (
-    <span
-      className={`loader animate-pulse2 after:animate-scaleUp absolute  inline-block  rounded-full  border-text-tertiary after:absolute after:left-1/2 after:top-1/2  after:inline-block -translate-x-1/2 -translate-y-1/2 after:-translate-x-1/2 after:-translate-y-1/2 after:rounded-full after:border-text-tertiary 
-       ${sizeClass} ${borderClass}`}
-    ></span>
+    <div className='absolute grid h-full w-full place-content-center'>
+      <svg
+        xmlns='http://www.w3.org/2000/svg'
+        height='128px'
+        width='128px'
+        viewBox='0 0 128 128'
+        className='pl'
+      >
+        <defs>
+          <linearGradient y2='1' x2='0' y1='0' x1='0' id='pl-grad'>
+            <stop stopColor='hsl(193,90%,55%)' offset='0%'></stop>
+            <stop stopColor='hsl(223,90%,55%)' offset='100%'></stop>
+          </linearGradient>
+        </defs>
+        <circle
+          strokeLinecap='round'
+          strokeWidth='16'
+          stroke='hsla(0,10%,10%,0.1)'
+          fill='none'
+          cy='64'
+          cx='64'
+          r='56'
+          className='pl__ring'
+        ></circle>
+        <path
+          strokeDashoffset='10'
+          strokeDasharray='44 1111'
+          strokeLinejoin='round'
+          strokeLinecap='round'
+          strokeWidth='16'
+          stroke='url(#pl-grad)'
+          fill='none'
+          d='M92,15.492S78.194,4.967,66.743,16.887c-17.231,17.938-28.26,96.974-28.26,96.974L119.85,59.892l-99-31.588,57.528,89.832L97.8,19.349,13.636,88.51l89.012,16.015S81.908,38.332,66.1,22.337C50.114,6.156,36,15.492,36,15.492a56,56,0,1,0,56,0Z'
+          className='pl__worm'
+        ></path>
+      </svg>
+    </div>
   );
 }

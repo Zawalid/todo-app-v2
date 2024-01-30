@@ -26,7 +26,7 @@ const tabs = {
   },
   search: {
     title: 'Search Results',
-    skeleton: <SpinnerLoader size='large' />,
+    skeleton: <SpinnerLoader />,
   },
 };
 

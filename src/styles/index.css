@@ -79,11 +79,11 @@
 * {
   @apply box-border;
   transition:
-    all 500ms,
-    color 300ms,
-    background-color 300ms,
-    border-color 300ms,
-    visibility 100ms;
+    all 300ms,
+    visibility 100ms,
+    inset 500ms,
+    width 500ms,
+    height 500ms,
 }
 
 @media (prefers-reduced-motion: reduce) {

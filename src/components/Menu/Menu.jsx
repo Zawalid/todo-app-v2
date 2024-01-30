@@ -9,7 +9,6 @@ import { Search } from './Search';
 import { useDarkMode, useTrash } from '../../hooks';
 import { Profile } from './Profile';
 import Settings from '../Settings/Settings';
-import { useSwipe } from '../../hooks/useSwipe';
 import Trash from '../Main/Trash/Trash';
 import { useFetchAllElements } from '../../hooks/useFetchAllElements';
 
@@ -20,30 +19,9 @@ export function Menu() {
   const menu = useRef(null);
   const { trashLength } = useTrash();
   const activeTab = useHref().split('/app/')[1];
-  const { onSwipeStart, onSwipeLeft, onSwipeRight } = useSwipe(300);
 
   useEffect(() => {
     setIsOpen(window.matchMedia('(min-width: 1024px)').matches);
-  }, [activeTab]);
-
-  useEffect(() => {
-    if (activeTab === 'sticky-wall') return;
-
-    const body = document.body;
-    body.addEventListener('touchstart', onSwipeStart);
-    body.addEventListener('touchmove', (e) => onSwipeLeft(e, () => setIsOpen(false)));
-    body.addEventListener('touchmove', (e) => onSwipeRight(e, () => setIsOpen(true)));
-
-    const removeListeners = () => {
-      body.removeEventListener('touchstart', onSwipeStart);
-      body.removeEventListener('touchmove', (e) => onSwipeLeft(e, () => setIsOpen(false)));
-      body.removeEventListener('touchmove', (e) => onSwipeRight(e, () => setIsOpen(true)));
-    };
-
-    if (activeTab === 'sticky-wall') removeListeners();
-
-    return removeListeners;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
 
   return (
