@@ -3,6 +3,7 @@ import { PasswordInput } from '../Common/PasswordInput';
 import { toast } from 'sonner';
 import { useUser } from '../../hooks';
 import { Button } from '../Common/Button';
+import { Tab } from './Tab';
 
 export function Password() {
   const [currentPassword, setCurrentPassword] = useState('');
@@ -28,7 +29,7 @@ useEffect(() => {
     }
   }
   return (
-    <>
+    <Tab>
       <div className='mt-8 space-y-5'>
         <div>
           <h3 className='mb-3 font-bold text-text-secondary'>Current password</h3>
@@ -56,6 +57,6 @@ useEffect(() => {
         </div>
       </div>
       <Button text='Change Password'  onClick={changePassword} disabled={!isFilled} className='mr-0 px-3'/>
-    </>
+    </Tab>
   );
 }

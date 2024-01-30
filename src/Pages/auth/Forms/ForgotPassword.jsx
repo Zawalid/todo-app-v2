@@ -10,7 +10,7 @@ export default function ForgotPassword() {
   const { handleResetPassword } = useUser();
 
   return (
-    <section className='flex h-full flex-col items-center justify-center gap-10 px-8  sm:px-16'>
+    <section className='flex h-full flex-col items-center justify-center gap-10  md:px-10'>
       <button
         className='flex cursor-pointer items-center gap-2 self-start rounded-lg border border-border px-2 py-1  bg-background-primary'
         onClick={() => navigate(-1)}

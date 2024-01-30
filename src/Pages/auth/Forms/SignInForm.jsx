@@ -20,7 +20,7 @@ function SignInForm() {
   }
 
   return (
-    <section className='flex h-full flex-col items-center justify-center gap-10 px-5 sm:px-10 md:px-16 text-center'>
+    <>
       <h1 className=' self-start text-4xl font-bold text-text-primary'>Sign In</h1>
       <form className='flex w-full flex-col gap-6' onSubmit={handleSubmit}>
         <InputField
@@ -30,13 +30,13 @@ function SignInForm() {
           onChange={(e) => setEmail(e.target.value)}
         />
         <PasswordInput password={password} setPassword={setPassword} />
-        <Button isLoading={isLoading} text='Sign In' className='w-full'/>
+        <Button isLoading={isLoading} text='Sign In' className='w-full' />
         <Link className='self-start text-sm font-semibold text-text-tertiary' to='/forgot-password'>
           Forgot Password?
         </Link>
       </form>
       <AuthLink text='Sign Up' link='/sign-up' />
-    </section>
+    </>
   );
 }
 export default SignInForm;

@@ -11,14 +11,16 @@ function AuthLayout() {
       {checkIsUserAuthenticated() ? (
         <Navigate to='/app' replace={true} />
       ) : (
-        <div className='rounded-xl sm:grid h-full w-full grid-cols-[auto_1fr] bg-background-secondary p-5 sm:grid-cols-2'>
-          <section className='hidden place-content-center rounded-xl bg-black sm:grid'>
+        <div className='flex h-full  w-full p-5 '>
+          <section className='hidden flex-1 place-content-center rounded-xl bg-black md:grid'>
             <img src={bgImage} alt='bg' className='w-[300px]' />
           </section>
-          <div className='h-full '>
+          <section className='h-full flex-[1.5]'>
             <Logo />
-            <Outlet />
-          </div>
+            <div className='flex h-full flex-col items-center justify-center gap-10 text-center sm:px-5 md:px-16'>
+              <Outlet />
+            </div>
+          </section>
         </div>
       )}
     </>

@@ -9,9 +9,5 @@ export function Content({ currentTab }) {
     sessions: <Sessions />,
   };
 
-  return (
-    <div className='flex flex-1 flex-col overflow-auto px-5 py-4 sm:px-8 sm:py-6'>
-      {tabs[currentTab]}
-    </div>
-  );
+  return tabs[currentTab];
 }

@@ -25,7 +25,7 @@ function SignUpForm() {
   }
 
   return (
-    <div className='flex h-full flex-col items-center justify-center gap-10 px-5 text-center sm:px-10  md:px-16'>
+    <>
       <h1 className='self-start text-4xl font-bold text-text-primary'>Sign Up</h1>
       <form className='flex w-full flex-col gap-6' onSubmit={handleSubmit}>
         <div className='flex flex-col items-center justify-between gap-6 sm:flex-row'>
@@ -50,10 +50,10 @@ function SignUpForm() {
         />
 
         <PasswordInput password={password} setPassword={setPassword} />
-        <Button isLoading={isLoading} text='Sign Up' className='w-full'/>
+        <Button isLoading={isLoading} text='Sign Up' className='w-full' />
       </form>
       <AuthLink text='Sign In' link='/sign-in' />
-    </div>
+    </>
   );
 }
 export default SignUpForm;

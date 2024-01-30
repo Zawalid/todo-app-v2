@@ -6,6 +6,7 @@ import { UploadImage } from './UploadImage';
 import { UserVerificationModal } from './UserVerificationModal';
 import { InputField } from '../Common/InputField';
 import { checkIsEmailValid } from '../../utils/helpers';
+import { Tab } from './Tab';
 
 export function Account() {
   const { user, handleUpdateProfile } = useUser();
@@ -56,7 +57,7 @@ export function Account() {
   }
 
   return (
-    <>
+    <Tab>
       <div className='mt-8 space-y-5'>
         <div>
           <h3 className='mb-3 font-bold text-text-secondary'>Avatar</h3>
@@ -117,6 +118,6 @@ export function Account() {
           onUpdate(password);
         }}
       />
-    </>
+    </Tab>
   );
 }

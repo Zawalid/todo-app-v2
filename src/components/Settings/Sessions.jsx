@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { SpinnerLoader } from '../Common/SpinnerLoader';
 import { useUser } from '../../hooks';
 import { Button } from '../Common/Button';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
+import { Tab } from './Tab';
 
 const BROWSERS_IMAGES = [
   {
@@ -40,17 +39,16 @@ export function Sessions() {
   const [sessions, setSessions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const { handleGetSessions, handleDeleteSession, handleDeleteSessions } = useUser();
-  const navigate = useNavigate();
   const [parent] = useAutoAnimate({ duration: 300 });
-
 
   useEffect(() => {
     async function fetchSessions() {
       const sessions = await handleGetSessions();
-      setSessions(sessions);
+      setSessions(sessions || []);
       setIsLoading(false);
     }
     fetchSessions();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function deleteSession(sessionId) {
@@ -59,7 +57,7 @@ export function Sessions() {
   }
 
   return (
-    <>
+    <Tab>
       <div className='mt-8'>
         <p className='text-sm font-medium text-text-tertiary'>
           This is a list of devices that have logged into your account.
@@ -69,41 +67,41 @@ export function Sessions() {
         </p>
       </div>
       <h3 className='mt-7 pb-3 font-bold text-text-secondary'>This Device</h3>
-      <Session session={sessions?.find((session) => session.current)} onDelete={deleteSession} />
+      {isLoading ? (
+        <Skeleton />
+      ) : (
+        <Session session={sessions.find((session) => session.current)} onDelete={deleteSession} />
+      )}
       <h3 className='mt-7 font-bold text-text-secondary'>
-        Active Sessions ({sessions?.filter((session) => !session.current)?.length || '-'})
+        Active Sessions ({sessions.filter((session) => !session.current).length || '-'})
       </h3>
-      <div className='relative mb-5 mt-3 min-h-[150px] space-y-5 overflow-auto pb-3 pr-3' ref={parent}>
+      <div className='my-3 h-full space-y-5 overflow-auto pb-3 pr-3' ref={parent}>
         {isLoading ? (
-          <SpinnerLoader />
-        ) : sessions?.length === 0 ? (
-          <div className=' grid h-full place-content-center'>
-            <p className='text-sm text-text-tertiary'>No active sessions</p>
-          </div>
-        ) : !sessions ? (
-          <div className=' grid h-full place-content-center'>
-            <p className='text-sm text-text-tertiary'>
-              Something went wrong. Please try again later.
-            </p>
-          </div>
+          Array.from({ length: 2 }).map((_, i) => <Skeleton key={i} />)
+        ) : sessions.length === 1 ? ( // 1 is the current
+          <NoSessions />
+        ) : !sessions ? ( 
+          <Error />
         ) : (
           sessions
-            ?.filter((session) => !session.current)
+            .filter((session) => !session.current)
             .map((session) => (
               <Session key={session.$id} session={session} onDelete={deleteSession} />
             ))
         )}
       </div>
       <Button
-        text='Sign out all devices'
-        disabled={false}
+        text='Revoke All'
+        disabled={sessions.length === 1 || isLoading}
         onClick={async () => {
-          await handleDeleteSessions();
-          navigate('/sign-in');
+          await handleDeleteSessions(
+            sessions.filter((session) => !session.current).map((session) => session.$id),
+          );
+          setSessions([]);
         }}
         className='mr-0 px-3 text-sm'
       />
-    </>
+    </Tab>
   );
 }
 function Session({ session, onDelete }) {
@@ -128,7 +126,7 @@ function Session({ session, onDelete }) {
         <img src={browserImage?.image} alt={browserName} />
       </div>
       <div className='flex-1 space-y-1'>
-        <h4 className='text-sm text-text-primary font-semibold sm:text-base'>
+        <h4 className='text-sm font-semibold text-text-primary sm:text-base'>
           {browserName || 'Unknown Browser'} on{' '}
           {deviceName[0].toUpperCase() + deviceName.slice(1) || 'Unknown Device'}
         </h4>
@@ -143,12 +141,46 @@ function Session({ session, onDelete }) {
           }).format(new Date(signedInAt))}
         </p>
       </div>
-      <button
-        className='rounded-lg border border-border px-3 py-2 text-sm font-medium text-text-primary hover:border-primary  hover:bg-primary hover:text-white'
-        onClick={() => onDelete(current ? 'current' : $id)}
-      >
-        Revoke
-      </button>
+      {current || (
+        <button
+          className='rounded-lg border border-border px-3 py-2 text-sm font-medium text-text-primary hover:border-primary  hover:bg-primary hover:text-white'
+          onClick={() => onDelete(current ? 'current' : $id)}
+        >
+          Revoke
+        </button>
+      )}
+    </div>
+  );
+}
+
+function NoSessions() {
+  return (
+    <div className=' grid h-full place-content-center'>
+      <p className='text-sm text-text-tertiary'>No active sessions</p>
+    </div>
+  );
+}
+
+function Error() {
+  return (
+    <div className=' grid h-full place-content-center'>
+      <p className='text-sm text-text-tertiary'>Something went wrong. Please try again later.</p>
+    </div>
+  );
+}
+
+function Skeleton() {
+  return (
+    <div className='flex items-center animate-pulse justify-between gap-4 border-t border-border pt-3'>
+      <div className='grid h-12 w-12  place-content-center rounded-lg bg-background-tertiary p-1'>
+        <img src='' alt='' />
+      </div>
+      <div className='flex-1 space-y-1'>
+        <div className='h-4  rounded-sm bg-background-tertiary'></div>
+        <div className='h-3  rounded-sm bg-background-tertiary'></div>
+        <div className='h-3  rounded-sm bg-background-tertiary'></div>
+      </div>
+      <div className='h-9 w-[75px]  rounded-lg bg-background-tertiary text-sm font-medium text-text-primary'></div>
     </div>
   );
 }

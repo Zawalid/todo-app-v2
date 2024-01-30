@@ -304,9 +304,16 @@ export default function UserProvider({ children }) {
     }
   }
 
-  async function handleDeleteSessions() {
+  async function handleDeleteSessions(sessionsIds) {
     try {
-      await account.deleteSessions();
+      toast.promise(
+        Promise.all(sessionsIds.map((sessionId) => account.deleteSession(sessionId))),
+        {
+          loading: 'Deleting sessions...',
+          success: 'Sessions deleted',
+          error: 'Something went wrong. Please try again.',
+        },
+      );
     } catch (error) {
       console.log(error);
     }
