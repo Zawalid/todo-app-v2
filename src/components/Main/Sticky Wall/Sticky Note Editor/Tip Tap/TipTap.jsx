@@ -5,18 +5,22 @@ import { DEFAULT_FONT_FAMILY } from '../../../../../utils/constants';
 import { ToolBar } from './ToolBar';
 import { ActionBar } from './ActionBar';
 import { CustomBubbleMenu } from './editor/CustomBubbleMenu';
-import { exportAs, isTouchDevice } from '../../../../../utils/helpers';
+import { copyToClipBoard, exportAs, isTouchDevice } from '../../../../../utils/helpers';
 import { useStickyNotes } from '../../../../../hooks';
 import { BackgroundColorPicker } from '../BackgroundColorPicker';
 import { TextColorPicker } from '../TextColorPicker';
-import { toast } from 'sonner';
 
 import '../../../../../styles/TipTap.scss';
 import { Actions } from './Actions';
 
 export default function TipTap() {
-  const { currentNote, handleUpdateStickyNote, handleDeleteStickyNote, handleBack } =
-    useStickyNotes();
+  const {
+    currentNote,
+    handleAddStickyNote,
+    handleUpdateStickyNote,
+    handleDeleteStickyNote,
+    handleBack,
+  } = useStickyNotes();
   const { $id, content, $updatedAt } = currentNote || {};
 
   const [title, setTitle] = useState(currentNote?.title);
@@ -86,27 +90,37 @@ export default function TipTap() {
         fontFamily={fontFamily || DEFAULT_FONT_FAMILY}
         handlers={{
           onClose: () => setIsActionsOpen(false),
-          onCopy: () => {
-            navigator.clipboard.writeText(`
-          ${title}
-          ---------------
+          onCopy: () =>
+            copyToClipBoard(`
+            Note Title: ${title}
+            ------------------
 
-          ${editor?.getText()}
-          `);
-
-            toast.success('Copied to clipboard');
-          },
-          onDelete: (deletePermanently) => {
+            Note Content:
+            ${editor?.getText()}
+            `),
+          onDelete(deletePermanently) {
             $id && handleDeleteStickyNote($id, deletePermanently);
           },
           onBack,
           onReadOnly: () => setReadonly(!readonly),
-          onPin: () => {
+          onPin() {
             setPinned(!pinned);
             handleUpdateNote('pinned', !pinned);
           },
+          onDuplicate() {
+            const note = {
+              title: title + ' (copy)',
+              content,
+              bgColor,
+              textColor,
+              fontFamily,
+              pinned,
+              readonly,
+            };
+            handleAddStickyNote(note, true);
+          },
           onExport: (format) => exportAs(format, editor, title),
-          onChangeFontFamily: (fontFamily) => {
+          onChangeFontFamily(fontFamily) {
             setFontFamily(fontFamily);
             document.querySelector('.tiptap').style.fontFamily = fontFamily;
             handleUpdateNote('fontFamily', fontFamily);

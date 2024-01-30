@@ -7,12 +7,13 @@ import { TaskSubTasks } from './TaskSubTasks/TaskSubTasks';
 import { TaskPriority } from './TaskPriority';
 import { useTasks } from '../../hooks/useTasks';
 import Drawer from '../Common/Drawer';
-import { isTouchDevice } from '../../utils/helpers';
+import { copyToClipBoard, isTouchDevice } from '../../utils/helpers';
 import { useHref } from 'react-router-dom';
 import { useModal } from '../Common/ConfirmationModal';
+import { Actions } from './Actions';
 
 export function TaskInfo() {
-  const { currentTask, isTaskOpen, setIsTaskOpen, handleUpdateTask, handleDeleteTask } = useTasks();
+  const { currentTask, isTaskOpen, setIsTaskOpen, handleAddTask,handleUpdateTask, handleDeleteTask } = useTasks();
   const [taskTitle, setTaskTitle] = useState();
   const [taskNote, setTaskNote] = useState();
   const [taskListId, setTaskListId] = useState('none');
@@ -128,21 +129,47 @@ export function TaskInfo() {
   }
   const taskInfo = (
     <>
-      <div className='grid grid-cols-[auto_40px] items-center gap-5 pb-3'>
+      <div className='grid grid-cols-[auto_60px] items-center gap-5 pb-3'>
         <h2 className='truncate text-xl font-bold text-text-secondary'>
           {taskTitle ? taskTitle : 'Untitled'}
         </h2>
         {isTouchDevice() ? (
           <button
+            className='flex h-7 w-7 items-center justify-center rounded-full bg-primary hover:bg-primary-hover'
             onClick={() => (isChanged ? handleSaveChanges() : setIsTaskOpen(false))}
             id='closeTaskInfo'
           >
-            <i className='fa-solid fa-circle-check text-3xl text-primary hover:text-primary-hover '></i>
+            <i className='fa-solid fa-check text-white '></i>
           </button>
         ) : (
-          <button onClick={() => setIsTaskOpen(false)} id='closeTaskInfo'>
-            <i className='fa-solid fa-xmark  text-xl text-text-secondary'></i>
-          </button>
+          <div className='flex items-center gap-3'>
+            <button
+              className='icon-button not-active small absolute right-4 top-4'
+              onClick={() => setIsTaskOpen(false)}
+              id='closeTaskInfo'
+            >
+              <i className='fa-solid fa-xmark text-lg text-text-tertiary'></i>
+            </button>
+            <Actions
+              date={{
+                created: currentTask?.$createdAt,
+                updated: currentTask?.$updatedAt,
+              }}
+              onCopy={() => copyToClipBoard(`Task Title: ${currentTask?.title}\n\nTask Note:\n${currentTask?.note}`)}
+              onDuplicate={() => {
+                const task = {
+                  title : `${currentTask?.title} (copy)`,
+                  note : currentTask?.note,
+                  dueDate : currentTask?.dueDate,
+                  subtasks : currentTask?.subtasks,
+                  tagsIds : currentTask?.tagsIds,
+                  priority : currentTask?.priority,
+                  listId : currentTask?.listId,
+                }
+                handleAddTask(task,true);
+              }}
+            />
+          </div>
         )}
       </div>
       <div className='overflow-y-auto pr-3'>

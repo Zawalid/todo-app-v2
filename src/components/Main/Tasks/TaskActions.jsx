@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import Drawer from '../../Common/Drawer';
+import { TaskDates } from './TaskDates';
 
 export default function TaskActions({
   isOpen,
   onClose,
   onDelete,
   onCopy,
+  onDuplicate,
   date,
   lists,
   onMove,
@@ -19,8 +21,12 @@ export default function TaskActions({
     <Drawer onClose={onClose} shouldClose={!listSelectionOpen}>
       <div>
         <button className='menu_element w-full justify-items-start' onClick={onCopy}>
-          <i className='fa-solid fa-clone  text-lg text-text-secondary'></i>
+          <i className='fa-solid fa-copy  text-lg text-text-secondary'></i>
           <span className='font-semibold text-text-primary'>Copy to clipboard</span>
+        </button>
+        <button className='menu_element w-full justify-items-start' onClick={onDuplicate}>
+          <i className='fa-solid fa-clone  text-lg text-text-secondary'></i>
+          <span className='font-semibold text-text-primary'>Duplicate Task</span>
         </button>
         <button
           className='menu_element w-full justify-items-start'
@@ -39,20 +45,7 @@ export default function TaskActions({
         </button>
       </div>
       <div className='mt-2 border-t-2 border-border pt-3'>
-        <p className='mb-1 text-xs font-medium text-text-tertiary '>
-          Created :{' '}
-          {new Intl.DateTimeFormat('en-US', {
-            dateStyle: 'medium',
-            timeStyle: 'short',
-          }).format(new Date(date.created))}
-        </p>
-        <p className='text-xs font-medium text-text-tertiary '>
-          Last modified :{' '}
-          {new Intl.DateTimeFormat('en-US', {
-            dateStyle: 'medium',
-            timeStyle: 'short',
-          }).format(new Date(date.updated))}
-        </p>
+        <TaskDates date={date} />
       </div>
       <SelectList
         lists={lists}

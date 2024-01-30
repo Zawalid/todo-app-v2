@@ -47,7 +47,7 @@ export function useFetchAllElements() {
     const user = await getCurrentUser();
     try {
       setIsLoading(true);
-      const res = await Promise.all(
+       await Promise.all(
         elements.map(async (element) => {
           await handleLoadElements(
             user,

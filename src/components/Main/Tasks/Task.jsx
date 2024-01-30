@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react';
-import { toast } from 'sonner';
 import { useLongPress } from 'use-long-press';
 import { Tag } from '../../Menu/Menu Tags/Tag';
 import {
@@ -14,6 +13,7 @@ import { CheckBox } from '../../Common/CheckBox';
 import TaskActions from './TaskActions';
 import CustomTippy from '../../Common/CustomTippy';
 import { useModal } from '../../Common/ConfirmationModal';
+import { copyToClipBoard } from '../../../utils/helpers';
 
 const completedSound = new Audio(completedSoundFile);
 
@@ -36,6 +36,7 @@ export function Task({
   task: {
     $id,
     title,
+    note,
     isCompleted,
     dueDate,
     subtasks,
@@ -52,7 +53,7 @@ export function Task({
   const [isTaskActionsOpen, setIsTaskActionsOpen] = useState(false);
   const [checked, setChecked] = useState(isCompleted);
   const { lists } = useLists();
-  const { tasks, handleUpdateTask } = useTasks();
+  const { tasks, handleAddTask, handleUpdateTask } = useTasks();
   const { handleOpenTask, handleCompleteTask, handleDeleteTask } = useTasks();
   const { confirmDelete, isModalOpen } = useModal();
   const isPassed = isTaskOverdue(dueDate);
@@ -137,11 +138,23 @@ export function Task({
               onConfirm: () => handleDeleteTask($id),
             });
           }}
-          onCopy={() => (
-            navigator.clipboard.writeText(title),
-            toast.success('Copied to clipboard'),
-            setIsTaskActionsOpen(false)
-          )}
+          onCopy={() => {
+            copyToClipBoard(`Task Title: ${title}\n\nTask Note:\n${note}`);
+            setIsTaskActionsOpen(false);
+          }}
+          onDuplicate={() => {
+            setIsTaskActionsOpen(false);
+            const task = {
+              title: `${title} (copy)`,
+              note,
+              dueDate,
+              subtasks,
+              tagsIds,
+              priority,
+              listId,
+            };
+            handleAddTask(task, true);
+          }}
           date={{
             created: $createdAt,
             updated: $updatedAt,
@@ -159,13 +172,16 @@ function TaskCheckbox({ checked, setChecked, isSelecting, isSelected }) {
   return (
     <div className='relative flex h-full'>
       <span
-        className={'absolute top-1/2 -translate-y-1/2   ' + (isSelecting ? 'scale-1' : 'scale-0')}
+        className={`absolute top-1/2 flex h-5 w-5 -translate-y-1/2 items-center justify-center rounded-full border   ${
+          isSelecting ? 'scale-1' : 'scale-0'
+        } ${isSelected ? 'border-transparent bg-primary' : 'border-border  '}
+        `}
       >
-        {isSelected ? (
-          <i className='fa-regular fa-circle-check text-lg text-primary'></i>
-        ) : (
-          <i className='fa-regular fa-circle text-lg text-text-tertiary'></i>
-        )}
+        <i
+          className={`fa-solid fa-check  text-xs text-white ${
+            isSelected ? 'opacity-100' : 'opacity-0'
+          }`}
+        ></i>
       </span>
 
       <CheckBox
@@ -204,13 +220,12 @@ function TaskDueDate({ dueDate, isPassed, checked }) {
     </div>
   );
 }
-
 function TaskSubtasks({ subtasks }) {
   if (!subtasks?.length > 0) return null;
   return (
     <div className='flex items-center gap-2'>
       <div className='flex gap-2 rounded-sm bg-text-secondary px-2 py-[1px] text-xs font-semibold text-background-primary'>
-        <span className='border-r pr-2'>{subtasks.length}</span>
+        <span className='border-r border-background-primary pr-2'>{subtasks.length}</span>
         <span className='flex items-center gap-1'>
           {subtasks.filter((subtask) => JSON.parse(subtask).isCompleted).length}
           <i className='fas fa-check '></i>
@@ -220,7 +235,6 @@ function TaskSubtasks({ subtasks }) {
     </div>
   );
 }
-
 function TaskTags({ tagsIds }) {
   const { tags } = useTags();
   if (!tagsIds?.length > 0) return null;
@@ -238,7 +252,6 @@ function TaskTags({ tagsIds }) {
       );
   });
 }
-
 function TaskPriority({ priority }) {
   if (!priority) return null;
   return (
@@ -255,7 +268,6 @@ function TaskPriority({ priority }) {
     </div>
   );
 }
-
 function TaskList({ listId, listName, listColor }) {
   if (!listId || listId === 'none') return null;
   return (

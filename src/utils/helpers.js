@@ -1,5 +1,6 @@
 import TurndownService from 'turndown';
 import { jsPDF } from 'jspdf';
+import { toast } from 'sonner';
 
 const turndownService = new TurndownService();
 
@@ -98,3 +99,8 @@ const exportAsPDF = (title) => {
     windowWidth: 650,
   });
 };
+
+export function copyToClipBoard(text) {
+  navigator.clipboard.writeText(text);
+  toast.success('Copied to clipboard');
+}

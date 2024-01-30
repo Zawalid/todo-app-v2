@@ -17,9 +17,9 @@ const filtersConditions = {
   completed: (task) => task.isCompleted,
   uncompleted: (task) => !task.isCompleted,
   overdue: (task) => isTaskOverdue(task.dueDate) && !task.isCompleted,
-  'high-priority': (task) => task.priority === '2',
-  'medium-priority': (task) => task.priority === '1',
-  'low-priority': (task) => task.priority === '0',
+  'high-priority': (task) => task.priority === 3,
+  'medium-priority': (task) => task.priority === 2,
+  'low-priority': (task) => task.priority === 1,
 };
 
 export default function TasksList({ dueDate, listId, condition, activeTab }) {

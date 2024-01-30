@@ -55,7 +55,7 @@
   @apply relative flex w-full  cursor-pointer items-center gap-3 overflow-hidden rounded-md bg-background-primary px-3 py-2 font-medium text-text-secondary  hover:bg-background-secondary hover:text-text-primary;
 
   &.small {
-    @apply px-2 py-1;
+    @apply px-2 py-1 text-xs
   }
   &.current {
     @apply bg-background-secondary;

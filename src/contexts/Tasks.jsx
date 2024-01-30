@@ -34,7 +34,7 @@ export default function TasksProvider({ children }) {
     ...thisWeekTasks.filter((t) => ![...todayTasks, ...tomorrowTasks].includes(t)),
   ];
 
-  async function handleAddTask(task) {
+  async function handleAddTask(task, duplicate) {
     setIsAddingTask(true);
     const toastId = toast.promise(
       databases.createDocument(
@@ -48,19 +48,19 @@ export default function TasksProvider({ children }) {
         setPermissions(user?.$id),
       ),
       {
-        loading: 'Adding task...',
+        loading: duplicate ? 'Duplicating task...' : 'Adding task...',
         success: (task) => {
           setTasks((tasks) => [...tasks, task]);
-          return 'Task has been successfully added.';
+          return `Task has been successfully ${duplicate ? 'duplicated' : 'added'}.`;
         },
         error: () => {
           toast.dismiss(toastId);
-          toast.error('Failed to add the task.', {
+          toast.error(`Failed to ${duplicate ? 'duplicate' : 'add'} the task.`, {
             duration: 4000,
             action: {
               label: 'Try again',
               onClick: async () => {
-                await handleAddTask(task);
+                await handleAddTask(task, duplicate);
               },
             },
           });
@@ -118,11 +118,11 @@ export default function TasksProvider({ children }) {
         loading: 'Deleting task...',
         success: () => {
           toast.dismiss(toastId);
-          toast.success(getDeletionMessage('task','success', true));
+          toast.success(getDeletionMessage('task', 'success', true));
         },
         error: () => {
           toast.dismiss(toastId);
-          toast.error(getDeletionMessage('task','error', true), {
+          toast.error(getDeletionMessage('task', 'error', true), {
             duration: 4000,
             action: {
               label: 'Try again',
@@ -159,11 +159,11 @@ export default function TasksProvider({ children }) {
         loading: 'Deleting all tasks...',
         success: () => {
           toast.dismiss(toastId);
-          toast.success(getDeletionMessage('task','success', false, false));
+          toast.success(getDeletionMessage('task', 'success', false, false));
         },
         error: () => {
           toast.dismiss(toastId);
-          toast.error(getDeletionMessage('task','error', false, false), {
+          toast.error(getDeletionMessage('task', 'error', false, false), {
             duration: 4000,
             action: {
               label: 'Try again',
@@ -201,13 +201,13 @@ export default function TasksProvider({ children }) {
             : `Deleting ${selectedTasks.length} tasks...`,
         success: () => {
           toast.dismiss(toastId);
-          toast.success(getDeletionMessage('task','success', false, true, selectedTasks.length), {
+          toast.success(getDeletionMessage('task', 'success', false, true, selectedTasks.length), {
             duration: 4000,
           });
         },
         error: () => {
           toast.dismiss(toastId);
-          toast.error(getDeletionMessage('task','error', false, true, selectedTasks.length), {
+          toast.error(getDeletionMessage('task', 'error', false, true, selectedTasks.length), {
             duration: 4000,
             action: {
               label: 'Try again',
@@ -260,4 +260,3 @@ export default function TasksProvider({ children }) {
     </TasksContext.Provider>
   );
 }
-

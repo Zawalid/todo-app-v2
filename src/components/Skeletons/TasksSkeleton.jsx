@@ -1,4 +1,3 @@
-import { isTouchDevice } from "../../utils/helpers";
 
 export function TasksSkeleton({ number }) {
   return (
@@ -18,7 +17,6 @@ function Task() {
       <div className='flex h-1 flex-1'>
         <span className=' w-20 rounded-md bg-text-tertiary'></span>
       </div>
-      {!isTouchDevice() &&<span className="h-5 w-2 rounded-lg bg-text-tertiary"></span>}
     </li>
   );
 }

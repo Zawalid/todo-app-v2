@@ -10,10 +10,9 @@ export function Actions({
   readonly,
   pinned,
   fontFamily,
-  handlers: { onClose, onCopy, onBack,onDelete, onReadOnly, onPin, onExport, onChangeFontFamily },
+  handlers: { onClose, onCopy,onDuplicate, onBack,onDelete, onReadOnly, onPin, onExport, onChangeFontFamily },
 }) {
   const { confirmDelete } = useModal();
-
   return (
     <div
       className={
@@ -76,8 +75,15 @@ export function Actions({
             className='grid grid-cols-[15px_auto] items-center gap-2 rounded-md px-3  py-2 text-sm font-medium text-text-secondary  hover:bg-background-secondary hover:text-text-primary'
             onClick={onCopy}
           >
-            <i className='fa-solid fa-clone'></i>
+            <i className='fa-solid fa-copy'></i>
             <span className='text-start'>Copy Note</span>
+          </button>
+          <button
+            className='grid grid-cols-[15px_auto] items-center gap-2 rounded-md px-3  py-2 text-sm font-medium text-text-secondary  hover:bg-background-secondary hover:text-text-primary'
+            onClick={onDuplicate}
+          >
+            <i className='fa-solid fa-clone'></i>
+            <span className='text-start'>Duplicate Note</span>
           </button>
 
           <DropDown

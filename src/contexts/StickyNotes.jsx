@@ -23,7 +23,7 @@ export default function StickyNotesProvider({ children }) {
   const { handleDeleteElement } = useDeleteElement();
   const { user } = useUser();
 
-  async function handleAddStickyNote(note) {
+  async function handleAddStickyNote(note,duplicate) {
     try {
       const newNote = await databases.createDocument(
         DATABASE_ID,
@@ -36,6 +36,7 @@ export default function StickyNotesProvider({ children }) {
         setPermissions(user?.$id),
       );
       setStickyNotes((notes) => [...notes, newNote]);
+      if (duplicate) return toast.success('Sticky note duplicated successfully.');
       setCurrentNote(newNote);
     } catch (error) {
       toast.error('Failed to add the sticky note.', {
