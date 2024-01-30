@@ -11,6 +11,7 @@ import { Profile } from './Profile';
 import Settings from '../Settings/Settings';
 import { useSwipe } from '../../hooks/useSwipe';
 import Trash from '../Main/Trash/Trash';
+import { useFetchAllElements } from '../../hooks/useFetchAllElements';
 
 export function Menu() {
   const [isOpen, setIsOpen] = useState(window.matchMedia('(min-width: 1024px)').matches);
@@ -133,7 +134,10 @@ function UserActionMenu({ setIsSettingsOpen, isTrashOpen, setIsTrashOpen, trashL
           <i className='fa-solid fa-gear  text-text-tertiary'></i>
           <span className='text-sm font-medium text-text-secondary'>Settings</span>
         </button>
-        <ThemeToggler />
+        <div className='flex items-center justify-between'>
+          <SyncButton />
+          <ThemeToggler />
+        </div>
       </div>
     </div>
   );
@@ -143,7 +147,7 @@ function ThemeToggler() {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
   return (
     <button
-      className='relative h-4 w-10 justify-self-center text-text-secondary   hover:text-text-tertiary'
+      className='relative h-5 w-5  justify-self-center text-text-secondary   hover:text-text-tertiary'
       onClick={toggleDarkMode}
     >
       <svg
@@ -153,7 +157,7 @@ function ThemeToggler() {
         viewBox='0 0 16 16'
         height='1em'
         width='1em'
-        className={`absolute left-[18px] top-0   ${isDarkMode ? 'scale-0' : 'scale-100 '}`}
+        className={`absolute top-0   ${isDarkMode ? 'scale-0' : 'scale-100 '}`}
         xmlns='http://www.w3.org/2000/svg'
       >
         <path d='M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278zM4.858 1.311A7.269 7.269 0 0 0 1.025 7.71c0 4.02 3.279 7.276 7.319 7.276a7.316 7.316 0 0 0 5.205-2.162c-.337.042-.68.063-1.029.063-4.61 0-8.343-3.714-8.343-8.29 0-1.167.242-2.278.681-3.286z'></path>
@@ -168,7 +172,7 @@ function ThemeToggler() {
         strokeLinejoin='round'
         height='1.2em'
         width='1.2em'
-        className={`absolute left-[18px] top-0   ${isDarkMode ? 'scale-100' : 'scale-0 '}`}
+        className={`absolute top-0   ${isDarkMode ? 'scale-100' : 'scale-0 '}`}
         xmlns='http://www.w3.org/2000/svg'
       >
         <circle cx='12' cy='12' r='4'></circle>
@@ -185,6 +189,34 @@ function ThemeToggler() {
   );
 }
 
+function SyncButton() {
+  const { handleFetchAllElements, isLoading } = useFetchAllElements();
+
+  return (
+    <button
+      className={`text-text-secondary duration-0 hover:text-text-tertiary ${
+        isLoading ? 'animate-spin' : ''
+      }`}
+      onClick={handleFetchAllElements}
+    >
+      <svg
+        stroke='currentColor'
+        fill='currentColor'
+        strokeWidth='0'
+        viewBox='0 0 16 16'
+        height='1em'
+        width='1em'
+        xmlns='http://www.w3.org/2000/svg'
+      >
+        <path d='M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z'></path>
+        <path
+          fillRule='evenodd'
+          d='M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z'
+        ></path>
+      </svg>
+    </button>
+  );
+}
 function MenuToggleAndModals({
   isOpen,
   setIsOpen,

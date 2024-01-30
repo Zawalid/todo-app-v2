@@ -1,11 +1,12 @@
 import { appWriteConfig } from '../lib/appwrite/config';
 import { toast } from 'sonner';
-import { useTasks } from '../hooks/useTasks';
-import { useLists } from '../hooks/useLists';
-import { useTags } from '../hooks/useTags';
-import { useStickyNotes } from '../hooks/useStickyNotes';
-import { useLoadElements } from '../hooks/useLoadElements';
-import { useUser } from '../hooks/useUser';
+import { useTasks } from './useTasks';
+import { useLists } from './useLists';
+import { useTags } from './useTags';
+import { useStickyNotes } from './useStickyNotes';
+import { useLoadElements } from './useLoadElements';
+import { useUser } from './useUser';
+import { useState } from 'react';
 
 const { tasksCollectionId, listsCollectionId, tagsCollectionId, stickyNotesCollectionId } =
   appWriteConfig;
@@ -17,6 +18,7 @@ export function useFetchAllElements() {
   const { setStickyNotes, setIsNotesLoading } = useStickyNotes();
   const { handleLoadElements } = useLoadElements();
   const { getCurrentUser } = useUser();
+  const [isLoading, setIsLoading] = useState(false);
 
   const elements = [
     {
@@ -44,14 +46,17 @@ export function useFetchAllElements() {
   async function handleFetchAllElements() {
     const user = await getCurrentUser();
     try {
-      elements.forEach(async (element) => {
-        await handleLoadElements(
-          user,
-          element.collectionId,
-          element.setElements,
-          element.setIsLoading,
-        );
-      });
+      setIsLoading(true);
+      const res = await Promise.all(
+        elements.map(async (element) => {
+          await handleLoadElements(
+            user,
+            element.collectionId,
+            element.setElements,
+            element.setIsLoading,
+          );
+        }),
+      );
     } catch (error) {
       console.log(error);
       if (error.message === 'Server Error') {
@@ -61,6 +66,8 @@ export function useFetchAllElements() {
       } else {
         toast.error('Something went wrong, Please try again later');
       }
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -70,5 +77,5 @@ export function useFetchAllElements() {
       element.setIsLoading && element.setIsLoading(true);
     });
   }
-  return { handleFetchAllElements, handleDeleteAllElements };
+  return { handleFetchAllElements, handleDeleteAllElements, isLoading };
 }

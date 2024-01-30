@@ -5,7 +5,7 @@ import { SearchProvider } from '../contexts';
 import { useTrash, useUser } from '../hooks';
 import { Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
-import { useFetchAllElements } from './useFetchAllElements';
+import { useFetchAllElements } from '../hooks/useFetchAllElements';
 
 function AppLayout() {
   const { checkIsUserAuthenticated, user } = useUser();

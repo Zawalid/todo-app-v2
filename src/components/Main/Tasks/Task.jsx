@@ -148,8 +148,8 @@ export function Task({
           }}
           lists={updatedLists}
           onMove={(listId) => handleUpdateTask($id, { listId })}
+          currentListId={listId}
         />
-        {/* {Modal} */}
       </button>
     </li>
   );

@@ -42,7 +42,7 @@ export default function StickyWall() {
         }
 ?`,
         title: `Delete Sticky Note${selectedNotes.length > 1 ? 's' : ''} `,
-        
+
         onConfirm: (deletePermanently) => {
           handleDeleteMultipleNotes(deletePermanently);
           setIsSelecting(false);
@@ -133,7 +133,6 @@ export default function StickyWall() {
         />
       </div>
     );
-
   return (
     <div className='flex h-full flex-col gap-3 overflow-hidden'>
       <StickyWallActions
@@ -205,12 +204,17 @@ export default function StickyWall() {
                 <NotesGroup
                   key={t}
                   render={render}
-                  group={t}
+                  group={
+                    groupBy === 'color'
+                      ? window.getComputedStyle(document.documentElement).getPropertyValue(t)
+                      : t
+                  }
                   view={view}
                   isSelecting={isSelecting}
                   isCollapsed={isCollapsed}
                   parent={parent}
                   condition={(note) => groups[groupBy].condition(note, t)}
+                  groupBy={groupBy}
                 />
               ))}
       </div>
@@ -229,7 +233,7 @@ export default function StickyWall() {
   );
 }
 
-function NotesGroup({ render, group, view, isSelecting, isCollapsed, parent, condition }) {
+function NotesGroup({ render, group, view, isSelecting, isCollapsed, parent, condition, groupBy }) {
   const [isGroupOpen, setIsGroupOpen] = useState(true);
   const {
     stickyNotes,
@@ -251,9 +255,12 @@ function NotesGroup({ render, group, view, isSelecting, isCollapsed, parent, con
         className='flex w-full items-center justify-between rounded-md bg-background-secondary px-3 py-1 text-start text-sm font-medium  text-text-secondary'
         onClick={() => setIsGroupOpen((prev) => !prev)}
       >
-        <span>
+        <span className={`flex items-center gap-2 ${groupBy === 'color' ? 'uppercase' : ''}`}>
           {group === 'Recent' && <i className='fa-solid fa-clock-rotate-left mr-2'></i>}
           {group === 'Pinned' && <i className='fa-solid fa-thumbtack mr-2'></i>}
+          {groupBy === 'color' && (
+            <div className='h-5 w-5 rounded-[3px]' style={{ backgroundColor: group }}></div>
+          )}
           {group}
         </span>
         {isGroupOpen ? (

@@ -10,7 +10,7 @@ export function Actions({
   readonly,
   pinned,
   fontFamily,
-  handlers: { onClose, onCopy, onDelete, onReadOnly, onPin, onExport, onChangeFontFamily },
+  handlers: { onClose, onCopy, onBack,onDelete, onReadOnly, onPin, onExport, onChangeFontFamily },
 }) {
   const { confirmDelete } = useModal();
 
@@ -116,8 +116,7 @@ export function Actions({
               confirmDelete({
                 message: 'Are you sure you want to delete this sticky note?',
                 title: 'Delete Sticky Note',
-                
-                onConfirm: onDelete,
+                onConfirm: () => (onDelete(),onBack())
               });
             }}
           >
