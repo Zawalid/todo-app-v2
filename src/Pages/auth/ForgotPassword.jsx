@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { Button } from '../../../components/Common/Button';
-import { InputField } from '../../../components/Common/InputField';
+import { Button } from '../../components/Common/Button';
+import { InputField } from '../../components/Common/InputField';
 import { useNavigate } from 'react-router-dom';
-import { useUser } from '../../../hooks';
+import { useUser } from '../../hooks';
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');

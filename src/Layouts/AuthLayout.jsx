@@ -1,7 +1,7 @@
 import { Outlet, Navigate } from 'react-router-dom';
-import { useUser } from '../../hooks/useUser';
+import { useUser } from '../hooks/useUser';
 import bgImage from '../../assets/bg.png';
-import { Logo } from '../../components/Common/Logo';
+import { Logo } from '../components/Common/Logo';
 
 function AuthLayout() {
   const { checkIsUserAuthenticated } = useUser();

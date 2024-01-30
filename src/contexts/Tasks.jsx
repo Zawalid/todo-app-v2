@@ -137,10 +137,9 @@ export default function TasksProvider({ children }) {
     );
   }
 
-  async function handleDeleteAllTasks(condition1, condition2, deletePermanently) {
+  async function handleDeleteAllTasks(deletedTasks, deletePermanently) {
     setCurrentProcessedTask('multiple');
     setIsTaskOpen(false);
-    const deletedTasks = tasks.filter((task) => condition1(task) && condition2(task));
 
     const toastId = toast.promise(
       Promise.all(
@@ -168,7 +167,7 @@ export default function TasksProvider({ children }) {
             action: {
               label: 'Try again',
               onClick: () => {
-                handleDeleteAllTasks(condition1, condition2, deletePermanently);
+                handleDeleteAllTasks(deletedTasks,deletePermanently);
               },
             },
           });

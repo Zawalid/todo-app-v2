@@ -1,5 +1,5 @@
 import { DropDown } from '../Common/DropDown';
-import { TaskDates } from '../Main/Tasks/TaskDates';
+import { TaskDates } from '../Main/Tasks/Task Components/TaskDates';
 
 export function Actions({ date, onCopy, onDuplicate }) {
   return (

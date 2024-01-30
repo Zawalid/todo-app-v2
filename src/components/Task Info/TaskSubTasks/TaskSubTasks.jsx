@@ -1,5 +1,5 @@
 import { useAutoAnimate } from '@formkit/auto-animate/react';
-import { AddTask } from '../../Main/Tasks/AddTask';
+import { AddTask } from '../../Main/Tasks/Task Components/AddTask';
 import { SubTask } from './SubTask';
 
 export function TaskSubTasks({

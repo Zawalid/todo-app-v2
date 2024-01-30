@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { useUser } from '../../../hooks/useUser';
+import { useUser } from '../../hooks/';
 import { AuthLink } from './AuthLink';
-import { Button } from '../../../components/Common/Button';
-import { PasswordInput } from '../../../components/Common/PasswordInput';
-import { InputField } from '../../../components/Common/InputField';
+import { Button } from '../../components/Common/Button';
+import { PasswordInput } from '../../components/Common/PasswordInput';
+import { InputField } from '../../components/Common/InputField';
 import { Link } from 'react-router-dom';
 
 function SignInForm() {

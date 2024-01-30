@@ -1,13 +1,13 @@
 import { TaskInfo } from '../components/Task Info/TaskInfo';
 import { Menu } from '../components/Menu/Menu';
-import { Main } from '../components/Main/Main';
 import { SearchProvider } from '../contexts';
 import { useTrash, useUser } from '../hooks';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useFetchAllElements } from '../hooks/useFetchAllElements';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 
-function AppLayout() {
+export default function AppLayout() {
   const { checkIsUserAuthenticated, user } = useUser();
   const { handleFetchAllElements, handleDeleteAllElements } = useFetchAllElements();
   const { initializeTrash } = useTrash();
@@ -47,5 +47,18 @@ function AppLayout() {
     </>
   );
 }
-export default AppLayout;
 
+function Main() {
+  const [parent] = useAutoAnimate({
+    duration: 300,
+  });
+
+  return (
+    <main
+      className='relative flex flex-1 flex-col overflow-hidden rounded-xl bg-background-primary pl-2 sm:pl-4 '
+      ref={parent}
+    >
+      <Outlet />
+    </main>
+  );
+}

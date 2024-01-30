@@ -54,28 +54,35 @@
   ul[data-type='taskList'] {
     list-style: none;
     padding: 0;
-  }
-  ul[data-type='taskList'] li {
-    display: flex;
-    align-items: center;
-  }
-  ul[data-type='taskList'] li > label {
-    display: grid;
-    place-items: center;
-    margin-right: 0.5rem;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    user-select: none;
-  }
-  ul[data-type='taskList'] li > label input {
-    width: 1rem;
-    height: 1rem;
-    margin: 0;
-    border: 1px solid var(--text-secondary);
-    border-radius: 0.3rem;
-    background: white;
-    accent-color: var(--text-secondary);
-    appearance: auto;
+
+    & li {
+      display: flex;
+      align-items: center;
+
+      & label {
+        display: grid;
+        place-items: center;
+        margin-right: 0.5rem;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+
+        & input {
+          width: 1rem;
+          height: 1rem;
+          margin: 0;
+          border: 1px solid var(--text-secondary);
+          border-radius: 0.3rem;
+          appearance: auto;
+          accent-color: var(--primary);
+          transition: none;
+          -webkit-transition: none;
+          -moz-transition: none;
+          -ms-transition: none;
+          -o-transition: none;
+}
+      }
+    }
   }
 
   code {

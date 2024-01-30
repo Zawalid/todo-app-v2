@@ -1,19 +1,19 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useLongPress } from 'use-long-press';
-import { Tag } from '../../Menu/Menu Tags/Tag';
+import { Tag } from '../../../Menu/Menu Tags/Tag';
 import {
   checkIfToday,
   checkIfTomorrow,
   checkIfYesterday,
   isTaskOverdue,
-} from '../../../utils/Moment';
-import completedSoundFile from '../../../assets/completed.mp3';
-import { useTasks, useLists, useTags } from '../../../hooks';
-import { CheckBox } from '../../Common/CheckBox';
+} from '../../../../utils/Moment';
+import completedSoundFile from '../../../../assets/completed.mp3';
+import { useTasks, useLists, useTags } from '../../../../hooks';
+import { CheckBox } from '../../../Common/CheckBox';
 import TaskActions from './TaskActions';
-import CustomTippy from '../../Common/CustomTippy';
-import { useModal } from '../../Common/ConfirmationModal';
-import { copyToClipBoard } from '../../../utils/helpers';
+import CustomTippy from '../../../Common/CustomTippy';
+import { useModal } from '../../../Common/ConfirmationModal';
+import { copyToClipBoard } from '../../../../utils/helpers';
 
 const completedSound = new Audio(completedSoundFile);
 

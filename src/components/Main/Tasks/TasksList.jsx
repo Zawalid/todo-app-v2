@@ -1,6 +1,6 @@
 import Tippy from '@tippyjs/react';
-import { AddTask } from './AddTask';
-import { Task } from './Task';
+import { AddTask } from './Task Components/AddTask';
+import { Task } from './Task Components/Task';
 import { TasksActions } from './TasksActions/TasksActions';
 import { useEffect, useState } from 'react';
 import { isTaskOverdue } from '../../../utils/Moment';
@@ -22,14 +22,9 @@ const filtersConditions = {
   'low-priority': (task) => task.priority === 1,
 };
 
-export default function TasksList({ dueDate, listId, condition, activeTab }) {
-  const {
-    tasks,
-    handleDeleteAllTasks,
-    handleDeleteMultipleTasks,
-    selectedTasks,
-    setSelectedTasks,
-  } = useTasks();
+export default function TasksList({ dueDate, listId, tasks, message }) {
+  const { handleDeleteAllTasks, handleDeleteMultipleTasks, selectedTasks, setSelectedTasks } =
+    useTasks();
   const [filteredTasks, setFilteredTasks] = useState([]);
   const [searchParams] = useSearchParams();
   const { Pagination, currentPage, rowsPerPage } = usePagination(filteredTasks.length);
@@ -46,7 +41,7 @@ export default function TasksList({ dueDate, listId, condition, activeTab }) {
         }
 ?`,
         title: `Delete Task${selectedTasks.length > 1 ? 's' : ''} `,
-        
+
         onConfirm: (deletePermanently) => {
           handleDeleteMultipleTasks(deletePermanently);
           setIsSelecting(false);
@@ -60,11 +55,10 @@ export default function TasksList({ dueDate, listId, condition, activeTab }) {
 
   const filter = searchParams.get('filter') || 'all';
 
-  useEffect(() => {
-    setFilteredTasks(
-      tasks.filter((task) => condition(task)).filter((task) => filtersConditions[filter]?.(task)),
-    );
-  }, [tasks, filter, condition]);
+  useEffect(
+    () => setFilteredTasks(tasks.filter((task) => filtersConditions[filter]?.(task))),
+    [tasks, filter],
+  );
 
   return (
     <div
@@ -74,52 +68,51 @@ export default function TasksList({ dueDate, listId, condition, activeTab }) {
       <div className='flex items-center gap-2'>
         <AddTask dueDate={dueDate} listId={listId} disabled={isSelecting} className='flex-1 ' />
         <Actions
-          {...{
-            filteredTasks,
-            isSelecting,
-            setIsSelecting,
-            allSelected: selectedTasks.length === filteredTasks.length,
-            selectAll: () =>
-              setSelectedTasks(
-                filteredTasks.map((task) => {
-                  return { $id: task.$id, title: task.title, listId: task.listId };
-                }),
-              ),
-            unSelectAll: () => setSelectedTasks([]),
-            deleteAll() {
-              confirmDelete({
-                message: `Are you sure you want to delete all tasks?`,
-                title: `Delete All Tasks`,
-                
-                onConfirm: (deletePermanently) => {
-                  handleDeleteAllTasks(condition, filtersConditions[filter], deletePermanently);                  setIsSelecting(false);
-                },
-              });
-            },
-            setIsDeleteMultipleModalOpen,
+          filteredTasks={filteredTasks}
+          isSelecting={isSelecting}
+          setIsSelecting={setIsSelecting}
+          allSelected={selectedTasks.length === filteredTasks.length}
+          selectAll={() => {
+            setSelectedTasks(
+              filteredTasks.map((task) => {
+                return { $id: task.$id, title: task.title, listId: task.listId };
+              }),
+            );
           }}
+          unSelectAll={() => setSelectedTasks([])}
+          deleteAll={() => {
+            confirmDelete({
+              message: `Are you sure you want to delete all tasks?`,
+              title: `Delete All Tasks`,
+
+              onConfirm: (deletePermanently) => {
+                const deletedTasks = tasks.filter((task) => filtersConditions[filter]?.(task));
+                handleDeleteAllTasks(deletedTasks, deletePermanently);
+                setIsSelecting(false);
+              },
+            });
+          }}
+          setIsDeleteMultipleModalOpen={setIsDeleteMultipleModalOpen}
         />
       </div>
-      {tasks.filter((task) => condition(task)).length > 0 ? (
-        <>
-          <List
-            filteredTasks={filteredTasks}
-            isSelecting={isSelecting}
-            currentPage={currentPage}
-            rowsPerPage={rowsPerPage}
-          />
 
-          <NoFilteredTasksMessage
-            filter={filter}
-            activeTab={activeTab}
-            filteredTasks={filteredTasks}
-          />
-        </>
-      ) : (
-        <NoTasksMessage activeTab={activeTab} />
-      )}
+      <List
+        filteredTasks={filteredTasks}
+        isSelecting={isSelecting}
+        currentPage={currentPage}
+        rowsPerPage={rowsPerPage}
+      />
 
-      {filteredTasks.filter((task) => condition(task)).length > 0 && Pagination}
+      <NoFilteredTasksMessage
+        filter={filter}
+        message={message.noFilterPart}
+        display={filteredTasks.length === 0 && tasks.length > 0}
+      />
+
+      <NoTasksMessage message={message.noTasks} display={tasks.length === 0} />
+
+      {filteredTasks.length > 0 && Pagination}
+
       {Modal}
     </div>
   );
@@ -227,28 +220,26 @@ function Actions({
   );
 }
 
-function NoFilteredTasksMessage({ filter, activeTab, filteredTasks }) {
-  if (filteredTasks.length > 0) return null;
+function NoFilteredTasksMessage({ filter, message, display }) {
+  if (!display) return null;
 
   return (
     <div className='absolute top-1/2 flex w-full -translate-y-1/2 flex-col items-center justify-center gap-2'>
       <h2 className='text-center text-xl font-semibold text-text-secondary sm:text-2xl'>
         You don&apos;t have any {filter?.includes('priority') ? filter?.replace('-', ' ') : filter}{' '}
-        tasks {activeTab === 'today' ? 'scheduled for today' : !activeTab ? 'yet' : 'in this list'}
+        tasks {message}
       </h2>
     </div>
   );
 }
 
-function NoTasksMessage({ activeTab }) {
+function NoTasksMessage({ message, display }) {
+  if (!display) return null;
+
   return (
     <div className='absolute top-1/2 flex w-full -translate-y-1/2 flex-col items-center justify-center gap-2'>
       <h2 className='text-center text-xl font-semibold text-text-secondary sm:text-2xl'>
-        {activeTab === 'today'
-          ? 'You have no tasks scheduled for today.'
-          : activeTab === 'all'
-          ? "You don't have any tasks yet"
-          : "You don't have any tasks in this list"}
+        {message}
       </h2>
       <p className=' font-medium text-text-tertiary'>Add a new task to get started</p>
     </div>

@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
-import { useSearch } from '../../hooks/useSearch';
+import { useSearch } from '../../../hooks/useSearch';
 
-export function Search() {
+export function SearchInput() {
   const { searchQuery, setSearchQuery } = useSearch();
   const navigate = useNavigate();
 

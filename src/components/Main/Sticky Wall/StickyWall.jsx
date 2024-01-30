@@ -9,6 +9,8 @@ import { usePagination } from '../usePagination';
 import { useSearchParams } from 'react-router-dom';
 import { isTouchDevice } from '../../../utils/helpers';
 import { useModal } from '../../Common/ConfirmationModal';
+import { Title } from '../Title';
+import { StickyWallSkeleton } from '../../Skeletons';
 
 export default function StickyWall() {
   const {
@@ -21,6 +23,7 @@ export default function StickyWall() {
     selectedNotes,
     setSelectedNotes,
     handleDeleteMultipleNotes,
+    isNotesLoading,
   } = useStickyNotes();
   const [view, setView] = useState(isTouchDevice() ? 'list' : 'grid');
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -88,6 +91,10 @@ export default function StickyWall() {
       .slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
 
   useEffect(() => {
+    document.title = `I Do | Sticky Wall`;
+  }, []);
+
+  useEffect(() => {
     if (
       !['createdAt', 'updatedAt', 'title'].includes(sortBy) ||
       !['asc', 'desc'].includes(direction) ||
@@ -116,120 +123,125 @@ export default function StickyWall() {
 
   if (isStickyNoteEditorOpen) return <StickyNoteEditor />;
 
-  if (stickyNotes.length === 0)
-    return (
-      <div className='absolute flex h-full w-full flex-col items-center justify-center text-center'>
-        <h3 className='mb-1 mt-5  text-xl font-semibold text-text-secondary sm:text-2xl'>
-          You don&apos;t have any sticky notes yet
-        </h3>
-        <p className='text-sm font-medium text-text-tertiary'>
-          Click the plus icon below to add a new sticky note
-        </p>
-        <AddNote
-          isSelecting={isSelecting}
-          handleAddStickyNote={handleAddStickyNote}
-          setCurrentNote={setCurrentNote}
-          setIsStickyNoteEditorOpen={setIsStickyNoteEditorOpen}
-        />
-      </div>
-    );
   return (
-    <div className='flex h-full flex-col gap-3 overflow-hidden'>
-      <StickyWallActions
-        {...{
-          view,
-          setView,
-          sortBy,
-          setSortBy: (sortBy) => setParam({ sortBy }),
-          direction,
-          setDirection: (direction) => setParam({ direction }),
-          groupBy,
-          setGroupBy: (groupBy) => setParam({ groupBy }),
-          isCollapsed,
-          setIsCollapsed,
-          // Selection
-          isSelecting,
-          setIsSelecting,
-          selectAll() {
-            setSelectedNotes(stickyNotes.map((n) => ({ $id: n.$id, title: n.title })));
-          },
-          unSelectAll() {
-            setSelectedNotes([]);
-          },
-          allSelected: selectedNotes.length === stickyNotes.length,
-          // Delete
-          deleteAll() {
-            confirmDelete({
-              message: 'Are you sure you want to delete all sticky notes?',
-              title: 'Delete All Sticky Notes',
-              confirmText: 'Delete All',
-              onConfirm: (deletePermanently) => {
-                handleDeleteAllNotes(deletePermanently);
-                setIsSelecting(false);
+    <>
+      <Title title='Sticky Wall' count={stickyNotes.length} />
+      {isNotesLoading ? (
+        <StickyWallSkeleton />
+      ) : stickyNotes.length === 0 ? (
+        <div className='absolute flex h-full w-full flex-col items-center justify-center text-center'>
+          <h3 className='mb-1 mt-5  text-xl font-semibold text-text-secondary sm:text-2xl'>
+            You don&apos;t have any sticky notes yet
+          </h3>
+          <p className='text-sm font-medium text-text-tertiary'>
+            Click the plus icon below to add a new sticky note
+          </p>
+          <AddNote
+            isSelecting={isSelecting}
+            handleAddStickyNote={handleAddStickyNote}
+            setCurrentNote={setCurrentNote}
+            setIsStickyNoteEditorOpen={setIsStickyNoteEditorOpen}
+          />
+        </div>
+      ) : (
+        <div className='flex h-full flex-col gap-3 overflow-hidden'>
+          <StickyWallActions
+            {...{
+              view,
+              setView,
+              sortBy,
+              setSortBy: (sortBy) => setParam({ sortBy }),
+              direction,
+              setDirection: (direction) => setParam({ direction }),
+              groupBy,
+              setGroupBy: (groupBy) => setParam({ groupBy }),
+              isCollapsed,
+              setIsCollapsed,
+              // Selection
+              isSelecting,
+              setIsSelecting,
+              selectAll() {
+                setSelectedNotes(stickyNotes.map((n) => ({ $id: n.$id, title: n.title })));
               },
-            });
-          },
-        }}
-      />
-
-      <div
-        className='flex-1 space-y-3 overflow-auto rounded-lg border border-border p-3   pr-3 sm:p-5'
-        ref={parent}
-      >
-        {groupBy === 'default'
-          ? [
-              {
-                group: 'Pinned',
-                condition: (note) => note.pinned,
+              unSelectAll() {
+                setSelectedNotes([]);
               },
-              {
-                group: 'Recent',
-                condition: (note) => !note.pinned,
+              allSelected: selectedNotes.length === stickyNotes.length,
+              // Delete
+              deleteAll() {
+                confirmDelete({
+                  message: 'Are you sure you want to delete all sticky notes?',
+                  title: 'Delete All Sticky Notes',
+                  confirmText: 'Delete All',
+                  onConfirm: (deletePermanently) => {
+                    handleDeleteAllNotes(deletePermanently);
+                    setIsSelecting(false);
+                  },
+                });
               },
-            ].map(({ group, condition }) => (
-              <NotesGroup
-                key={group}
-                render={render}
-                group={group}
-                view={view}
-                isSelecting={isSelecting}
-                isCollapsed={isCollapsed}
-                parent={parent}
-                condition={condition}
-              />
-            ))
-          : [...new Set(stickyNotes.map((n) => groups[groupBy].getSet(n)))]
-              .toSorted((a, b) => groupBy === 'a-z' && a.localeCompare(b))
-              .map((t) => (
-                <NotesGroup
-                  key={t}
-                  render={render}
-                  group={
-                    groupBy === 'color'
-                      ? window.getComputedStyle(document.documentElement).getPropertyValue(t)
-                      : t
-                  }
-                  view={view}
-                  isSelecting={isSelecting}
-                  isCollapsed={isCollapsed}
-                  parent={parent}
-                  condition={(note) => groups[groupBy].condition(note, t)}
-                  groupBy={groupBy}
-                />
-              ))}
-      </div>
+            }}
+          />
 
-      {Pagination}
+          <div
+            className='flex-1 space-y-3 overflow-auto rounded-lg border border-border p-3   pr-3 sm:p-5'
+            ref={parent}
+          >
+            {groupBy === 'default'
+              ? [
+                  {
+                    group: 'Pinned',
+                    condition: (note) => note.pinned,
+                  },
+                  {
+                    group: 'Recent',
+                    condition: (note) => !note.pinned,
+                  },
+                ].map(({ group, condition }) => (
+                  <NotesGroup
+                    key={group}
+                    render={render}
+                    group={group}
+                    view={view}
+                    isSelecting={isSelecting}
+                    isCollapsed={isCollapsed}
+                    parent={parent}
+                    condition={condition}
+                  />
+                ))
+              : [...new Set(stickyNotes.map((n) => groups[groupBy].getSet(n)))]
+                  .toSorted((a, b) => groupBy === 'a-z' && a.localeCompare(b))
+                  .map((t) => (
+                    <NotesGroup
+                      key={t}
+                      render={render}
+                      group={
+                        groupBy === 'color'
+                          ? window.getComputedStyle(document.documentElement).getPropertyValue(t)
+                          : t
+                      }
+                      view={view}
+                      isSelecting={isSelecting}
+                      isCollapsed={isCollapsed}
+                      parent={parent}
+                      condition={(note) => groups[groupBy].condition(note, t)}
+                      groupBy={groupBy}
+                    />
+                  ))}
+          </div>
 
-      <AddNote
-        isSelecting={isSelecting}
-        handleAddStickyNote={handleAddStickyNote}
-        setCurrentNote={setCurrentNote}
-        setIsStickyNoteEditorOpen={setIsStickyNoteEditorOpen}
-      />
+          {Pagination}
 
-      {Modal}
-    </div>
+          <AddNote
+            isSelecting={isSelecting}
+            handleAddStickyNote={handleAddStickyNote}
+            setCurrentNote={setCurrentNote}
+            setIsStickyNoteEditorOpen={setIsStickyNoteEditorOpen}
+          />
+
+          {Modal}
+        </div>
+      )}
+    </>
   );
 }
 

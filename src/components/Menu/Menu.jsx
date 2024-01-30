@@ -5,7 +5,7 @@ import Tippy from '@tippyjs/react';
 import { MenuLists } from './Menu Lists/MenuLists';
 import { MenuTags } from './Menu Tags/MenuTags';
 import { MenuTasks } from './MenuTasks';
-import { Search } from './Search';
+import { SearchInput } from '../Main/Search/SearchInput';
 import { useDarkMode, useTrash } from '../../hooks';
 import { Profile } from './Profile';
 import Settings from '../Settings/Settings';
@@ -71,7 +71,7 @@ function ProfileAndCloseMenu({ onClose }) {
 function NavigationMenu() {
   return (
     <div className='mb-3 overflow-y-auto overflow-x-hidden pr-3'>
-      <Search />
+      <SearchInput />
       <MenuTasks />
       <MenuLists />
       <MenuTags />
