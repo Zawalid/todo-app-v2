@@ -4,7 +4,6 @@ export { useTags } from './useTags';
 export { useStickyNotes } from './useStickyNotes';
 export { useTrash } from './useTrash';
 export { useUser } from './useUser';
-export { useSearch } from './useSearch';
 
 export { useDeleteElement } from './useDeleteElement';
 export { useRestoreElement } from './useRestoreElement';

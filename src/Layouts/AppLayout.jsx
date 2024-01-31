@@ -1,6 +1,5 @@
 import { TaskInfo } from '../components/Task Info/TaskInfo';
 import { Menu } from '../components/Menu/Menu';
-import { SearchProvider } from '../contexts';
 import { useTrash, useUser } from '../hooks';
 import { Navigate, Outlet } from 'react-router-dom';
 import { useEffect } from 'react';
@@ -31,21 +30,17 @@ export default function AppLayout() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
-  return (
-    <>
-      {checkIsUserAuthenticated() ? (
-        <>
-          <SearchProvider>
-            <Menu />
-            <Main />
-          </SearchProvider>
-          <TaskInfo />
-        </>
-      ) : (
-        <Navigate to='/sign-in' replace={true} />
-      )}
-    </>
-  );
+  if (checkIsUserAuthenticated()) {
+    return (
+      <>
+        <Menu />
+        <Main />
+        <TaskInfo />
+      </>
+    );
+  }
+
+  return <Navigate to='/sign-in' replace={true} />;
 }
 
 function Main() {

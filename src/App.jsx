@@ -35,7 +35,7 @@ function App() {
           <Route path='lists/:listName' element={<ListTasks />} />
           <Route path='sticky-wall' element={<StickyWall />} />
           <Route path='sticky-wall/:noteId' element={<StickyWall />} />
-          {/* <Route path='search/:searchQuery' element={<SearchResults />} /> */}
+          <Route path='search/:searchQuery' element={<SearchResults />} />
           <Route path='search' element={<SearchResults />} />
         </Route>
 

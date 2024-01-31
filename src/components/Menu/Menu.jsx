@@ -18,11 +18,9 @@ export function Menu() {
   const [isTrashOpen, setIsTrashOpen] = useState(false);
   const menu = useRef(null);
   const { trashLength } = useTrash();
-  const activeTab = useHref().split('/app/')[1];
+  const activeTab = useHref();
 
-  useEffect(() => {
-    setIsOpen(window.matchMedia('(min-width: 1024px)').matches);
-  }, [activeTab]);
+  useEffect(() => setIsOpen(window.matchMedia('(min-width: 1024px)').matches), [activeTab]);
 
   return (
     <aside
@@ -40,12 +38,9 @@ export function Menu() {
           <ProfileAndCloseMenu onClose={() => setIsOpen(false)} />
           <NavigationMenu />
           <UserActionMenu
-            {...{
-              setIsSettingsOpen,
-              isTrashOpen,
-              setIsTrashOpen,
-              trashLength,
-            }}
+            setIsSettingsOpen={setIsSettingsOpen}
+            setIsTrashOpen={setIsTrashOpen}
+            trashLength={trashLength}
           />
         </>
       )}
@@ -79,11 +74,11 @@ function NavigationMenu() {
   );
 }
 
-function UserActionMenu({ setIsSettingsOpen, isTrashOpen, setIsTrashOpen, trashLength }) {
+function UserActionMenu({ setIsSettingsOpen, setIsTrashOpen, trashLength }) {
   return (
     <div className='mt-auto space-y-1 pr-2'>
       <Tippy
-        content={<Trash />}
+        content={<Trash isOpen={true} />}
         interactive={true}
         placement='right-end'
         trigger='click'
@@ -95,7 +90,7 @@ function UserActionMenu({ setIsSettingsOpen, isTrashOpen, setIsTrashOpen, trashL
         <button
           to='trash'
           className='menu_element  group w-full justify-items-start  pt-3'
-          onClick={() => setIsTrashOpen(!isTrashOpen)}
+          onClick={() => setIsTrashOpen((prev) => !prev)}
         >
           <i className='fa-solid fa-trash-can text-text-tertiary'></i>
           <span className='text-sm  text-text-secondary  group-hover:font-bold'>Trash</span>
