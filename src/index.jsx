@@ -17,7 +17,7 @@ import { ModalProvider } from './components/Common/ConfirmationModal.jsx';
 import './styles/index.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
+  <>
     <BrowserRouter>
       <ModalProvider>
         <DarkModeProvider>
@@ -37,7 +37,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         </DarkModeProvider>
       </ModalProvider>
     </BrowserRouter>
-  </React.StrictMode>,
+  </>,
 );
 
 monitorNetwork();

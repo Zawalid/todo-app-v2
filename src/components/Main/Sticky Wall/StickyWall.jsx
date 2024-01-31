@@ -1,12 +1,11 @@
 import { StickyNote } from './StickyNote';
-import { StickyNoteEditor } from './Sticky Note Editor/StickyNoteEditor';
 import { useStickyNotes } from '../../../hooks/useStickyNotes';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { useEffect, useState } from 'react';
 import StickyWallActions from './StickyWallActions/StickyWallActions';
 import useDeleteMultiple from '../useDeleteMultiple';
 import { usePagination } from '../usePagination';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { isTouchDevice } from '../../../utils/helpers';
 import { useModal } from '../../Common/ConfirmationModal';
 import { Title } from '../Title';
@@ -15,10 +14,6 @@ import { StickyWallSkeleton } from '../../Skeletons';
 export default function StickyWall() {
   const {
     stickyNotes,
-    setCurrentNote,
-    isStickyNoteEditorOpen,
-    setIsStickyNoteEditorOpen,
-    handleAddStickyNote,
     handleDeleteAllNotes,
     selectedNotes,
     setSelectedNotes,
@@ -121,7 +116,7 @@ export default function StickyWall() {
       );
   }, [groupBy, setSearchParams]);
 
-  if (isStickyNoteEditorOpen) return <StickyNoteEditor />;
+  // if (isStickyNoteEditorOpen) return <StickyNoteEditor />;
 
   return (
     <>
@@ -136,12 +131,7 @@ export default function StickyWall() {
           <p className='text-sm font-medium text-text-tertiary'>
             Click the plus icon below to add a new sticky note
           </p>
-          <AddNote
-            isSelecting={isSelecting}
-            handleAddStickyNote={handleAddStickyNote}
-            setCurrentNote={setCurrentNote}
-            setIsStickyNoteEditorOpen={setIsStickyNoteEditorOpen}
-          />
+          <AddNote isSelecting={isSelecting} />
         </div>
       ) : (
         <div className='flex h-full flex-col gap-3 overflow-hidden'>
@@ -231,12 +221,7 @@ export default function StickyWall() {
 
           {Pagination}
 
-          <AddNote
-            isSelecting={isSelecting}
-            handleAddStickyNote={handleAddStickyNote}
-            setCurrentNote={setCurrentNote}
-            setIsStickyNoteEditorOpen={setIsStickyNoteEditorOpen}
-          />
+          <AddNote isSelecting={isSelecting} />
 
           {Modal}
         </div>
@@ -247,13 +232,8 @@ export default function StickyWall() {
 
 function NotesGroup({ render, group, view, isSelecting, isCollapsed, parent, condition, groupBy }) {
   const [isGroupOpen, setIsGroupOpen] = useState(true);
-  const {
-    stickyNotes,
-    setCurrentNote,
-    setIsStickyNoteEditorOpen,
-    selectedNotes,
-    setSelectedNotes,
-  } = useStickyNotes();
+  const { stickyNotes, selectedNotes, setSelectedNotes } = useStickyNotes();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setIsGroupOpen(!isCollapsed);
@@ -301,15 +281,12 @@ function NotesGroup({ render, group, view, isSelecting, isCollapsed, parent, con
                 key={stickyNote.$id}
                 stickyNote={stickyNote}
                 onClick={() => {
-                  if (isSelecting) {
-                    setSelectedNotes((prev) => {
-                      if (isSelected) return prev.filter((t) => t.$id !== stickyNote.$id);
-                      else return [...prev, { $id: stickyNote.$id, title: stickyNote.title }];
-                    });
-                  } else {
-                    setCurrentNote(stickyNote);
-                    setIsStickyNoteEditorOpen(true);
-                  }
+                  isSelecting
+                    ? setSelectedNotes((prev) => {
+                        if (isSelected) return prev.filter((t) => t.$id !== stickyNote.$id);
+                        else return [...prev, { $id: stickyNote.$id, title: stickyNote.title }];
+                      })
+                    : navigate(`/app/sticky-wall/${stickyNote.$id}`);
                 }}
                 listView={view === 'list'}
                 isSelecting={isSelecting}
@@ -322,29 +299,18 @@ function NotesGroup({ render, group, view, isSelecting, isCollapsed, parent, con
   );
 }
 
-function AddNote({ isSelecting, handleAddStickyNote, setCurrentNote, setIsStickyNoteEditorOpen }) {
-  if (!isSelecting)
-    return (
-      <button
-        className='fixed bottom-14 right-5 z-10 grid h-12 w-12 place-content-center rounded-full bg-primary p-2 shadow-lg  hover:bg-primary-hover sm:right-8'
-        onClick={() => {
-          const note = {
-            title: '',
-            content: '<p></p>',
-            bgColor: '--custom-1',
-            textColor: '#fff',
-            readonly: false,
-            pinned: false,
-            fontFamily: `'Lexend Deca', sans-serif`,
-          };
-          handleAddStickyNote(note);
-          setCurrentNote((prev) => ({ ...prev, ...note }));
-          setIsStickyNoteEditorOpen(true);
-        }}
-      >
-        <i className='fa-regular fa-plus text-xl text-white'></i>
-      </button>
-    );
+function AddNote({ isSelecting }) {
+  const navigate = useNavigate();
+  if (isSelecting) return null;
+
+  return (
+    <button
+      className='fixed bottom-14 right-5 z-10 grid h-12 w-12 place-content-center rounded-full bg-primary p-2 shadow-lg  hover:bg-primary-hover sm:right-8'
+      onClick={() => navigate('new')}
+    >
+      <i className='fa-regular fa-plus text-xl text-white'></i>
+    </button>
+  );
 }
 
 const groups = {

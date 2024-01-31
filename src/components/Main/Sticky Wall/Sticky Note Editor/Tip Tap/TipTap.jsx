@@ -33,7 +33,7 @@ export default function TipTap() {
   const [isSaving, setIsSaving] = useState(false);
 
   function handleUpdateNote(field, value) {
-    if (currentNote[field] === value) return;
+    if (currentNote?.[field] === value) return;
     handleUpdateStickyNote(
       $id,
       {

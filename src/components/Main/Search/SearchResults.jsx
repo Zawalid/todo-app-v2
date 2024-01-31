@@ -62,7 +62,6 @@ export default function SearchResults() {
 }
 
 function Results({ searchResults, currentTab }) {
-  const { setCurrentNote, setIsStickyNoteEditorOpen } = useStickyNotes();
   const [parent] = useAutoAnimate({
     duration: 500,
   });
@@ -78,21 +77,11 @@ function Results({ searchResults, currentTab }) {
       ref={parent}
     >
       {searchResults.map((result) => {
-        if (currentTab !== 'stickyWall') {
-          return <Task key={result.$id} task={result} />;
-        }
-        if (currentTab === 'stickyWall') {
-          return (
-            <StickyNote
-              key={result.$id}
-              stickyNote={result}
-              onClick={() => {
-                setCurrentNote(result);
-                setIsStickyNoteEditorOpen(true);
-              }}
-            />
-          );
-        }
+        return currentTab === 'stickyWall' ? (
+          <StickyNote key={result.$id} stickyNote={result} />
+        ) : (
+          <Task key={result.$id} task={result} />
+        );
       })}
     </ul>
   );

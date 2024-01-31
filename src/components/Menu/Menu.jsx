@@ -20,7 +20,9 @@ export function Menu() {
   const { trashLength } = useTrash();
   const activeTab = useHref();
 
-  useEffect(() => setIsOpen(window.matchMedia('(min-width: 1024px)').matches), [activeTab]);
+  useEffect(() => {
+    setIsOpen(window.matchMedia('(min-width: 1024px)').matches);
+  }, [activeTab]);
 
   return (
     <aside
