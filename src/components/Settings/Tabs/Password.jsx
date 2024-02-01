@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { PasswordInput } from '../Common/PasswordInput';
+import { PasswordInput } from '../../Common/PasswordInput';
 import { toast } from 'sonner';
-import { useUser } from '../../hooks';
-import { Button } from '../Common/Button';
+import { useUser } from '../../../hooks';
+import { Button } from '../../Common/Button';
 import { Tab } from './Tab';
 
 export function Password() {
@@ -30,7 +30,7 @@ useEffect(() => {
   }
   return (
     <Tab>
-      <div className='mt-8 space-y-5'>
+      <div className='space-y-5'>
         <div>
           <h3 className='mb-3 font-bold text-text-secondary'>Current password</h3>
           <PasswordInput

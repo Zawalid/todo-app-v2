@@ -6,9 +6,9 @@ import {
   FileSizeValidator,
   ImageDimensionsValidator,
 } from 'use-file-picker/validators';
-import { useUser } from '../../hooks';
+import { useUser } from '../../../../hooks';
 import { toast } from 'sonner';
-import { getInitialsAvatar } from '../../lib/appwrite/api';
+import { getInitialsAvatar } from '../../../../lib/appwrite/api';
 
 export function UploadImage({ avatar, onChange }) {
   const { user } = useUser();

@@ -122,7 +122,7 @@ export function Actions({
               confirmDelete({
                 message: 'Are you sure you want to delete this sticky note?',
                 title: 'Delete Sticky Note',
-                onConfirm: () => (onDelete(),onBack())
+                onConfirm: async () => (onDelete(),onBack())
               });
             }}
           >

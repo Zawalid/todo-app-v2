@@ -2,7 +2,7 @@ import { createContext, useState } from 'react';
 import { ID } from 'appwrite';
 import { databases, appWriteConfig, setPermissions } from '../lib/appwrite/config';
 import { toast } from 'sonner';
-import { checkIfToday, checkIfTomorrow, isDateInCurrentWeek } from '../utils/Moment';
+import { checkIfToday, checkIfTomorrow, isDateInCurrentWeek } from '../utils/Dates';
 import { useDeleteElement, useUser } from '../hooks';
 import { getDeletionMessage } from '../utils/helpers';
 

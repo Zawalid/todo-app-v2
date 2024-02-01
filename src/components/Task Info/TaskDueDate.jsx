@@ -1,8 +1,8 @@
 import { useRef, useState } from 'react';
-import { isTaskOverdue } from '../../utils/Moment';
+import { isTaskOverdue } from '../../utils/Dates';
 import { DropDown } from '../Common/DropDown';
 
-export function TaskDueDate({ taskDueDate, setTaskDueDate }) {
+export function TaskDueDate({ taskDueDate, setTaskDueDate, inSettings }) {
   const [date, setDate] = useState(taskDueDate);
   const instanceRef = useRef(null);
   const today = new Date();
@@ -24,9 +24,11 @@ export function TaskDueDate({ taskDueDate, setTaskDueDate }) {
 
   return (
     <>
-      <label className='justify-self-start text-sm text-text-tertiary'>Due date</label>
+      {inSettings || (
+        <label className='justify-self-start text-sm text-text-tertiary'>Due date</label>
+      )}
       <div className='flex items-center gap-2'>
-        {taskDueDate && (
+        {taskDueDate && !inSettings && (
           <button
             className={isOverDue ? 'text-red-500' : 'text-text-secondary'}
             onClick={() => setTaskDueDate('')}

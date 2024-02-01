@@ -21,7 +21,7 @@ export function Tag({ tag, showDeleteButton, customClassName, onDeleteTag, onSel
                 : confirmDelete({
                     title: 'Delete Tag',
                     message: `Are you sure you want to delete this tag ?`,
-                    onConfirm: () => handleDeleteTag(tag.$id),
+                    onConfirm: async () => handleDeleteTag(tag.$id),
                   });
             }}
           >

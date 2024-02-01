@@ -8,6 +8,8 @@ const DEFAULT_OPTIONS = {
   confirmText: 'Delete',
   showCheckBox: true,
 };
+import deletedSoundFile from '../../assets/deleted.mp3';
+const deletedSound = new Audio(deletedSoundFile);
 
 const ModalContext = createContext();
 
@@ -26,6 +28,7 @@ export function ModalProvider({ children }) {
   };
   const onConfirm = useCallback(() => {
     options.onConfirm(isChecked);
+    setTimeout(() => deletedSound.play(), 300);
     closeModal();
   }, [options, isChecked]);
   const onCancel = () => {

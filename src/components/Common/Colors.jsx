@@ -1,5 +1,5 @@
 export function Colors({ customClass = '' }) {
-  return Array.from({ length: 18 }).map((_, i) => {
+  return Array.from({ length: 10 }).map((_, i) => {
     const color = `--custom-${i + 1}`;
     return (
       <span

@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import moment from 'moment';
+import { format, addDays, endOfWeek } from 'date-fns';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { Title } from '../Title';
 import { useTasks } from '../../../hooks';
@@ -12,20 +12,20 @@ const periods = [
     title: 'Today',
     id: 'today',
     tasks: 'todayTasks',
-    dueDate: moment().format('YYYY-MM-DD'),
+    dueDate: format(new Date(), 'yyyy-MM-dd'),
   },
   {
     title: 'Tomorrow',
     id: 'tomorrow',
     tasks: 'tomorrowTasks',
-    dueDate: moment().add(1, 'day').format('YYYY-MM-DD'),
+    dueDate: format(addDays(new Date(), 1), 'yyyy-MM-dd'),
   },
   {
     title: 'This Week',
     id: 'thisWeek',
     tasks: 'thisWeekTasks',
-    dueDate: moment().endOf('week').format('YYYY-MM-DD'),
-  },
+    dueDate: format(endOfWeek(new Date()), 'yyyy-MM-dd'),
+  }
 ];
 export default function Upcoming() {
   const { upcomingTasks, isTasksLoading } = useTasks();

@@ -6,14 +6,15 @@ import {
   checkIfTomorrow,
   checkIfYesterday,
   isTaskOverdue,
-} from '../../../../utils/Moment';
-import completedSoundFile from '../../../../assets/completed.mp3';
+} from '../../../../utils/Dates';
 import { useTasks, useLists, useTags } from '../../../../hooks';
 import { CheckBox } from '../../../Common/CheckBox';
 import TaskActions from './TaskActions';
 import CustomTippy from '../../../Common/CustomTippy';
 import { useModal } from '../../../Common/ConfirmationModal';
 import { copyToClipBoard } from '../../../../utils/helpers';
+
+import completedSoundFile from '../../../../assets/completed.mp3';
 
 const completedSound = new Audio(completedSoundFile);
 
@@ -135,7 +136,7 @@ export function Task({
             confirmDelete({
               title: 'Delete task',
               message: 'Are you sure you want to delete this task?',
-              onConfirm: () => handleDeleteTask($id),
+              onConfirm: async () => handleDeleteTask($id),
             });
           }}
           onCopy={() => {

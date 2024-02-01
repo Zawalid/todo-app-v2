@@ -64,7 +64,7 @@ export default function Trash({ isOpen, onClose }) {
                 } permanently ?`,
                 confirmText: 'Delete All',
                 showCheckBox: false,
-                onConfirm: () => {
+                onConfirm: async () => {
                   handleEmptyType(currentTab);
                 },
               });
@@ -75,7 +75,7 @@ export default function Trash({ isOpen, onClose }) {
                 message: 'Are you sure you want to empty trash ?',
                 confirmText: 'Empty',
                 showCheckBox: false,
-                onConfirm: () => {
+                onConfirm: async () => {
                   handleEmptyTrash();
                 },
               });
@@ -104,7 +104,7 @@ export default function Trash({ isOpen, onClose }) {
                 : currentTab.slice(0, currentTab.length - 1)
             } permanently ?`,
             showCheckBox: false,
-            onConfirm: () => {
+            onConfirm: async () => {
               handleDeleteFromTrash(currentTab, JSON.parse(item).id);
             },
           });

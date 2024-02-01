@@ -1,6 +1,6 @@
 import { DropDown } from '../Common/DropDown';
 
-export const TaskPriority = ({ taskPriority, setTaskPriority }) => {
+export const TaskPriority = ({ taskPriority, setTaskPriority, inSettings }) => {
   const priorities = [
     {
       label: 'None',
@@ -22,12 +22,14 @@ export const TaskPriority = ({ taskPriority, setTaskPriority }) => {
 
   return (
     <>
-      <label className='justify-self-start text-sm text-text-tertiary'>Priority</label>
+      {inSettings || (
+        <label className='justify-self-start text-sm text-text-tertiary'>Priority</label>
+      )}
 
       <DropDown
         toggler={
           <DropDown.Toggler>
-            <span> {priorities.find((priority) => priority.value === +taskPriority).label} </span>
+            <span> {priorities.find((priority) => priority.value === +taskPriority)?.label} </span>
             <i className='fa-solid fa-chevron-down text-xs'></i>
           </DropDown.Toggler>
         }

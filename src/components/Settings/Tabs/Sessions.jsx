@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useUser } from '../../hooks';
-import { Button } from '../Common/Button';
+import { useUser } from '../../../hooks';
+import { Button } from '../../Common/Button';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { Tab } from './Tab';
 
@@ -58,7 +58,7 @@ export function Sessions() {
 
   return (
     <Tab>
-      <div className='mt-8'>
+      <div>
         <p className='text-sm font-medium text-text-tertiary'>
           This is a list of devices that have logged into your account.
         </p>
@@ -126,7 +126,7 @@ function Session({ session, onDelete }) {
         <img src={browserImage?.image} alt={browserName} />
       </div>
       <div className='flex-1 space-y-1'>
-        <h4 className='text-sm font-semibold text-text-primary sm:text-base'>
+        <h4 className='text-sm font-semibold text-text-secondary sm:text-base'>
           {browserName || 'Unknown Browser'} on{' '}
           {deviceName[0].toUpperCase() + deviceName.slice(1) || 'Unknown Device'}
         </h4>

@@ -207,7 +207,7 @@ export function TaskInfo() {
               confirmDelete({
                 title: 'Delete Task',
                 message: 'Are you sure you want to delete this task?',
-                onConfirm: () => handleDeleteTask(currentTask.$id),
+                onConfirm: async () => handleDeleteTask(currentTask.$id),
               })
             }
           >

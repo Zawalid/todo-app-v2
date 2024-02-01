@@ -69,7 +69,7 @@ export function List({ list }) {
             confirmDelete({
               title: 'Delete List',
               message: `Are you sure you want to delete this list ?`,
-              onConfirm: () => handleDeleteList($id),
+              onConfirm: async () => handleDeleteList($id),
             })
           }
           onChangeColor={(color) => {
