@@ -1,13 +1,13 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { DevTool } from '@hookform/devtools';
+import { updateSettings } from '../../../../app/settingsSlice';
 
 import { Tab } from '../Tab';
 import { StickyNotes } from './StickyNotes';
 import { Tasks } from './Tasks';
 import { Preferences } from './Preferences';
 import { DateAndTime } from './DateAndTime';
-import { updateSettings } from '../../../../app/settingsSlice';
 
 export default function General() {
   const { general } = useSelector((state) => state.settings);
@@ -18,7 +18,7 @@ export default function General() {
     formState: { isDirty: isUpdated },
     control,
     setValue,
-  } = useForm({ defaultValues: general, mode: 'onChange' });
+  } = useForm({ defaultValues: general});
 
   return (
     <Tab

@@ -27,11 +27,11 @@ const DEFAULT_SETTINGS = {
       },
     },
     theme: {
-      theme: 'light',
+      themeName: 'dark',
       autoDarkMode: true,
     },
     sidebar: {
-      showInSideBar: ['all', 'today', 'upcoming', 'stickyWall'],
+      showInSideBar: ['all', 'stickyWall', 'today', 'upcoming'],
       showCount: true,
     },
   },

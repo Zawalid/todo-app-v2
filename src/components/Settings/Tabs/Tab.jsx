@@ -12,6 +12,7 @@ export function Tab({ children, saveButton, cancelButton }) {
 
     return () => tab.classList.add('opacity-0');
   }, []);
+  
   return (
     <div
       className='flex flex-1 flex-col gap-3 overflow-hidden pb-4 pt-16 opacity-0 transition-opacity duration-500 child-padding '
