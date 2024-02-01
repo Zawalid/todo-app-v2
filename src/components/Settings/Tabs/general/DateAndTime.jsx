@@ -1,16 +1,19 @@
 import { PiCalendar } from 'react-icons/pi';
 import { DropDown } from '../../../Common/DropDown';
 import { format } from 'date-fns';
+import { Controller, useWatch } from 'react-hook-form';
 
-export function DateAndTime() {
+export function DateAndTime({ control, setValue }) {
+  const weekStartsOn = useWatch({ control, name: 'dateAndTime.weekStartsOn' });
+
   return (
     <>
       <div className='flex items-center gap-3 text-text-tertiary'>
         <PiCalendar size={22} /> <h3 className='font-bold'>Date & Time</h3>
       </div>
       <div className='space-y-5 md:pl-5'>
-        <DateFormat />
-        <TimeFormat />
+        <DateFormat control={control} setValue={setValue} />
+        <TimeFormat control={control} setValue={setValue} />
 
         <div className='setting'>
           <div>
@@ -20,50 +23,36 @@ export function DateAndTime() {
           <DropDown
             toggler={
               <DropDown.Toggler>
-                <span>Monday</span>
+                <span>{weekStartsOn}</span>
                 <i className='fa-solid fa-chevron-down text-xs'></i>
               </DropDown.Toggler>
             }
             options={{ className: 'w-48', shouldCloseOnClick: false }}
           >
-            <DropDown.Button isCurrent>
-              <span>Monday</span>
-            </DropDown.Button>
-            <DropDown.Button>
-              <span>Sunday</span>
-            </DropDown.Button>
+            {['Monday', 'Sunday'].map((day) => (
+              <DropDown.Button
+                key={day}
+                isCurrent={day === weekStartsOn}
+                onClick={() => setValue('dateAndTime.weekStartsOn', day, { shouldDirty: true })}
+              >
+                <span>{day}</span>
+              </DropDown.Button>
+            ))}
           </DropDown>
-        </div>
 
-        <div className='setting'>
-          <div>
-            <h4>Weekly Due Date</h4>
-            <p>Tasks added in {'This Week'} will have their due date set to the selected day.</p>
-          </div>
-          <DropDown
-            toggler={
-              <DropDown.Toggler>
-                <span>Sunday</span>
-                <i className='fa-solid fa-chevron-down text-xs'></i>
-              </DropDown.Toggler>
-            }
-            options={{ className: 'w-48', shouldCloseOnClick: false }}
-          >
-            {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map(
-              (day) => (
-                <DropDown.Button key={day} isCurrent={day === 'Sunday'}>
-                  <span>{day}</span>
-                </DropDown.Button>
-              ),
-            )}
-          </DropDown>
+          <Controller
+            control={control}
+            name='dateAndTime.weekStartsOn'
+            render={({ field }) => <input {...field} type='hidden' />}
+          />
         </div>
       </div>
     </>
   );
 }
 
-function DateFormat() {
+function DateFormat({ control, setValue }) {
+  const dateFormat = useWatch({ control, name: 'dateAndTime.dateFormat' });
   const dateFormats = ['MM/dd/yyyy', 'dd/MM/yyyy', 'yyyy/MM/dd', 'MMM dd, yyyy', 'dd MMM yyyy'];
   const sampleDate = new Date();
 
@@ -74,7 +63,7 @@ function DateFormat() {
       <DropDown
         toggler={
           <DropDown.Toggler>
-            <span>{format(sampleDate, 'MM/dd/yyyy')}</span>
+            <span>{format(sampleDate, dateFormat)}</span>
             <i className='fa-solid fa-chevron-down text-xs'></i>
           </DropDown.Toggler>
         }
@@ -83,17 +72,30 @@ function DateFormat() {
         {dateFormats.map((formatString) => {
           const formattedDate = format(sampleDate, formatString);
           return (
-            <DropDown.Button key={formatString} isCurrent={formatString === 'MM/dd/yyyy'}>
+            <DropDown.Button
+              key={formatString}
+              isCurrent={formatString === dateFormat}
+              onClick={() =>
+                setValue('dateAndTime.dateFormat', formatString, { shouldDirty: true })
+              }
+            >
               <span>{formattedDate}</span>
             </DropDown.Button>
           );
         })}
       </DropDown>
+
+      <Controller
+        control={control}
+        name='dateAndTime.dateFormat'
+        render={({ field }) => <input {...field} type='hidden' />}
+      />
     </div>
   );
 }
 
-function TimeFormat() {
+function TimeFormat({ control, setValue }) {
+  const timeFormat = useWatch({ control, name: 'dateAndTime.timeFormat' });
   const timeFormats = ['HH:mm', 'hh:mm a'];
   const sampleDate = new Date();
 
@@ -104,7 +106,7 @@ function TimeFormat() {
       <DropDown
         toggler={
           <DropDown.Toggler>
-            <span>{format(sampleDate, 'HH:mm')}</span>
+            <span>{format(sampleDate, timeFormat)}</span>
             <i className='fa-solid fa-chevron-down text-xs'></i>
           </DropDown.Toggler>
         }
@@ -113,12 +115,24 @@ function TimeFormat() {
         {timeFormats.map((formatString) => {
           const formattedTime = format(sampleDate, formatString);
           return (
-            <DropDown.Button key={formatString} isCurrent={formatString === 'HH:mm'}>
+            <DropDown.Button
+              key={formatString}
+              isCurrent={formatString === timeFormat}
+              onClick={() =>
+                setValue('dateAndTime.timeFormat', formatString, { shouldDirty: true })
+              }
+            >
               <span>{formattedTime}</span>
             </DropDown.Button>
           );
         })}
       </DropDown>
+
+      <Controller
+        control={control}
+        name='dateAndTime.timeFormat'
+        render={({ field }) => <input {...field} type='hidden' />}
+      />
     </div>
   );
 }

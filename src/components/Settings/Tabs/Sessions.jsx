@@ -57,7 +57,7 @@ export function Sessions() {
 
   return (
     <Tab
-      button={{
+      saveButton={{
         text: 'Revoke All',
         onClick: async () => {
           await handleDeleteSessions(

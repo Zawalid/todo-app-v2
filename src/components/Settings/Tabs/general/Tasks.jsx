@@ -8,8 +8,14 @@ import { CheckBox } from '../../../Common/CheckBox';
 import { useLists, useTags, useTasks } from '../../../../hooks';
 import { exportDownload } from '../../../../utils/helpers';
 import papaparse from 'papaparse';
+import { Controller, useWatch } from 'react-hook-form';
 
-export function Tasks() {
+export function Tasks({ control, setValue }) {
+  const tasksSettings = useWatch({ control, name: 'tasks' });
+  const { weeklyDueDate, defaultDueDate, defaultPriority } = tasksSettings;
+
+  const setSetting = (name, value) => setValue(`tasks.${name}`, value, { shouldDirty: true });
+
   return (
     <>
       <div className='flex items-center gap-3 text-text-tertiary'>
@@ -23,7 +29,17 @@ export function Tasks() {
               Initial due date for all new tasks. You can modify this for each task later.
             </p>
           </div>
-          <TaskDueDate taskDueDate={new Date().toISOString().split('T')[0]} inSettings={true} />
+          <TaskDueDate
+            taskDueDate={defaultDueDate || ''}
+            setTaskDueDate={(date) => setSetting('defaultDueDate', date)}
+            inSettings={true}
+          />
+
+          <Controller
+            control={control}
+            name='tasks.defaultDueDate'
+            render={({ field }) => <input {...field} type='hidden' />}
+          />
         </div>
         <div className='setting'>
           <div>
@@ -32,21 +48,72 @@ export function Tasks() {
               Initial priority for all new tasks. You can modify this for each task later.
             </p>
           </div>
-          <TaskPriority taskPriority={0} inSettings={true} />
+          <TaskPriority
+            taskPriority={defaultPriority}
+            setTaskPriority={(priority) => setSetting('defaultPriority', priority)}
+            inSettings={true}
+          />
+          <Controller
+            control={control}
+            name='tasks.defaultPriority'
+            render={({ field }) => <input {...field} type='hidden' />}
+          />
+        </div>
+        <div className='setting'>
+          <div>
+            <h4>Weekly Due Date</h4>
+            <p>Tasks added in {'This Week'} will have their due date set to the selected day.</p>
+          </div>
+          <DropDown
+            toggler={
+              <DropDown.Toggler>
+                <span>{weeklyDueDate}</span>
+                <i className='fa-solid fa-chevron-down text-xs'></i>
+              </DropDown.Toggler>
+            }
+            options={{ className: 'w-48' }}
+          >
+            {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map(
+              (day) => (
+                <DropDown.Button
+                  key={day}
+                  isCurrent={day === weeklyDueDate}
+                  onClick={() => setSetting('weeklyDueDate', day)}
+                >
+                  <span>{day}</span>
+                </DropDown.Button>
+              ),
+            )}
+          </DropDown>
+
+          <Controller
+            control={control}
+            name='tasks.weeklyDueDate'
+            render={({ field }) => <input {...field} type='hidden' />}
+          />
         </div>
         <div className='setting'>
           <div>
             <h4>Auto Delete Completed Tasks</h4>
             <p>Automatically delete tasks once they are marked as completed.</p>
           </div>
-          <Switch />
+          <Controller
+            control={control}
+            name='tasks.autoDeleteCompletedTasks'
+            render={({ field }) => <Switch {...field} checked={field.value} />}
+          />
         </div>
         <div className='setting'>
           <div>
             <h4>Task Detail Level</h4>
             <p>Choose the amount of detail displayed for each task.</p>
           </div>
-          <TaskDisplay />
+          <TaskDisplay control={control} setSetting={setSetting} />
+          <Controller
+            control={control}
+            name='tasks.taskDetailLevel'
+            render={({ field }) => <input {...field} type='hidden' />}
+          />
         </div>
         <div className='setting'>
           <div>
@@ -60,47 +127,45 @@ export function Tasks() {
   );
 }
 
-function TaskDisplay() {
-  const details = [
-    {
-      label: 'List',
-      visible: true,
-    },
-    {
-      label: 'Due Date',
-      visible: true,
-    },
-    {
-      label: 'Priority',
-      visible: true,
-    },
-    {
-      label: 'Subtasks',
-      visible: false,
-    },
-    {
-      label: 'Tags',
-      visible: false,
-    },
-  ];
+function TaskDisplay({ control, setSetting }) {
+  const taskDetailLevel = useWatch({ control, name: 'tasks.taskDetailLevel' });
+  const allDetails = ['list', 'dueDate', 'priority', 'subtasks', 'tags'];
+
+  const setTaskDetailLevel = (detail) => {
+    if (taskDetailLevel.includes(detail)) {
+      return setSetting('taskDetailLevel', taskDetailLevel.filter((d) => d !== detail).sort());
+    }
+    setSetting('taskDetailLevel', [...taskDetailLevel, detail].sort());
+  };
 
   return (
     <DropDown
       toggler={
         <DropDown.Toggler>
           <span>
-            {details.filter((detail) => detail.visible).length} of {details.length} visible
+            {allDetails.filter((detail) => taskDetailLevel.includes(detail)).length} of{' '}
+            {allDetails.length} visible
           </span>
           <i className='fa-solid fa-chevron-down text-xs'></i>
         </DropDown.Toggler>
       }
       options={{ className: 'w-48', shouldCloseOnClick: false }}
     >
-      {details.map((detail) => {
+      {allDetails.map((detail) => {
         return (
-          <DropDown.Button key={detail.label} className='justify-between'>
-            <label htmlFor={detail.label}>{detail.label}</label>
-            <CheckBox id={detail.label} />
+          <DropDown.Button
+            key={detail}
+            className='justify-between'
+            onClick={() => setTaskDetailLevel(detail)}
+          >
+            <label htmlFor={detail} className='capitalize'>
+              {detail}
+            </label>
+            <CheckBox
+              id={detail}
+              checked={taskDetailLevel.includes(detail)}
+              onChange={() => setTaskDetailLevel(detail)}
+            />
           </DropDown.Button>
         );
       })}

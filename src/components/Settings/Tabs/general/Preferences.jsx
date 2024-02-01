@@ -1,8 +1,11 @@
 import { PiSliders } from 'react-icons/pi';
 import Switch from '../../../Common/Switch';
 import { DropDown } from '../../../Common/DropDown';
+import { Controller, useWatch } from 'react-hook-form';
 
-export function Preferences() {
+export function Preferences({ control, setValue }) {
+  const defaultHomeView = useWatch({ control, name: 'preferences.defaultHomeView' });
+
   return (
     <>
       <div className='flex items-center gap-3 text-text-tertiary'>
@@ -16,7 +19,11 @@ export function Preferences() {
               Play a sound when a task is completed.
             </p>
           </div>
-          <Switch />
+          <Controller
+            name='preferences.taskCompletionSound'
+            control={control}
+            render={({ field }) => <Switch checked={field.value} {...field} />}
+          />
         </div>
         <div className='setting'>
           <div>
@@ -25,7 +32,12 @@ export function Preferences() {
               Play a sound when an element is deleted.
             </p>
           </div>
-          <Switch />
+
+          <Controller
+            name='preferences.deletionSound'
+            control={control}
+            render={({ field }) => <Switch checked={field.value} {...field} />}
+          />
         </div>
         <div className='setting'>
           <div>
@@ -34,7 +46,12 @@ export function Preferences() {
               Enable or disable interface animations.
             </p>
           </div>
-          <Switch />
+
+          <Controller
+            name='preferences.animation'
+            control={control}
+            render={({ field }) => <Switch checked={field.value} {...field} />}
+          />
         </div>
         <div className='setting'>
           <div>
@@ -46,18 +63,27 @@ export function Preferences() {
           <DropDown
             toggler={
               <DropDown.Toggler>
-                <span>All</span>
+                <span>{defaultHomeView}</span>
                 <i className='fa-solid fa-chevron-down text-xs'></i>
               </DropDown.Toggler>
             }
-            options={{ className: 'w-48', shouldCloseOnClick: false }}
+            options={{ className: 'w-48' }}
           >
             {['All', 'Today', 'Upcoming', 'Sticky Wall'].map((tab) => (
-              <DropDown.Button key={tab} isCurrent={tab === 'All'}>
+              <DropDown.Button
+                key={tab}
+                isCurrent={tab === defaultHomeView}
+                onClick={() => setValue('preferences.defaultHomeView', tab, { shouldDirty: true })}
+              >
                 <span>{tab}</span>
               </DropDown.Button>
             ))}
           </DropDown>
+          <Controller
+            name='preferences.defaultHomeView'
+            control={control}
+            render={({ field }) => <input type='hidden' {...field} />}
+          />
         </div>
       </div>
     </>

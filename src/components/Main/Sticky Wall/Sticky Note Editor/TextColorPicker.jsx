@@ -1,22 +1,24 @@
-import { useColorPicker } from '../../../../hooks/useColorPicker';
+import { PiCheckBold } from 'react-icons/pi';
 
 export function TextColorPicker({ onChange, textColor }) {
-  const colorsDiv = useColorPicker(onChange, textColor);
+  const color1 = getComputedStyle(document.documentElement)
+    .getPropertyValue('--text-primary')
+    .trim();
+  const color2 = getComputedStyle(document.documentElement)
+    .getPropertyValue('--background-secondary')
+    .trim();
 
   return (
-    <div className=' flex h-auto gap-2' ref={colorsDiv}>
-      <span
-        className='color h-6 w-6 bg-text-primary'
-        data-color={getComputedStyle(document.documentElement)
-          .getPropertyValue('--text-primary')
-          .trim()}
-      ></span>
+    <div className=' flex h-auto gap-2'>
+      <span className='color h-6 w-6 bg-text-primary' onClick={() => onChange(color1)}>
+        {textColor === color1 && <PiCheckBold size={14} style={{ color: color2 }} />}
+      </span>
       <span
         className='color h-6 w-6 border  bg-background-primary'
-        data-color={getComputedStyle(document.documentElement)
-          .getPropertyValue('--background-primary')
-          .trim()}
-      ></span>
+        onClick={() => onChange(color2)}
+      >
+        {textColor === color2 && <PiCheckBold size={14} style={{ color: color1 }} />}
+      </span>
     </div>
   );
 }

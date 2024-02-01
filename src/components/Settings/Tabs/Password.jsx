@@ -28,7 +28,7 @@ export function Password() {
   }
   return (
     <Tab
-      button={{
+      saveButton={{
         text: 'Change Password',
         onClick: changePassword,
         disabled: !isFilled,

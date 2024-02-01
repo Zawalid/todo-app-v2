@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Colors } from '../../Common/Colors';
 import { useIsTitleTaken } from '../../../hooks/useIsTitleTaken';
 import { useLists } from '../../../hooks/useLists';
-import { useColorPicker } from '../../../hooks/useColorPicker';
 
 export function AddNewList({ reference, isOpen }) {
   const { lists, handleAddList } = useLists();
@@ -14,7 +13,6 @@ export function AddNewList({ reference, isOpen }) {
   const [value, setValue] = useState('');
   const [color, setColor] = useState('--custom-1');
   const inputEl = useRef(null);
-  const colorsDiv = useColorPicker((color) => setColor(color), color);
   const [isTitleTaken, , setTitle] = useIsTitleTaken(lists);
 
   useEffect(() => {
@@ -64,8 +62,8 @@ export function AddNewList({ reference, isOpen }) {
             <i className='fa-regular fa-circle-check text-green-500'></i>
           ))}
       </div>
-      <div className='mt-3 flex flex-wrap items-center justify-start gap-2' ref={colorsDiv}>
-        <Colors />
+      <div className='mt-3 flex flex-wrap items-center justify-start gap-2'>
+        <Colors selectedColor={color} onSelect={(color) => setColor(color)} />
       </div>
     </div>
   );

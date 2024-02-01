@@ -7,7 +7,7 @@ import Switch from '../../Common/Switch';
 export default function SideBar() {
   return (
     <Tab
-      button={{
+      saveButton={{
         
         onClick: () => {},
         

@@ -86,7 +86,7 @@ input[type='checkbox'] {
 }
 
 .color {
-  @apply h-5 w-5 cursor-pointer rounded-[3px] border border-border hover:shadow-md;
+  @apply h-5 w-5 grid place-content-center cursor-pointer rounded-[3px] border border-border hover:shadow-md;
   &.circle {
     @apply rounded-full;
   }

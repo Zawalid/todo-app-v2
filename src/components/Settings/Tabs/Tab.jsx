@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Button } from '../../Common/Button';
 
-export function Tab({ children, button }) {
+export function Tab({ children, saveButton, cancelButton }) {
   const parent = useRef(null);
 
   useEffect(() => {
@@ -18,8 +18,9 @@ export function Tab({ children, button }) {
       ref={parent}
     >
       <div className='flex-1 overflow-auto'>{children}</div>
-      <div>
-        <Button className='mr-0 px-3' text={button.text || 'Save Changes'} {...button} />
+      <div className='flex  justify-end gap-3'>
+        {cancelButton && <Button text='Cancel' isCancel={true} {...cancelButton} />}
+        <Button text={saveButton.text || 'Save Changes'} {...saveButton} />
       </div>
     </div>
   );

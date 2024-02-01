@@ -57,7 +57,7 @@ export function Account() {
 
   return (
     <Tab
-      button={{
+      saveButton={{
         
         onClick: handleSaveChanges,
         disabled:

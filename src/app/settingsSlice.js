@@ -12,13 +12,14 @@ const DEFAULT_SETTINGS = {
       dateAndTime: {
         dateFormat: 'MM/dd/yyyy',
         timeFormat: 'HH:mm',
-        weekStart: 'monday',
-        weeklyDueDate: 'sunday',
+        weekStartsOn: 'Monday',
       },
       tasks: {
         defaultDueDate: '',
+        defaultPriority: 0,
+        weeklyDueDate: 'Sunday',
         autoDeleteCompletedTasks: false,
-        taskDetailLevel: ['list', 'dueDate', 'priority', 'subtasks', 'tags'],
+        taskDetailLevel: ['dueDate', 'list', 'priority', 'subtasks', 'tags'],
       },
       stickyNotes: {
         autoSave: true,
@@ -41,8 +42,8 @@ const settingsReducer = createSlice({
   name: 'settings',
   reducers: {
     updateSettings(state, action) {
-      console.log(action.payload);
-      state.general.preferences.animation = false;
+      const { category, settings } = action.payload;
+      state.settings[category] = settings;
     },
     resetSettings(state) {
       Object.assign(state, DEFAULT_SETTINGS);

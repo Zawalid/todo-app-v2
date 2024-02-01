@@ -1,10 +1,16 @@
-export function Button({ text, children, isLoading, disabled, onClick, className }) {
+export function Button({ text, children, isLoading, disabled, onClick, className, isCancel }) {
+  const primaryClass = !isCancel ? 'bg-primary text-white hover:bg-primary-hover' : '';
+
+  const cancelClass = isCancel
+    ? 'bg-background-secondary text-text-secondary  hover:bg-background-tertiary'
+    : '';
+
+  const disabledClass = disabled ? 'bg-background-disabled text-text-disabled' : '';
+
   return (
     <button
-      className={`mx-auto mt-auto flex justify-center  rounded-lg py-2 text-sm font-medium ${className} ${
-        disabled
-          ? 'bg-background-disabled text-text-disabled'
-          : 'bg-primary  text-white hover:bg-primary-hover'
+      className={`mt-auto flex justify-center rounded-lg  px-3 py-2 text-sm font-medium ${className} ${
+        disabled ? disabledClass : `${primaryClass} ${cancelClass}`
       }`}
       disabled={disabled}
       onClick={() => !disabled && onClick?.()}

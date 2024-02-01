@@ -6,7 +6,7 @@ export default function Theme() {
   const themes = ['light', 'dark', 'rose', 'emerald', 'amber', 'teal'];
 
   return (
-    <Tab  button={{
+    <Tab  saveButton={{
       
       onClick: () => {},
       

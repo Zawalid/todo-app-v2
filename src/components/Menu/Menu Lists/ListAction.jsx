@@ -1,10 +1,7 @@
 import { Colors } from '../../Common/Colors';
 import { DropDown } from '../../Common/DropDown';
-import { useColorPicker } from '../../../hooks/useColorPicker';
 
-export function ListAction({ onDelete, onChangeColor, color,onOpenRenameInput }) {
-  const colorsDiv = useColorPicker(onChangeColor,color);
-
+export function ListAction({ onDelete, onChangeColor, color, onOpenRenameInput }) {
   return (
     <DropDown
       toggler={<i className='fas fa-ellipsis-vertical text-text-tertiary '></i>}
@@ -29,8 +26,8 @@ export function ListAction({ onDelete, onChangeColor, color,onOpenRenameInput })
         options={{ className: 'w-52', placement: 'bottom', shouldCloseOnClick: false }}
         togglerClassName='w-full'
       >
-        <div className='flex h-20 flex-wrap items-center  gap-2 overflow-hidden' ref={colorsDiv}>
-          <Colors />
+        <div className='flex h-20 flex-wrap items-center  gap-2 overflow-hidden'>
+          <Colors selectedColor={color} onSelect={(color) => onChangeColor(color)} />
         </div>
       </DropDown.NestedMenu>
       <DropDown.Button onClick={onDelete} isDeleteButton={true}>
