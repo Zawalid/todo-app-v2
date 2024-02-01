@@ -16,7 +16,7 @@ import { useFetchAllElements } from '../../hooks/useFetchAllElements';
 
 export function Menu() {
   const [isOpen, setIsOpen] = useState(window.matchMedia('(min-width: 1024px)').matches);
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(true);
   const [isTrashOpen, setIsTrashOpen] = useState(false);
   const menu = useRef(null);
   const { trashLength } = useTrash();

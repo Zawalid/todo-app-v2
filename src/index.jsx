@@ -1,6 +1,7 @@
-import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import store from './app/store.js';
 
 import DarkModeProvider from './contexts/DarkModeContext.jsx';
 import TrashProvider from './contexts/Trash.jsx';
@@ -18,25 +19,27 @@ import './styles/index.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <>
-    <BrowserRouter>
-      <ModalProvider>
-        <DarkModeProvider>
-          <TrashProvider>
-            <UserProvider>
-              <ListsProvider>
-                <TasksProvider>
-                  <StickyNotesProvider>
-                    <TagsProvider>
-                      <App />
-                    </TagsProvider>
-                  </StickyNotesProvider>
-                </TasksProvider>
-              </ListsProvider>
-            </UserProvider>
-          </TrashProvider>
-        </DarkModeProvider>
-      </ModalProvider>
-    </BrowserRouter>
+   <Provider store={store} >
+     <BrowserRouter>
+       <ModalProvider>
+         <DarkModeProvider>
+           <TrashProvider>
+             <UserProvider>
+               <ListsProvider>
+                 <TasksProvider>
+                   <StickyNotesProvider>
+                     <TagsProvider>
+                       <App />
+                     </TagsProvider>
+                   </StickyNotesProvider>
+                 </TasksProvider>
+               </ListsProvider>
+             </UserProvider>
+           </TrashProvider>
+         </DarkModeProvider>
+       </ModalProvider>
+     </BrowserRouter>
+   </Provider>
   </>,
 );
 

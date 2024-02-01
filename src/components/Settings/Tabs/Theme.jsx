@@ -6,7 +6,11 @@ export default function Theme() {
   const themes = ['light', 'dark', 'rose', 'emerald', 'amber', 'teal'];
 
   return (
-    <Tab>
+    <Tab  button={{
+      
+      onClick: () => {},
+      
+    }}>
       <div className='space-y-5'>
         <div className='setting block'>
           <h4>Themes</h4>

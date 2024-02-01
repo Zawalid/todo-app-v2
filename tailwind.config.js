@@ -41,6 +41,9 @@ export default {
         scaleUp: 'scaleUp 1s linear infinite',
         pulse2: 'pulse2 1s linear infinite',
       },
+      screens : {
+        'xs' : '380px',
+      }
     },
   },
   plugins: [

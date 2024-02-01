@@ -6,7 +6,13 @@ import Switch from '../../Common/Switch';
 
 export default function SideBar() {
   return (
-    <Tab>
+    <Tab
+      button={{
+        
+        onClick: () => {},
+        
+      }}
+    >
       <div className='space-y-5'>
         <div>
           <div>

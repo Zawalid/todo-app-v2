@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { useUser } from '../../../../hooks';
-import { Button } from '../../../Common/Button';
 import { UploadImage } from './UploadImage';
 import { UserVerificationModal } from '../../UserVerificationModal';
 import { InputField } from '../../../Common/InputField';
@@ -57,7 +56,14 @@ export function Account() {
   }
 
   return (
-    <Tab>
+    <Tab
+      button={{
+        
+        onClick: handleSaveChanges,
+        disabled:
+          Object.values(isUpdated).every((value) => !value) || (!avatar.file && !avatar.src),
+      }}
+    >
       <div className='space-y-5'>
         <div>
           <h3 className='mb-3 font-bold text-text-secondary'>Avatar</h3>
@@ -100,14 +106,7 @@ export function Account() {
           />
         </div>
       </div>
-      <Button
-        text='Save Changes'
-        disabled={
-          Object.values(isUpdated).every((value) => !value) || (!avatar.file && !avatar.src)
-        }
-        onClick={handleSaveChanges}
-        className='mr-0 px-3'
-      />
+
       <UserVerificationModal
         isOpen={isVerificationModalOpen}
         onClose={() => setIsVerificationModalOpen(false)}

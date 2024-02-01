@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { PasswordInput } from '../../Common/PasswordInput';
 import { toast } from 'sonner';
 import { useUser } from '../../../hooks';
-import { Button } from '../../Common/Button';
 import { Tab } from './Tab';
 
 export function Password() {
@@ -12,11 +11,10 @@ export function Password() {
   const [isFilled, setIsFilled] = useState(false);
   const { handleUpdatePassword } = useUser();
 
-useEffect(() => {
-  if(currentPassword && newPassword && confirmNewPassword) setIsFilled(true);
-  else setIsFilled(false);
-}
-, [currentPassword, newPassword, confirmNewPassword]);
+  useEffect(() => {
+    if (currentPassword && newPassword && confirmNewPassword) setIsFilled(true);
+    else setIsFilled(false);
+  }, [currentPassword, newPassword, confirmNewPassword]);
 
   function changePassword() {
     if (newPassword.length < 8) return toast.error('Password must be at least 8 characters long');
@@ -29,7 +27,13 @@ useEffect(() => {
     }
   }
   return (
-    <Tab>
+    <Tab
+      button={{
+        text: 'Change Password',
+        onClick: changePassword,
+        disabled: !isFilled,
+      }}
+    >
       <div className='space-y-5'>
         <div>
           <h3 className='mb-3 font-bold text-text-secondary'>Current password</h3>
@@ -56,7 +60,6 @@ useEffect(() => {
           />
         </div>
       </div>
-      <Button text='Change Password'  onClick={changePassword} disabled={!isFilled} className='mr-0 px-3'/>
     </Tab>
   );
 }
