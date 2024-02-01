@@ -63,15 +63,7 @@ export default function StickyNotesProvider({ children }) {
       if (currentNote?.$id === id) setCurrentNote(newNote);
     } catch (error) {
       console.log(error);
-      toast.error('Failed to update the sticky note.', {
-        duration: 4000,
-        action: {
-          label: 'Try again',
-          onClick: async () => {
-            await handleUpdateStickyNote(id, note);
-          },
-        },
-      });
+      toast.error('Something went wrong.');
     } finally {
       setIsSaving(false);
       setCurrentProcessedNote(null);
