@@ -5,6 +5,9 @@ import { TaskPriority } from '../../../Task Info/TaskPriority';
 import { DropDown } from '../../../Common/DropDown';
 import Switch from '../../../Common/Switch';
 import { CheckBox } from '../../../Common/CheckBox';
+import { useLists, useTags, useTasks } from '../../../../hooks';
+import { exportDownload } from '../../../../utils/helpers';
+import papaparse from 'papaparse';
 
 export function Tasks() {
   return (
@@ -56,6 +59,7 @@ export function Tasks() {
     </>
   );
 }
+
 function TaskDisplay() {
   const details = [
     {
@@ -82,19 +86,21 @@ function TaskDisplay() {
 
   return (
     <DropDown
-      toggler={<DropDown.Toggler>
-        <span>
-          {details.filter((detail) => detail.visible).length} of {details.length} visible
-        </span>
-        <i className='fa-solid fa-chevron-down text-xs'></i>
-      </DropDown.Toggler>}
+      toggler={
+        <DropDown.Toggler>
+          <span>
+            {details.filter((detail) => detail.visible).length} of {details.length} visible
+          </span>
+          <i className='fa-solid fa-chevron-down text-xs'></i>
+        </DropDown.Toggler>
+      }
       options={{ className: 'w-48', shouldCloseOnClick: false }}
     >
       {details.map((detail) => {
         return (
           <DropDown.Button key={detail.label} className='justify-between'>
             <label htmlFor={detail.label}>{detail.label}</label>
-            <CheckBox  id={detail.label} />
+            <CheckBox id={detail.label} />
           </DropDown.Button>
         );
       })}
@@ -102,21 +108,68 @@ function TaskDisplay() {
   );
 }
 function ExportTasks() {
+  const { tasks } = useTasks();
+  const { tags } = useTags();
+  const { lists } = useLists();
+  const updatedTasks = (isCsv) =>
+    tasks.map((task) => {
+      const { title, dueDate, note, listId, subtasks, isCompleted, tagsIds, priority } = task;
+      const listName = lists.find((list) => list.$id === listId)?.title;
+      const tagsNames = [];
+      tagsIds.forEach((id) => {
+        const tag = tags.find((tag) => tag.$id === id);
+        if (tag) tagsNames.push(tag.title);
+      });
+      const newSubtasks = subtasks.map((sub) => {
+        const { title, isCompleted } = JSON.parse(sub);
+        return { title, isCompleted };
+      });
+      const newPriority =
+        priority === 0 ? 'None' : priority === 1 ? 'Low' : priority === 2 ? 'Medium' : 'High';
+
+      return {
+        title,
+        dueDate,
+        note,
+        list: listName,
+        subtasks: isCsv ? JSON.stringify(newSubtasks) : newSubtasks,
+        isCompleted,
+        tags: tagsNames,
+        priority: newPriority,
+      };
+    });
+
   return (
     <DropDown
-      toggler={<DropDown.Toggler>
-        <span>Export As</span>
-        <PiDownloadSimpleLight />
-      </DropDown.Toggler>}
+      toggler={
+        <DropDown.Toggler>
+          <span>Export As</span>
+          <PiDownloadSimpleLight />
+        </DropDown.Toggler>
+      }
     >
-      <DropDown.Button className='text-center'>
+      <DropDown.Button
+        className='text-center'
+        onClick={() => exportAs(updatedTasks(false), 'json')}
+      >
         <BsBraces />
         <span>JSON</span>
       </DropDown.Button>
-      <DropDown.Button className='text-center'>
+      <DropDown.Button className='text-center' onClick={() => exportAs(updatedTasks(true), 'csv')}>
         <BsFiletypeCsv />
         <span>CSV</span>
       </DropDown.Button>
     </DropDown>
   );
 }
+
+const exportAs = (tasks, format) => {
+  const json = JSON.stringify(tasks);
+  const csv = papaparse.unparse(json, {});
+
+  const blob = new Blob([format === 'json' ? json : csv], {
+    type: format === 'json' ? 'application/json' : 'text/csv',
+  });
+
+  exportDownload(blob, `tasks.${format}`);
+};
