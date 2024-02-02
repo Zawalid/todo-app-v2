@@ -11,7 +11,7 @@ import { Controller, useWatch } from 'react-hook-form';
 import { Button } from '../../../Common/Button';
 
 export function UploadImage({ control, onChange, disabled }) {
-  const { name, avatar } = useWatch({ control, name: 'account' }) || {};
+  const [ name, avatar ] = useWatch({ control, name: ['name', 'avatar'] }) || {};
   const { openFilePicker } = useFilePicker({
     accept: ['.png', '.jpg'],
     readAs: 'DataURL',
@@ -66,7 +66,7 @@ export function UploadImage({ control, onChange, disabled }) {
         <p className='text-xs text-text-tertiary'>JPG or PNG are allowed (Max size of 10MB)</p>
       </div>
       <Controller
-        name='account.avatar'
+        name='avatar'
         control={control}
         render={({ field }) => <input type='hidden' value={field.value || {}} />}
       />

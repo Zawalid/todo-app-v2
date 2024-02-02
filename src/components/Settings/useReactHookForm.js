@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateSettings } from './settingsSlice';
 
-export function useReactHookForm({ settingCategory, defaultValues, submit,mode }) {
+export function useReactHookForm({ settingCategory, defaultValues, submit, mode }) {
   const setting = useSelector((state) => state.settings[settingCategory]);
   const dispatch = useDispatch();
 
@@ -15,11 +15,11 @@ export function useReactHookForm({ settingCategory, defaultValues, submit,mode }
   const {
     handleSubmit,
     reset,
-    formState: { isDirty: isUpdated,errors,dirtyFields,isLoading,isSubmitting,isValid },
+    formState: { isDirty: isUpdated, errors, dirtyFields, isLoading, isSubmitting, isValid },
     control,
     setValue,
-    getValues,
-  } = useForm({ defaultValues: defaultValues || setting, mode: mode || 'onSubmit'});
+    watch,
+  } = useForm({ defaultValues: defaultValues || setting, mode: mode || 'onSubmit' });
 
   const onSubmit = () => {
     handleSubmit((data) => {
@@ -43,8 +43,8 @@ export function useReactHookForm({ settingCategory, defaultValues, submit,mode }
     isSubmitting,
     isValid,
     setValue,
-    getValues,
     onSubmit,
     onCancel,
+    watch,
   };
 }

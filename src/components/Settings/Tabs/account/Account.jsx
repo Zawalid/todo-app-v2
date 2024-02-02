@@ -7,8 +7,7 @@ import { InputField } from '../../../Common/InputField';
 import { Tab } from '../Tab';
 import { useReactHookForm } from '../../useReactHookForm';
 import { Controller, useWatch } from 'react-hook-form';
-import { PiInfo } from 'react-icons/pi';
-import CustomTippy from '../../../Common/CustomTippy';
+import { Label } from '../../../Common/Label';
 
 export default function Account() {
   const { getCurrentUser, handleUpdateProfile } = useUser();
@@ -28,12 +27,10 @@ export default function Account() {
     defaultValues: async () => {
       const user = await getCurrentUser();
       return {
-        account: {
-          name: user.name,
-          email: user.email,
-          avatar: {
-            src: user.avatar,
-          },
+        name: user.name,
+        email: user.email,
+        avatar: {
+          src: user.avatar,
         },
       };
     },
@@ -41,7 +38,7 @@ export default function Account() {
     mode: 'onChange',
   });
 
-  const { name, email, avatar } = useWatch({ control, name: 'account' }) || {};
+  const [name, email, avatar] = useWatch({ control, name: ['name', 'email', 'avatar'] }) || {};
 
   const onUpdate = async (password) => await handleUpdateProfile(name, email, password, avatar);
 
@@ -66,27 +63,19 @@ export default function Account() {
         <div>
           <h3 className='mb-3 font-bold text-text-secondary'>Avatar</h3>
           <UploadImage
-            onChange={(avatar) => setValue('account.avatar', avatar, { shouldDirty: true })}
+            onChange={(avatar) => setValue('avatar', avatar, { shouldDirty: true })}
             control={control}
             disabled={isLoading || isSubmitting}
           />
         </div>
         <div>
-          <div className='mb-3 flex  items-center gap-3'>
-            <h3 className='font-bold text-text-secondary'>Name</h3>
-            {errors?.account?.name && (
-              <CustomTippy content={errors?.account?.name?.message}>
-                <span>
-                  <PiInfo className='text-red-500' size={20} />
-                </span>
-              </CustomTippy>
-            )}
-          </div>
+          <Label htmlFor='name' label='Name' error={errors?.name?.message} />
           <Controller
-            name='account.name'
+            name='name'
             control={control}
             render={({ field }) => (
               <InputField
+                id='name'
                 type='text'
                 placeholder='Name'
                 {...field}
@@ -104,21 +93,13 @@ export default function Account() {
           />
         </div>
         <div>
-          <div className='mb-3 flex  items-center gap-3'>
-            <h3 className='font-bold text-text-secondary'>Email</h3>
-            {errors?.account?.email && (
-              <CustomTippy content={errors?.account?.email?.message}>
-                <span>
-                  <PiInfo className='text-red-500' size={20} />
-                </span>
-              </CustomTippy>
-            )}
-          </div>
+          <Label htmlFor='email' label='Email' error={errors?.email?.message} />
           <Controller
-            name='account.email'
+            name='email'
             control={control}
             render={({ field }) => (
               <InputField
+                id='email'
                 type='email'
                 placeholder='Email'
                 {...field}

@@ -1,25 +1,21 @@
-import { useState } from 'react';
+import { forwardRef, useState } from 'react';
 import { PiEyeLight, PiEyeClosedLight } from 'react-icons/pi';
+import { InputField } from './InputField';
 
-export function PasswordInput({ password, setPassword, placeholder }) {
+export const PasswordInput = forwardRef(({ ...props }, ref) => {
   const [showPassword, setShowPassword] = useState(false);
   return (
     <div className='relative'>
-      <input
-        type={showPassword ? 'text' : 'password'}
-        className='focus-border-none  w-full rounded-md border border-border bg-background-primary p-2 text-text-secondary placeholder-text-tertiary focus:outline-none'
-        placeholder={placeholder || 'Password'}
-        autoComplete='off'
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
+      <InputField type={showPassword ? 'text' : 'password'} {...props} ref={ref} />
       <button
         type='button'
-        className='absolute text-text-tertiary right-2 top-[12px]'
-        onClick={() => password && setShowPassword(!showPassword)}
+        className='absolute right-2 top-[12px] text-text-tertiary'
+        onClick={() => props.value && setShowPassword(!showPassword)}
       >
         {showPassword ? <PiEyeClosedLight size={20} /> : <PiEyeLight size={20} />}
       </button>
     </div>
   );
-}
+});
+
+PasswordInput.displayName = 'PasswordInput';

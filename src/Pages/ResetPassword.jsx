@@ -44,14 +44,14 @@ export default function ResetPassword() {
             }}
           >
             <PasswordInput
-              password={newPassword}
-              setPassword={setNewPassword}
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
               placeholder='New password'
             />
 
             <PasswordInput
-              password={confirmNewPassword}
-              setPassword={setConfirmNewPassword}
+              value={confirmNewPassword}
+              onChange={(e) => setConfirmNewPassword(e.target.value)}
               placeholder='Confirm password'
             />
 

@@ -28,10 +28,8 @@ export function UserVerificationModal({ isOpen, onClose, onConfirm }) {
           onConfirm(password);
         }}
       >
-        <PasswordInput password={password} setPassword={setPassword} />
-        <Button className='w-full' >
-          Confirm
-        </Button>
+        <PasswordInput value={password} onChange={(e) => setPassword(e.target.value)} />
+        <Button className='w-full'>Confirm</Button>
       </form>
     </Modal>
   );
