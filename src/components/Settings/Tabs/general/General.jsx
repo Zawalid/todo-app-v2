@@ -6,7 +6,7 @@ import { useReactHookForm } from '../../useReactHookForm';
 import { Tab } from '../Tab';
 
 export default function General() {
-  const { control, isUpdated, setValue, onSubmit, onCancel } = useReactHookForm('general');
+  const { control, isUpdated, setValue, onSubmit, onCancel } = useReactHookForm({settingCategory : 'general'});
 
   return (
     <Tab

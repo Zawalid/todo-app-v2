@@ -11,6 +11,7 @@ import { copyToClipBoard, isTouchDevice } from '../../utils/helpers';
 import { useHref } from 'react-router-dom';
 import { useModal } from '../Common/ConfirmationModal';
 import { Actions } from './Actions';
+import { Button } from '../Common/Button';
 
 export function TaskInfo() {
   const { currentTask, isTaskOpen, setIsTaskOpen, handleAddTask,handleUpdateTask, handleDeleteTask } = useTasks();
@@ -201,8 +202,9 @@ export function TaskInfo() {
       </div>
       {!isTouchDevice() && (
         <div className='mt-auto flex gap-3 pt-3'>
-          <button
-            className='flex-1 cursor-pointer rounded-lg bg-red-500 py-2 text-center text-sm font-semibold text-white hover:bg-red-600'
+          <Button
+            type='delete'
+            className='flex-1'
             onClick={() =>
               confirmDelete({
                 title: 'Delete Task',
@@ -212,7 +214,7 @@ export function TaskInfo() {
             }
           >
             Delete Task
-          </button>
+          </Button>
           <button
             className={
               'flex-1 rounded-lg border  py-2 text-center  text-sm font-semibold ' +

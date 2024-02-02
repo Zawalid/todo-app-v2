@@ -2,33 +2,46 @@ import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateSettings } from './settingsSlice';
 
-export function useReactHookForm(settingCategory) {
+export function useReactHookForm({ settingCategory, defaultValues, submit,mode }) {
   const setting = useSelector((state) => state.settings[settingCategory]);
   const dispatch = useDispatch();
+
+  let defValues;
+
+  if (defaultValues && typeof defaultValues === 'function') {
+    defaultValues().then((v) => (defValues = v));
+  } else defValues = setting;
+
   const {
     handleSubmit,
     reset,
-    formState: { isDirty: isUpdated, defaultValues },
+    formState: { isDirty: isUpdated,errors,dirtyFields,isLoading,isSubmitting,isValid },
     control,
     setValue,
     getValues,
-  } = useForm({ defaultValues: setting });
+  } = useForm({ defaultValues: defaultValues || setting, mode: mode || 'onSubmit'});
 
   const onSubmit = () => {
     handleSubmit((data) => {
-      dispatch(updateSettings({ category: settingCategory, settings: data }));
+      submit
+        ? submit(data)
+        : dispatch(updateSettings({ category: settingCategory, settings: data }));
       reset(data);
     })();
   };
   const onCancel = (callback) => {
-    reset(setting);
-    callback?.(setting);
+    reset(defValues);
+    callback?.(defValues);
   };
 
   return {
     control,
     isUpdated,
-    defaultValues,
+    errors,
+    dirtyFields,
+    isLoading,
+    isSubmitting,
+    isValid,
     setValue,
     getValues,
     onSubmit,

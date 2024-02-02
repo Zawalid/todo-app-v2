@@ -1,107 +1,137 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 import { useUser } from '../../../../hooks';
 import { UploadImage } from './UploadImage';
 import { UserVerificationModal } from '../../UserVerificationModal';
 import { InputField } from '../../../Common/InputField';
-import { checkIsEmailValid } from '../../../../utils/helpers';
 import { Tab } from '../Tab';
+import { useReactHookForm } from '../../useReactHookForm';
+import { Controller, useWatch } from 'react-hook-form';
+import { PiInfo } from 'react-icons/pi';
+import CustomTippy from '../../../Common/CustomTippy';
 
 export default function Account() {
-  const { user, handleUpdateProfile } = useUser();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [avatar, setAvatar] = useState({
-    src: '',
-    file: null,
-    type: '',
-  });
-  const [isUpdated, setIsUpdated] = useState({ name: false, email: false, avatar: false });
+  const { getCurrentUser, handleUpdateProfile } = useUser();
   const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
+  const {
+    control,
+    isUpdated,
+    dirtyFields,
+    isLoading,
+    isSubmitting,
+    isValid,
+    errors,
+    setValue,
+    onSubmit,
+    onCancel,
+  } = useReactHookForm({
+    defaultValues: async () => {
+      const user = await getCurrentUser();
+      return {
+        account: {
+          name: user.name,
+          email: user.email,
+          avatar: {
+            src: user.avatar,
+          },
+        },
+      };
+    },
+    submit: handleSaveChanges,
+    mode: 'onChange',
+  });
 
-  useEffect(() => {
-    setName(user?.name || '');
-    setEmail(user?.email || '');
-    setAvatar((avatar) => {
-      return { ...avatar, src: user?.avatar || '' };
-    });
-  }, [user]);
+  const { name, email, avatar } = useWatch({ control, name: 'account' }) || {};
 
-  useEffect(() => {
-    if (!name || !email)
-      setIsUpdated((prev) => {
-        return {
-          ...prev,
-          name: false,
-          email: false,
-        };
-      });
-  }, [name, email]);
+  const onUpdate = async (password) => await handleUpdateProfile(name, email, password, avatar);
 
-  const onUpdate = async (password) => {
-    setIsUpdated({
-      name: false,
-      email: false,
-      avatar: false,
-    });
-    await handleUpdateProfile(name, email, password, avatar);
-  };
-
-  function handleSaveChanges() {
-    if (name.length < 3) return toast.error('Name must be at least 3 characters long');
-    if (!checkIsEmailValid(email)) return toast.error('Please enter a valid email');
-    // This will open the verification modal if the user is updating their email
-    if (isUpdated.email) return setIsVerificationModalOpen(true);
-    onUpdate('');
+  async function handleSaveChanges() {
+    if (dirtyFields.account.email) return setIsVerificationModalOpen(true);
+    await onUpdate('');
   }
 
   return (
     <Tab
       saveButton={{
-        
-        onClick: handleSaveChanges,
-        disabled:
-          Object.values(isUpdated).every((value) => !value) || (!avatar.file && !avatar.src),
+        onClick: onSubmit,
+        disabled: !isUpdated || !isValid,
       }}
+      cancelButton={{
+        onClick: onCancel,
+        disabled: !isUpdated || !isValid,
+      }}
+      control={control}
     >
       <div className='space-y-5'>
         <div>
           <h3 className='mb-3 font-bold text-text-secondary'>Avatar</h3>
           <UploadImage
-            avatar={avatar.src}
-            onChange={(avatar) => {
-              setAvatar(avatar);
-              setIsUpdated((prev) => {
-                return { ...prev, avatar: user?.avatar !== avatar.src };
-              });
+            onChange={(avatar) => setValue('account.avatar', avatar, { shouldDirty: true })}
+            control={control}
+            disabled={isLoading || isSubmitting}
+          />
+        </div>
+        <div>
+          <div className='mb-3 flex  items-center gap-3'>
+            <h3 className='font-bold text-text-secondary'>Name</h3>
+            {errors?.account?.name && (
+              <CustomTippy content={errors?.account?.name?.message}>
+                <span>
+                  <PiInfo className='text-red-500' size={20} />
+                </span>
+              </CustomTippy>
+            )}
+          </div>
+          <Controller
+            name='account.name'
+            control={control}
+            render={({ field }) => (
+              <InputField
+                type='text'
+                placeholder='Name'
+                {...field}
+                value={field.value || ''}
+                disabled={isLoading || isSubmitting}
+              />
+            )}
+            rules={{
+              required: 'Please enter your name',
+              minLength: {
+                value: 3,
+                message: 'Name must be at least 3 characters long',
+              },
             }}
           />
         </div>
         <div>
-          <h3 className='mb-3 font-bold text-text-secondary'>Name</h3>
-          <InputField
-            type='text'
-            placeholder='Name'
-            value={name}
-            onChange={(e) => {
-              setName(e.target.value);
-              setIsUpdated((prev) => {
-                return { ...prev, name: user?.name.trim() !== e.target.value.trim() };
-              });
-            }}
-          />
-        </div>
-        <div>
-          <h3 className='mb-3 font-bold text-text-secondary'>Email</h3>
-          <InputField
-            type='email'
-            placeholder='Email'
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-              setIsUpdated((prev) => {
-                return { ...prev, email: user?.email.trim() !== e.target.value.trim() };
-              });
+          <div className='mb-3 flex  items-center gap-3'>
+            <h3 className='font-bold text-text-secondary'>Email</h3>
+            {errors?.account?.email && (
+              <CustomTippy content={errors?.account?.email?.message}>
+                <span>
+                  <PiInfo className='text-red-500' size={20} />
+                </span>
+              </CustomTippy>
+            )}
+          </div>
+          <Controller
+            name='account.email'
+            control={control}
+            render={({ field }) => (
+              <InputField
+                type='email'
+                placeholder='Email'
+                {...field}
+                value={field.value || ''}
+                disabled={isLoading || isSubmitting}
+              />
+            )}
+            rules={{
+              required: 'Please enter your email address',
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                message: 'Invalid email address',
+              },
             }}
           />
         </div>

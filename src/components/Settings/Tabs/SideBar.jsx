@@ -7,7 +7,9 @@ import { useReactHookForm } from '../useReactHookForm';
 import { Controller, useWatch } from 'react-hook-form';
 
 export default function SideBar() {
-  const { control, isUpdated, setValue, onSubmit, onCancel } = useReactHookForm('sidebar');
+  const { control, isUpdated, setValue, onSubmit, onCancel } = useReactHookForm({
+    settingCategory: 'sidebar',
+  });
 
   return (
     <Tab

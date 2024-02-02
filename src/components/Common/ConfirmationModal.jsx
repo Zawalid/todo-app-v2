@@ -9,6 +9,7 @@ const DEFAULT_OPTIONS = {
   showCheckBox: true,
 };
 import deletedSoundFile from '../../assets/deleted.mp3';
+import { Button } from './Button';
 const deletedSound = new Audio(deletedSoundFile);
 
 const ModalContext = createContext();
@@ -73,18 +74,18 @@ export function ModalProvider({ children }) {
         )}
 
         <div className='mt-3 flex  items-center justify-end gap-3 border-t border-border pt-3'>
-          <button
-            className='rounded-lg bg-red-500 px-4 py-2 text-sm font-semibold text-white  hover:bg-red-600'
+          <Button
+            type='delete'
             onClick={onConfirm}
           >
             {options.confirmText}
-          </button>
-          <button
-            className='rounded-lg  bg-background-secondary px-4 py-2  text-sm font-semibold text-text-secondary  hover:bg-background-tertiary'
+          </Button>
+          <Button
+            type='cancel'
             onClick={onCancel}
           >
             Cancel
-          </button>
+          </Button>
         </div>
       </Modal>
     </ModalContext.Provider>

@@ -11,7 +11,7 @@ import {
 } from 'react-icons/pi';
 import { Overlay } from '../Common/Modal';
 
-export function SideBar({ isOpen, onClose, currentTab, setCurrentTab }) {
+export function Panel({ isOpen, onClose, currentTab, setCurrentTab }) {
   const { user, handleSignOut, handleSendVerificationEmail } = useUser();
 
   return (

@@ -21,8 +21,8 @@ export function Tab({ children, saveButton, cancelButton, control }) {
     >
       <div className='flex-1 overflow-auto'>{children}</div>
       <div className='flex  justify-end gap-3'>
-        {cancelButton && <Button text='Cancel' isCancel={true} {...cancelButton} />}
-        <Button text={saveButton.text || 'Save Changes'} {...saveButton} />
+        {cancelButton && <Button type='cancel' {...cancelButton} >Cancel</Button>}
+        <Button {...saveButton}>{saveButton.text || 'Save Changes'}</Button>
       </div>
 
       {control && <DevTool control={control} placement='top-left' />}

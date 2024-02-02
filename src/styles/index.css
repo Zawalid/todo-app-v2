@@ -91,11 +91,9 @@
 * {
   @apply box-border;
   transition:
-    all 300ms,
-    visibility 100ms,
-    inset 500ms,
-    width 500ms,
-    height 500ms;
+    color 300ms,
+    background-color 300ms,
+    border-color 300ms,
 }
 
 @media (prefers-reduced-motion: reduce) {

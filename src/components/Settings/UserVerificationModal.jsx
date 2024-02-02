@@ -29,7 +29,9 @@ export function UserVerificationModal({ isOpen, onClose, onConfirm }) {
         }}
       >
         <PasswordInput password={password} setPassword={setPassword} />
-        <Button text='Confirm' className='w-full' />
+        <Button className='w-full' >
+          Confirm
+        </Button>
       </form>
     </Modal>
   );

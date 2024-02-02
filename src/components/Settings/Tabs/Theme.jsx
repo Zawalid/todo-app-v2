@@ -7,7 +7,7 @@ import { Tab } from './Tab';
 const themes = ['light', 'dark', 'rose', 'emerald', 'amber', 'teal'];
 
 export default function Theme() {
-  const { control, isUpdated, setValue, onSubmit, onCancel } = useReactHookForm('theme');
+  const { control, isUpdated, setValue, onSubmit, onCancel } = useReactHookForm({settingCategory :'theme'});
   const currentTheme = useWatch({ control, name: 'themeName' });
 
   return (

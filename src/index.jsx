@@ -22,7 +22,7 @@ import { SpinnerLoader } from './components/Common/SpinnerLoader.jsx';
 ReactDOM.createRoot(document.getElementById('root')).render(
   <>
     <Provider store={store}>
-      <PersistGate loading={<div className='text-5xl text-white'>Loading</div>} persistor={persistor}>
+      <PersistGate loading={null} persistor={persistor}>
         <BrowserRouter>
           <ModalProvider>
             <DarkModeProvider>
