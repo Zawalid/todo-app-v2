@@ -1,7 +1,8 @@
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import store from './app/store.js';
+import { PersistGate } from 'redux-persist/integration/react';
+import { store, persistor } from './app/store.js';
 
 import DarkModeProvider from './contexts/DarkModeContext.jsx';
 import TrashProvider from './contexts/Trash.jsx';
@@ -16,30 +17,33 @@ import { monitorNetwork } from './components/Common/MonitorNetwork.jsx';
 import { ModalProvider } from './components/Common/ConfirmationModal.jsx';
 
 import './styles/index.css';
+import { SpinnerLoader } from './components/Common/SpinnerLoader.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <>
-   <Provider store={store} >
-     <BrowserRouter>
-       <ModalProvider>
-         <DarkModeProvider>
-           <TrashProvider>
-             <UserProvider>
-               <ListsProvider>
-                 <TasksProvider>
-                   <StickyNotesProvider>
-                     <TagsProvider>
-                       <App />
-                     </TagsProvider>
-                   </StickyNotesProvider>
-                 </TasksProvider>
-               </ListsProvider>
-             </UserProvider>
-           </TrashProvider>
-         </DarkModeProvider>
-       </ModalProvider>
-     </BrowserRouter>
-   </Provider>
+    <Provider store={store}>
+      <PersistGate loading={<div className='text-5xl text-white'>Loading</div>} persistor={persistor}>
+        <BrowserRouter>
+          <ModalProvider>
+            <DarkModeProvider>
+              <TrashProvider>
+                <UserProvider>
+                  <ListsProvider>
+                    <TasksProvider>
+                      <StickyNotesProvider>
+                        <TagsProvider>
+                          <App />
+                        </TagsProvider>
+                      </StickyNotesProvider>
+                    </TasksProvider>
+                  </ListsProvider>
+                </UserProvider>
+              </TrashProvider>
+            </DarkModeProvider>
+          </ModalProvider>
+        </BrowserRouter>
+      </PersistGate>
+    </Provider>
   </>,
 );
 

@@ -3,7 +3,7 @@ import { FaRegNoteSticky } from 'react-icons/fa6';
 import { Tab } from './Tab';
 import { CheckBox } from '../../Common/CheckBox';
 import Switch from '../../Common/Switch';
-import { useReactHookForm } from './useReactHookForm';
+import { useReactHookForm } from '../useReactHookForm';
 import { Controller, useWatch } from 'react-hook-form';
 
 export default function SideBar() {

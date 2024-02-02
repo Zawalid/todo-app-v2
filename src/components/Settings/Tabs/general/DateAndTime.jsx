@@ -27,7 +27,7 @@ export function DateAndTime({ control, setValue }) {
                 <i className='fa-solid fa-chevron-down text-xs'></i>
               </DropDown.Toggler>
             }
-            options={{ className: 'w-48', shouldCloseOnClick: false }}
+            options={{ className: 'w-48' }}
           >
             {['Monday', 'Sunday'].map((day) => (
               <DropDown.Button
@@ -67,7 +67,7 @@ function DateFormat({ control, setValue }) {
             <i className='fa-solid fa-chevron-down text-xs'></i>
           </DropDown.Toggler>
         }
-        options={{ className: 'w-48', shouldCloseOnClick: false }}
+        options={{ className: 'w-48' }}
       >
         {dateFormats.map((formatString) => {
           const formattedDate = format(sampleDate, formatString);
@@ -110,7 +110,7 @@ function TimeFormat({ control, setValue }) {
             <i className='fa-solid fa-chevron-down text-xs'></i>
           </DropDown.Toggler>
         }
-        options={{ className: 'w-48', shouldCloseOnClick: false }}
+        options={{ className: 'w-48' }}
       >
         {timeFormats.map((formatString) => {
           const formattedTime = format(sampleDate, formatString);

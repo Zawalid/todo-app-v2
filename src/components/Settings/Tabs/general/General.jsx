@@ -2,7 +2,7 @@ import { StickyNotes } from './StickyNotes';
 import { Tasks } from './Tasks';
 import { Preferences } from './Preferences';
 import { DateAndTime } from './DateAndTime';
-import { useReactHookForm } from '../useReactHookForm';
+import { useReactHookForm } from '../../useReactHookForm';
 import { Tab } from '../Tab';
 
 export default function General() {

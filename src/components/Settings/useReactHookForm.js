@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateSettings } from '../../../app/settingsSlice';
+import { updateSettings } from './settingsSlice';
 
 export function useReactHookForm(settingCategory) {
   const setting = useSelector((state) => state.settings[settingCategory]);

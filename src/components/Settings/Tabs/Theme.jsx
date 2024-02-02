@@ -1,7 +1,7 @@
 import { PiCheckBold, PiCheckSquareThin } from 'react-icons/pi';
 import Switch from '../../Common/Switch';
 import { Controller, useWatch } from 'react-hook-form';
-import { useReactHookForm } from './useReactHookForm';
+import { useReactHookForm } from '../useReactHookForm';
 import { Tab } from './Tab';
 
 const themes = ['light', 'dark', 'rose', 'emerald', 'amber', 'teal'];
