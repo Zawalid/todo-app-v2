@@ -3,37 +3,23 @@ import { FaRegNoteSticky } from 'react-icons/fa6';
 import { Tab } from './Tab';
 import { CheckBox } from '../../Common/CheckBox';
 import Switch from '../../Common/Switch';
-import { useDispatch, useSelector } from 'react-redux';
-import { Controller, useForm, useWatch } from 'react-hook-form';
-import { updateSettings } from '../../../app/settingsSlice';
-import { DevTool } from '@hookform/devtools';
+import { useReactHookForm } from './useReactHookForm';
+import { Controller, useWatch } from 'react-hook-form';
 
 export default function SideBar() {
-  const { sidebar } = useSelector((state) => state.settings);
-  const dispatch = useDispatch();
-  const {
-    handleSubmit,
-    reset,
-    formState: { isDirty: isUpdated },
-    control,
-    setValue,
-  } = useForm({ defaultValues: sidebar });
+  const { control, isUpdated, setValue, onSubmit, onCancel } = useReactHookForm('sidebar');
 
   return (
     <Tab
       saveButton={{
-        onClick: () => {
-          handleSubmit((data) => {
-            dispatch(updateSettings({ category: 'sidebar', settings: data }));
-            reset(data);
-          })();
-        },
+        onClick: onSubmit,
         disabled: !isUpdated,
       }}
       cancelButton={{
-        onClick: () => reset(sidebar),
+        onClick: onCancel,
         disabled: !isUpdated,
       }}
+      control={control}
     >
       <div className='space-y-5'>
         <div>
@@ -61,8 +47,6 @@ export default function SideBar() {
         </div>
         <Example control={control} />
       </div>
-
-      <DevTool control={control} />
     </Tab>
   );
 }
@@ -87,7 +71,7 @@ const allTabs = [
 ];
 
 function ShowInSideBar({ control, setValue }) {
-  const displayedTabs = useWatch({ control, name: 'showInSideBar' });
+  const displayedTabs = useWatch({ control, name: 'showInSideBar' }) || [];
 
   const setSetting = (value) => setValue('showInSideBar', value, { shouldDirty: true });
 

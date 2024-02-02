@@ -7,7 +7,7 @@ import { InputField } from '../../../Common/InputField';
 import { checkIsEmailValid } from '../../../../utils/helpers';
 import { Tab } from '../Tab';
 
-export function Account() {
+export default function Account() {
   const { user, handleUpdateProfile } = useUser();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');

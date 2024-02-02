@@ -1,40 +1,24 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { useForm } from 'react-hook-form';
-import { DevTool } from '@hookform/devtools';
-import { updateSettings } from '../../../../app/settingsSlice';
-
-import { Tab } from '../Tab';
 import { StickyNotes } from './StickyNotes';
 import { Tasks } from './Tasks';
 import { Preferences } from './Preferences';
 import { DateAndTime } from './DateAndTime';
+import { useReactHookForm } from '../useReactHookForm';
+import { Tab } from '../Tab';
 
 export default function General() {
-  const { general } = useSelector((state) => state.settings);
-  const dispatch = useDispatch();
-  const {
-    handleSubmit,
-    reset,
-    formState: { isDirty: isUpdated },
-    control,
-    setValue,
-  } = useForm({ defaultValues: general});
+  const { control, isUpdated, setValue, onSubmit, onCancel } = useReactHookForm('general');
 
   return (
     <Tab
       saveButton={{
-        onClick: () => {
-          handleSubmit((data) => {
-            dispatch(updateSettings({ category: 'general', settings: data }));
-            reset(data);
-          })();
-        },
+        onClick: onSubmit,
         disabled: !isUpdated,
       }}
       cancelButton={{
-        onClick: () => reset(general),
+        onClick: onCancel,
         disabled: !isUpdated,
       }}
+      control={control}
     >
       <div className='space-y-5 '>
         <Preferences control={control} setValue={setValue} />
@@ -45,7 +29,6 @@ export default function General() {
         <hr className='border-border' />
         <StickyNotes control={control} setValue={setValue} />
       </div>
-      <DevTool control={control} placement='top-left' />
     </Tab>
   );
 }

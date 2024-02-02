@@ -1,46 +1,26 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { Controller, useForm, useWatch } from 'react-hook-form';
-import { DevTool } from '@hookform/devtools';
-import { updateSettings } from '../../../app/settingsSlice';
-
 import { PiCheckBold, PiCheckSquareThin } from 'react-icons/pi';
-import { Tab } from './Tab';
 import Switch from '../../Common/Switch';
+import { Controller, useWatch } from 'react-hook-form';
+import { useReactHookForm } from './useReactHookForm';
+import { Tab } from './Tab';
 
 const themes = ['light', 'dark', 'rose', 'emerald', 'amber', 'teal'];
 
 export default function Theme() {
-  const { theme } = useSelector((state) => state.settings);
-  const dispatch = useDispatch();
-
-  const {
-    handleSubmit,
-    reset,
-    formState: { isDirty: isUpdated },
-    control,
-    setValue,
-  } = useForm({ defaultValues: theme });
-
+  const { control, isUpdated, setValue, onSubmit, onCancel } = useReactHookForm('theme');
   const currentTheme = useWatch({ control, name: 'themeName' });
 
   return (
     <Tab
       saveButton={{
-        onClick: () => {
-          handleSubmit((data) => {
-            dispatch(updateSettings({ category: 'theme', settings: data }));
-            reset(data);
-          })();
-        },
+        onClick: onSubmit,
         disabled: !isUpdated,
       }}
       cancelButton={{
-        onClick: () => {
-          document.documentElement.className = theme.themeName;
-          reset(theme);
-        },
+        onClick: () => onCancel((setting) => document.documentElement.className = setting.themeName),
         disabled: !isUpdated,
       }}
+      control={control}
     >
       <div className='space-y-5'>
         <div className='setting block'>
@@ -74,7 +54,6 @@ export default function Theme() {
           />{' '}
         </div>
       </div>
-      <DevTool control={control} placement='top-left' />
     </Tab>
   );
 }

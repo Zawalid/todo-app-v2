@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { Button } from '../../Common/Button';
+import { DevTool } from '@hookform/devtools';
 
-export function Tab({ children, saveButton, cancelButton }) {
+export function Tab({ children, saveButton, cancelButton, control }) {
   const parent = useRef(null);
 
   useEffect(() => {
@@ -12,7 +13,7 @@ export function Tab({ children, saveButton, cancelButton }) {
 
     return () => tab.classList.add('opacity-0');
   }, []);
-  
+
   return (
     <div
       className='flex flex-1 flex-col gap-3 overflow-hidden pb-4 pt-16 opacity-0 transition-opacity duration-500 child-padding '
@@ -23,6 +24,8 @@ export function Tab({ children, saveButton, cancelButton }) {
         {cancelButton && <Button text='Cancel' isCancel={true} {...cancelButton} />}
         <Button text={saveButton.text || 'Save Changes'} {...saveButton} />
       </div>
+
+      {control && <DevTool control={control} placement='top-left' />}
     </div>
   );
 }

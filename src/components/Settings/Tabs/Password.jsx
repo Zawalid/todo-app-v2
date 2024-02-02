@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 import { useUser } from '../../../hooks';
 import { Tab } from './Tab';
 
-export function Password() {
+export default function Password() {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');

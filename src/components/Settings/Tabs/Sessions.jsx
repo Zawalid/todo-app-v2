@@ -34,7 +34,7 @@ const BROWSERS_IMAGES = [
   },
 ];
 
-export function Sessions() {
+export default function Sessions() {
   const [sessions, setSessions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const { handleGetSessions, handleDeleteSession, handleDeleteSessions } = useUser();

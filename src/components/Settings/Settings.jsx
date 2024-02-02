@@ -5,7 +5,7 @@ import Modal from '../Common/Modal';
 import { PiArrowRight, PiX } from 'react-icons/pi';
 
 export default function Settings({ isOpen, onClose }) {
-  const [currentTab, setCurrentTab] = useState('sidebar');
+  const [currentTab, setCurrentTab] = useState('general');
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
 
   return (

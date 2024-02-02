@@ -1,6 +1,4 @@
-
 import { toast } from 'sonner';
-
 
 export function isTouchDevice() {
   return (
@@ -27,17 +25,14 @@ export function getDeletionMessage(element, status, singular, selected, number) 
     return `Failed to delete all ${element}s.`;
   }
 }
-
 export function checkIsEmailValid(email) {
   const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
   return emailRegex.test(email);
 }
-
 export function copyToClipBoard(text) {
   navigator.clipboard.writeText(text);
   toast.success('Copied to clipboard');
 }
-
 export function exportDownload(blob, filename) {
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
