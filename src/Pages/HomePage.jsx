@@ -1,13 +1,18 @@
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useUser } from '../hooks/useUser';
 import { Logo } from '../components/Common/Logo';
 import ResetPassword from './ResetPassword';
+import { useEffect } from 'react';
 
 const HomePage = () => {
-  const { checkIsUserAuthenticated, handleSignOut } = useUser();
+  const { checkIsUserAuthenticated } = useUser();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-
   const isResetPassword = searchParams.get('userId') && searchParams.get('secret');
+
+  useEffect(() => {
+    checkIsUserAuthenticated() && navigate('/app');
+  }, [checkIsUserAuthenticated, navigate]);
 
   return (
     <div className='flex min-h-screen w-full flex-col'>
@@ -15,21 +20,13 @@ const HomePage = () => {
         <Logo />
         {!isResetPassword && (
           <nav className='ml-auto flex items-center  sm:gap-6'>
-            {checkIsUserAuthenticated() ? (
-              <button
-                className=' flex h-9 items-center text-text-primary sm:border-r border-border pr-4 font-medium'
-                onClick={handleSignOut}
-              >
-                Sign Out
-              </button>
-            ) : (
-              <Link
-                className=' flex h-9 items-center sm:border-r border-border pr-4 font-medium text-text-primary'
-                to='sign-in'
-              >
-                Sign In
-              </Link>
-            )}
+            <Link
+              className=' flex h-9 items-center border-border pr-4 font-medium text-text-primary sm:border-r'
+              to='sign-in'
+            >
+              Sign In
+            </Link>
+
             <GetStartedButton />
           </nav>
         )}
@@ -41,9 +38,7 @@ const HomePage = () => {
           <div className=' px-4 md:px-6'>
             <div className='flex flex-col items-center space-y-7 text-center'>
               <h1 className='text-3xl font-bold tracking-tighter text-text-primary sm:text-5xl'>
-                {checkIsUserAuthenticated()
-                  ? 'Welcome back to I Do'
-                  : ' Manage Your Tasks Effortlessly'}
+                Manage Your Tasks Effortlessly
               </h1>
               <p className='mx-auto max-w-[700px] text-text-tertiary  md:text-xl'>
                 I Do provides an easy and efficient way to manage all your tasks. Stay organized and
@@ -61,14 +56,12 @@ const HomePage = () => {
 export default HomePage;
 
 function GetStartedButton() {
-  const { checkIsUserAuthenticated } = useUser();
-
   return (
     <Link
       className='rounded-lg bg-primary px-5 py-2 font-medium text-white shadow  hover:bg-primary-hover '
-      to={checkIsUserAuthenticated() ? '/app' : '/sign-up'}
+      to='/sign-up'
     >
-      {checkIsUserAuthenticated() ? 'Go to App' : 'Get Started'}
+      Get Started
     </Link>
   );
 }

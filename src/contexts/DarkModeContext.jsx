@@ -21,7 +21,11 @@ export default function DarkModeProvider({ children }) {
   );
 
   function toggleDarkMode() {
+    document.documentElement.classList.add('color-transition');
     setIsDarkMode((isDark) => !isDark);
+    setTimeout(() => {
+      document.documentElement.classList.remove('color-transition');
+    }, 300);
   }
 
   return (

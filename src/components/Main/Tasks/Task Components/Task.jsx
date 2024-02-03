@@ -11,7 +11,7 @@ import { useTasks, useLists, useTags } from '../../../../hooks';
 import { CheckBox } from '../../../Common/CheckBox';
 import TaskActions from './TaskActions';
 import CustomTippy from '../../../Common/CustomTippy';
-import { useModal } from '../../../Common/ConfirmationModal';
+import { useModal } from '../../../../hooks/useModal';
 import { copyToClipBoard } from '../../../../utils/helpers';
 
 import completedSoundFile from '../../../../assets/completed.mp3';
@@ -56,7 +56,7 @@ export function Task({
   const { lists } = useLists();
   const { tasks, handleAddTask, handleUpdateTask } = useTasks();
   const { handleOpenTask, handleCompleteTask, handleDeleteTask } = useTasks();
-  const { confirmDelete, isModalOpen } = useModal();
+  const { openModal : confirmDelete , isModalOpen } = useModal();
   const isPassed = isTaskOverdue(dueDate);
   const bind = useLongPress(() => !isModalOpen && !isSelecting && setIsTaskActionsOpen(true), {
     detect: 'touch',
@@ -89,7 +89,7 @@ export function Task({
     >
       <button
         className={
-          ' grid min-h-[49px] w-full select-none grid-cols-[20px_auto] items-center gap-3 rounded-lg border border-border px-3 py-2  text-start   hover:translate-y-1  sm:px-5   ' +
+          ' grid min-h-[49px] w-full transition-transform duration-300 select-none grid-cols-[20px_auto] items-center gap-3 rounded-lg border border-border px-3 py-2  text-start   hover:translate-y-1  sm:px-5   ' +
           (checked ? 'bg-background-tertiary ' : '')
         }
       >

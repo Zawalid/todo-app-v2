@@ -17,7 +17,6 @@ import { monitorNetwork } from './components/Common/MonitorNetwork.jsx';
 import { ModalProvider } from './components/Common/ConfirmationModal.jsx';
 
 import './styles/index.css';
-import { SpinnerLoader } from './components/Common/SpinnerLoader.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <>

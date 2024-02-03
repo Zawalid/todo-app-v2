@@ -4,7 +4,7 @@ import { Item } from './Item';
 import { useRestoreElement, useLists, useTrash } from '../../../hooks';
 import { toast } from 'sonner';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
-import { useModal } from '../../Common/ConfirmationModal';
+import { useModal } from '../../../hooks/useModal';
 import { Actions } from './Actions';
 
 export default function Trash({ isOpen, onClose }) {
@@ -22,7 +22,7 @@ export default function Trash({ isOpen, onClose }) {
   const { lists } = useLists();
   const { handleRestoreElement } = useRestoreElement();
   const [parent] = useAutoAnimate({ duration: 300 });
-  const { confirmDelete } = useModal();
+  const { openModal : confirmDelete  } = useModal();
 
   const onRestore = async (item) => {
     if (currentTab === 'lists') {

@@ -5,7 +5,7 @@
 
 /* Menu */
 .menu_element {
-  @apply grid cursor-pointer  grid-cols-[30px_auto_35px] items-center rounded-lg p-2  hover:bg-background-tertiary;
+  @apply grid cursor-pointer grid-cols-[30px_auto_35px] items-center rounded-lg p-2 transition-colors duration-200  hover:bg-background-tertiary;
   &.active {
     @apply bg-background-tertiary;
   }
@@ -13,7 +13,7 @@
     @apply font-bold;
   }
   & .count {
-    @apply grid place-content-center rounded-sm bg-background-tertiary py-[1px]  group-hover:bg-background-primary;
+    @apply grid place-content-center rounded-sm bg-background-tertiary py-[1px] transition-colors duration-200  group-hover:bg-background-primary;
   }
   &:is(:hover, .active) .count {
     @apply bg-background-primary;
@@ -32,7 +32,7 @@
 
 /* Buttons */
 .icon-button {
-  @apply flex h-8 w-8 items-center justify-center rounded-[4px] p-1 disabled:cursor-not-allowed  disabled:bg-background-disabled
+  @apply flex h-8 w-8 items-center justify-center rounded-[4px]  p-1 transition-colors duration-200 disabled:cursor-not-allowed  disabled:bg-background-disabled
     disabled:text-text-disabled;
 
   &:not(:disabled).active {
@@ -53,7 +53,7 @@
 }
 
 .dropDown-button {
-  @apply relative flex w-full  cursor-pointer items-center gap-3 overflow-hidden rounded-md bg-background-primary px-3 py-2 font-medium text-text-secondary  hover:bg-background-secondary hover:text-text-primary;
+  @apply relative flex w-full cursor-pointer items-center  gap-3 overflow-hidden rounded-md bg-background-primary px-3 py-2 font-medium text-text-secondary transition-colors duration-200  hover:bg-background-secondary hover:text-text-primary;
 
   &.small {
     @apply px-2 py-1 text-xs;
@@ -70,7 +70,7 @@
 }
 
 .pagination-button {
-  @apply ml-0 flex h-full w-20 border-collapse items-center justify-center border border-border px-2 py-1.5 text-xs font-medium text-text-secondary shadow-sm  hover:bg-background-tertiary sm:text-sm;
+  @apply ml-0 flex h-full w-20 border-collapse items-center justify-center border border-border px-2 py-1.5 text-xs font-medium text-text-secondary shadow-sm transition-colors duration-200  hover:bg-background-tertiary sm:text-sm;
 
   &:disabled {
     @apply cursor-not-allowed bg-background-disabled text-text-disabled;
@@ -78,15 +78,11 @@
 }
 
 input[type='checkbox'] {
-  @apply shrink-0 cursor-pointer appearance-none rounded-[4px] border border-border checked:border-0 checked:bg-primary focus:outline-none;
-
-  &.task {
-    @apply h-5 w-5;
-  }
+  @apply h-5 w-5 shrink-0 cursor-pointer appearance-none rounded-[4px] border border-border transition-colors duration-200 checked:border-0 checked:bg-primary focus:outline-none;
 }
 
 .color {
-  @apply h-5 w-5 grid place-content-center cursor-pointer rounded-[3px] border border-border hover:shadow-md;
+  @apply grid h-5 w-5 cursor-pointer place-content-center rounded-[3px] border border-border hover:shadow-md;
   &.circle {
     @apply rounded-full;
   }
@@ -101,7 +97,7 @@ input[type='checkbox'] {
   @apply absolute  z-10 h-full max-h-full  w-full !important;
 }
 .setting {
-  @apply xs:grid xs:grid-cols-[auto_144px] xs:items-center xs:gap-6 sm:gap-10 flex flex-col gap-3;
+  @apply flex flex-col gap-3 xs:grid xs:grid-cols-[auto_144px] xs:items-center xs:gap-6 sm:gap-10;
 
   & h4 {
     @apply text-sm font-bold text-text-secondary;
@@ -112,4 +108,8 @@ input[type='checkbox'] {
   & > :last-child {
     @apply justify-self-end;
   }
+}
+
+#themeToggler svg {
+  @apply transition-transform duration-500 !important
 }

@@ -10,7 +10,7 @@ import { useAutoAnimate } from '@formkit/auto-animate/react';
 import useDeleteMultiple from '../useDeleteMultiple';
 import { usePagination } from '../usePagination';
 import SelectionIcons from '../../Common/SelectionIcons';
-import { useModal } from '../../Common/ConfirmationModal';
+import { useModal } from '../../../hooks/useModal';
 
 const filtersConditions = {
   all: () => true,
@@ -28,7 +28,7 @@ export default function TasksList({ dueDate, listId, tasks, message }) {
   const [filteredTasks, setFilteredTasks] = useState([]);
   const [searchParams] = useSearchParams();
   const { Pagination, currentPage, rowsPerPage } = usePagination(filteredTasks.length);
-  const { confirmDelete } = useModal();
+  const { openModal : confirmDelete  } = useModal();
 
   const { isSelecting, setIsSelecting, setIsDeleteMultipleModalOpen, Modal } = useDeleteMultiple({
     selectedItems: selectedTasks,
@@ -65,7 +65,7 @@ export default function TasksList({ dueDate, listId, tasks, message }) {
       className='relative flex h-full flex-col gap-3 overflow-hidden  overflow-x-hidden'
       ref={parent}
     >
-      <div className='flex items-center gap-2'>
+      <div className='flex pr-3 items-center gap-2'>
         <AddTask dueDate={dueDate} listId={listId} disabled={isSelecting} className='flex-1 ' />
         <Actions
           filteredTasks={filteredTasks}

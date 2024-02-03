@@ -9,12 +9,19 @@ import { useTasks } from '../../hooks/useTasks';
 import Drawer from '../Common/Drawer';
 import { copyToClipBoard, isTouchDevice } from '../../utils/helpers';
 import { useHref } from 'react-router-dom';
-import { useModal } from '../Common/ConfirmationModal';
+import { useModal } from '../../hooks/useModal';
 import { Actions } from './Actions';
 import { Button } from '../Common/Button';
 
 export function TaskInfo() {
-  const { currentTask, isTaskOpen, setIsTaskOpen, handleAddTask,handleUpdateTask, handleDeleteTask } = useTasks();
+  const {
+    currentTask,
+    isTaskOpen,
+    setIsTaskOpen,
+    handleAddTask,
+    handleUpdateTask,
+    handleDeleteTask,
+  } = useTasks();
   const [taskTitle, setTaskTitle] = useState();
   const [taskNote, setTaskNote] = useState();
   const [taskListId, setTaskListId] = useState('none');
@@ -24,7 +31,7 @@ export function TaskInfo() {
   const [taskPriority, setTaskPriority] = useState(0);
   const [isChanged, setIsChanged] = useState(false);
   const activeTab = useHref().split('/app/')[1];
-  const { confirmDelete } = useModal();
+  const { openModal : confirmDelete  } = useModal();
 
   useEffect(() => {
     setIsTaskOpen(false);
@@ -156,18 +163,22 @@ export function TaskInfo() {
                 created: currentTask?.$createdAt,
                 updated: currentTask?.$updatedAt,
               }}
-              onCopy={() => copyToClipBoard(`Task Title: ${currentTask?.title}\n\nTask Note:\n${currentTask?.note}`)}
+              onCopy={() =>
+                copyToClipBoard(
+                  `Task Title: ${currentTask?.title}\n\nTask Note:\n${currentTask?.note}`,
+                )
+              }
               onDuplicate={() => {
                 const task = {
-                  title : `${currentTask?.title} (copy)`,
-                  note : currentTask?.note,
-                  dueDate : currentTask?.dueDate,
-                  subtasks : currentTask?.subtasks,
-                  tagsIds : currentTask?.tagsIds,
-                  priority : currentTask?.priority,
-                  listId : currentTask?.listId,
-                }
-                handleAddTask(task,true);
+                  title: `${currentTask?.title} (copy)`,
+                  note: currentTask?.note,
+                  dueDate: currentTask?.dueDate,
+                  subtasks: currentTask?.subtasks,
+                  tagsIds: currentTask?.tagsIds,
+                  priority: currentTask?.priority,
+                  listId: currentTask?.listId,
+                };
+                handleAddTask(task, true);
               }}
             />
           </div>
@@ -215,17 +226,9 @@ export function TaskInfo() {
           >
             Delete Task
           </Button>
-          <button
-            className={
-              'flex-1 rounded-lg border  py-2 text-center  text-sm font-semibold ' +
-              (isChanged
-                ? 'cursor-pointer border-primary bg-primary text-white hover:bg-primary-hover '
-                : 'cursor-not-allowed border-border bg-background-disabled text-text-disabled')
-            }
-            onClick={handleSaveChanges}
-          >
+          <Button disabled={!isChanged} className='flex-1' onClick={handleSaveChanges}>
             Save Changes
-          </button>
+          </Button>
         </div>
       )}
     </>
@@ -238,7 +241,7 @@ export function TaskInfo() {
 
       {!isTouchDevice() && (
         <aside
-          className={`ml-auto flex   flex-col  border bg-background-primary lg:relative lg:rounded-xl lg:first-line:rounded-xl ${
+          className={` flex flex-col border bg-background-primary  transition-menu duration-500 lg:relative lg:rounded-xl lg:first-line:rounded-xl ${
             isTaskOpen
               ? 'fixed right-0 top-0 z-10 h-full w-full items-stretch border-border p-4 shadow-md sm:w-[380px]'
               : 'w-0 items-center overflow-hidden  border-transparent p-0'

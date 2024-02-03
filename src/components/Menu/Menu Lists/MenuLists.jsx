@@ -50,7 +50,7 @@ export function MenuLists() {
             ))}
           </ul>
           <button
-            className='my-4 flex cursor-pointer items-center text-sm text-text-secondary'
+            className='w-full transition-colors duration-200 hover:bg-background-tertiary py-2 rounded-md my-4 flex cursor-pointer items-center text-sm text-text-secondary'
             ref={addNewListToggler}
             onClick={() => {
               setIsAddNewListOpen(!isAddNewListOpen);
