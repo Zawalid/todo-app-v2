@@ -94,7 +94,9 @@ function ShowInSideBar({ control, setValue }) {
           />
           <div className='grid grid-cols-[25px_auto] items-center'>
             {tab.icon}
-            <span className='capitalize'>{tab.name}</span>
+            <span className='capitalize'>{
+              tab.name === 'stickyWall' ? 'Sticky Wall' : tab.name
+            }</span>
           </div>
         </div>
       ))}

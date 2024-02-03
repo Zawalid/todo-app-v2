@@ -33,7 +33,6 @@ function App() {
   const { isDarkMode } = useDarkMode();
   const { defaultHomeView } = useSelector((state) => state.settings.general.preferences);
 
-
   return (
     <Suspense fallback={<SpinnerLoader />}>
       <Routes>
@@ -42,21 +41,12 @@ function App() {
           <Route index element={tabs[defaultHomeView]} />
           <Route path='all' element={tabs.All} />
           <Route path='today' element={tabs.Today} />
-          <Route path='upcoming' element={tabs.Upcoming } />
+          <Route path='upcoming' element={tabs.Upcoming} />
           <Route path='lists/:listName' element={<ListTasks />} />
           <Route path='sticky-wall' element={tabs['Sticky Wall']} />
           <Route path='sticky-wall/:noteId' element={<StickyNoteEditor />} />
           <Route path='search/:searchQuery' element={<SearchResults />} />
           <Route path='search' element={<SearchResults />} />
-          {/* <Route
-            path='settings'
-            element={
-              <>
-                <AllTasks />
-                <Settings isOpen={true} onClose={() => navigate(-1, { replace: true })} />
-              </>
-            }
-          /> */}
         </Route>
 
         <Route element={<AuthLayout />}>

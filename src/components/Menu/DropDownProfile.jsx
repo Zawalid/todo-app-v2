@@ -92,7 +92,7 @@ function SyncButton() {
   const [lastSync, setLastSync] = useLocalStorageState('lastSync', 0);
 
   useEffect(() => {
-    if(isLoading) return;
+    if (isLoading) return;
     const id = setInterval(() => {
       setLastSync((prev) => +prev + 1);
     }, 1000);
