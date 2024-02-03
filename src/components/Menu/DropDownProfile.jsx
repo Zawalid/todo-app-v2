@@ -7,16 +7,9 @@ import {
   PiTrashLight,
 } from 'react-icons/pi';
 import { IoChevronDownOutline, IoSyncOutline } from 'react-icons/io5';
-import {
-  useDarkMode,
-  useTrash,
-  useUser,
-  useFetchAllElements,
-  useModal,
-  useLocalStorageState,
-} from '../../hooks';
+import { useDarkMode, useTrash, useUser, useFetchAllElements, useModal } from '../../hooks';
 import { DropDown } from '../Common/DropDown';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export function DropDownProfile({ setIsSettingsOpen, setIsTrashOpen }) {
   const { trashLength } = useTrash();
@@ -93,7 +86,7 @@ function ThemeToggler() {
 
 function SyncButton() {
   const { handleFetchAllElements, isLoading } = useFetchAllElements();
-  const [lastSync, setLastSync] = useLocalStorageState('lastSync', 0);
+  const [lastSync, setLastSync] = useState(0);
 
   useEffect(() => {
     if (isLoading) return;

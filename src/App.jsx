@@ -1,5 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
-import { Toaster } from 'sonner';
+import { Toaster, } from 'sonner';
 import { useDarkMode } from './hooks/';
 import { Suspense, lazy } from 'react';
 import { SpinnerLoader } from './components/Common/SpinnerLoader';
@@ -13,6 +13,7 @@ import StickyWall from './components/Main/Sticky Wall/StickyWall';
 import SearchResults from './components/Main/Search/SearchResults';
 import { StickyNoteEditor } from './components/Main/Sticky Wall/Sticky Note Editor/StickyNoteEditor';
 import { useSelector } from 'react-redux';
+import CompletedTasks from './components/Main/Tasks/CompletedTasks';
 
 const HomePage = lazy(() => import('./Pages/HomePage'));
 const AppLayout = lazy(() => import('./Layouts/AppLayout'));
@@ -27,6 +28,7 @@ const tabs = {
   Today: <TodayTasks />,
   Upcoming: <Upcoming />,
   'Sticky Wall': <StickyWall />,
+  completed: <CompletedTasks />,
 };
 
 function App() {
@@ -42,6 +44,7 @@ function App() {
           <Route path='all' element={tabs.All} />
           <Route path='today' element={tabs.Today} />
           <Route path='upcoming' element={tabs.Upcoming} />
+          <Route path='completed' element={tabs.completed} />
           <Route path='lists/:listName' element={<ListTasks />} />
           <Route path='sticky-wall' element={tabs['Sticky Wall']} />
           <Route path='sticky-wall/:noteId' element={<StickyNoteEditor />} />

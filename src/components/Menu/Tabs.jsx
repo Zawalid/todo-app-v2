@@ -3,20 +3,28 @@ import { IoTodayOutline, IoListOutline, IoCalendarOutline } from 'react-icons/io
 import { FaRegNoteSticky } from 'react-icons/fa6';
 import { useTasks, useStickyNotes } from '../../hooks';
 import { useSelector } from 'react-redux';
+import { PiCheckCircle } from 'react-icons/pi';
 
 export function Tabs() {
   const { todayTasks, tasks, upcomingTasks } = useTasks();
   const { stickyNotes } = useStickyNotes();
+  const completedTasks = tasks.filter((task) => task.isCompleted);
+
   const { defaultHomeView } = useSelector((state) => state.settings.general.preferences);
+  const { showInSideBar, showCount } = useSelector((state) => state.settings.sidebar);
   // To check whether the current tab is the home in order to add manually the active class
   const noActiveTab = ['', '/'].includes(useHref().split('/app')[1]);
-  const { showInSideBar, showCount } = useSelector((state) => state.settings.sidebar);
 
   const tabs = {
     all: {
       name: 'All',
       icon: <IoListOutline className='text-text-tertiary' size={20} />,
       count: tasks.length,
+    },
+    completed : {
+      name : 'Completed',
+      icon: <PiCheckCircle size={20} className='text-text-tertiary' />,
+      count: completedTasks.length,
     },
     upcoming: {
       name: 'Upcoming',

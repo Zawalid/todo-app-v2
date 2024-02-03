@@ -5,6 +5,7 @@ import { CheckBox } from '../../Common/CheckBox';
 import Switch from '../../Common/Switch';
 import { useReactHookForm } from '../useReactHookForm';
 import { Controller, useWatch } from 'react-hook-form';
+import { PiCheckCircle } from 'react-icons/pi';
 
 export default function SideBar() {
   const { control, isUpdated, setValue, onSubmit, onCancel } = useReactHookForm({
@@ -57,6 +58,10 @@ const allTabs = [
   {
     name: 'all',
     icon: <IoListOutline size={20} />,
+  },
+  {
+    name: 'completed',
+    icon: <PiCheckCircle size={20} />,
   },
   {
     name: 'stickyWall',

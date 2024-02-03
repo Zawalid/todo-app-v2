@@ -24,7 +24,7 @@ export function AddTask({ dueDate, listId, className, disabled, onAdd }) {
 
   return (
     <div
-      className={`${className} flex items-center gap-3 rounded-md px-5 ${
+      className={`${className} flex items-center gap-3 rounded-md px-5 transition-colors duration-200 ${
         disabled ? 'bg-background-disabled ' : 'bg-background-secondary '
       }`}
     >
@@ -36,7 +36,7 @@ export function AddTask({ dueDate, listId, className, disabled, onAdd }) {
       <form className='w-full' onSubmit={handleSubmit}>
         <input
           type='text'
-          className='w-full bg-transparent p-2 text-sm text-text-primary  placeholder:text-text-tertiary outline-none disabled:text-text-disabled disabled:placeholder:text-text-disabled '
+          className='w-full  bg-transparent p-2 text-sm text-text-primary  outline-none placeholder:text-text-tertiary disabled:text-text-disabled disabled:placeholder:text-text-disabled '
           placeholder='Add New Task'
           name='task'
           value={value}

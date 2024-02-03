@@ -31,7 +31,7 @@ const DEFAULT_SETTINGS = {
       autoDarkMode: true,
     },
     sidebar: {
-      showInSideBar: ['all', 'stickyWall', 'today'],
+      showInSideBar: ['all', 'stickyWall', 'today','upcoming'],
       showCount: true,
     },
   },
