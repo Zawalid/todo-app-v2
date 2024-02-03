@@ -5,7 +5,7 @@ import { useTags } from '../../../hooks/useTags';
 import { TagsSkeleton } from '../../Skeletons';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 
-export function MenuTags() {
+export function Tags() {
   const { tags, isTagsLoading } = useTags();
   const [isAddNewTagOpen, setIsAddNewTagOpen] = useState(false);
   const addNewTagContainer = useRef(null);

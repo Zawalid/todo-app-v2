@@ -5,7 +5,7 @@ import { useLists } from '../../../hooks/useLists';
 import { ListsSkeleton } from '../../Skeletons';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 
-export function MenuLists() {
+export function Lists() {
   const { lists, isListsLoading } = useLists();
   const [isAddNewListOpen, setIsAddNewListOpen] = useState(false);
   const [currentOpenedList, setCurrentOpenedList] = useState(null);
