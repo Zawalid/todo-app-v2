@@ -7,8 +7,16 @@ import {
   PiTrashLight,
 } from 'react-icons/pi';
 import { IoChevronDownOutline, IoSyncOutline } from 'react-icons/io5';
-import { useDarkMode, useTrash, useUser, useFetchAllElements, useModal } from '../../hooks';
+import {
+  useDarkMode,
+  useTrash,
+  useUser,
+  useFetchAllElements,
+  useModal,
+  useLocalStorageState,
+} from '../../hooks';
 import { DropDown } from '../Common/DropDown';
+import { useEffect } from 'react';
 
 export function DropDownProfile({ setIsSettingsOpen, setIsTrashOpen }) {
   const { trashLength } = useTrash();
@@ -81,13 +89,32 @@ function ThemeToggler() {
 
 function SyncButton() {
   const { handleFetchAllElements, isLoading } = useFetchAllElements();
+  const [lastSync, setLastSync] = useLocalStorageState('lastSync', 0);
+
+  useEffect(() => {
+    if(isLoading) return;
+    const id = setInterval(() => {
+      setLastSync((prev) => +prev + 1);
+    }, 1000);
+
+    return () => clearInterval(id);
+  }, [setLastSync, isLoading]);
+
+  const lastSyncTime =
+    lastSync < 60 ? `${lastSync} seconds ago` : `${Math.floor(lastSync / 60)} minutes ago`;
+
   return (
-    <DropDown.Button onClick={handleFetchAllElements}>
+    <DropDown.Button
+      onClick={() => {
+        handleFetchAllElements();
+        setLastSync(0);
+      }}
+    >
       <IoSyncOutline className={isLoading ? 'animate-spin' : ''} />
-      <span>{isLoading ? 'Syncing...' : 'Sync'}</span>
-      {/*
-       Todo :  Add the last sync time
-       */}
+      <span className='flex-1'>{isLoading ? 'Syncing...' : 'Sync'}</span>
+      <span className='text-[8px]  text-text-tertiary'>
+        {lastSync > 0 ? lastSyncTime : 'Just now'}
+      </span>
     </DropDown.Button>
   );
 }

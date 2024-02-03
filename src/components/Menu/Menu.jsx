@@ -61,12 +61,10 @@ export function Menu() {
         <Settings isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />,
         document.body,
       )}
-      {/* {window.matchMedia('(max-width: 768px)').matches && */}
-      {
-        createPortal(
-          <Trash isOpen={isTrashOpen} onClose={() => setIsTrashOpen(false)} />,
-          document.body,
-        )}
+      {createPortal(
+        <Trash isOpen={isTrashOpen} onClose={() => setIsTrashOpen(false)} />,
+        document.body,
+      )}
       {isOpen ||
         createPortal(
           <button
