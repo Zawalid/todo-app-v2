@@ -40,7 +40,7 @@ export default function Trash({ isOpen, onClose }) {
 
   return (
     <div
-      className={`fixed left-0 top-0 z-[9999] flex h-full w-full flex-col gap-5 overflow-auto rounded-lg border border-border bg-background-primary px-5 py-3 shadow-md   md:static md:h-[350px] md:w-[500px]
+      className={`fixed left-0 top-0 z-20 transition-transform duration-300 flex h-full w-full flex-col gap-5 overflow-auto rounded-lg border border-border bg-background-primary px-5 py-3 shadow-md   md:static md:h-[350px] md:w-[500px]
     ${isOpen ? 'scale-100' : 'scale-0'}`}
       ref={parent}
     >

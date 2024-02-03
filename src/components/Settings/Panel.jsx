@@ -21,7 +21,7 @@ export function Panel({ isOpen, onClose, currentTab, setCurrentTab }) {
     <div>
       <Overlay isOpen={isOpen} onClose={onClose} />
       <aside
-        className={`absolute top-0 z-[99999] flex h-full w-[200px] sm:pt-[45px] flex-col items-start gap-3 border-r  border-border bg-background-secondary  p-3 shadow-md sm:static sm:shadow-none ${
+        className={`absolute top-0 flex h-full z-40 transition-[left] duration-500 w-[200px] sm:pt-[45px] flex-col items-start gap-3 border-r  border-border bg-background-secondary  p-3 shadow-md sm:static sm:shadow-none ${
           isOpen ? 'left-0' : '-left-full'
         }`}
       >

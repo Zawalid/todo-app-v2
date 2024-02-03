@@ -232,7 +232,7 @@ function AddNote({ isSelecting }) {
 
   return (
     <button
-      className='fixed bottom-14 right-5 z-10 grid h-12 w-12 place-content-center rounded-full bg-primary p-2 shadow-lg transition-colors duration-200  hover:bg-primary-hover sm:right-8'
+      className='fixed bottom-14 right-5 grid h-12 w-12 place-content-center rounded-full bg-primary p-2 shadow-lg transition-colors duration-200  hover:bg-primary-hover sm:right-8'
       onClick={() => navigate('new')}
     >
       <i className='fa-regular fa-plus text-xl text-white'></i>

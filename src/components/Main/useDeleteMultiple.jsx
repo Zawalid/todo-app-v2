@@ -36,7 +36,7 @@ export default function useDeleteMultiple({
 
     Modal: (
       <div
-        className={`fixed left-1/2 transition-[bottom] duration-300 z-[999999] flex w-[90%] -translate-x-1/2 items-center justify-between rounded-lg border border-border bg-background-primary px-5 py-3 shadow-lg sm:w-[500px]  ${
+        className={`fixed left-1/2 transition-[bottom] duration-300 flex w-[90%] -translate-x-1/2 items-center justify-between rounded-lg border border-border bg-background-primary px-5 py-3 shadow-lg sm:w-[500px]  ${
           isDeleteMultipleModalOpen ? 'bottom-11' : '-bottom-[100px]'
         }`}
       >

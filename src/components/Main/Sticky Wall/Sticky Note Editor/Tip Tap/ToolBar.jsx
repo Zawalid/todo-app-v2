@@ -31,7 +31,7 @@ export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
       className={
         'toolbar w-full gap-3 transition-[inset] duration-300 border-t bg-background-primary border-border pt-2 ' +
         (isTouchDevice() && activeTab.startsWith('/app/sticky-wall/')
-          ? 'fixed left-0 z-[1000] px-3 pb-2 shadow-lg'
+          ? 'fixed left-0 px-3 pb-2 shadow-lg'
           : 'overflow-auto')
       }
       style={{

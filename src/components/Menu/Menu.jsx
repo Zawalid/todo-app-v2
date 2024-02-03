@@ -29,7 +29,7 @@ export function Menu() {
   return (
     <aside
       className={
-        'fixed top-0 z-[9999] flex h-full w-full transition-menu  duration-500 flex-col bg-background-primary  sm:bg-background-secondary lg:static lg:rounded-xl ' +
+        'fixed top-0 flex z-[15] h-full w-full transition-menu  duration-500 flex-col bg-background-primary  sm:bg-background-secondary lg:static lg:rounded-xl ' +
         (isOpen
           ? 'left-0 items-stretch p-4 pr-1 sm:w-[300px] '
           : '-left-full items-center p-0 lg:w-0  ')
@@ -183,7 +183,7 @@ function MenuToggleAndModals({
       {isOpen ||
         createPortal(
           <button
-            className='absolute left-1 top-1/2 z-50 h-16 w-[6px] -translate-y-1/2 rounded-lg bg-text-tertiary lg:left-1'
+            className='absolute left-1 top-1/2 h-16 w-[6px] -translate-y-1/2 rounded-lg bg-text-tertiary lg:left-1'
             onClick={() => setIsOpen(true)}
           ></button>,
           document.body,

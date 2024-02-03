@@ -51,9 +51,11 @@ export function ModalProvider({ children }) {
       <Modal
         isOpen={isModalOpen}
         className='flex w-[90%] flex-col gap-5  py-3 shadow-sm child-padding sm:w-[500px] sm:py-4'
+        overlayClassName='z-50'
+        onClose={onCancel}
       >
         <div className='flex items-center gap-3  pb-3'>
-          <div className='grid text-lg text-white h-6 w-6 place-content-center rounded-full bg-[#F57800] sm:h-8 sm:w-8'>
+          <div className='grid sm:text-lg text-white h-6 w-6 place-content-center rounded-full bg-[#F57800] sm:h-8 sm:w-8'>
             {options.icon}
           </div>
           <h1 className='text-xl font-bold text-text-primary   sm:text-2xl'>{options.title}</h1>

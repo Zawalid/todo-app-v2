@@ -16,7 +16,7 @@ export function Actions({
   return (
     <div
       className={
-        'fixed top-0 z-[10001] transition-[right] duration-500 flex h-full w-full flex-col border border-border bg-background-primary p-3 shadow-md sm:w-[300px]  ' +
+        'fixed top-0 z-20 transition-[right] duration-500 flex h-full w-full flex-col border border-border bg-background-primary p-3 shadow-md sm:w-[300px]  ' +
         (isOpen ? 'right-0 ' : '-right-full')
       }
     >
