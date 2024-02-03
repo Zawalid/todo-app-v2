@@ -30,7 +30,7 @@ const tabs = {
 };
 
 function App() {
-  const { isDarkMode } = useDarkMode();
+  const { theme } = useDarkMode();
   const { defaultHomeView } = useSelector((state) => state.settings.general.preferences);
 
   return (
@@ -59,7 +59,7 @@ function App() {
 
       <Toaster
         position={window.innerWidth < 768 ? 'bottom-center' : 'bottom-right'}
-        theme={isDarkMode ? 'dark' : 'light'}
+        theme={theme}
         loadingIcon={
           <i className='fa-solid fa-spinner animate-spin text-lg text-text-secondary'></i>
         }

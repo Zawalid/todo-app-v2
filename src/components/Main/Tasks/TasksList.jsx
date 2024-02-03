@@ -65,7 +65,7 @@ export default function TasksList({ dueDate, listId, tasks, message }) {
       className='relative flex h-full flex-col gap-3 overflow-hidden  overflow-x-hidden'
       ref={parent}
     >
-      <div className='flex pr-3 items-center gap-2'>
+      <div className='flex items-center gap-2'>
         <AddTask dueDate={dueDate} listId={listId} disabled={isSelecting} className='flex-1 ' />
         <Actions
           filteredTasks={filteredTasks}
@@ -129,7 +129,7 @@ function List({ filteredTasks, isSelecting, currentPage, rowsPerPage }) {
   const direction = searchParams.get('direction') || 'asc';
 
   return (
-    <ul className='mt-3 h-full space-y-2 overflow-y-auto overflow-x-hidden pr-3' ref={parent}>
+    <ul className='mt-3 h-full space-y-2 overflow-y-auto overflow-x-hidden' ref={parent}>
       {filteredTasks
         .toSorted((a, b) => {
           if (sortBy === 'cDate') {

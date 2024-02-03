@@ -4,11 +4,13 @@ import { Controller, useWatch } from 'react-hook-form';
 import { useReactHookForm } from '../useReactHookForm';
 import { Tab } from './Tab';
 
-const themes = ['light', 'dark', 'rose', 'emerald', 'amber', 'teal'];
+const themes = ['indigo', 'green', 'red', 'orange', 'purple', 'teal','crimson', 'maroon'];
 
 export default function Theme() {
-  const { control, isUpdated, setValue, onSubmit, onCancel } = useReactHookForm({settingCategory :'theme'});
-  const currentTheme = useWatch({ control, name: 'themeName' });
+  const { control, isUpdated, setValue, onSubmit, onCancel } = useReactHookForm({
+    settingCategory: 'theme',
+  });
+  const currentTheme = useWatch({ control, name: 'primaryTheme' });
 
   return (
     <Tab
@@ -17,13 +19,14 @@ export default function Theme() {
         disabled: !isUpdated,
       }}
       cancelButton={{
-        onClick: () => onCancel((setting) => document.documentElement.className = setting.themeName),
+        onClick: () =>
+          onCancel((setting) => (document.documentElement.className = setting.primaryTheme)),
         disabled: !isUpdated,
       }}
       control={control}
     >
       <div className='space-y-5'>
-        <div className='setting block'>
+        <div className='setting done block'>
           <h4>Themes</h4>
           <p>Choose a theme for your interface.</p>
           <div className='mt-4 grid max-h-[325px] grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-3 overflow-auto pr-1'>
@@ -31,18 +34,18 @@ export default function Theme() {
               <ThemeExample
                 key={theme}
                 theme={theme}
-                onSelect={() => setValue('themeName', theme, { shouldDirty: true })}
+                onSelect={() => setValue('primaryTheme', theme, { shouldDirty: true })}
                 isCurrent={currentTheme === theme}
               />
             ))}
           </div>
           <Controller
-            name='themeName'
+            name='primaryTheme'
             control={control}
             render={({ field }) => <input type='hidden' {...field} />}
           />
         </div>
-        <div className='setting'>
+        <div className='setting done'>
           <div>
             <h4>Auto Dark Mode</h4>
             <p>Automatically switch between light and dark themes when your system does.</p>
@@ -61,9 +64,9 @@ export default function Theme() {
 function ThemeExample({ theme, onSelect, isCurrent }) {
   return (
     <button
-      className={`theme ${theme} grid h-20 hover:scale-95 transition-transform duration-300 cursor-pointer grid-cols-[60px_auto] gap-1 overflow-hidden rounded-lg border border-border bg-background-primary`}
+      className={`theme ${theme} grid h-20 cursor-pointer grid-cols-[60px_auto] gap-1 overflow-hidden rounded-lg border border-border bg-background-primary transition-transform duration-300 hover:scale-95`}
       onClick={() => {
-        document.documentElement.className = theme;
+        document.documentElement.setAttribute('data-theme-primary', theme);
         onSelect();
       }}
     >

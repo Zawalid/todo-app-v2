@@ -72,14 +72,18 @@ function Profile() {
 }
 
 function ThemeToggler() {
-  const { isDarkMode, toggleDarkMode } = useDarkMode();
+  const { theme, toggleDarkMode } = useDarkMode();
   return (
-    <DropDown.Button onClick={toggleDarkMode} className='relative py-[18px]' id='themeToggler'>
-      <div className={isDarkMode ? 'translate-y-9' : 'translate-y-0'}>
+    <DropDown.Button
+      onClick={() => toggleDarkMode(theme === 'dark' ? 'light' : 'dark')}
+      className='relative py-[18px]'
+      id='themeToggler'
+    >
+      <div className={theme === 'dark' ? 'translate-y-9' : 'translate-y-0'}>
         <PiMoonStars size={18} />
         <span>Dark Mode</span>
       </div>
-      <div className={isDarkMode ? 'translate-y-0' : 'translate-y-9'}>
+      <div className={theme === 'light' ? 'translate-y-9' : 'translate-y-0'}>
         <PiSunDim size={18} />
         <span>Light Mode</span>
       </div>

@@ -102,6 +102,13 @@ input[type='checkbox'] {
 .setting {
   @apply flex flex-col gap-3 xs:grid xs:grid-cols-[auto_144px] xs:items-center xs:gap-6 sm:gap-10;
 
+  &.not-done {
+    @apply cursor-not-allowed;
+    & * {
+      @apply cursor-not-allowed text-text-disabled opacity-60;
+    }
+  }
+
   & h4 {
     @apply text-sm font-bold text-text-secondary;
   }

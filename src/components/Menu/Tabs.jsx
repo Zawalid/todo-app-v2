@@ -39,7 +39,6 @@ export function Tabs() {
     <ul className='space-y-1 pb-5'>
       {showInSideBar.map((t) => {
         const tab = tabs[t];
-        console.log(tab,t)
         return (
           <li key={tab.name}>
             <NavLink

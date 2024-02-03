@@ -53,7 +53,7 @@ export function Preferences({ control, setValue }) {
             render={({ field }) => <Switch checked={field.value} {...field} />}
           />
         </div>
-        <div className='setting'>
+        <div className='setting done'>
           <div>
             <h4>Default Home View</h4>
             <p className='mt-2 text-xs text-text-secondary'>

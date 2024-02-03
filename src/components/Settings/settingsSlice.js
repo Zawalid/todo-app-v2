@@ -27,7 +27,7 @@ const DEFAULT_SETTINGS = {
       },
     },
     theme: {
-      themeName: 'dark',
+      primaryTheme: 'indigo',
       autoDarkMode: true,
     },
     sidebar: {

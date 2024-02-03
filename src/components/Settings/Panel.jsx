@@ -52,7 +52,7 @@ export function Panel({ isOpen, onClose, currentTab, setCurrentTab }) {
         />
 
         <div className='mt-auto w-full border-t border-border pt-2'>
-          {!user?.emailVerification && (
+          {user?.emailVerification && (
             <button
               className='grid w-full grid-cols-[30px_1fr] items-center justify-items-start rounded-md px-3 py-2    hover:bg-background-tertiary'
               onClick={handleSendVerificationEmail}

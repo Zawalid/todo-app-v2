@@ -36,7 +36,7 @@ export default function SideBar() {
             render={({ field }) => <input {...field} type='hidden' />}
           />
         </div>
-        <div className='setting'>
+        <div className='done setting'>
           <div>
             <h4>Show count</h4>
             <p>Show the number of tasks in each list.</p>
@@ -111,7 +111,7 @@ function Example({ control }) {
     <div>
       <span className='text-sm font-medium text-text-tertiary'>Example</span>
       <ul className='mt-2 w-[250px] rounded-lg bg-background-secondary p-3'>
-        <li className='grid cursor-pointer grid-cols-[30px_auto_35px] items-center rounded-lg  bg-background-tertiary p-2 '>
+        <li className='grid grid-cols-[30px_auto_35px] items-center rounded-lg  bg-background-tertiary p-2 '>
           <IoListOutline className='text-text-tertiary' size={20} />
           <span className='text-sm text-text-secondary  '>All Tasks</span>
 
@@ -123,7 +123,7 @@ function Example({ control }) {
             <span className='text-xs font-semibold text-text-secondary'>5</span>
           </div>
         </li>
-        <li className='grid cursor-pointer grid-cols-[30px_auto_35px]  items-center p-2 '>
+        <li className='grid grid-cols-[30px_auto_35px]  items-center p-2 '>
           <IoCalendarOutline className='text-text-tertiary' />
           <span className='text-sm text-text-secondary  '>Upcoming</span>
           <div
