@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { useModal } from '../../../hooks/useModal';
 import { Actions } from './Actions';
+import Modal from '../../Common/Modal';
 
 export default function Trash({ isOpen, onClose }) {
   const {
@@ -21,8 +22,7 @@ export default function Trash({ isOpen, onClose }) {
   } = useTrash();
   const { lists } = useLists();
   const { handleRestoreElement } = useRestoreElement();
-  const [parent] = useAutoAnimate({ duration: 300 });
-  const { openModal : confirmDelete  } = useModal();
+  const { openModal: confirmDelete } = useModal();
 
   const onRestore = async (item) => {
     if (currentTab === 'lists') {
@@ -39,10 +39,10 @@ export default function Trash({ isOpen, onClose }) {
   };
 
   return (
-    <div
-      className={`fixed left-0 top-0 z-20 transition-transform duration-300 flex h-full w-full flex-col gap-5 overflow-auto rounded-lg border border-border bg-background-primary px-5 py-3 shadow-md   md:static md:h-[350px] md:w-[500px]
-    ${isOpen ? 'scale-100' : 'scale-0'}`}
-      ref={parent}
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      className='relative h-full w-full gap-5 overflow-auto px-5 py-3 sm:h-[400px] sm:w-[600px] sm:border'
     >
       <div className='flex items-start justify-between gap-5'>
         <Tabs
@@ -112,7 +112,7 @@ export default function Trash({ isOpen, onClose }) {
         onRestore={onRestore}
       />
       <Info />
-    </div>
+    </Modal>
   );
 }
 

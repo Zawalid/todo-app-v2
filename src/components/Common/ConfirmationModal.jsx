@@ -50,7 +50,7 @@ export function ModalProvider({ children }) {
       {children}
       <Modal
         isOpen={isModalOpen}
-        className='flex w-[90%] border flex-col gap-5  py-3 shadow-sm child-padding sm:w-[500px] sm:py-4'
+        className='w-[90%] border flex-col gap-5  py-3 shadow-sm child-padding sm:w-[500px] sm:py-4'
         overlayClassName='z-50'
         onClose={onCancel}
       >

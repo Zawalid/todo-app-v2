@@ -1,4 +1,3 @@
-import Tippy from '@tippyjs/react';
 import {
   PiGear,
   PiMoonStars,
@@ -8,11 +7,20 @@ import {
   PiTrashLight,
 } from 'react-icons/pi';
 import { IoChevronDownOutline, IoSyncOutline } from 'react-icons/io5';
-import { useDarkMode, useTrash, useUser, useFetchAllElements, useModal } from '../../hooks';
+import {
+  useDarkMode,
+  useTrash,
+  useUser,
+  useFetchAllElements,
+  useModal,
+  useLocalStorageState,
+} from '../../hooks';
 import { DropDown } from '../Common/DropDown';
-import Trash from '../Main/Trash/Trash';
+import { useEffect } from 'react';
 
 export function DropDownProfile({ setIsSettingsOpen, setIsTrashOpen }) {
+  const { trashLength } = useTrash();
+
   return (
     <DropDown
       toggler={<Profile />}
@@ -23,8 +31,12 @@ export function DropDownProfile({ setIsSettingsOpen, setIsTrashOpen }) {
         <PiGear className='text-text-tertiary' />
         <span>Settings</span>
       </DropDown.Button>
-      <TrashToggler setIsTrashOpen={setIsTrashOpen} />
 
+      <DropDown.Button onClick={() => setIsTrashOpen((prev) => !prev)}>
+        <PiTrashLight className='text-text-tertiary' />
+        <span className='flex-1'>Trash</span>
+        <span className='text-xs font-semibold text-text-secondary'>{trashLength}</span>
+      </DropDown.Button>
       <DropDown.Divider />
 
       <ThemeToggler />
@@ -59,32 +71,6 @@ function Profile() {
   );
 }
 
-function TrashToggler({ setIsTrashOpen }) {
-  const { trashLength } = useTrash();
-
-  return (
-    <Tippy
-      content={<Trash isOpen={true} />}
-      interactive={true}
-      placement='right-end'
-      trigger='click'
-      theme='light'
-      offset={[0, 20]}
-      arrow={false}
-      animation='fade'
-      className='shadow-md'
-    >
-      <div>
-        <DropDown.Button onClick={() => setIsTrashOpen((prev) => !prev)}>
-          <PiTrashLight className='text-text-tertiary' />
-          <span className='flex-1'>Trash</span>
-          <span className='text-xs font-semibold text-text-secondary'>{trashLength}</span>
-        </DropDown.Button>
-      </div>
-    </Tippy>
-  );
-}
-
 function ThemeToggler() {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
   return (
@@ -103,13 +89,32 @@ function ThemeToggler() {
 
 function SyncButton() {
   const { handleFetchAllElements, isLoading } = useFetchAllElements();
+  const [lastSync, setLastSync] = useLocalStorageState('lastSync', 0);
+
+  useEffect(() => {
+    if(isLoading) return;
+    const id = setInterval(() => {
+      setLastSync((prev) => +prev + 1);
+    }, 1000);
+
+    return () => clearInterval(id);
+  }, [setLastSync, isLoading]);
+
+  const lastSyncTime =
+    lastSync < 60 ? `${lastSync} seconds ago` : `${Math.floor(lastSync / 60)} minutes ago`;
+
   return (
-    <DropDown.Button onClick={handleFetchAllElements}>
+    <DropDown.Button
+      onClick={() => {
+        handleFetchAllElements();
+        setLastSync(0);
+      }}
+    >
       <IoSyncOutline className={isLoading ? 'animate-spin' : ''} />
-      <span>{isLoading ? 'Syncing...' : 'Sync'}</span>
-      {/*
-       Todo :  Add the last sync time
-       */}
+      <span className='flex-1'>{isLoading ? 'Syncing...' : 'Sync'}</span>
+      <span className='text-[8px]  text-text-tertiary'>
+        {lastSync > 0 ? lastSyncTime : 'Just now'}
+      </span>
     </DropDown.Button>
   );
 }

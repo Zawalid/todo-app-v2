@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useLongPress } from 'use-long-press';
-import { Tag } from '../../../Menu/Menu Tags/Tag';
+import { Tag } from '../../../Menu/Tags/Tag';
 import {
   checkIfToday,
   checkIfTomorrow,

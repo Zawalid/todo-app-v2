@@ -12,6 +12,7 @@ import Upcoming from './components/Main/Tasks/Upcoming';
 import StickyWall from './components/Main/Sticky Wall/StickyWall';
 import SearchResults from './components/Main/Search/SearchResults';
 import { StickyNoteEditor } from './components/Main/Sticky Wall/Sticky Note Editor/StickyNoteEditor';
+import { useSelector } from 'react-redux';
 
 const HomePage = lazy(() => import('./Pages/HomePage'));
 const AppLayout = lazy(() => import('./Layouts/AppLayout'));
@@ -21,19 +22,29 @@ const SignUpForm = lazy(() => import('./Pages/auth/SignUpForm'));
 const ForgotPassword = lazy(() => import('./Pages/auth/ForgotPassword'));
 const NotFound = lazy(() => import('./Pages/NotFound'));
 
+const tabs = {
+  All: <AllTasks />,
+  Today: <TodayTasks />,
+  Upcoming: <Upcoming />,
+  'Sticky Wall': <StickyWall />,
+};
+
 function App() {
   const { isDarkMode } = useDarkMode();
+  const { defaultHomeView } = useSelector((state) => state.settings.general.preferences);
+
 
   return (
     <Suspense fallback={<SpinnerLoader />}>
       <Routes>
         <Route path='/' element={<HomePage />} />
         <Route path='app' element={<AppLayout />}>
-          <Route index element={<AllTasks />} />
-          <Route path='today' element={<TodayTasks />} />
-          <Route path='upcoming' element={<Upcoming />} />
+          <Route index element={tabs[defaultHomeView]} />
+          <Route path='all' element={tabs.All} />
+          <Route path='today' element={tabs.Today} />
+          <Route path='upcoming' element={tabs.Upcoming } />
           <Route path='lists/:listName' element={<ListTasks />} />
-          <Route path='sticky-wall' element={<StickyWall />} />
+          <Route path='sticky-wall' element={tabs['Sticky Wall']} />
           <Route path='sticky-wall/:noteId' element={<StickyNoteEditor />} />
           <Route path='search/:searchQuery' element={<SearchResults />} />
           <Route path='search' element={<SearchResults />} />

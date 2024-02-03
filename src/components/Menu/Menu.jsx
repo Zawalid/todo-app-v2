@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useHref } from 'react-router-dom';
-import { MenuLists } from './Menu Lists/MenuLists';
-import { MenuTags } from './Menu Tags/MenuTags';
-import { MenuTasks } from './MenuTasks';
+import { Lists } from './Lists/Lists';
+import { Tags } from './Tags/Tags';
+import { Tabs } from './Tabs';
 import { SearchInput } from '../Main/Search/SearchInput';
 import { DropDownProfile } from './DropDownProfile';
 import Settings from '../Settings/Settings';
@@ -50,9 +50,9 @@ export function Menu() {
 
             <div className='mb-3 overflow-y-auto overflow-x-hidden pr-3'>
               <SearchInput />
-              <MenuTasks />
-              <MenuLists />
-              <MenuTags />
+              <Tabs />
+              <Lists />
+              <Tags />
             </div>
           </>
         )}
@@ -61,11 +61,10 @@ export function Menu() {
         <Settings isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />,
         document.body,
       )}
-      {window.matchMedia('(max-width: 768px)').matches &&
-        createPortal(
-          <Trash isOpen={isTrashOpen} onClose={() => setIsTrashOpen(false)} />,
-          document.body,
-        )}
+      {createPortal(
+        <Trash isOpen={isTrashOpen} onClose={() => setIsTrashOpen(false)} />,
+        document.body,
+      )}
       {isOpen ||
         createPortal(
           <button
