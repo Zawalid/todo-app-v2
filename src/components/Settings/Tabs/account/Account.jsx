@@ -43,7 +43,7 @@ export default function Account() {
   const onUpdate = async (password) => await handleUpdateProfile(name, email, password, avatar);
 
   async function handleSaveChanges() {
-    if (dirtyFields.account.email) return setIsVerificationModalOpen(true);
+    if (dirtyFields.email) return setIsVerificationModalOpen(true);
     await onUpdate('');
   }
 
@@ -120,7 +120,10 @@ export default function Account() {
 
       <UserVerificationModal
         isOpen={isVerificationModalOpen}
-        onClose={() => setIsVerificationModalOpen(false)}
+        onClose={() => {
+          setIsVerificationModalOpen(false);
+          onCancel();
+        }}
         onConfirm={async (password) => {
           if (password.length < 8)
             return toast.error('Password must be at least 8 characters long');

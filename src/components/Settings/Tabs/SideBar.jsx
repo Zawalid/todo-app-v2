@@ -111,7 +111,7 @@ function Example({ control }) {
       <ul className='mt-2 w-[250px] rounded-lg bg-background-secondary p-3'>
         <li className='grid cursor-pointer grid-cols-[30px_auto_35px] items-center rounded-lg  bg-background-tertiary p-2 '>
           <IoListOutline className='text-text-tertiary' size={20} />
-          <span className='text-sm text-text-secondary  group-hover:font-bold'>All Tasks</span>
+          <span className='text-sm text-text-secondary  '>All Tasks</span>
 
           <div
             className={`${
@@ -123,7 +123,7 @@ function Example({ control }) {
         </li>
         <li className='grid cursor-pointer grid-cols-[30px_auto_35px]  items-center p-2 '>
           <IoCalendarOutline className='text-text-tertiary' />
-          <span className='text-sm text-text-secondary  group-hover:font-bold'>Upcoming</span>
+          <span className='text-sm text-text-secondary  '>Upcoming</span>
           <div
             className={`${
               showCount ? 'scale-100' : 'scale-0'

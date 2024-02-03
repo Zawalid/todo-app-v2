@@ -13,7 +13,7 @@ export default function SelectionIcons({
     <div className={`flex gap-3 ${isReverse ? 'flex-row-reverse' : ''}`}>
       <CustomTippy content={allSelected ? 'Unselect All' : 'Select All'}>
         <button
-          className={`icon-button 
+          className={`transition-transform duration-300 icon-button 
           ${allSelected ? 'active' : 'not-active'}
           ${isSelecting ? 'scale-100' : 'scale-0'}
           `}

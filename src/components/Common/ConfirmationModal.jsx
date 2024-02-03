@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useState } from 'react';
+import { createContext, useCallback, useState } from 'react';
 import Modal from './Modal';
 import { CheckBox } from './CheckBox';
 
@@ -7,12 +7,14 @@ const DEFAULT_OPTIONS = {
   title: '',
   confirmText: 'Delete',
   showCheckBox: true,
+  icon : <PiWarningFill />
 };
 import deletedSoundFile from '../../assets/deleted.mp3';
 import { Button } from './Button';
+import { PiWarningFill } from 'react-icons/pi';
 const deletedSound = new Audio(deletedSoundFile);
 
-const ModalContext = createContext();
+export const ModalContext = createContext();
 
 export function ModalProvider({ children }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -41,7 +43,7 @@ export function ModalProvider({ children }) {
     <ModalContext.Provider
       value={{
         options,
-        confirmDelete: openModal,
+         openModal,
         isModalOpen
       }}
     >
@@ -51,8 +53,8 @@ export function ModalProvider({ children }) {
         className='flex w-[90%] flex-col gap-5  py-3 shadow-sm child-padding sm:w-[500px] sm:py-4'
       >
         <div className='flex items-center gap-3  pb-3'>
-          <div className='grid  h-6 w-6 place-content-center rounded-full bg-[#F57800] sm:h-8 sm:w-8'>
-            <i className='fa-solid fa-triangle-exclamation text-sm text-white sm:text-base'></i>
+          <div className='grid text-lg text-white h-6 w-6 place-content-center rounded-full bg-[#F57800] sm:h-8 sm:w-8'>
+            {options.icon}
           </div>
           <h1 className='text-xl font-bold text-text-primary   sm:text-2xl'>{options.title}</h1>
         </div>
@@ -67,7 +69,7 @@ export function ModalProvider({ children }) {
               onChange={() => setIsChecked(!isChecked)}
               id='permanent'
             />
-            <label htmlFor='permanent' className='mt-[3px] text-sm font-medium text-text-tertiary'>
+            <label htmlFor='permanent' className='text-sm font-medium text-text-tertiary'>
               Delete permanently
             </label>
           </div>
@@ -92,10 +94,4 @@ export function ModalProvider({ children }) {
   );
 }
 
-export function useModal() {
-  const context = useContext(ModalContext);
-  if (!context) {
-    throw new Error('useModal must be used within a ModalProvider');
-  }
-  return context;
-}
+

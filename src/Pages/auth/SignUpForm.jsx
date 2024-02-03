@@ -49,7 +49,9 @@ function SignUpForm() {
           onChange={(e) => setEmail(e.target.value)}
         />
 
-        <PasswordInput value={password} onChange={(e) => setPassword(e.target.value)} />
+        <PasswordInput value={password}
+        placeholder='Password'
+        onChange={(e) => setPassword(e.target.value)} />
         <Button isLoading={isLoading} className='w-full'>
           Sign Up
         </Button>

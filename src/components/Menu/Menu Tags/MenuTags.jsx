@@ -42,7 +42,7 @@ export function MenuTags() {
               <Tag key={tag.$id} tag={tag} showDeleteButton={true} />
             ))}
             <li
-              className='menu_tag_element cursor-pointer bg-background-tertiary text-text-secondary'
+              className='menu_tag_element cursor-pointer transition-colors duration-200 hover:bg-background-tertiary text-text-secondary'
               onClick={() => {
                 setIsAddNewTagOpen(!isAddNewTagOpen);
                 setTimeout(() => addNewTagContainer.current.querySelector('input').focus(), 100);

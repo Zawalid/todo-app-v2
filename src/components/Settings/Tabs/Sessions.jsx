@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useUser } from '../../../hooks';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { Tab } from './Tab';
+import { useModal } from '../../../hooks/useModal';
+import { Button } from '../../Common/Button';
 
 const BROWSERS_IMAGES = [
   {
@@ -39,6 +41,7 @@ export default function Sessions() {
   const [isLoading, setIsLoading] = useState(true);
   const { handleGetSessions, handleDeleteSession, handleDeleteSessions } = useUser();
   const [parent] = useAutoAnimate({ duration: 300 });
+  const { openModal: confirmRevoke } = useModal();
 
   useEffect(() => {
     async function fetchSessions() {
@@ -51,19 +54,35 @@ export default function Sessions() {
   }, []);
 
   async function deleteSession(sessionId) {
-    await handleDeleteSession(sessionId);
-    setSessions((sessions) => sessions.filter((session) => session.$id !== sessionId));
+    
+    confirmRevoke({
+      title: 'Revoke Session',
+      message: 'Are you sure you want to revoke this session?',
+      onConfirm: async () => {
+        await handleDeleteSession(sessionId);
+        setSessions((sessions) => sessions.filter((session) => session.$id !== sessionId));
+      },
+      showCheckBox: false,
+      confirmText: 'Revoke',
+    });
   }
 
   return (
     <Tab
       saveButton={{
         text: 'Revoke All',
+        type : 'delete',
         onClick: async () => {
-          await handleDeleteSessions(
-            sessions.filter((session) => !session.current).map((session) => session.$id),
-          );
-          setSessions([]);
+          confirmRevoke({
+            title: 'Revoke All Sessions',
+            message: 'Are you sure you want to revoke all sessions?',
+            onConfirm: async () => {
+              await handleDeleteSessions();
+              setSessions([]);
+            },
+            showCheckBox: false,
+            confirmText: 'Revoke All',
+          });
         },
         disabled: sessions.length === 1 || isLoading,
         className: 'mr-0 px-3 text-sm',
@@ -86,7 +105,7 @@ export default function Sessions() {
       <h3 className='mt-7 font-bold text-text-secondary'>
         Active Sessions ({sessions.filter((session) => !session.current).length || '-'})
       </h3>
-      <div className='space-y-5 mt-2' ref={parent}>
+      <div className='mt-2 pb-3 space-y-5' ref={parent}>
         {isLoading ? (
           Array.from({ length: 2 }).map((_, i) => <Skeleton key={i} />)
         ) : sessions.length === 1 ? ( // 1 is the current
@@ -143,12 +162,12 @@ function Session({ session, onDelete }) {
         </p>
       </div>
       {current || (
-        <button
-          className='rounded-lg border border-border px-3 py-2 text-sm font-medium text-text-primary hover:border-primary  hover:bg-primary hover:text-white'
+        <Button
+         type='outline-delete'
           onClick={() => onDelete(current ? 'current' : $id)}
         >
           Revoke
-        </button>
+        </Button>
       )}
     </div>
   );

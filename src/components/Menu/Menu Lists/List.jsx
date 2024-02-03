@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { NavLink, useHref, useNavigate } from 'react-router-dom';
 import { ListAction } from './ListAction';
 import { useIsTitleTaken, useLists, useTasks } from '../../../hooks';
-import { useModal } from '../../Common/ConfirmationModal';
+import { useModal } from '../../../hooks/useModal';
 
 export function List({ list }) {
   const { $id, title, color } = list;
@@ -11,7 +11,7 @@ export function List({ list }) {
   const [isRenameInputOpen, setIsRenameInputOpen] = useState(false);
   const [isNewTitleTaken, setTitle] = useIsTitleTaken($id, title);
   const [listColor, setListColor] = useState(color);
-  const { confirmDelete } = useModal();
+  const { openModal : confirmDelete  } = useModal();
   const tasksCount = useMemo(
     () => tasks.filter((task) => task.listId === $id).length,
     [tasks, $id],
@@ -56,7 +56,7 @@ export function List({ list }) {
               backgroundColor: `var(${listColor})`,
             }}
           ></div>
-          <span className='truncate  text-sm text-text-secondary outline-none   group-hover:font-bold'>
+          <span className='truncate  text-sm text-text-secondary outline-none   '>
             {title}
           </span>
           <div className='count mx-1'>

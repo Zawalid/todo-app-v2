@@ -1,9 +1,9 @@
 import { useTags } from '../../../hooks/useTags';
-import { useModal } from '../../Common/ConfirmationModal';
+import { useModal } from '../../../hooks/useModal';
 
 export function Tag({ tag, showDeleteButton, customClassName, onDeleteTag, onSelectTag }) {
   const { handleDeleteTag } = useTags();
-  const { confirmDelete } = useModal();
+  const { openModal : confirmDelete  } = useModal();
   return (
     <>
       <div

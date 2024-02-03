@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import { Toaster } from 'sonner';
 import { useDarkMode } from './hooks/';
 import { Suspense, lazy } from 'react';
@@ -12,6 +12,7 @@ import Upcoming from './components/Main/Tasks/Upcoming';
 import StickyWall from './components/Main/Sticky Wall/StickyWall';
 import SearchResults from './components/Main/Search/SearchResults';
 import { StickyNoteEditor } from './components/Main/Sticky Wall/Sticky Note Editor/StickyNoteEditor';
+import Settings from './components/Settings/Settings';
 
 const HomePage = lazy(() => import('./Pages/HomePage'));
 const AppLayout = lazy(() => import('./Layouts/AppLayout'));
@@ -22,6 +23,7 @@ const ForgotPassword = lazy(() => import('./Pages/auth/ForgotPassword'));
 const NotFound = lazy(() => import('./Pages/NotFound'));
 
 function App() {
+  const navigate = useNavigate();
   const { isDarkMode } = useDarkMode();
 
   return (
@@ -30,7 +32,6 @@ function App() {
         <Route path='/' element={<HomePage />} />
         <Route path='app' element={<AppLayout />}>
           <Route index element={<AllTasks />} />
-          <Route path='all' element={<AllTasks />} />
           <Route path='today' element={<TodayTasks />} />
           <Route path='upcoming' element={<Upcoming />} />
           <Route path='lists/:listName' element={<ListTasks />} />
@@ -38,6 +39,15 @@ function App() {
           <Route path='sticky-wall/:noteId' element={<StickyNoteEditor />} />
           <Route path='search/:searchQuery' element={<SearchResults />} />
           <Route path='search' element={<SearchResults />} />
+          {/* <Route
+            path='settings'
+            element={
+              <>
+                <AllTasks />
+                <Settings isOpen={true} onClose={() => navigate(-1, { replace: true })} />
+              </>
+            }
+          /> */}
         </Route>
 
         <Route element={<AuthLayout />}>

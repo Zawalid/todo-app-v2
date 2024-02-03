@@ -13,7 +13,7 @@
   --text-primary: #212529;
   --text-secondary: #444444;
   --text-tertiary: #7c7c7c;
-  --text-disabled: #ffdddd;
+  --text-disabled: #e3c4c4;
   --border: rgb(229, 231, 235);
 
   /* Colors */
@@ -86,14 +86,19 @@
   .theme {
     --primary: #6366f1;
     --primary-hover: #4f46e5;
+    --background-primary: #fff;
+    --background-secondary: #f4f4f4;
+    --background-tertiary: #e5e5e5;
   }
 }
 * {
   @apply box-border;
-  transition:
-    color 300ms,
-    background-color 300ms,
-    border-color 300ms,
+}
+
+html.color-transition {
+  * {
+    @apply transition-colors duration-200 !important;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

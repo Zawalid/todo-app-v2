@@ -14,6 +14,7 @@ export function Button({
     outline:
       'bg-transparent border border-border hover:border-primary text-text-primary hover:bg-primary hover:text-white',
     delete: 'bg-red-500 text-white hover:bg-red-600',
+    'outline-delete': 'bg-transparent border border-red-500 text-red-500 hover:bg-red-500 hover:text-white',
   };
 
   const sizes = {
@@ -24,7 +25,7 @@ export function Button({
 
   return (
     <button
-      className={`mt-auto flex justify-center font-medium ${className} ${sizes[size]} ${
+      className={`mt-auto transition-colors duration-300 flex justify-center font-medium ${className} ${sizes[size]} ${
         disabled ? variations.disabled : variations[type]
       }`}
       disabled={disabled}

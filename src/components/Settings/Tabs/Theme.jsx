@@ -61,7 +61,7 @@ export default function Theme() {
 function ThemeExample({ theme, onSelect, isCurrent }) {
   return (
     <button
-      className={`theme ${theme} grid h-20  cursor-pointer grid-cols-[60px_auto] gap-1 overflow-hidden rounded-lg border border-border bg-background-primary`}
+      className={`theme ${theme} grid h-20 hover:scale-95 transition-transform duration-300 cursor-pointer grid-cols-[60px_auto] gap-1 overflow-hidden rounded-lg border border-border bg-background-primary`}
       onClick={() => {
         document.documentElement.className = theme;
         onSelect();

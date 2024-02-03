@@ -14,7 +14,7 @@ export function TextColorPicker({ onChange, textColor }) {
         {textColor === color1 && <PiCheckBold size={14} style={{ color: color2 }} />}
       </span>
       <span
-        className='color h-6 w-6 border  bg-background-primary'
+        className='color h-6 w-6 bg-background-primary'
         onClick={() => onChange(color2)}
       >
         {textColor === color2 && <PiCheckBold size={14} style={{ color: color1 }} />}

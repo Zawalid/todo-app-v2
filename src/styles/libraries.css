@@ -73,7 +73,7 @@
 }
 
 .tippy-box[data-theme~='custom'] {
-  @apply bg-text-primary font-medium text-background-primary;
+  @apply bg-background-secondary font-medium text-text-tertiary border text-xs border-border rounded-lg !important;
 }
 .tippy-box:is([data-theme~='bubbleMenu'], [data-theme~='custom']) {
   @apply p-2;
@@ -81,16 +81,16 @@
 
 /* Tooltip arrow */
 .tippy-box[data-theme~='custom'][data-placement^='top'] > .tippy-arrow::before {
-  @apply border-t-text-primary;
+  @apply border-t-background-secondary
 }
 .tippy-box[data-theme~='custom'][data-placement^='bottom'] > .tippy-arrow::before {
-  @apply border-b-text-primary;
+  @apply border-b-background-secondary
 }
 .tippy-box[data-theme~='custom'][data-placement^='left'] > .tippy-arrow::before {
-  @apply border-l-text-primary;
+  @apply border-l-background-secondary
 }
 .tippy-box[data-theme~='custom'][data-placement^='right'] > .tippy-arrow::before {
-  @apply border-r-text-primary;
+  @apply border-r-background-secondary
 }
 
 /** Vaul  */

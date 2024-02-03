@@ -8,11 +8,14 @@ import {
   PiPalette,
   PiUserCircle,
   PiSignOut,
+  PiSignOutBold,
 } from 'react-icons/pi';
 import { Overlay } from '../Common/Modal';
+import { useModal } from '../../hooks/useModal';
 
 export function Panel({ isOpen, onClose, currentTab, setCurrentTab }) {
   const { user, handleSignOut, handleSendVerificationEmail } = useUser();
+  const {openModal : confirmSignOut} = useModal()
 
   return (
     <div>
@@ -62,7 +65,14 @@ export function Panel({ isOpen, onClose, currentTab, setCurrentTab }) {
         <div className='mt-auto w-full border-t border-border pt-2'>
           <button
             className='grid w-full grid-cols-[30px_1fr] items-center justify-items-start rounded-md px-3 py-2 text-red-500 hover:bg-background-tertiary'
-            onClick={handleSignOut}
+            onClick={() => confirmSignOut({
+              title : 'Sign Out',
+              message : 'Are you sure you want to sign out?',
+              onConfirm : handleSignOut,
+              showCheckBox : false,
+              confirmText : 'Sign Out',
+              icon : <PiSignOutBold />
+            })}
           >
             <PiSignOut size={22} /> <span className='text-sm font-semibold '>Sign Out</span>
           </button>

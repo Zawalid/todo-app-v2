@@ -14,7 +14,7 @@ export function MenuTasks() {
         <li>
           <Link to='' className={'menu_element group ' + (!currentTab ? 'active' : '')}>
             <IoListOutline className='text-text-tertiary' size={20} />
-            <span className='text-sm text-text-secondary  group-hover:font-bold'>All Tasks</span>
+            <span className='text-sm text-text-secondary  '>All Tasks</span>
             <div className='count'>
               <span className='text-xs font-semibold text-text-secondary'>{tasks.length}</span>
             </div>
@@ -23,7 +23,7 @@ export function MenuTasks() {
         <li>
           <NavLink to='upcoming' className='menu_element group'>
             <IoCalendarOutline className='text-text-tertiary' />
-            <span className='text-sm text-text-secondary  group-hover:font-bold'>Upcoming</span>
+            <span className='text-sm text-text-secondary  '>Upcoming</span>
             <div className='count'>
               <span className='text-xs font-semibold text-text-secondary'>
                 {upcomingTasks.length}
@@ -34,7 +34,7 @@ export function MenuTasks() {
         <li>
           <NavLink to='today' className='menu_element  group'>
             <IoTodayOutline className='text-text-tertiary' />
-            <span className='text-sm text-text-secondary  group-hover:font-bold'>Today</span>
+            <span className='text-sm text-text-secondary  '>Today</span>
             <div className='count'>
               <span className='text-xs font-semibold text-text-secondary'>{todayTasks.length}</span>
             </div>
@@ -43,7 +43,7 @@ export function MenuTasks() {
         <li>
           <NavLink to='sticky-wall' className='menu_element group'>
             <FaRegNoteSticky className='text-text-tertiary' />
-            <span className='text-sm text-text-secondary  group-hover:font-bold'>Sticky Wall</span>
+            <span className='text-sm text-text-secondary  '>Sticky Wall</span>
             <div className='count'>
               <span className='text-xs font-semibold text-text-secondary'>
                 {stickyNotes.length}
