@@ -94,7 +94,7 @@ input[type='checkbox'] {
 }
 
 .full_screen {
-  @apply absolute  z-10 h-full max-h-full  w-full !important;
+  @apply absolute  h-full max-h-full z-[5] w-full !important;
 }
 .setting {
   @apply flex flex-col gap-3 xs:grid xs:grid-cols-[auto_144px] xs:items-center xs:gap-6 sm:gap-10;

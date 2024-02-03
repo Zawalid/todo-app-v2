@@ -26,7 +26,7 @@ export function ListAction({ onDelete, onChangeColor, color, onOpenRenameInput }
         options={{ className: 'w-52', placement: 'bottom', shouldCloseOnClick: false }}
         togglerClassName='w-full'
       >
-        <div className='flex h-20 flex-wrap items-center  gap-2 overflow-hidden'>
+        <div className='flex flex-wrap items-center  gap-2 overflow-hidden'>
           <Colors selectedColor={color} onSelect={(color) => onChangeColor(color)} />
         </div>
       </DropDown.NestedMenu>

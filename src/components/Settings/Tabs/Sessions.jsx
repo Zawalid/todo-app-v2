@@ -105,7 +105,7 @@ export default function Sessions() {
       <h3 className='mt-7 font-bold text-text-secondary'>
         Active Sessions ({sessions.filter((session) => !session.current).length || '-'})
       </h3>
-      <div className='mt-2 space-y-5' ref={parent}>
+      <div className='mt-2 pb-3 space-y-5' ref={parent}>
         {isLoading ? (
           Array.from({ length: 2 }).map((_, i) => <Skeleton key={i} />)
         ) : sessions.length === 1 ? ( // 1 is the current

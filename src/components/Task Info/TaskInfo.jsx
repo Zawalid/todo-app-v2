@@ -241,9 +241,9 @@ export function TaskInfo() {
 
       {!isTouchDevice() && (
         <aside
-          className={` flex flex-col border bg-background-primary  transition-menu duration-500 lg:relative lg:rounded-xl lg:first-line:rounded-xl ${
+          className={` flex flex-col z-10 border bg-background-primary  transition-menu duration-500 lg:relative lg:rounded-xl lg:first-line:rounded-xl ${
             isTaskOpen
-              ? 'fixed right-0 top-0 z-10 h-full w-full items-stretch border-border p-4 shadow-md sm:w-[380px]'
+              ? 'fixed right-0 top-0 h-full w-full items-stretch border-border p-4 shadow-md sm:w-[380px]'
               : 'w-0 items-center overflow-hidden  border-transparent p-0'
           }`}
           id='taskInfo'

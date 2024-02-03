@@ -37,18 +37,9 @@ export default function TipTap() {
 
   function handleUpdateNote(field, value) {
     if (currentNote?.[field] === value) return;
-    handleUpdateStickyNote(
-      $id,
-      {
-        [field]: value,
-      },
-      setIsSaving,
-    );
+    handleUpdateStickyNote($id, { [field]: value }, setIsSaving);
   }
-  const onBack = () => {
-    if (!title) handleUpdateNote('title', 'Untitled');
-    handleBack(currentNote.$id, title, content);
-  };
+  const onBack = () => handleBack(currentNote.$id, title, content);
 
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
 
