@@ -61,7 +61,8 @@ export function Menu() {
         <Settings isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />,
         document.body,
       )}
-      {window.matchMedia('(max-width: 768px)').matches &&
+      {/* {window.matchMedia('(max-width: 768px)').matches && */}
+      {
         createPortal(
           <Trash isOpen={isTrashOpen} onClose={() => setIsTrashOpen(false)} />,
           document.body,

@@ -1,4 +1,3 @@
-import Tippy from '@tippyjs/react';
 import {
   PiGear,
   PiMoonStars,
@@ -10,9 +9,10 @@ import {
 import { IoChevronDownOutline, IoSyncOutline } from 'react-icons/io5';
 import { useDarkMode, useTrash, useUser, useFetchAllElements, useModal } from '../../hooks';
 import { DropDown } from '../Common/DropDown';
-import Trash from '../Main/Trash/Trash';
 
 export function DropDownProfile({ setIsSettingsOpen, setIsTrashOpen }) {
+  const { trashLength } = useTrash();
+
   return (
     <DropDown
       toggler={<Profile />}
@@ -23,8 +23,12 @@ export function DropDownProfile({ setIsSettingsOpen, setIsTrashOpen }) {
         <PiGear className='text-text-tertiary' />
         <span>Settings</span>
       </DropDown.Button>
-      <TrashToggler setIsTrashOpen={setIsTrashOpen} />
 
+      <DropDown.Button onClick={() => setIsTrashOpen((prev) => !prev)}>
+        <PiTrashLight className='text-text-tertiary' />
+        <span className='flex-1'>Trash</span>
+        <span className='text-xs font-semibold text-text-secondary'>{trashLength}</span>
+      </DropDown.Button>
       <DropDown.Divider />
 
       <ThemeToggler />
@@ -56,32 +60,6 @@ function Profile() {
       </div>
       <IoChevronDownOutline className='text-text-secondary' />
     </div>
-  );
-}
-
-function TrashToggler({ setIsTrashOpen }) {
-  const { trashLength } = useTrash();
-
-  return (
-    <Tippy
-      content={<Trash isOpen={true} />}
-      interactive={true}
-      placement='right-end'
-      trigger='click'
-      theme='light'
-      offset={[0, 20]}
-      arrow={false}
-      animation='fade'
-      className='shadow-md'
-    >
-      <div>
-        <DropDown.Button onClick={() => setIsTrashOpen((prev) => !prev)}>
-          <PiTrashLight className='text-text-tertiary' />
-          <span className='flex-1'>Trash</span>
-          <span className='text-xs font-semibold text-text-secondary'>{trashLength}</span>
-        </DropDown.Button>
-      </div>
-    </Tippy>
   );
 }
 
