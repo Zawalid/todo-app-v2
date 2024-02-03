@@ -52,6 +52,7 @@ function Button({
   size = '',
   isCurrent,
   disabled,
+  id,
 }) {
   return (
     <li
@@ -60,6 +61,7 @@ function Button({
       } ${disabled ? 'disabled' : ''}
         `}
       onClick={() => disabled || onClick?.()}
+      id={id}
     >
       {children}
     </li>

@@ -14,7 +14,7 @@ export function SearchInput() {
 
   return (
     <form
-      className='relative mb-5 w-full'
+      className='relative my-5 w-full'
       onSubmit={(e) => {
         e.preventDefault();
         search(query ?? '');

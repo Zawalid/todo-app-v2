@@ -32,7 +32,7 @@ export function AddNewList({ reference, isOpen }) {
   }
 
   return (
-    <div className='w-fit  rounded-lg border border-border p-3' ref={reference}>
+    <div className='w-full rounded-lg border border-border p-3' ref={reference}>
       <div className='flex items-center gap-2 rounded-lg border border-border px-2'>
         <span className='h-5 w-5 rounded-[3px]' style={{ backgroundColor: `var(${color})` }}></span>
         <form

@@ -54,7 +54,6 @@ export default function Sessions() {
   }, []);
 
   async function deleteSession(sessionId) {
-    
     confirmRevoke({
       title: 'Revoke Session',
       message: 'Are you sure you want to revoke this session?',
@@ -71,7 +70,7 @@ export default function Sessions() {
     <Tab
       saveButton={{
         text: 'Revoke All',
-        type : 'delete',
+        type: 'delete',
         onClick: async () => {
           confirmRevoke({
             title: 'Revoke All Sessions',
@@ -105,7 +104,7 @@ export default function Sessions() {
       <h3 className='mt-7 font-bold text-text-secondary'>
         Active Sessions ({sessions.filter((session) => !session.current).length || '-'})
       </h3>
-      <div className='mt-2 pb-3 space-y-5' ref={parent}>
+      <div className='mt-2 space-y-5 pb-3' ref={parent}>
         {isLoading ? (
           Array.from({ length: 2 }).map((_, i) => <Skeleton key={i} />)
         ) : sessions.length === 1 ? ( // 1 is the current
@@ -163,7 +162,8 @@ function Session({ session, onDelete }) {
       </div>
       {current || (
         <Button
-         type='outline-delete'
+          type='outline-delete'
+          size={window.matchMedia(('(max-width : 640px)')).matches ? 'small' : 'default'}
           onClick={() => onDelete(current ? 'current' : $id)}
         >
           Revoke

@@ -8,7 +8,7 @@ export function UserVerificationModal({ isOpen, onClose, onConfirm }) {
   const [password, setPassword] = useState('');
 
   return (
-    <Modal isOpen={isOpen} className='flex w-[90%] flex-col  gap-5 px-5 py-4 sm:w-[500px] sm:px-8'>
+    <Modal isOpen={isOpen} className='flex border w-[90%] flex-col  gap-5 px-5 py-4 sm:w-[500px] sm:px-8'>
       <div className='flex flex-col gap-2'>
         <div className='flex items-center justify-between'>
           <h2 className='text-xl font-bold text-text-primary sm:text-2xl'>

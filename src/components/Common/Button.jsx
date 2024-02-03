@@ -18,7 +18,7 @@ export function Button({
   };
 
   const sizes = {
-    small: 'px-2 py-1 text-xs rounded-md',
+    small: 'px-2 py-1.5 text-xs rounded-md',
     default: 'px-3 py-2 text-sm rounded-lg',
     large: 'px-4 py-3 text-base rounded-xl',
   };

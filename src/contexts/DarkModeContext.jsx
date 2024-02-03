@@ -25,7 +25,7 @@ export default function DarkModeProvider({ children }) {
     setIsDarkMode((isDark) => !isDark);
     setTimeout(() => {
       document.documentElement.classList.remove('color-transition');
-    }, 300);
+    }, 400);
   }
 
   return (
