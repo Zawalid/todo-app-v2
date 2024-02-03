@@ -48,7 +48,7 @@ export function List({ list }) {
   }
   return (
     <>
-      <li className='relative flex items-center gap-1 pr-2 '>
+      <li className='relative flex items-center gap-2 pr-2 '>
         <NavLink to={`lists/${title}`} className='menu_element group flex-1  grid-cols-[30px_auto_35px] '>
           <div
             className='h-5 w-5 rounded-[3px]'

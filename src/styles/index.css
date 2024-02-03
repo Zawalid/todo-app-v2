@@ -115,7 +115,7 @@ body {
   @apply h-[100dvh] overflow-hidden bg-background-primary !important;
 }
 #root {
-  @apply flex h-full bg-background-primary p-2;
+  @apply flex h-full bg-background-primary p-2 lg:gap-2;
 }
 
 /* Scrollbar */

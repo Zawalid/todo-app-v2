@@ -64,6 +64,9 @@
     -o-transition: none !important;
   }
 }
+#menu [data-tippy-root]:first-of-type {
+  width: calc(100% - 32px)
+}
 .tippy-box[data-theme~='light'] {
   @apply rounded-lg bg-background-primary p-0 text-sm text-text-primary shadow-md  !important;
 }

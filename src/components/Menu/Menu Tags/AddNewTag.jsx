@@ -32,7 +32,7 @@ export function AddNewTag({ reference, isOpen }) {
     setValue('');
   }
   return (
-    <div className='mt-5 w-fit rounded-lg border-2 border-border p-3' ref={reference}>
+    <div className='mt-5 w-full rounded-lg border-2 border-border p-3' ref={reference}>
       <div className='flex items-center gap-2 '>
         <div className='flex flex-col gap-1'>
           <span

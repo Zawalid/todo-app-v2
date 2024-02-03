@@ -83,8 +83,8 @@ function PeriodTasks({ title, period, parentRef, isToday }) {
   return (
     <div
       className={
-        'relative  flex max-h-[400px] min-w-full flex-1 flex-col rounded-lg border  border-border bg-background-primary pb-4 sm:min-w-[400px] ' +
-        (isFullScreen ? 'full_screen ' : '') +
+        'relative flex max-h-[400px] min-w-full flex-1 flex-col rounded-lg border  border-border bg-background-primary sm:min-w-[400px] ' +
+        (isFullScreen ? 'full_screen ' : 'pb-4 ') +
         (isToday ? 'w-full basis-auto' : '')
       }
     >
@@ -107,7 +107,7 @@ function PeriodTasks({ title, period, parentRef, isToday }) {
       <AddTask dueDate={period.dueDate} className='mx-4 mb-3' />
       <ul
         className={
-          ' flex-1 space-y-2 overflow-auto overflow-x-hidden  px-4 ' +
+          'flex-1 space-y-2 overflow-auto overflow-x-hidden  px-4 ' +
           (isFullScreen ? '' : 'max-h-[280px]')
         }
         ref={parent}
