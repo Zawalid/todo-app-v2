@@ -86,9 +86,6 @@
   .theme {
     --primary: #6366f1;
     --primary-hover: #4f46e5;
-    --background-primary: #fff;
-    --background-secondary: #f4f4f4;
-    --background-tertiary: #e5e5e5;
   }
 }
 * {
