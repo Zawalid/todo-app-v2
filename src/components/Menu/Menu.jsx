@@ -47,7 +47,7 @@ export function Menu() {
         className={
           'fixed top-0 z-[15] flex h-full w-full flex-col  bg-background-primary transition-menu duration-500  sm:bg-background-secondary lg:relative lg:rounded-xl ' +
           (isOpen
-            ? 'left-0 mr-3 items-stretch p-4 pr-1 sm:w-[320px]'
+            ? 'left-0 mr-4 items-stretch p-4 pr-1 sm:w-[320px]'
             : '-left-full items-center p-0 lg:w-0  ')
         }
         ref={menu}
@@ -55,7 +55,7 @@ export function Menu() {
       >
         {isOpen && (
           <>
-            <div className='grid grid-cols-[auto_20px] items-center pr-3'>
+            <div className='grid grid-cols-[auto_35px] items-center pr-3'>
               <DropDownProfile
                 setIsSettingsOpen={setIsSettingsOpen}
                 setIsTrashOpen={setIsTrashOpen}

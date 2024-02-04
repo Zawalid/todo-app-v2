@@ -86,7 +86,7 @@ export default function Trash({ isOpen, onClose }) {
             }}
           />
           {onClose && (
-            <button className='icon-button not-active small' onClick={onClose}>
+            <button className='icon-button sm:hidden not-active small' onClick={onClose}>
               <i className='fa-solid fa-xmark'></i>
             </button>
           )}

@@ -10,16 +10,13 @@ export function StickyNoteEditor() {
 
   useEffect(() => {
     handleGetStickyNote(noteId);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (!currentNote) return <SpinnerLoader />;
   return (
-    <>
-      <div className=' grid flex-1 overflow-auto bg-background-primary' id='editor'>
-        <div className='relative flex h-full flex-col overflow-hidden rounded-lg'>
-          <TipTap />
-        </div>
-      </div>
-    </>
+    <div className='grid grid-rows-[40px_auto_42px] gap-5 h-[calc(100vh-16px)]'>
+      <TipTap />
+    </div>
   );
 }

@@ -3,6 +3,7 @@ export  function TagsSkeleton() {
     <div className='flex  animate-pulse gap-3'>
       <Tag />
       <Tag />
+      <Tag />
     </div>
   );
 }

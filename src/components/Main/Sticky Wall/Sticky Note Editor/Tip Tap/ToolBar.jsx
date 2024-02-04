@@ -9,7 +9,7 @@ import { useHref } from 'react-router';
 
 export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
   const [keyboardHeight, setKeyboardHeight] = useState(0);
-  const activeTab = useHref()
+  const activeTab = useHref();
 
   useEffect(() => {
     if ('virtualKeyboard' in navigator && isKeyboardOpen) {
@@ -26,10 +26,11 @@ export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
   }, [isKeyboardOpen]);
 
   if (!editor) return null;
+
   return (
     <div
       className={
-        'toolbar w-full gap-3 transition-[inset] duration-300 border-t bg-background-primary border-border pt-2 ' +
+        'toolbar w-full gap-3 border-t border-border bg-background-primary pt-2 transition-[inset] duration-300 ' +
         (isTouchDevice() && activeTab.startsWith('/app/sticky-wall/')
           ? 'fixed left-0 px-3 pb-2 shadow-lg'
           : 'overflow-auto')
@@ -38,7 +39,7 @@ export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
         bottom: `${isKeyboardOpen ? keyboardHeight : 0}px`,
       }}
     >
-      <div className='no_scrollbar flex 2xl:justify-center gap-3 overflow-auto'>
+      <div className='no_scrollbar flex gap-3 overflow-auto 2xl:justify-center'>
         <div className='flex items-center gap-2'>
           <CustomTippy content='Bold'>
             <button
@@ -53,7 +54,9 @@ export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
             <button
               onClick={() => editor.chain().focus().toggleItalic().run()}
               disabled={readonly || !editor.can().chain().focus().toggleItalic().run()}
-              className={editor.isActive('italic') ? 'icon-button active' : 'icon-button not-active'}
+              className={
+                editor.isActive('italic') ? 'icon-button active' : 'icon-button not-active'
+              }
             >
               <i className='fa-solid fa-italic'></i>
             </button>
@@ -62,7 +65,9 @@ export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
             <button
               onClick={() => editor.chain().focus().toggleStrike().run()}
               disabled={readonly || !editor.can().chain().focus().toggleStrike().run()}
-              className={editor.isActive('strike') ? 'icon-button active' : 'icon-button not-active'}
+              className={
+                editor.isActive('strike') ? 'icon-button active' : 'icon-button not-active'
+              }
             >
               <i className='fa-solid fa-strikethrough'></i>
             </button>
@@ -71,7 +76,9 @@ export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
             <button
               onClick={() => editor.chain().focus().toggleUnderline().run()}
               disabled={readonly || !editor.can().chain().focus().toggleUnderline().run()}
-              className={editor.isActive('underline') ? 'icon-button active' : 'icon-button not-active'}
+              className={
+                editor.isActive('underline') ? 'icon-button active' : 'icon-button not-active'
+              }
             >
               <i className='fa-solid fa-underline'></i>
             </button>
@@ -91,7 +98,9 @@ export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
             <button
               onClick={() => editor.chain().focus().toggleSuperscript().run()}
               disabled={readonly || !editor.can().chain().focus().toggleSuperscript().run()}
-              className={editor.isActive('superscript') ? 'icon-button active' : 'icon-button not-active'}
+              className={
+                editor.isActive('superscript') ? 'icon-button active' : 'icon-button not-active'
+              }
             >
               <i className='fa-solid fa-superscript'></i>
             </button>
@@ -100,7 +109,9 @@ export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
             <button
               onClick={() => editor.chain().focus().toggleSubscript().run()}
               disabled={readonly || !editor.can().chain().focus().toggleSubscript().run()}
-              className={editor.isActive('subscript') ? 'icon-button active' : 'icon-button not-active'}
+              className={
+                editor.isActive('subscript') ? 'icon-button active' : 'icon-button not-active'
+              }
             >
               <i className='fa-solid fa-subscript'></i>
             </button>
@@ -127,7 +138,9 @@ export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
                 <i className='fa-solid fa-heading'></i>
               </CustomTippy>
             }
-            togglerClassName={editor.isActive('heading') ? 'icon-button active' : 'icon-button not-active'}
+            togglerClassName={
+              editor.isActive('heading') ? 'icon-button active' : 'icon-button not-active'
+            }
             togglerDisabled={readonly}
           >
             {Array.from({ length: 6 }).map((_, i) => (
@@ -153,7 +166,9 @@ export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
           <CustomTippy content='Paragraph'>
             <button
               onClick={() => editor.chain().focus().setParagraph().run()}
-              className={editor.isActive('paragraph') ? 'icon-button active' : 'icon-button not-active'}
+              className={
+                editor.isActive('paragraph') ? 'icon-button active' : 'icon-button not-active'
+              }
               disabled={readonly}
             >
               <i className='fa-solid fa-paragraph'></i>
@@ -162,7 +177,9 @@ export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
           <CustomTippy content='Bullets'>
             <button
               onClick={() => editor.chain().focus().toggleBulletList().run()}
-              className={editor.isActive('bulletList') ? 'icon-button active' : 'icon-button not-active'}
+              className={
+                editor.isActive('bulletList') ? 'icon-button active' : 'icon-button not-active'
+              }
               disabled={readonly}
             >
               <i className='fa-solid fa-list-ul'></i>
@@ -171,7 +188,9 @@ export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
           <CustomTippy content='Numbered'>
             <button
               onClick={() => editor.chain().focus().toggleOrderedList().run()}
-              className={editor.isActive('orderedList') ? 'icon-button active' : 'icon-button not-active'}
+              className={
+                editor.isActive('orderedList') ? 'icon-button active' : 'icon-button not-active'
+              }
               disabled={readonly}
             >
               <i className='fa-solid fa-list-ol'></i>
@@ -180,7 +199,9 @@ export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
           <CustomTippy content='Task'>
             <button
               onClick={() => editor.chain().focus().toggleTaskList().run()}
-              className={editor.isActive('taskList') ? 'icon-button active' : 'icon-button not-active'}
+              className={
+                editor.isActive('taskList') ? 'icon-button active' : 'icon-button not-active'
+              }
               disabled={readonly}
             >
               <i className='fa-regular fa-check-square'></i>
@@ -189,7 +210,9 @@ export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
           <CustomTippy content='Code Block'>
             <button
               onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-              className={editor.isActive('codeBlock') ? 'icon-button active' : 'icon-button not-active'}
+              className={
+                editor.isActive('codeBlock') ? 'icon-button active' : 'icon-button not-active'
+              }
               disabled={readonly}
             >
               <svg
@@ -213,7 +236,9 @@ export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
           <CustomTippy content='Blockquote'>
             <button
               onClick={() => editor.chain().focus().toggleBlockquote().run()}
-              className={editor.isActive('blockquote') ? 'icon-button active' : 'icon-button not-active'}
+              className={
+                editor.isActive('blockquote') ? 'icon-button active' : 'icon-button not-active'
+              }
               disabled={readonly}
             >
               <i className='fa-solid fa-quote-right'></i>
@@ -246,7 +271,11 @@ export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
           <CustomTippy content='Align Left'>
             <button
               onClick={() => editor.chain().focus().setTextAlign('left').run()}
-              className={editor.isActive({ textAlign: 'left' }) ? 'icon-button active' : 'icon-button not-active'}
+              className={
+                editor.isActive({ textAlign: 'left' })
+                  ? 'icon-button active'
+                  : 'icon-button not-active'
+              }
               disabled={readonly}
             >
               <i className='fa-solid fa-align-left'></i>
@@ -255,7 +284,11 @@ export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
           <CustomTippy content='Align Center'>
             <button
               onClick={() => editor.chain().focus().setTextAlign('center').run()}
-              className={editor.isActive({ textAlign: 'center' }) ? 'icon-button active' : 'icon-button not-active'}
+              className={
+                editor.isActive({ textAlign: 'center' })
+                  ? 'icon-button active'
+                  : 'icon-button not-active'
+              }
               disabled={readonly}
             >
               <i className='fa-solid fa-align-center'></i>
@@ -264,7 +297,11 @@ export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
           <CustomTippy content='Align Right'>
             <button
               onClick={() => editor.chain().focus().setTextAlign('right').run()}
-              className={editor.isActive({ textAlign: 'right' }) ? 'icon-button active' : 'icon-button not-active'}
+              className={
+                editor.isActive({ textAlign: 'right' })
+                  ? 'icon-button active'
+                  : 'icon-button not-active'
+              }
               disabled={readonly}
             >
               <i className='fa-solid fa-align-right'></i>

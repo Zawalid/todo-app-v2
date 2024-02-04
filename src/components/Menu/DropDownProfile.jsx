@@ -16,7 +16,7 @@ export function DropDownProfile({ setIsSettingsOpen, setIsTrashOpen }) {
   return (
     <DropDown
       toggler={<Profile />}
-      togglerClassName='flex items-center justify-between gap-8  pr-3'
+      togglerClassName='flex items-center justify-between gap-8 pr-3'
       options={{ className: 'w-full', shouldCloseOnClick: false }}
     >
       <DropDown.Button onClick={() => setIsSettingsOpen(true)}>
@@ -60,7 +60,7 @@ function Profile() {
   const { user } = useUser();
 
   return (
-    <div className='transition-color flex  flex-1 items-center justify-between gap-3 rounded-md p-2 duration-200 hover:bg-background-tertiary'>
+    <div className='transition-color flex flex-1 items-center justify-between gap-3 rounded-md px-1.5 py-1 duration-200 hover:bg-background-tertiary'>
       <div className='flex items-center gap-3 '>
         <div
           className='h-8 w-8 rounded-full bg-cover'
