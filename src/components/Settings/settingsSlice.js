@@ -7,7 +7,7 @@ const DEFAULT_SETTINGS = {
         taskCompletionSound: true,
         deletionSound: true,
         animation: true,
-        defaultHomeView: 'Inbox',
+        defaultHomeView: 'inbox',
       },
       dateAndTime: {
         dateFormat: 'MM/dd/yyyy',

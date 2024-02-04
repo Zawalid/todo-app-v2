@@ -81,7 +81,7 @@ export function List({ list }) {
         />
         <div
           className={
-            'absolute  left-0 top-full w-[95%]  items-center overflow-hidden rounded-lg bg-background-primary px-3 shadow-[-4px_4px_1px_rgb(0,0,0,0.16)] ' +
+            'absolute  left-0 top-full w-[95%] z-[5] items-center overflow-hidden rounded-lg bg-background-primary px-3 shadow-[-4px_4px_1px_rgb(0,0,0,0.16)] ' +
             (isRenameInputOpen ? 'flex' : 'hidden')
           }
         >

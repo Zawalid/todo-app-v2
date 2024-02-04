@@ -11,6 +11,7 @@ import useDeleteMultiple from '../useDeleteMultiple';
 import { usePagination } from '../usePagination';
 import SelectionIcons from '../../Common/SelectionIcons';
 import { useModal } from '../../../hooks/useModal';
+import { createPortal } from 'react-dom';
 
 const filtersConditions = {
   all: () => true,
@@ -60,44 +61,46 @@ export default function TasksList({ dueDate, listId, tasks, message, isOnlyCompl
     [tasks, filter],
   );
 
+  const actionsProps = {
+    filteredTasks: filteredTasks,
+    isSelecting: isSelecting,
+    setIsSelecting: setIsSelecting,
+    allSelected: selectedTasks.length === filteredTasks.length,
+    selectAll() {
+      setSelectedTasks(
+        filteredTasks.map((task) => {
+          return { $id: task.$id, title: task.title, listId: task.listId };
+        }),
+      );
+    },
+    unSelectAll: () => setSelectedTasks([]),
+    deleteAll() {
+      confirmDelete({
+        message: `Are you sure you want to delete all tasks?`,
+        title: `Delete All Tasks`,
+        onConfirm: (deletePermanently) => {
+          const deletedTasks = tasks.filter((task) => filtersConditions[filter]?.(task));
+          handleDeleteAllTasks(deletedTasks, deletePermanently);
+          setIsSelecting(false);
+        },
+      });
+    },
+    setIsDeleteMultipleModalOpen: setIsDeleteMultipleModalOpen,
+    isOnlyCompletedTasks: isOnlyCompletedTasks,
+  };
+
   return (
     <div
       className='relative flex h-full flex-col gap-3 overflow-hidden  overflow-x-hidden'
       ref={parent}
     >
-      <div className='flex items-center justify-end gap-2'>
-        {isOnlyCompletedTasks || (
-          <AddTask dueDate={dueDate} listId={listId} disabled={isSelecting} className='flex-1 ' />
-        )}
-        <Actions
-          filteredTasks={filteredTasks}
-          isSelecting={isSelecting}
-          setIsSelecting={setIsSelecting}
-          allSelected={selectedTasks.length === filteredTasks.length}
-          selectAll={() => {
-            setSelectedTasks(
-              filteredTasks.map((task) => {
-                return { $id: task.$id, title: task.title, listId: task.listId };
-              }),
-            );
-          }}
-          unSelectAll={() => setSelectedTasks([])}
-          deleteAll={() => {
-            confirmDelete({
-              message: `Are you sure you want to delete all tasks?`,
-              title: `Delete All Tasks`,
-
-              onConfirm: (deletePermanently) => {
-                const deletedTasks = tasks.filter((task) => filtersConditions[filter]?.(task));
-                handleDeleteAllTasks(deletedTasks, deletePermanently);
-                setIsSelecting(false);
-              },
-            });
-          }}
-          setIsDeleteMultipleModalOpen={setIsDeleteMultipleModalOpen}
-          isOnlyCompletedTasks={isOnlyCompletedTasks}
-        />
-      </div>
+      {isOnlyCompletedTasks || (
+        <AddTask dueDate={dueDate} listId={listId} disabled={isSelecting} className='flex-1 ' />
+      )}
+      {createPortal(
+        <Actions {...actionsProps} />,
+        document.querySelector('#title') || document.body,
+      )}
 
       <List
         filteredTasks={filteredTasks}

@@ -8,7 +8,7 @@ export function Tag({ tag, showDeleteButton, customClassName, onDeleteTag, onSel
     <>
       <div
         className={
-          'grid items-center gap-1 overflow-hidden ' +
+          'grid items-center gap-1 overflow-hidden pt-5' +
           (showDeleteButton ? ' grid-cols-[16px_auto]' : '')
         }
       >

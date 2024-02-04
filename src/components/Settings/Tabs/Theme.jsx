@@ -29,7 +29,7 @@ export default function Theme() {
         <div className='setting done block'>
           <h4>Themes</h4>
           <p>Choose a theme for your interface.</p>
-          <div className='mt-4 grid max-h-[325px] grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-3 overflow-auto pr-1'>
+          <div className='mt-4 grid max-h-[360px] grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-3 overflow-auto pr-1'>
             {themes.map((theme) => (
               <ThemeExample
                 key={theme}

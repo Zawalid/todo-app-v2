@@ -9,6 +9,7 @@ import { DropDownProfile } from './DropDownProfile';
 import Settings from '../Settings/Settings';
 import Trash from '../Main/Trash/Trash';
 import { useSelector } from 'react-redux';
+import { BsLayoutSidebarInset, BsLayoutSidebarInsetReverse } from 'react-icons/bs';
 
 export function Menu() {
   const [isOpen, setIsOpen] = useState(window.matchMedia('(min-width: 1024px)').matches);
@@ -24,8 +25,10 @@ export function Menu() {
 
   useEffect(() => {
     const keyboardShortcuts = (e) => {
-      e.altKey &&  e.shiftKey && e.key === 'S' && setIsSettingsOpen(true);
-      e.altKey &&  e.shiftKey && e.key === 'T' && setIsTrashOpen(true);
+      // e.altKey &&  e.shiftKey && e.key === 'S' && setIsSettingsOpen(true);
+      // e.altKey &&  e.shiftKey && e.key === 'T' && setIsTrashOpen(true);
+      e.altKey && e.key === 's' && setIsSettingsOpen(true);
+      e.altKey && e.key === 't' && setIsTrashOpen(true);
       e.key === 'Escape' &&
         (isSettingsOpen
           ? setIsSettingsOpen(false)
@@ -44,7 +47,7 @@ export function Menu() {
         className={
           'fixed top-0 z-[15] flex h-full w-full flex-col  bg-background-primary transition-menu duration-500  sm:bg-background-secondary lg:relative lg:rounded-xl ' +
           (isOpen
-            ? 'left-0 items-stretch p-4 pr-1 sm:w-[320px] '
+            ? 'left-0 mr-3 items-stretch p-4 pr-1 sm:w-[320px]'
             : '-left-full items-center p-0 lg:w-0  ')
         }
         ref={menu}
@@ -58,11 +61,11 @@ export function Menu() {
                 setIsTrashOpen={setIsTrashOpen}
               />
               <button
-                className='icon-button  not-active small'
+                className='icon-button not-active'
                 onClick={() => setIsOpen(false)}
                 id='closeMenu'
               >
-                <i className='fa-solid fa-angles-left cursor-pointer'></i>
+                <BsLayoutSidebarInset />
               </button>
             </div>
 
@@ -85,11 +88,10 @@ export function Menu() {
       )}
       {isOpen ||
         createPortal(
-          <button
-            className='absolute left-1 top-1/2 h-16 w-[6px] -translate-y-1/2 rounded-lg bg-text-tertiary lg:left-1'
-            onClick={() => setIsOpen(true)}
-          ></button>,
-          document.body,
+          <button className='icon-button  not-active' onClick={() => setIsOpen(true)}>
+            <BsLayoutSidebarInsetReverse />
+          </button>,
+          document.querySelector('#title > div') || document.body,
         )}
     </>
   );

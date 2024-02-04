@@ -50,7 +50,7 @@ function Main() {
 
   return (
     <main
-      className='relative flex flex-1 pl-3 flex-col overflow-hidden rounded-xl bg-background-primary'
+      className='relative  grid flex-1 grid-rows-[40px_auto] gap-5 overflow-hidden bg-background-primary'
       ref={parent}
     >
       <Outlet />
