@@ -6,7 +6,7 @@ export default function GroupBy({ groupBy, setGroupBy,options }) {
       toggler={
         <DropDown.Button className='justify-between'>
           <i className='fa-solid fa-layer-group'></i>{' '}
-          <span className='flex-1 text-start'>Group By</span>
+          <span className='text-start'>Group By</span>
           <i className='fa-solid fa-chevron-right'></i>
         </DropDown.Button>
       }

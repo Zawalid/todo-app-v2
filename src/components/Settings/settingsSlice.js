@@ -7,7 +7,7 @@ const DEFAULT_SETTINGS = {
         taskCompletionSound: true,
         deletionSound: true,
         animation: true,
-        defaultHomeView: 'All',
+        defaultHomeView: 'Inbox',
       },
       dateAndTime: {
         dateFormat: 'MM/dd/yyyy',
@@ -31,7 +31,7 @@ const DEFAULT_SETTINGS = {
       autoDarkMode: true,
     },
     sidebar: {
-      showInSideBar: ['all', 'stickyWall', 'today','upcoming'],
+      showInSideBar: ['inbox', 'stickyWall', 'today', 'upcoming', 'lists', 'tags'],
       showCount: true,
     },
   },

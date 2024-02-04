@@ -1,11 +1,11 @@
 import { Routes, Route } from 'react-router-dom';
-import { Toaster, } from 'sonner';
+import { Toaster } from 'sonner';
 import { useDarkMode } from './hooks/';
 import { Suspense, lazy } from 'react';
 import { SpinnerLoader } from './components/Common/SpinnerLoader';
 import './styles/App.css';
 
-import AllTasks from './components/Main/Tasks/AllTasks';
+import Inbox from './components/Main/Tasks/Inbox';
 import TodayTasks from './components/Main/Tasks/TodayTasks';
 import ListTasks from './components/Main/Tasks/ListTasks';
 import Upcoming from './components/Main/Tasks/Upcoming';
@@ -24,10 +24,10 @@ const ForgotPassword = lazy(() => import('./Pages/auth/ForgotPassword'));
 const NotFound = lazy(() => import('./Pages/NotFound'));
 
 const tabs = {
-  All: <AllTasks />,
-  Today: <TodayTasks />,
-  Upcoming: <Upcoming />,
-  'Sticky Wall': <StickyWall />,
+  inbox: <Inbox />,
+  today: <TodayTasks />,
+  upcoming: <Upcoming />,
+  'sticky wall': <StickyWall />,
   completed: <CompletedTasks />,
 };
 
@@ -41,12 +41,10 @@ function App() {
         <Route path='/' element={<HomePage />} />
         <Route path='app' element={<AppLayout />}>
           <Route index element={tabs[defaultHomeView]} />
-          <Route path='all' element={tabs.All} />
-          <Route path='today' element={tabs.Today} />
-          <Route path='upcoming' element={tabs.Upcoming} />
-          <Route path='completed' element={tabs.completed} />
+          {Object.keys(tabs).map((tab) => (
+            <Route key={tab} path={tab.replace(' ', '-')} element={tabs[tab]} />
+          ))}
           <Route path='lists/:listName' element={<ListTasks />} />
-          <Route path='sticky-wall' element={tabs['Sticky Wall']} />
           <Route path='sticky-wall/:noteId' element={<StickyNoteEditor />} />
           <Route path='search/:searchQuery' element={<SearchResults />} />
           <Route path='search' element={<SearchResults />} />

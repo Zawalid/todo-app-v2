@@ -7,6 +7,7 @@ import { PiArrowRight, PiX } from 'react-icons/pi';
 export default function Settings({ isOpen, onClose }) {
   const [currentTab, setCurrentTab] = useState('account');
   const [isPanelOpen, setIsPanelOpen] = useState(false);
+  const [key, setKey] = useState();
 
   return (
     <Modal
@@ -23,7 +24,14 @@ export default function Settings({ isOpen, onClose }) {
           >
             <PiArrowRight className={isPanelOpen ? 'rotate-180' : ''} />
           </button>
-          <button className='icon-button not-active small  text-text-tertiary' onClick={onClose}>
+          <button
+            className='icon-button not-active small  text-text-tertiary'
+            onClick={() => {
+              setCurrentTab('account');
+              setKey(Math.random());
+              onClose();
+            }}
+          >
             <PiX />
           </button>
         </div>
@@ -34,7 +42,8 @@ export default function Settings({ isOpen, onClose }) {
         currentTab={currentTab}
         setCurrentTab={setCurrentTab}
       />
-      <Content currentTab={currentTab} />
+      {/*  key is used to re-render the component */}
+      <Content currentTab={currentTab} key={key} />
     </Modal>
   );
 }

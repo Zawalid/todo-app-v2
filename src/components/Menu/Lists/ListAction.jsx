@@ -19,7 +19,7 @@ export function ListAction({ onDelete, onChangeColor, color, onOpenRenameInput }
         toggler={
           <DropDown.Button>
             <i className='fa-solid fa-palette'></i>
-            <span className='flex-1 text-start'>Change Color</span>
+            <span className='text-start'>Change Color</span>
             <i className='fa-solid fa-chevron-down'></i>
           </DropDown.Button>
         }

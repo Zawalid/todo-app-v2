@@ -3,8 +3,9 @@ import { PiSidebar, PiGear, PiDevices, PiLockKey, PiPalette, PiUserCircle } from
 import { useUser } from '../../hooks';
 import { Overlay } from '../Common/Modal';
 
-export function Panel({ isOpen, onClose, currentTab, setCurrentTab }) {
+export function Panel({ isOpen, onClose, currentTab, setCurrentTab}) {
   const { user, handleSendVerificationEmail } = useUser();
+  
 
   return (
     <>

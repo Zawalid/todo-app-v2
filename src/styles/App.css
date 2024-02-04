@@ -12,6 +12,9 @@
   &.active span {
     @apply font-bold;
   }
+  & svg {
+    @apply text-lg text-text-secondary;
+  }
   & .count {
     @apply grid place-content-center rounded-sm bg-background-tertiary py-[1px] transition-colors duration-200  group-hover:bg-background-primary;
   }
@@ -55,6 +58,9 @@
 .dropDown-button {
   @apply relative flex w-full cursor-pointer items-center  gap-3 overflow-hidden rounded-md bg-background-primary px-3 py-2 font-medium text-text-secondary transition-colors duration-200  hover:bg-background-secondary hover:text-text-primary;
 
+  & :nth-child(2) {
+    @apply flex-1;
+  }
   & svg {
     @apply w-5 text-start text-lg;
   }
@@ -118,6 +124,9 @@ input[type='checkbox'] {
   & > :last-child {
     @apply justify-self-end;
   }
+}
+.shortcut {
+  @apply rounded-md bg-background-secondary px-2  py-0.5 text-[10px];
 }
 
 #themeToggler div {

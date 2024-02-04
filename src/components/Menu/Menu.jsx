@@ -8,11 +8,13 @@ import { SearchInput } from '../Main/Search/SearchInput';
 import { DropDownProfile } from './DropDownProfile';
 import Settings from '../Settings/Settings';
 import Trash from '../Main/Trash/Trash';
+import { useSelector } from 'react-redux';
 
 export function Menu() {
   const [isOpen, setIsOpen] = useState(window.matchMedia('(min-width: 1024px)').matches);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isTrashOpen, setIsTrashOpen] = useState(false);
+  const {showInSideBar} = useSelector((state) => state.settings.sidebar);
   const menu = useRef(null);
   const activeTab = useHref();
 
@@ -20,13 +22,29 @@ export function Menu() {
     setIsOpen(window.matchMedia('(min-width: 1024px)').matches);
   }, [activeTab]);
 
+  useEffect(() => {
+    const keyboardShortcuts = (e) => {
+      e.altKey && e.key === 's' && setIsSettingsOpen(true);
+      e.altKey && e.key === 't' && setIsTrashOpen(true);
+      e.key === 'Escape' &&
+        (isSettingsOpen
+          ? setIsSettingsOpen(false)
+          : isTrashOpen
+          ? setIsTrashOpen(false)
+          : setIsOpen(false));
+    };
+
+    document.addEventListener('keydown', keyboardShortcuts);
+    return () => document.removeEventListener('keydown', keyboardShortcuts);
+  }, [isSettingsOpen, isTrashOpen]);
+
   return (
     <>
       <aside
         className={
           'fixed top-0 z-[15] flex h-full w-full flex-col  bg-background-primary transition-menu duration-500  sm:bg-background-secondary lg:relative lg:rounded-xl ' +
           (isOpen
-            ? 'left-0 items-stretch p-4 pr-1 sm:w-[300px] '
+            ? 'left-0 items-stretch p-4 pr-1 sm:w-[320px] '
             : '-left-full items-center p-0 lg:w-0  ')
         }
         ref={menu}
@@ -51,8 +69,8 @@ export function Menu() {
             <div className='mb-3 overflow-y-auto overflow-x-hidden pr-3'>
               <SearchInput />
               <Tabs />
-              <Lists />
-              <Tags />
+              {showInSideBar.includes('lists') && <Lists />}
+              {showInSideBar.includes('tags') && <Tags />}
             </div>
           </>
         )}

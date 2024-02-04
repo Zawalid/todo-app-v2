@@ -4,16 +4,16 @@ import { TasksSkeleton } from '../../Skeletons';
 import { Title } from '../Title';
 import TasksList from './TasksList';
 
-export default function AllTasks() {
+export default function Inbox() {
   const { tasks, isTasksLoading } = useTasks();
 
   useEffect(() => {
-    document.title = `I Do | All Tasks`;
+    document.title = `I Do | Inbox`;
   }, []);
 
   return (
     <>
-      <Title title='All Tasks' count={tasks.length} />
+      <Title title='Inbox' count={tasks.length} />
       {isTasksLoading ? (
         <TasksSkeleton number={6} />
       ) : (
