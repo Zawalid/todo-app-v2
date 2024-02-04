@@ -63,13 +63,13 @@ export function Preferences({ control, setValue }) {
           <DropDown
             toggler={
               <DropDown.Toggler>
-                <span>{defaultHomeView}</span>
+                <span className='capitalize'>{defaultHomeView}</span>
                 <i className='fa-solid fa-chevron-down text-xs'></i>
               </DropDown.Toggler>
             }
             options={{ className: 'w-48' }}
           >
-            {['all', 'today', 'upcoming', 'sticky wall'].map((tab) => (
+            {['inbox', 'today', 'upcoming', 'completed','sticky wall'].map((tab) => (
               <DropDown.Button
                 key={tab}
                 isCurrent={tab === defaultHomeView}

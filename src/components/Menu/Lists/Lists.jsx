@@ -34,7 +34,7 @@ export function Lists() {
   }, []);
 
   return (
-    <div className='relative min-h-[120px] border-t border-border pb-5'>
+    <div className='relative min-h-[120px] border-t border-border'>
       <div className='mb-4 mt-5 flex items-center gap-3'>
         <span className=' text-lg text-text-tertiary'>{TABS.lists.icon}</span>
         <h4 className='font-medium text-text-secondary'>Lists</h4>
@@ -58,7 +58,7 @@ export function Lists() {
             ref={addNewListToggler}
             onClick={() => {
               setIsAddNewListOpen(!isAddNewListOpen);
-              setTimeout(() => addNewListContainer.current.querySelector('input').focus(), 100);
+              setTimeout(() => addNewListContainer.current?.querySelector('input').focus(), 100);
             }}
           >
             <i className='fas  fa-plus w-10 text-text-tertiary'></i>

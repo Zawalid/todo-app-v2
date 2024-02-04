@@ -3,7 +3,7 @@ import { useTasks, useStickyNotes } from '../../hooks';
 import { useSelector } from 'react-redux';
 import { TABS } from './TabsList';
 
-
+const orderedTabs = ['inbox', 'today', 'upcoming', 'completed', 'stickyWall'];
 
 export function Tabs() {
   const { todayTasks, tasks, upcomingTasks } = useTasks();
@@ -25,10 +25,10 @@ export function Tabs() {
 
   return (
     <ul className='space-y-1 pb-5'>
-      {showInSideBar
-        .filter((t) => t !== 'lists' && t !== 'tags')
+      {orderedTabs
+        .filter((t) => showInSideBar.includes(t))
         .map((t) => {
-          const tab = TABS[t]
+          const tab = TABS[t];
           return (
             <li key={tab.name}>
               <NavLink
@@ -38,12 +38,14 @@ export function Tabs() {
                 }`}
               >
                 {tab.icon}
-                <span className='text-sm text-text-secondary capitalize'>{tab.name.replace('W',' W')}</span>
+                <span className='text-sm capitalize text-text-secondary'>
+                  {tab.name.replace('W', ' W')}
+                </span>
                 {showCount && (
                   <div className='count'>
-                    <span className='text-xs font-semibold text-text-secondary'>{
-                      counts[tab.name]
-                    }</span>
+                    <span className='text-xs font-semibold text-text-secondary'>
+                      {counts[tab.name]}
+                    </span>
                   </div>
                 )}
               </NavLink>

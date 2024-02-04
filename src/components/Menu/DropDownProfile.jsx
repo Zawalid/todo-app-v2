@@ -23,7 +23,8 @@ export function DropDownProfile({ setIsSettingsOpen, setIsTrashOpen }) {
         <PiGear className='text-text-tertiary' />
         <span>Settings</span>
         <code className='shortcut'>
-          <kbd>Alt</kbd> + <kbd>⇧ </kbd> + <kbd>S</kbd>
+          <kbd>Alt</kbd> + <kbd>S</kbd>
+          {/* <kbd>⇧ </kbd> +  */}
         </code>
       </DropDown.Button>
 
@@ -31,7 +32,8 @@ export function DropDownProfile({ setIsSettingsOpen, setIsTrashOpen }) {
         <PiTrashLight className='text-text-tertiary' />
         <span>Trash</span>
         <code className='shortcut'>
-          <kbd>Alt</kbd> + <kbd>⇧ </kbd> + <kbd>T</kbd>
+          <kbd>Alt</kbd> + <kbd>T</kbd>
+          {/* <kbd>⇧ </kbd> +  */}
         </code>
       </DropDown.Button>
       <DropDown.Divider />

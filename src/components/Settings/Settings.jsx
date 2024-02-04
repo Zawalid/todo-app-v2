@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Content } from './Content';
 import { Panel } from './Panel';
 import Modal from '../Common/Modal';
@@ -8,6 +8,12 @@ export default function Settings({ isOpen, onClose }) {
   const [currentTab, setCurrentTab] = useState('account');
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [key, setKey] = useState();
+
+  useEffect(() => {
+    setCurrentTab('account');
+    setKey(Math.random());
+  }
+  , [isOpen]);
 
   return (
     <Modal
@@ -24,14 +30,7 @@ export default function Settings({ isOpen, onClose }) {
           >
             <PiArrowRight className={isPanelOpen ? 'rotate-180' : ''} />
           </button>
-          <button
-            className='icon-button not-active small  text-text-tertiary'
-            onClick={() => {
-              setCurrentTab('account');
-              setKey(Math.random());
-              onClose();
-            }}
-          >
+          <button className='icon-button not-active small  text-text-tertiary' onClick={onClose}>
             <PiX />
           </button>
         </div>

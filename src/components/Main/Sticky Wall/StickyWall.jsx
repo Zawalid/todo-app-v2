@@ -116,6 +116,41 @@ export default function StickyWall() {
       );
   }, [groupBy, setSearchParams]);
 
+  const actionsProps = {
+    view,
+    setView,
+    sortBy,
+    setSortBy: (sortBy) => setParam({ sortBy }),
+    direction,
+    setDirection: (direction) => setParam({ direction }),
+    groupBy,
+    setGroupBy: (groupBy) => setParam({ groupBy }),
+    isCollapsed,
+    setIsCollapsed,
+    // Selection
+    isSelecting,
+    setIsSelecting,
+    selectAll() {
+      setSelectedNotes(stickyNotes.map((n) => ({ $id: n.$id, title: n.title })));
+    },
+    unSelectAll() {
+      setSelectedNotes([]);
+    },
+    allSelected: selectedNotes.length === stickyNotes.length,
+    // Delete
+    deleteAll() {
+      confirmDelete({
+        message: 'Are you sure you want to delete all sticky notes?',
+        title: 'Delete All Sticky Notes',
+        confirmText: 'Delete All',
+        onConfirm: (deletePermanently) => {
+          handleDeleteAllNotes(deletePermanently);
+          setIsSelecting(false);
+        },
+      });
+    },
+  };
+
   return (
     <>
       <Title title='Sticky Wall' count={stickyNotes.length} />
@@ -132,42 +167,7 @@ export default function StickyWall() {
         </div>
       ) : (
         <div className='flex h-full flex-col gap-3 overflow-hidden'>
-          <StickyWallActions
-            {...{
-              view,
-              setView,
-              sortBy,
-              setSortBy: (sortBy) => setParam({ sortBy }),
-              direction,
-              setDirection: (direction) => setParam({ direction }),
-              groupBy,
-              setGroupBy: (groupBy) => setParam({ groupBy }),
-              isCollapsed,
-              setIsCollapsed,
-              // Selection
-              isSelecting,
-              setIsSelecting,
-              selectAll() {
-                setSelectedNotes(stickyNotes.map((n) => ({ $id: n.$id, title: n.title })));
-              },
-              unSelectAll() {
-                setSelectedNotes([]);
-              },
-              allSelected: selectedNotes.length === stickyNotes.length,
-              // Delete
-              deleteAll() {
-                confirmDelete({
-                  message: 'Are you sure you want to delete all sticky notes?',
-                  title: 'Delete All Sticky Notes',
-                  confirmText: 'Delete All',
-                  onConfirm: (deletePermanently) => {
-                    handleDeleteAllNotes(deletePermanently);
-                    setIsSelecting(false);
-                  },
-                });
-              },
-            }}
-          />
+          <StickyWallActions {...actionsProps} />
 
           <div
             className='flex-1 space-y-3 overflow-auto rounded-lg border border-border p-3   pr-3 sm:p-5'
@@ -266,7 +266,7 @@ const groups = {
   },
   'a-z': {
     condition: (note, group) => {
-      const firstLetter  = note.title[0]?.trim().toUpperCase() || 'U'
+      const firstLetter = note.title[0]?.trim().toUpperCase() || 'U';
       return firstLetter === group;
     },
     getSet: (note) => note.title[0]?.trim().toUpperCase(),
