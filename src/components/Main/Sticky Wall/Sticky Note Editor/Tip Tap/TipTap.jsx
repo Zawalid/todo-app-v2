@@ -46,7 +46,7 @@ export default function TipTap() {
     content,
     editorProps: {
       attributes: {
-        class: `focus:outline-none text-text-primary ${isTouchDevice() ? 'pb-10' : ''}`,
+        class: `focus:outline-none p-2 text-text-primary ${isTouchDevice() ? 'pb-10' : ''}`,
       },
     },
     onUpdate: ({ editor }) => onUpdate('content', editor.getHTML()),

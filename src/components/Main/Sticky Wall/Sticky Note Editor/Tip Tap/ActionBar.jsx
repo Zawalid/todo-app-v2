@@ -1,9 +1,14 @@
 import { toast } from 'sonner';
 import CustomTippy from '../../../../Common/CustomTippy';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export function ActionBar({ editor, onBack, onOpenActions }) {
   const [isFullScreen, setIsFullScreen] = useState(document.fullscreenElement);
+
+  useEffect(() => {
+    window.addEventListener('visibilitychange', () => setIsFullScreen(document.fullscreenElement));
+    return () => window.removeEventListener('visibilitychange', () => setIsFullScreen(document.fullscreenElement));
+  }, []);
 
   if (!editor) return null;
   return (
