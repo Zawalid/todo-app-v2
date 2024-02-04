@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react';
 import { BubbleMenu, EditorContent, useEditor } from '@tiptap/react';
 import { extensions } from './editor/extensions';
+import TurndownService from 'turndown';
+import { jsPDF } from 'jspdf';
+
 import { DEFAULT_FONT_FAMILY } from '../../../../../utils/constants';
 import { ToolBar } from './ToolBar';
 import { ActionBar } from './ActionBar';
 import { CustomBubbleMenu } from './editor/CustomBubbleMenu';
-import { copyToClipBoard, exportAs, isTouchDevice } from '../../../../../utils/helpers';
+import { copyToClipBoard, exportDownload, isTouchDevice } from '../../../../../utils/helpers';
 import { useStickyNotes } from '../../../../../hooks';
 import { BackgroundColorPicker } from '../BackgroundColorPicker';
 import { TextColorPicker } from '../TextColorPicker';
@@ -34,18 +37,9 @@ export default function TipTap() {
 
   function handleUpdateNote(field, value) {
     if (currentNote?.[field] === value) return;
-    handleUpdateStickyNote(
-      $id,
-      {
-        [field]: value,
-      },
-      setIsSaving,
-    );
+    handleUpdateStickyNote($id, { [field]: value }, setIsSaving);
   }
-  const onBack = () => {
-    if (!title) handleUpdateNote('title', 'Untitled');
-    handleBack(currentNote.$id, title, content);
-  };
+  const onBack = () => handleBack(currentNote.$id, title, content);
 
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
 
@@ -209,3 +203,66 @@ function NoteInfo({ editor, updateDate, isSaving, title, setTitle }) {
     </div>
   );
 }
+
+const turndownService = new TurndownService();
+
+const exportAs = (format, editor, title) => {
+  const formats = {
+    text: {
+      filename: `${title}.txt`,
+      content: editor.getText(),
+      type: 'text/plain',
+    },
+    html: {
+      filename: `${title}.html`,
+      content: `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${title}</title>
+</head>
+<body>
+  <h1>${title}</h1>
+  ${editor.getHTML()}
+</body>
+</html>
+      `,
+      type: 'text/html',
+    },
+    markdown: {
+      filename: `${title}.md`,
+      content: turndownService.turndown(
+        `<h1>${title}</h1>
+         ---
+        ${editor.getHTML()}`,
+      ),
+      type: 'text/markdown',
+    },
+  };
+
+  if (format === 'pdf') return exportAsPDF(title);
+
+  const { filename, content, type } = formats[format];
+
+  const blob = new Blob([content], { type });
+
+  exportDownload(blob, filename);
+};
+
+const exportAsPDF = (title) => {
+  const content = document.querySelector('.tiptap');
+  content.querySelector('#info').classList.add('hidden');
+  const doc = new jsPDF();
+  doc.html(content, {
+    callback: function (doc) {
+      doc.save(`${title}.pdf`);
+      content.querySelector('#info').classList.remove('hidden');
+    },
+    x: 15,
+    y: 15,
+    width: 170,
+    windowWidth: 650,
+  });
+};

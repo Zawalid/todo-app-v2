@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useTasks } from '../../../hooks';
-import { checkIfToday } from '../../../utils/Moment';
+import { checkIfToday } from '../../../utils/Dates';
 import { TasksSkeleton } from '../../Skeletons';
 import { Title } from '../Title';
 import TasksList from './TasksList';

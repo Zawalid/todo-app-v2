@@ -29,8 +29,12 @@ function SignInForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-        <PasswordInput password={password} setPassword={setPassword} />
-        <Button isLoading={isLoading} text='Sign In' className='w-full' />
+        <PasswordInput value={password} 
+        placeholder='Password'
+        onChange={(e) => setPassword(e.target.value)} />
+        <Button isLoading={isLoading} className='w-full'>
+          Sign In
+        </Button>
         <Link className='self-start text-sm font-semibold text-text-tertiary' to='/forgot-password'>
           Forgot Password?
         </Link>

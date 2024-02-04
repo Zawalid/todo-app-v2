@@ -1,17 +1,17 @@
 import { useFilePicker } from 'use-file-picker';
-
 import {
   FileAmountLimitValidator,
   FileTypeValidator,
   FileSizeValidator,
   ImageDimensionsValidator,
 } from 'use-file-picker/validators';
-import { useUser } from '../../hooks';
 import { toast } from 'sonner';
-import { getInitialsAvatar } from '../../lib/appwrite/api';
+import { getInitialsAvatar } from '../../../../lib/appwrite/api';
+import { Controller, useWatch } from 'react-hook-form';
+import { Button } from '../../../Common/Button';
 
-export function UploadImage({ avatar, onChange }) {
-  const { user } = useUser();
+export function UploadImage({ control, onChange, disabled }) {
+  const [ name, avatar ] = useWatch({ control, name: ['name', 'avatar'] }) || {};
   const { openFilePicker } = useFilePicker({
     accept: ['.png', '.jpg'],
     readAs: 'DataURL',
@@ -37,43 +37,39 @@ export function UploadImage({ avatar, onChange }) {
       });
     },
   });
-
-  const isInitialsAvatar = avatar?.includes('avatars/initials');
+  const isInitialsAvatar = avatar?.src.includes('avatars/initials');
 
   return (
     <div className='flex items-center gap-5'>
       <img
         className='h-20 w-20 rounded-full border border-border text-center text-xs text-text-tertiary '
-        src={avatar ? avatar : user?.avatar}
-        alt={user?.name}
+        src={avatar?.src}
+        alt={name}
       />
       <div>
         <div className='flex flex-wrap gap-x-5 gap-y-2'>
-          <button
-            className='flex-1 rounded-lg border border-border px-3 py-2 text-sm font-medium text-text-primary  hover:border-primary hover:bg-primary hover:text-white'
-            onClick={() => openFilePicker()}
-          >
+          <Button type='outline' className='flex-1' disabled={disabled} onClick={openFilePicker}>
             Upload
-          </button>
-          <button
-            className={
-              'min-w-[105px] flex-1 rounded-lg border border-border px-3 py-2 text-sm font-medium    ' +
-              (isInitialsAvatar
-                ? 'bg-background-disabled text-text-disabled'
-                : 'text-text-primary hover:bg-primary hover:text-white'
-                )
-            }
-            disabled={isInitialsAvatar}
+          </Button>
+          <Button
+            type='outline'
+            className='flex-1'
+            disabled={isInitialsAvatar || disabled}
             onClick={async () => {
-              onChange({ src: await getInitialsAvatar(user?.name), file: null, type: 'initials' });
+              onChange({ src: await getInitialsAvatar(name), file: null, type: 'initials' });
             }}
           >
-            Get Initials
-          </button>
+            Initials
+          </Button>
         </div>
         <p className='mb-1 mt-3 text-xs text-text-tertiary'>At least 100x100 px recommended.</p>
         <p className='text-xs text-text-tertiary'>JPG or PNG are allowed (Max size of 10MB)</p>
       </div>
+      <Controller
+        name='avatar'
+        control={control}
+        render={({ field }) => <input type='hidden' value={field.value || {}} />}
+      />
     </div>
   );
 }

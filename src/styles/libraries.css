@@ -64,6 +64,9 @@
     -o-transition: none !important;
   }
 }
+#menu [data-tippy-root]:first-of-type {
+  width: calc(100% - 32px)
+}
 .tippy-box[data-theme~='light'] {
   @apply rounded-lg bg-background-primary p-0 text-sm text-text-primary shadow-md  !important;
 }
@@ -73,7 +76,7 @@
 }
 
 .tippy-box[data-theme~='custom'] {
-  @apply bg-text-primary font-medium text-background-primary;
+  @apply bg-background-secondary font-medium text-text-tertiary border text-xs border-border rounded-lg !important;
 }
 .tippy-box:is([data-theme~='bubbleMenu'], [data-theme~='custom']) {
   @apply p-2;
@@ -81,16 +84,16 @@
 
 /* Tooltip arrow */
 .tippy-box[data-theme~='custom'][data-placement^='top'] > .tippy-arrow::before {
-  @apply border-t-text-primary;
+  @apply border-t-background-secondary
 }
 .tippy-box[data-theme~='custom'][data-placement^='bottom'] > .tippy-arrow::before {
-  @apply border-b-text-primary;
+  @apply border-b-background-secondary
 }
 .tippy-box[data-theme~='custom'][data-placement^='left'] > .tippy-arrow::before {
-  @apply border-l-text-primary;
+  @apply border-l-background-secondary
 }
 .tippy-box[data-theme~='custom'][data-placement^='right'] > .tippy-arrow::before {
-  @apply border-r-text-primary;
+  @apply border-r-background-secondary
 }
 
 /** Vaul  */
@@ -99,8 +102,4 @@
 }
 [vaul-drawer] {
   transition: transform .5s cubic-bezier(.32,.72,0,1) !important;
-  -webkit-transition: transform .5s cubic-bezier(.32,.72,0,1) !important;
-  -moz-transition: transform .5s cubic-bezier(.32,.72,0,1) !important;
-  -ms-transition: transform .5s cubic-bezier(.32,.72,0,1) !important;
-  -o-transition: transform .5s cubic-bezier(.32,.72,0,1) !important;
 }

@@ -4,8 +4,9 @@ import { Item } from './Item';
 import { useRestoreElement, useLists, useTrash } from '../../../hooks';
 import { toast } from 'sonner';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
-import { useModal } from '../../Common/ConfirmationModal';
+import { useModal } from '../../../hooks/useModal';
 import { Actions } from './Actions';
+import Modal from '../../Common/Modal';
 
 export default function Trash({ isOpen, onClose }) {
   const {
@@ -21,16 +22,15 @@ export default function Trash({ isOpen, onClose }) {
   } = useTrash();
   const { lists } = useLists();
   const { handleRestoreElement } = useRestoreElement();
-  const [parent] = useAutoAnimate({ duration: 300 });
-  const { confirmDelete } = useModal();
+  const { openModal: confirmDelete } = useModal();
 
   const onRestore = async (item) => {
     if (currentTab === 'lists') {
-      // If a list with the same title already exists, don't restore the list
+      // If a list with the same title aldone exists, don't restore the list
       const listTitle = JSON.parse(item).title;
       const isListTitleTaken = lists?.some((list) => list.title === listTitle);
       if (isListTitleTaken) {
-        toast.error('Failed to restore list . A list with the same title already exists.');
+        toast.error('Failed to restore list . A list with the same title aldone exists.');
         return;
       }
     }
@@ -39,10 +39,10 @@ export default function Trash({ isOpen, onClose }) {
   };
 
   return (
-    <div
-      className={`fixed left-0 top-0 z-[9999] flex h-full w-full flex-col gap-5 overflow-auto rounded-lg border border-border bg-background-primary px-5 py-3 shadow-md   md:static md:h-[350px] md:w-[500px]
-    ${isOpen ? 'scale-100' : 'scale-0'}`}
-      ref={parent}
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      className='relative h-full w-full gap-5 overflow-auto px-5 py-3 sm:h-[400px] sm:w-[600px] sm:border'
     >
       <div className='flex items-start justify-between gap-5'>
         <Tabs
@@ -64,7 +64,7 @@ export default function Trash({ isOpen, onClose }) {
                 } permanently ?`,
                 confirmText: 'Delete All',
                 showCheckBox: false,
-                onConfirm: () => {
+                onConfirm: async () => {
                   handleEmptyType(currentTab);
                 },
               });
@@ -75,7 +75,7 @@ export default function Trash({ isOpen, onClose }) {
                 message: 'Are you sure you want to empty trash ?',
                 confirmText: 'Empty',
                 showCheckBox: false,
-                onConfirm: () => {
+                onConfirm: async () => {
                   handleEmptyTrash();
                 },
               });
@@ -104,7 +104,7 @@ export default function Trash({ isOpen, onClose }) {
                 : currentTab.slice(0, currentTab.length - 1)
             } permanently ?`,
             showCheckBox: false,
-            onConfirm: () => {
+            onConfirm: async () => {
               handleDeleteFromTrash(currentTab, JSON.parse(item).id);
             },
           });
@@ -112,7 +112,7 @@ export default function Trash({ isOpen, onClose }) {
         onRestore={onRestore}
       />
       <Info />
-    </div>
+    </Modal>
   );
 }
 

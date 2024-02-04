@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Colors } from '../../Common/Colors';
 import { useTags } from '../../../hooks/useTags';
-import { useColorPicker } from '../../../hooks/useColorPicker';
+import { PiCheckBold } from 'react-icons/pi';
 
 export function AddNewTag({ reference, isOpen }) {
   const { handleAddTag } = useTags();
@@ -9,8 +9,13 @@ export function AddNewTag({ reference, isOpen }) {
   const [bgColor, setBgColor] = useState('--custom-1');
   const [textColor, setTextColor] = useState('#ffffff');
   const inputEl = useRef(null);
-  const bgColorsDiv = useColorPicker((color) => setBgColor(color), bgColor);
-  const textColorsDiv = useColorPicker((color) => setTextColor(color), textColor);
+
+  const color1 = getComputedStyle(document.documentElement)
+    .getPropertyValue('--text-primary')
+    .trim();
+  const color2 = getComputedStyle(document.documentElement)
+    .getPropertyValue('--background-secondary')
+    .trim();
 
   useEffect(() => {
     function handleKeyDown(e) {
@@ -27,21 +32,21 @@ export function AddNewTag({ reference, isOpen }) {
     setValue('');
   }
   return (
-    <div className='mt-5 w-fit rounded-lg border-2 border-border p-3' ref={reference}>
+    <div className='mt-5 w-full rounded-lg border-2 border-border p-3' ref={reference}>
       <div className='flex items-center gap-2 '>
-        <div className='flex flex-col gap-1' ref={textColorsDiv}>
+        <div className='flex flex-col gap-1'>
           <span
             className='color h-4 w-4 cursor-pointer rounded-full bg-text-primary shadow-md'
-            data-color={getComputedStyle(document.documentElement)
-              .getPropertyValue('--text-primary')
-              .trim()}
-          ></span>
+            onClick={() => setTextColor(color1)}
+          >
+            {textColor === color1 && <PiCheckBold size={10} style={{ color: color2 }} />}
+          </span>
           <span
             className='color h-4 w-4 cursor-pointer rounded-full bg-background-primary shadow-md'
-            data-color={getComputedStyle(document.documentElement)
-              .getPropertyValue('--background-primary')
-              .trim()}
-          ></span>
+            onClick={() => setTextColor(color2)}
+          >
+            {textColor === color2 && <PiCheckBold size={10} style={{ color: color1 }} />}
+          </span>
         </div>
         <form
           className='flex-1'
@@ -62,8 +67,8 @@ export function AddNewTag({ reference, isOpen }) {
           />
         </form>
       </div>
-      <div className='mt-3 flex flex-wrap items-center justify-start gap-2' ref={bgColorsDiv}>
-        <Colors />
+      <div className='mt-3 flex flex-wrap items-center justify-start gap-2'>
+        <Colors selectedColor={bgColor} onSelect={(color) => setBgColor(color)} />
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 import { Outlet, Navigate } from 'react-router-dom';
 import { useUser } from '../hooks/useUser';
-import bgImage from '../../assets/bg.png';
+import bgImage from '../assets/bg.png';
 import { Logo } from '../components/Common/Logo';
 
 function AuthLayout() {

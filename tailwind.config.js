@@ -26,14 +26,6 @@ export default {
         'custom-8': 'var(--custom-8)',
         'custom-9': 'var(--custom-9)',
         'custom-10': 'var(--custom-10)',
-        'custom-11': 'var(--custom-11)',
-        'custom-12': 'var(--custom-12)',
-        'custom-13': 'var(--custom-13)',
-        'custom-14': 'var(--custom-14)',
-        'custom-15': 'var(--custom-15)',
-        'custom-16': 'var(--custom-16)',
-        'custom-17': 'var(--custom-17)',
-        'custom-18': 'var(--custom-18)',
       },
       keyframes: {
         scaleUp: {
@@ -49,6 +41,12 @@ export default {
         scaleUp: 'scaleUp 1s linear infinite',
         pulse2: 'pulse2 1s linear infinite',
       },
+      screens: {
+        xs: '380px',
+      },
+      transitionProperty: {
+        menu: 'width, transform, opacity, inset',
+      },
     },
   },
   plugins: [
@@ -56,8 +54,7 @@ export default {
       const newUtilities = {
         '.child-padding': {
           '> *': {
-            paddingInline : '1.25rem',
-            
+            paddingInline: '1.25rem',
           },
           '@media (min-width: 640px)': {
             '> *': {

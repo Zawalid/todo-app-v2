@@ -1,6 +1,8 @@
-export default function Modal({ children, isOpen, className }) {
+export default function Modal({ children, isOpen, onClose, className,overlayClassName }) {
   return (
-    <Overlay isOpen={isOpen}>
+    <Overlay isOpen={isOpen} onClose={onClose}
+    className={overlayClassName}
+    >
       <Content isOpen={isOpen} className={className}>
         {children}
       </Content>
@@ -8,12 +10,17 @@ export default function Modal({ children, isOpen, className }) {
   );
 }
 
-function Overlay({ children, isOpen }) {
+export function Overlay({ children, isOpen, onClose,className='z-30' }) {
   return (
     <div
-      className={`fixed left-0 top-0 z-[99999]  flex h-full w-full items-center justify-center bg-black/25 backdrop-blur-[1px] ${
+      className={`fixed left-0 top-0 transition-[visibility] duration-200 flex h-full w-full items-center justify-center bg-black/25 backdrop-blur-[1px] ${className} ${
         isOpen ? 'visible' : 'invisible'
       } `}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          onClose?.();
+        }
+      }}
     >
       {children}
     </div>
@@ -23,7 +30,7 @@ function Overlay({ children, isOpen }) {
 function Content({ children, isOpen, className }) {
   return (
     <div
-      className={`rounded-lg border border-border bg-background-primary ${className} ${
+      className={`rounded-lg flex flex-col transition-transform duration-300 border-border bg-background-primary ${className} ${
         isOpen ? 'scale-100' : 'scale-0'
       }`}
     >

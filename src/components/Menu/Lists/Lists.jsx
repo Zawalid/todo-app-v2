@@ -4,8 +4,9 @@ import { AddNewList } from './AddNewList';
 import { useLists } from '../../../hooks/useLists';
 import { ListsSkeleton } from '../../Skeletons';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
+import { TABS } from '../TabsList';
 
-export function MenuLists() {
+export function Lists() {
   const { lists, isListsLoading } = useLists();
   const [isAddNewListOpen, setIsAddNewListOpen] = useState(false);
   const [currentOpenedList, setCurrentOpenedList] = useState(null);
@@ -33,8 +34,11 @@ export function MenuLists() {
   }, []);
 
   return (
-    <div className='relative min-h-[120px] border-y border-border pb-5'>
-      <h4 className='mb-4 mt-5  font-medium text-text-secondary'>Lists</h4>
+    <div className='relative min-h-[120px] border-t border-border pb-5'>
+      <div className='mb-4 mt-5 flex items-center gap-3'>
+        <span className=' text-lg text-text-tertiary'>{TABS.lists.icon}</span>
+        <h4 className='font-medium text-text-secondary'>Lists</h4>
+      </div>
       {isListsLoading ? (
         <ListsSkeleton />
       ) : (
@@ -50,7 +54,7 @@ export function MenuLists() {
             ))}
           </ul>
           <button
-            className='my-4 flex cursor-pointer items-center text-sm text-text-secondary'
+            className='my-4 flex w-full cursor-pointer items-center rounded-md py-2 text-sm text-text-secondary transition-colors duration-200 hover:bg-background-tertiary'
             ref={addNewListToggler}
             onClick={() => {
               setIsAddNewListOpen(!isAddNewListOpen);

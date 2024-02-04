@@ -1,16 +1,13 @@
 import { Colors } from '../../Common/Colors';
 import { DropDown } from '../../Common/DropDown';
-import { useColorPicker } from '../../../hooks/useColorPicker';
 
-export function ListAction({ onDelete, onChangeColor, color,onOpenRenameInput }) {
-  const colorsDiv = useColorPicker(onChangeColor,color);
-
+export function ListAction({ onDelete, onChangeColor, color, onOpenRenameInput }) {
   return (
     <DropDown
-      toggler={<i className='fas fa-ellipsis-vertical text-text-tertiary '></i>}
+      toggler={<i className='fas fa-ellipsis-vertical w-  text-text-tertiary '></i>}
       togglerClassName='icon-button not-active small'
       options={{
-        className: 'w-52',
+        className: 'w-72 md:w-60',
       }}
     >
       <DropDown.Button onClick={onOpenRenameInput}>
@@ -22,15 +19,15 @@ export function ListAction({ onDelete, onChangeColor, color,onOpenRenameInput })
         toggler={
           <DropDown.Button>
             <i className='fa-solid fa-palette'></i>
-            <span className='flex-1 text-start'>Change Color</span>
+            <span className='text-start'>Change Color</span>
             <i className='fa-solid fa-chevron-down'></i>
           </DropDown.Button>
         }
-        options={{ className: 'w-52', placement: 'bottom', shouldCloseOnClick: false }}
+        options={{ className: 'w-60 md:w-48',  shouldCloseOnClick: false }}
         togglerClassName='w-full'
       >
-        <div className='flex h-20 flex-wrap items-center  gap-2 overflow-hidden' ref={colorsDiv}>
-          <Colors />
+        <div className='flex flex-wrap items-center gap-2 overflow-hidden'>
+          <Colors selectedColor={color} onSelect={(color) => onChangeColor(color)} />
         </div>
       </DropDown.NestedMenu>
       <DropDown.Button onClick={onDelete} isDeleteButton={true}>

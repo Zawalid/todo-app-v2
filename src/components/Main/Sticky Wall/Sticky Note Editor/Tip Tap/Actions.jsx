@@ -1,7 +1,7 @@
 import Switch from '../../../../Common/Switch';
 import { DropDown } from '../../../../Common/DropDown';
 import { DEFAULT_FONT_FAMILY } from '../../../../../utils/constants';
-import { useModal } from '../../../../Common/ConfirmationModal';
+import { useModal } from '../../../../../hooks/useModal';
 
 export function Actions({
   children,
@@ -12,11 +12,11 @@ export function Actions({
   fontFamily,
   handlers: { onClose, onCopy,onDuplicate, onBack,onDelete, onReadOnly, onPin, onExport, onChangeFontFamily },
 }) {
-  const { confirmDelete } = useModal();
+  const { openModal : confirmDelete  } = useModal();
   return (
     <div
       className={
-        'fixed top-0 z-[10001] flex h-full w-full flex-col border border-border bg-background-primary p-3 shadow-md sm:w-[300px]  ' +
+        'fixed top-0 z-20 transition-[right] duration-500 flex h-full w-full flex-col border border-border bg-background-primary p-3 shadow-md sm:w-[300px]  ' +
         (isOpen ? 'right-0 ' : '-right-full')
       }
     >
@@ -38,7 +38,7 @@ export function Actions({
         <hr className='border border-border' />
 
         <div>
-          <div className='flex items-center justify-between rounded-md px-3 py-2  hover:bg-background-secondary '>
+          <div className='flex items-center justify-between rounded-md px-3 py-2  hover:bg-background-secondary transition-col duration-200 '>
             <label
               className=' grid grid-cols-[15px_auto] items-center gap-2 text-sm font-medium  text-text-secondary'
               htmlFor='pin'
@@ -47,7 +47,7 @@ export function Actions({
             </label>
             <Switch id='pin' checked={pinned} onChange={onPin} />
           </div>
-          <div className='flex items-center justify-between rounded-md px-3 py-2  hover:bg-background-secondary '>
+          <div className='flex items-center justify-between rounded-md px-3 py-2  hover:bg-background-secondary transition-col duration-200 '>
             <label
               className=' grid grid-cols-[15px_auto] items-center gap-2 text-sm font-medium  text-text-secondary'
               htmlFor='readonly'
@@ -72,14 +72,14 @@ export function Actions({
         <hr className='border border-border' />
         <div className='gap- flex flex-col'>
           <button
-            className='grid grid-cols-[15px_auto] items-center gap-2 rounded-md px-3  py-2 text-sm font-medium text-text-secondary  hover:bg-background-secondary hover:text-text-primary'
+            className='grid grid-cols-[15px_auto] items-center gap-2 rounded-md px-3  py-2 text-sm font-medium text-text-secondary  hover:bg-background-secondary transition-col duration-200 hover:text-text-primary'
             onClick={onCopy}
           >
             <i className='fa-solid fa-copy'></i>
             <span className='text-start'>Copy Note</span>
           </button>
           <button
-            className='grid grid-cols-[15px_auto] items-center gap-2 rounded-md px-3  py-2 text-sm font-medium text-text-secondary  hover:bg-background-secondary hover:text-text-primary'
+            className='grid grid-cols-[15px_auto] items-center gap-2 rounded-md px-3  py-2 text-sm font-medium text-text-secondary  hover:bg-background-secondary transition-col duration-200 hover:text-text-primary'
             onClick={onDuplicate}
           >
             <i className='fa-solid fa-clone'></i>
@@ -93,7 +93,7 @@ export function Actions({
                 <span className='text-start'>Export As</span>
               </>
             }
-            togglerClassName='grid grid-cols-[15px_auto] items-center gap-2 text-sm font-medium  text-text-secondary  hover:text-text-primary hover:bg-background-secondary py-2 px-3 rounded-md'
+            togglerClassName='grid grid-cols-[15px_auto] items-center gap-2 text-sm font-medium  text-text-secondary  hover:text-text-primary hover:bg-background-secondary transition-col duration-200 py-2 px-3 rounded-md'
             options={{
               className: 'w-[260px]',
               placement: 'bottom-start',
@@ -117,12 +117,12 @@ export function Actions({
             </DropDown.Button>
           </DropDown>
           <button
-            className='grid grid-cols-[15px_auto] items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-red-500  hover:bg-background-secondary hover:text-red-500'
+            className='grid grid-cols-[15px_auto] items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-red-500  hover:bg-background-secondary transition-col duration-200 hover:text-red-500'
             onClick={() => {
               confirmDelete({
                 message: 'Are you sure you want to delete this sticky note?',
                 title: 'Delete Sticky Note',
-                onConfirm: () => (onDelete(),onBack())
+                onConfirm: async () => (onDelete(),onBack())
               });
             }}
           >
@@ -180,7 +180,7 @@ function FontFamilies({ fontFamily, onChangeFontFamily }) {
           <div className='text-center ' key={name} onClick={() => onChangeFontFamily(name)}>
             <button
               className={
-                'h-16 w-16 rounded-md border p-3 text-lg font-medium  hover:border-primary hover:text-primary sm:h-14 sm:w-14 ' +
+                'h-16 w-16 rounded-md border transition-colors duration-200 p-3 text-lg font-medium  hover:border-primary hover:text-primary sm:h-14 sm:w-14 ' +
                 (fontFamily === name
                   ? 'border-primary text-primary'
                   : 'border-border text-text-secondary')
@@ -189,7 +189,7 @@ function FontFamilies({ fontFamily, onChangeFontFamily }) {
             >
               Ag
             </button>
-            <span className='text-xs  text-text-tertiary'>{label}</span>
+            <span className='text-xs transition-colors duration-200  text-text-tertiary'>{label}</span>
           </div>
         ))}
       </div>

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { NavLink, useHref, useNavigate } from 'react-router-dom';
 import { ListAction } from './ListAction';
 import { useIsTitleTaken, useLists, useTasks } from '../../../hooks';
-import { useModal } from '../../Common/ConfirmationModal';
+import { useModal } from '../../../hooks/useModal';
 
 export function List({ list }) {
   const { $id, title, color } = list;
@@ -11,7 +11,7 @@ export function List({ list }) {
   const [isRenameInputOpen, setIsRenameInputOpen] = useState(false);
   const [isNewTitleTaken, setTitle] = useIsTitleTaken($id, title);
   const [listColor, setListColor] = useState(color);
-  const { confirmDelete } = useModal();
+  const { openModal : confirmDelete  } = useModal();
   const tasksCount = useMemo(
     () => tasks.filter((task) => task.listId === $id).length,
     [tasks, $id],
@@ -48,7 +48,7 @@ export function List({ list }) {
   }
   return (
     <>
-      <li className='relative flex items-center gap-1 pr-2 '>
+      <li className='relative flex items-center gap-2 pr-2 '>
         <NavLink to={`lists/${title}`} className='menu_element group flex-1  grid-cols-[30px_auto_35px] '>
           <div
             className='h-5 w-5 rounded-[3px]'
@@ -56,7 +56,7 @@ export function List({ list }) {
               backgroundColor: `var(${listColor})`,
             }}
           ></div>
-          <span className='truncate  text-sm text-text-secondary outline-none   group-hover:font-bold'>
+          <span className='truncate  text-sm text-text-secondary outline-none   '>
             {title}
           </span>
           <div className='count mx-1'>
@@ -69,7 +69,7 @@ export function List({ list }) {
             confirmDelete({
               title: 'Delete List',
               message: `Are you sure you want to delete this list ?`,
-              onConfirm: () => handleDeleteList($id),
+              onConfirm: async () => handleDeleteList($id),
             })
           }
           onChangeColor={(color) => {
@@ -81,7 +81,7 @@ export function List({ list }) {
         />
         <div
           className={
-            'absolute  left-0 top-full z-10 w-[95%]  items-center overflow-hidden rounded-lg bg-background-primary px-3 shadow-[-4px_4px_1px_rgb(0,0,0,0.16)] ' +
+            'absolute  left-0 top-full w-[95%]  items-center overflow-hidden rounded-lg bg-background-primary px-3 shadow-[-4px_4px_1px_rgb(0,0,0,0.16)] ' +
             (isRenameInputOpen ? 'flex' : 'hidden')
           }
         >

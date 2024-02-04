@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useUser } from '../../hooks';
-import { Button } from '../Common/Button';
+import { useUser } from '../../../hooks';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { Tab } from './Tab';
+import { useModal } from '../../../hooks/useModal';
+import { Button } from '../../Common/Button';
 
 const BROWSERS_IMAGES = [
   {
@@ -35,11 +36,12 @@ const BROWSERS_IMAGES = [
   },
 ];
 
-export function Sessions() {
+export default function Sessions() {
   const [sessions, setSessions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const { handleGetSessions, handleDeleteSession, handleDeleteSessions } = useUser();
   const [parent] = useAutoAnimate({ duration: 300 });
+  const { openModal: confirmRevoke } = useModal();
 
   useEffect(() => {
     async function fetchSessions() {
@@ -48,17 +50,44 @@ export function Sessions() {
       setIsLoading(false);
     }
     fetchSessions();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function deleteSession(sessionId) {
-    await handleDeleteSession(sessionId);
-    setSessions((sessions) => sessions.filter((session) => session.$id !== sessionId));
+    confirmRevoke({
+      title: 'Revoke Session',
+      message: 'Are you sure you want to revoke this session?',
+      onConfirm: async () => {
+        await handleDeleteSession(sessionId);
+        setSessions((sessions) => sessions.filter((session) => session.$id !== sessionId));
+      },
+      showCheckBox: false,
+      confirmText: 'Revoke',
+    });
   }
 
   return (
-    <Tab>
-      <div className='mt-8'>
+    <Tab
+      saveButton={{
+        text: 'Revoke All',
+        type: 'delete',
+        onClick: async () => {
+          confirmRevoke({
+            title: 'Revoke All Sessions',
+            message: 'Are you sure you want to revoke all sessions?',
+            onConfirm: async () => {
+              await handleDeleteSessions();
+              setSessions([]);
+            },
+            showCheckBox: false,
+            confirmText: 'Revoke All',
+          });
+        },
+        disabled: sessions.length === 1 || isLoading,
+        className: 'mr-0 px-3 text-sm',
+      }}
+    >
+      <div>
         <p className='text-sm font-medium text-text-tertiary'>
           This is a list of devices that have logged into your account.
         </p>
@@ -66,7 +95,7 @@ export function Sessions() {
           Revoke any sessions that you do not recognize.
         </p>
       </div>
-      <h3 className='mt-7 pb-3 font-bold text-text-secondary'>This Device</h3>
+      <h3 className='mt-7 pb-2 font-bold text-text-secondary'>This Device</h3>
       {isLoading ? (
         <Skeleton />
       ) : (
@@ -75,12 +104,12 @@ export function Sessions() {
       <h3 className='mt-7 font-bold text-text-secondary'>
         Active Sessions ({sessions.filter((session) => !session.current).length || '-'})
       </h3>
-      <div className='my-3 h-full space-y-5 overflow-auto pb-3 pr-3' ref={parent}>
+      <div className='mt-2 space-y-5 pb-3' ref={parent}>
         {isLoading ? (
           Array.from({ length: 2 }).map((_, i) => <Skeleton key={i} />)
         ) : sessions.length === 1 ? ( // 1 is the current
           <NoSessions />
-        ) : !sessions ? ( 
+        ) : !sessions ? (
           <Error />
         ) : (
           sessions
@@ -90,20 +119,10 @@ export function Sessions() {
             ))
         )}
       </div>
-      <Button
-        text='Revoke All'
-        disabled={sessions.length === 1 || isLoading}
-        onClick={async () => {
-          await handleDeleteSessions(
-            sessions.filter((session) => !session.current).map((session) => session.$id),
-          );
-          setSessions([]);
-        }}
-        className='mr-0 px-3 text-sm'
-      />
     </Tab>
   );
 }
+
 function Session({ session, onDelete }) {
   if (!session) return null;
   const {
@@ -126,7 +145,7 @@ function Session({ session, onDelete }) {
         <img src={browserImage?.image} alt={browserName} />
       </div>
       <div className='flex-1 space-y-1'>
-        <h4 className='text-sm font-semibold text-text-primary sm:text-base'>
+        <h4 className='text-sm font-semibold text-text-secondary sm:text-base'>
           {browserName || 'Unknown Browser'} on{' '}
           {deviceName[0].toUpperCase() + deviceName.slice(1) || 'Unknown Device'}
         </h4>
@@ -142,12 +161,13 @@ function Session({ session, onDelete }) {
         </p>
       </div>
       {current || (
-        <button
-          className='rounded-lg border border-border px-3 py-2 text-sm font-medium text-text-primary hover:border-primary  hover:bg-primary hover:text-white'
+        <Button
+          type='outline-delete'
+          size={window.matchMedia(('(max-width : 640px)')).matches ? 'small' : 'default'}
           onClick={() => onDelete(current ? 'current' : $id)}
         >
           Revoke
-        </button>
+        </Button>
       )}
     </div>
   );
@@ -171,7 +191,7 @@ function Error() {
 
 function Skeleton() {
   return (
-    <div className='flex items-center animate-pulse justify-between gap-4 border-t border-border pt-3'>
+    <div className='flex animate-pulse items-center justify-between gap-4 border-t border-border pt-3'>
       <div className='grid h-12 w-12  place-content-center rounded-lg bg-background-tertiary p-1'>
         <img src='' alt='' />
       </div>

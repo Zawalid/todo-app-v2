@@ -3,14 +3,14 @@ import { AddTask } from './Task Components/AddTask';
 import { Task } from './Task Components/Task';
 import { TasksActions } from './TasksActions/TasksActions';
 import { useEffect, useState } from 'react';
-import { isTaskOverdue } from '../../../utils/Moment';
+import { isTaskOverdue } from '../../../utils/Dates';
 import { useSearchParams } from 'react-router-dom';
 import { useTasks } from '../../../hooks/useTasks';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import useDeleteMultiple from '../useDeleteMultiple';
 import { usePagination } from '../usePagination';
 import SelectionIcons from '../../Common/SelectionIcons';
-import { useModal } from '../../Common/ConfirmationModal';
+import { useModal } from '../../../hooks/useModal';
 
 const filtersConditions = {
   all: () => true,
@@ -22,13 +22,13 @@ const filtersConditions = {
   'low-priority': (task) => task.priority === 1,
 };
 
-export default function TasksList({ dueDate, listId, tasks, message }) {
+export default function TasksList({ dueDate, listId, tasks, message, isOnlyCompletedTasks }) {
   const { handleDeleteAllTasks, handleDeleteMultipleTasks, selectedTasks, setSelectedTasks } =
     useTasks();
   const [filteredTasks, setFilteredTasks] = useState([]);
   const [searchParams] = useSearchParams();
   const { Pagination, currentPage, rowsPerPage } = usePagination(filteredTasks.length);
-  const { confirmDelete } = useModal();
+  const { openModal: confirmDelete } = useModal();
 
   const { isSelecting, setIsSelecting, setIsDeleteMultipleModalOpen, Modal } = useDeleteMultiple({
     selectedItems: selectedTasks,
@@ -65,8 +65,10 @@ export default function TasksList({ dueDate, listId, tasks, message }) {
       className='relative flex h-full flex-col gap-3 overflow-hidden  overflow-x-hidden'
       ref={parent}
     >
-      <div className='flex items-center gap-2'>
-        <AddTask dueDate={dueDate} listId={listId} disabled={isSelecting} className='flex-1 ' />
+      <div className='flex items-center justify-end gap-2'>
+        {isOnlyCompletedTasks || (
+          <AddTask dueDate={dueDate} listId={listId} disabled={isSelecting} className='flex-1 ' />
+        )}
         <Actions
           filteredTasks={filteredTasks}
           isSelecting={isSelecting}
@@ -93,6 +95,7 @@ export default function TasksList({ dueDate, listId, tasks, message }) {
             });
           }}
           setIsDeleteMultipleModalOpen={setIsDeleteMultipleModalOpen}
+          isOnlyCompletedTasks={isOnlyCompletedTasks}
         />
       </div>
 
@@ -109,7 +112,7 @@ export default function TasksList({ dueDate, listId, tasks, message }) {
         display={filteredTasks.length === 0 && tasks.length > 0}
       />
 
-      <NoTasksMessage message={message.noTasks} display={tasks.length === 0} />
+      <NoTasksMessage message={message} display={tasks.length === 0} />
 
       {filteredTasks.length > 0 && Pagination}
 
@@ -129,7 +132,7 @@ function List({ filteredTasks, isSelecting, currentPage, rowsPerPage }) {
   const direction = searchParams.get('direction') || 'asc';
 
   return (
-    <ul className='mt-3 h-full space-y-2 overflow-y-auto overflow-x-hidden pr-3' ref={parent}>
+    <ul className='mt-3 h-full space-y-2 overflow-y-auto overflow-x-hidden' ref={parent}>
       {filteredTasks
         .toSorted((a, b) => {
           if (sortBy === 'cDate') {
@@ -183,6 +186,7 @@ function Actions({
   unSelectAll,
   deleteAll,
   setIsDeleteMultipleModalOpen,
+  isOnlyCompletedTasks,
 }) {
   return (
     <SelectionIcons
@@ -203,6 +207,7 @@ function Actions({
               deleteAll();
               setIsDeleteMultipleModalOpen(false);
             }}
+            isOnlyCompletedTasks={isOnlyCompletedTasks}
           />
         }
         theme='light'
@@ -239,9 +244,12 @@ function NoTasksMessage({ message, display }) {
   return (
     <div className='absolute top-1/2 flex w-full -translate-y-1/2 flex-col items-center justify-center gap-2'>
       <h2 className='text-center text-xl font-semibold text-text-secondary sm:text-2xl'>
-        {message}
+        {message.noTasks}
       </h2>
-      <p className=' font-medium text-text-tertiary'>Add a new task to get started</p>
+
+      <p className=' font-medium text-text-tertiary'>
+        {message.description || 'Add a new task to get started'}
+      </p>
     </div>
   );
 }

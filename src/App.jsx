@@ -5,13 +5,15 @@ import { Suspense, lazy } from 'react';
 import { SpinnerLoader } from './components/Common/SpinnerLoader';
 import './styles/App.css';
 
-import AllTasks from './components/Main/Tasks/AllTasks';
+import Inbox from './components/Main/Tasks/Inbox';
 import TodayTasks from './components/Main/Tasks/TodayTasks';
 import ListTasks from './components/Main/Tasks/ListTasks';
 import Upcoming from './components/Main/Tasks/Upcoming';
 import StickyWall from './components/Main/Sticky Wall/StickyWall';
 import SearchResults from './components/Main/Search/SearchResults';
 import { StickyNoteEditor } from './components/Main/Sticky Wall/Sticky Note Editor/StickyNoteEditor';
+import { useSelector } from 'react-redux';
+import CompletedTasks from './components/Main/Tasks/CompletedTasks';
 
 const HomePage = lazy(() => import('./Pages/HomePage'));
 const AppLayout = lazy(() => import('./Layouts/AppLayout'));
@@ -21,20 +23,28 @@ const SignUpForm = lazy(() => import('./Pages/auth/SignUpForm'));
 const ForgotPassword = lazy(() => import('./Pages/auth/ForgotPassword'));
 const NotFound = lazy(() => import('./Pages/NotFound'));
 
+const tabs = {
+  inbox: <Inbox />,
+  today: <TodayTasks />,
+  upcoming: <Upcoming />,
+  'sticky wall': <StickyWall />,
+  completed: <CompletedTasks />,
+};
+
 function App() {
-  const { isDarkMode } = useDarkMode();
+  const { theme } = useDarkMode();
+  const { defaultHomeView } = useSelector((state) => state.settings.general.preferences);
 
   return (
     <Suspense fallback={<SpinnerLoader />}>
       <Routes>
         <Route path='/' element={<HomePage />} />
         <Route path='app' element={<AppLayout />}>
-          <Route index element={<AllTasks />} />
-          <Route path='all' element={<AllTasks />} />
-          <Route path='today' element={<TodayTasks />} />
-          <Route path='upcoming' element={<Upcoming />} />
+          <Route index element={tabs[defaultHomeView]} />
+          {Object.keys(tabs).map((tab) => (
+            <Route key={tab} path={tab.replace(' ', '-')} element={tabs[tab]} />
+          ))}
           <Route path='lists/:listName' element={<ListTasks />} />
-          <Route path='sticky-wall' element={<StickyWall />} />
           <Route path='sticky-wall/:noteId' element={<StickyNoteEditor />} />
           <Route path='search/:searchQuery' element={<SearchResults />} />
           <Route path='search' element={<SearchResults />} />
@@ -50,7 +60,7 @@ function App() {
 
       <Toaster
         position={window.innerWidth < 768 ? 'bottom-center' : 'bottom-right'}
-        theme={isDarkMode ? 'dark' : 'light'}
+        theme={theme}
         loadingIcon={
           <i className='fa-solid fa-spinner animate-spin text-lg text-text-secondary'></i>
         }

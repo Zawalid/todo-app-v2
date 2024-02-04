@@ -11,7 +11,7 @@ export function StickyNote({ stickyNote, onClick, listView, isSelecting, isSelec
   return (
     <button
       className={
-        'group relative flex w-full flex-col gap-3 overflow-hidden rounded-lg px-5 py-3 shadow-[rgba(3_3_3_0.08)_0px_6px_16px] ' +
+        'group relative flex w-full flex-col transition-[width,height] duration-300 gap-3 overflow-hidden rounded-lg px-5 py-3 shadow-[rgba(3_3_3_0.08)_0px_6px_16px] ' +
         (listView ? 'h-[130px]' : 'h-[270px] ')
       }
       style={{
@@ -23,7 +23,7 @@ export function StickyNote({ stickyNote, onClick, listView, isSelecting, isSelec
       <>
         <div
           className={
-            'grid w-full flex-1 space-y-3   group-hover:scale-[.95] ' +
+            'grid w-full flex-1 space-y-3 transition-transform duration-300  group-hover:scale-[.95] ' +
             (!firstParagraph && !listView
               ? ' place-content-center'
               : 'place-content-start text-start')
@@ -38,7 +38,7 @@ export function StickyNote({ stickyNote, onClick, listView, isSelecting, isSelec
           )}
         </div>
 
-        <div className='flex h-7 w-full items-center justify-between   group-hover:scale-[.95] '>
+        <div className='flex h-7 w-full items-center justify-between transition-transform duration-300  group-hover:scale-[.95] '>
           <span
             className='text-[10px] font-medium sm:text-xs'
             style={{
@@ -52,7 +52,7 @@ export function StickyNote({ stickyNote, onClick, listView, isSelecting, isSelec
           </span>
 
           <span
-            className={'  ' + (isSelecting ? 'scale-1' : 'scale-0')}
+            className={'transition-transform duration-300 ' + (isSelecting ? 'scale-1' : 'scale-0')}
             style={{
               color: textColor,
             }}

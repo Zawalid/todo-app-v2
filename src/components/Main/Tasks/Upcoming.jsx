@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import moment from 'moment';
+import { format, addDays, endOfWeek } from 'date-fns';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { Title } from '../Title';
 import { useTasks } from '../../../hooks';
@@ -12,20 +12,20 @@ const periods = [
     title: 'Today',
     id: 'today',
     tasks: 'todayTasks',
-    dueDate: moment().format('YYYY-MM-DD'),
+    dueDate: format(new Date(), 'yyyy-MM-dd'),
   },
   {
     title: 'Tomorrow',
     id: 'tomorrow',
     tasks: 'tomorrowTasks',
-    dueDate: moment().add(1, 'day').format('YYYY-MM-DD'),
+    dueDate: format(addDays(new Date(), 1), 'yyyy-MM-dd'),
   },
   {
     title: 'This Week',
     id: 'thisWeek',
     tasks: 'thisWeekTasks',
-    dueDate: moment().endOf('week').format('YYYY-MM-DD'),
-  },
+    dueDate: format(endOfWeek(new Date()), 'yyyy-MM-dd'),
+  }
 ];
 export default function Upcoming() {
   const { upcomingTasks, isTasksLoading } = useTasks();
@@ -83,8 +83,8 @@ function PeriodTasks({ title, period, parentRef, isToday }) {
   return (
     <div
       className={
-        'relative  flex max-h-[400px] min-w-full flex-1 flex-col rounded-lg border  border-border bg-background-primary pb-4 sm:min-w-[400px] ' +
-        (isFullScreen ? 'full_screen ' : '') +
+        'relative flex max-h-[400px] min-w-full flex-1 flex-col rounded-lg border  border-border bg-background-primary sm:min-w-[400px] ' +
+        (isFullScreen ? 'full_screen ' : 'pb-4 ') +
         (isToday ? 'w-full basis-auto' : '')
       }
     >
@@ -107,7 +107,7 @@ function PeriodTasks({ title, period, parentRef, isToday }) {
       <AddTask dueDate={period.dueDate} className='mx-4 mb-3' />
       <ul
         className={
-          ' flex-1 space-y-2 overflow-auto overflow-x-hidden  px-4 ' +
+          'flex-1 space-y-2 overflow-auto overflow-x-hidden  px-4 ' +
           (isFullScreen ? '' : 'max-h-[280px]')
         }
         ref={parent}

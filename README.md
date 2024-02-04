@@ -1,4 +1,4 @@
-# Can't decode a name yet (Ido for now) 
+# Haven't decided a name yet (Ido for now) 
 
 Ido is a task management application designed to streamline your productivity and keep you organized. 
 

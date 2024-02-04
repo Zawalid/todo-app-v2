@@ -1,5 +1,7 @@
-export function Colors({ customClass = '' }) {
-  return Array.from({ length: 18 }).map((_, i) => {
+import { PiCheckBold } from 'react-icons/pi';
+
+export function Colors({ selectedColor, onSelect, customClass = '' }) {
+  return Array.from({ length: 10 }).map((_, i) => {
     const color = `--custom-${i + 1}`;
     return (
       <span
@@ -9,7 +11,10 @@ export function Colors({ customClass = '' }) {
           backgroundColor: `var(${color})`,
         }}
         data-color={color}
-      ></span>
+        onClick={() => onSelect?.(color)}
+      >
+        {selectedColor === color && <PiCheckBold size={12} color='white' />}
+      </span>
     );
   });
 }

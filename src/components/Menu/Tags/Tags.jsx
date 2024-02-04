@@ -4,8 +4,9 @@ import { AddNewTag } from './AddNewTag';
 import { useTags } from '../../../hooks/useTags';
 import { TagsSkeleton } from '../../Skeletons';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
+import { TABS } from '../TabsList';
 
-export function MenuTags() {
+export function Tags() {
   const { tags, isTagsLoading } = useTags();
   const [isAddNewTagOpen, setIsAddNewTagOpen] = useState(false);
   const addNewTagContainer = useRef(null);
@@ -31,8 +32,11 @@ export function MenuTags() {
   }, []);
 
   return (
-    <div className='relative pb-5'>
-      <h4 className='mb-4 mt-5 font-medium text-text-secondary'>Tags</h4>
+    <div className='relative border-t border-border'>
+      <div className='mb-4 mt-5 flex items-center gap-3'>
+        <span className=' text-lg text-text-tertiary'>{TABS.tags.icon}</span>
+        <h4 className='font-medium text-text-secondary'>Tags</h4>
+      </div>{' '}
       {isTagsLoading ? (
         <TagsSkeleton />
       ) : (
@@ -42,7 +46,7 @@ export function MenuTags() {
               <Tag key={tag.$id} tag={tag} showDeleteButton={true} />
             ))}
             <li
-              className='menu_tag_element cursor-pointer bg-background-tertiary text-text-secondary'
+              className='menu_tag_element cursor-pointer text-text-secondary transition-colors duration-200 hover:bg-background-tertiary'
               onClick={() => {
                 setIsAddNewTagOpen(!isAddNewTagOpen);
                 setTimeout(() => addNewTagContainer.current.querySelector('input').focus(), 100);

@@ -1,9 +1,9 @@
 import { useTags } from '../../../hooks/useTags';
-import { useModal } from '../../Common/ConfirmationModal';
+import { useModal } from '../../../hooks/useModal';
 
 export function Tag({ tag, showDeleteButton, customClassName, onDeleteTag, onSelectTag }) {
   const { handleDeleteTag } = useTags();
-  const { confirmDelete } = useModal();
+  const { openModal : confirmDelete  } = useModal();
   return (
     <>
       <div
@@ -21,7 +21,7 @@ export function Tag({ tag, showDeleteButton, customClassName, onDeleteTag, onSel
                 : confirmDelete({
                     title: 'Delete Tag',
                     message: `Are you sure you want to delete this tag ?`,
-                    onConfirm: () => handleDeleteTag(tag.$id),
+                    onConfirm: async () => handleDeleteTag(tag.$id),
                   });
             }}
           >

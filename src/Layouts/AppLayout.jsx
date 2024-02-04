@@ -50,7 +50,7 @@ function Main() {
 
   return (
     <main
-      className='relative flex flex-1 flex-col overflow-hidden rounded-xl bg-background-primary pl-2 sm:pl-4 '
+      className='relative flex flex-1 pl-3 flex-col overflow-hidden rounded-xl bg-background-primary'
       ref={parent}
     >
       <Outlet />
