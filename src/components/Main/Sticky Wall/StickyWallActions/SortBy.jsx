@@ -6,7 +6,7 @@ export default function SortBy({ sortBy, setSortBy,options }) {
       toggler={
         <DropDown.Button className='justify-between'>
         <i className='fa-solid fa-arrow-down-wide-short'></i>{' '}
-        <span className='flex-1 text-start'>Sort By</span>
+        <span className='text-start'>Sort By</span>
         <i className='fa-solid fa-chevron-right'></i>
       </DropDown.Button>
       }

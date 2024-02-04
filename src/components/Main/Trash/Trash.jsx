@@ -26,11 +26,11 @@ export default function Trash({ isOpen, onClose }) {
 
   const onRestore = async (item) => {
     if (currentTab === 'lists') {
-      // If a list with the same title already exists, don't restore the list
+      // If a list with the same title aldone exists, don't restore the list
       const listTitle = JSON.parse(item).title;
       const isListTitleTaken = lists?.some((list) => list.title === listTitle);
       if (isListTitleTaken) {
-        toast.error('Failed to restore list . A list with the same title already exists.');
+        toast.error('Failed to restore list . A list with the same title aldone exists.');
         return;
       }
     }

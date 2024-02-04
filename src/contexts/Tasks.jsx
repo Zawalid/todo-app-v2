@@ -100,6 +100,7 @@ export default function TasksProvider({ children }) {
 
   async function handleCompleteTask(id, isCompleted) {
     try {
+      setTasks((tasks) => tasks.map((task) => (task.$id === id ? { ...task, isCompleted } : task)));
       await databases.updateDocument(DATABASE_ID, TASKS_COLLECTION_ID, id, {
         isCompleted,
       });
@@ -167,7 +168,7 @@ export default function TasksProvider({ children }) {
             action: {
               label: 'Try again',
               onClick: () => {
-                handleDeleteAllTasks(deletedTasks,deletePermanently);
+                handleDeleteAllTasks(deletedTasks, deletePermanently);
               },
             },
           });

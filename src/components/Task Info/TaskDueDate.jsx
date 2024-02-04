@@ -63,7 +63,7 @@ export function TaskDueDate({ taskDueDate, setTaskDueDate, inSettings }) {
             isCurrent={taskDueDate === today.toISOString().split('T')[0]}
           >
             <i className='fa-solid fa-calendar  text-text-tertiary'></i>
-            <span className='flex-1 text-start text-text-primary '>Today</span>
+            <span className='text-start text-text-primary '>Today</span>
             <span className='text-text-tertiary'>
               {today.toLocaleDateString(undefined, { weekday: 'short' })}
             </span>
@@ -73,7 +73,7 @@ export function TaskDueDate({ taskDueDate, setTaskDueDate, inSettings }) {
             isCurrent={taskDueDate === tomorrow.toISOString().split('T')[0]}
           >
             <i className='fa-solid fa-calendar  text-text-tertiary'></i>
-            <span className='flex-1 text-start text-text-primary '>Tomorrow</span>
+            <span className='text-start text-text-primary '>Tomorrow</span>
             <span className='text-text-tertiary'>
               {tomorrow.toLocaleDateString(undefined, { weekday: 'short' })}
             </span>{' '}
@@ -83,7 +83,7 @@ export function TaskDueDate({ taskDueDate, setTaskDueDate, inSettings }) {
             toggler={
               <DropDown.Button isCurrent={isPicked && taskDueDate}>
                 <i className='fa-solid fa-calendar  text-text-tertiary'></i>
-                <span className='flex-1 text-start text-text-primary '>
+                <span className='text-start text-text-primary '>
                   {isPicked ? taskDueDate : 'Pick a date'}
                 </span>
                 <i className='fa-solid fa-chevron-down text-text-tertiary  '></i>

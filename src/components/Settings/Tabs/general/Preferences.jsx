@@ -53,7 +53,7 @@ export function Preferences({ control, setValue }) {
             render={({ field }) => <Switch checked={field.value} {...field} />}
           />
         </div>
-        <div className='setting'>
+        <div className='setting done'>
           <div>
             <h4>Default Home View</h4>
             <p className='mt-2 text-xs text-text-secondary'>
@@ -69,13 +69,13 @@ export function Preferences({ control, setValue }) {
             }
             options={{ className: 'w-48' }}
           >
-            {['All', 'Today', 'Upcoming', 'Sticky Wall'].map((tab) => (
+            {['all', 'today', 'upcoming', 'sticky wall'].map((tab) => (
               <DropDown.Button
                 key={tab}
                 isCurrent={tab === defaultHomeView}
                 onClick={() => setValue('preferences.defaultHomeView', tab, { shouldDirty: true })}
               >
-                <span>{tab}</span>
+                <span className='capitalize'>{tab}</span>
               </DropDown.Button>
             ))}
           </DropDown>

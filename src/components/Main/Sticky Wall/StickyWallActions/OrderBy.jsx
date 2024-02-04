@@ -5,7 +5,7 @@ export default function OrderBy({  direction, setDirection, sortBy,options }) {
     <DropDown.NestedMenu
       toggler={ <DropDown.Button className='justify-between'>
       <i className='fa-solid fa-arrow-down-z-a'></i>{' '}
-      <span className='flex-1 text-start'>Order By</span>
+      <span className='text-start'>Order By</span>
       <i className='fa-solid fa-chevron-right'></i>
     </DropDown.Button>}
             options={options}

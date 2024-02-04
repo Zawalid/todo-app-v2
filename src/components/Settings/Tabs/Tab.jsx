@@ -7,6 +7,16 @@ export function Tab({ children, saveButton, cancelButton, control }) {
 
   useEffect(() => {
     const tab = parent.current;
+
+    // Disable all settings that aren't implemented yet
+    tab.querySelectorAll('.setting')?.forEach((setting) => {
+      if (setting.classList.contains('done')) return;
+      setting.classList.add('not-done');
+      [...setting.children].forEach((child) => {
+        child.style.pointerEvents = 'none';
+      });
+    });
+
     setTimeout(() => {
       tab.classList.remove('opacity-0');
     }, 200);
@@ -21,7 +31,11 @@ export function Tab({ children, saveButton, cancelButton, control }) {
     >
       <div className='flex-1 overflow-auto'>{children}</div>
       <div className='flex  justify-end gap-3'>
-        {cancelButton && <Button type='cancel' {...cancelButton} >Cancel</Button>}
+        {cancelButton && (
+          <Button type='cancel' {...cancelButton}>
+            Cancel
+          </Button>
+        )}
         <Button {...saveButton}>{saveButton.text || 'Save Changes'}</Button>
       </div>
 

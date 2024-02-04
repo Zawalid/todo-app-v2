@@ -1,10 +1,9 @@
-import { IoTodayOutline, IoListOutline, IoCalendarOutline } from 'react-icons/io5';
-import { FaRegNoteSticky } from 'react-icons/fa6';
 import { Tab } from './Tab';
 import { CheckBox } from '../../Common/CheckBox';
 import Switch from '../../Common/Switch';
 import { useReactHookForm } from '../useReactHookForm';
 import { Controller, useWatch } from 'react-hook-form';
+import { TABS } from '../../Menu/TabsList';
 
 export default function SideBar() {
   const { control, isUpdated, setValue, onSubmit, onCancel } = useReactHookForm({
@@ -36,7 +35,7 @@ export default function SideBar() {
             render={({ field }) => <input {...field} type='hidden' />}
           />
         </div>
-        <div className='setting'>
+        <div className='done setting'>
           <div>
             <h4>Show count</h4>
             <p>Show the number of tasks in each list.</p>
@@ -53,25 +52,6 @@ export default function SideBar() {
   );
 }
 
-const allTabs = [
-  {
-    name: 'all',
-    icon: <IoListOutline size={20} />,
-  },
-  {
-    name: 'stickyWall',
-    icon: <FaRegNoteSticky />,
-  },
-  {
-    name: 'today',
-    icon: <IoTodayOutline />,
-  },
-  {
-    name: 'upcoming',
-    icon: <IoCalendarOutline />,
-  },
-];
-
 function ShowInSideBar({ control, setValue }) {
   const displayedTabs = useWatch({ control, name: 'showInSideBar' }) || [];
 
@@ -86,7 +66,7 @@ function ShowInSideBar({ control, setValue }) {
 
   return (
     <div className='mt-5 space-y-3'>
-      {allTabs.map((tab) => (
+      {Object.values(TABS).map((tab) => (
         <div key={tab.name} className='flex items-center gap-3 text-text-secondary'>
           <CheckBox
             checked={displayedTabs.includes(tab.name)}
@@ -94,9 +74,7 @@ function ShowInSideBar({ control, setValue }) {
           />
           <div className='grid grid-cols-[25px_auto] items-center'>
             {tab.icon}
-            <span className='capitalize'>{
-              tab.name === 'stickyWall' ? 'Sticky Wall' : tab.name
-            }</span>
+            <span className='capitalize'>{tab.name.replace('W', ' W')}</span>
           </div>
         </div>
       ))}
@@ -111,29 +89,24 @@ function Example({ control }) {
     <div>
       <span className='text-sm font-medium text-text-tertiary'>Example</span>
       <ul className='mt-2 w-[250px] rounded-lg bg-background-secondary p-3'>
-        <li className='grid cursor-pointer grid-cols-[30px_auto_35px] items-center rounded-lg  bg-background-tertiary p-2 '>
-          <IoListOutline className='text-text-tertiary' size={20} />
-          <span className='text-sm text-text-secondary  '>All Tasks</span>
-
-          <div
-            className={`${
-              showCount ? 'scale-100' : 'scale-0'
-            } grid place-content-center rounded-sm bg-background-primary  py-[1px]`}
+        {[TABS.inbox, TABS.today].map((tab) => (
+          <li
+            key={tab.name}
+            className='group grid grid-cols-[30px_auto_35px] items-center rounded-lg p-2 text-text-secondary first:bg-background-tertiary'
           >
-            <span className='text-xs font-semibold text-text-secondary'>5</span>
-          </div>
-        </li>
-        <li className='grid cursor-pointer grid-cols-[30px_auto_35px]  items-center p-2 '>
-          <IoCalendarOutline className='text-text-tertiary' />
-          <span className='text-sm text-text-secondary  '>Upcoming</span>
-          <div
-            className={`${
-              showCount ? 'scale-100' : 'scale-0'
-            } grid place-content-center rounded-sm bg-background-tertiary py-[1px]  group-hover:bg-background-primary`}
-          >
-            <span className='text-xs font-semibold text-text-secondary'>2 </span>
-          </div>
-        </li>
+            {tab.icon}
+            <span className='capitalize'>{tab.name}</span>
+            <div
+              className={`grid place-content-center rounded-sm bg-background-tertiary py-[1px] group-first:bg-background-primary  group-hover:bg-background-primary ${
+                showCount ? 'scale-100' : 'scale-0'
+              }`}
+            >
+              <span className='text-xs font-semibold text-text-secondary'>
+                {tab.name === 'inbox' ? 5 : 3}
+              </span>
+            </div>
+          </li>
+        ))}
       </ul>
     </div>
   );

@@ -3,13 +3,14 @@ import { PiSidebar, PiGear, PiDevices, PiLockKey, PiPalette, PiUserCircle } from
 import { useUser } from '../../hooks';
 import { Overlay } from '../Common/Modal';
 
-export function Panel({ isOpen, onClose, currentTab, setCurrentTab }) {
+export function Panel({ isOpen, onClose, currentTab, setCurrentTab}) {
   const { user, handleSendVerificationEmail } = useUser();
+  
 
   return (
-    <div>
+    <>
       <Overlay isOpen={isOpen} onClose={onClose} />
-      <aside
+      <div
         className={`absolute top-0 z-40 flex h-full w-[200px] flex-col items-start gap-3 border-r border-border bg-background-secondary p-3  shadow-md transition-[left]  duration-500 sm:static sm:pt-[45px] sm:shadow-none ${
           isOpen ? 'left-0' : '-left-full'
         }`}
@@ -50,20 +51,24 @@ export function Panel({ isOpen, onClose, currentTab, setCurrentTab }) {
           currentTab={currentTab}
           setCurrentTab={setCurrentTab}
         />
-
-        <div className='mt-auto w-full border-t border-border pt-2'>
-          {!user?.emailVerification && (
-            <button
-              className='grid w-full grid-cols-[30px_1fr] items-center justify-items-start rounded-md px-3 py-2    hover:bg-background-tertiary'
-              onClick={handleSendVerificationEmail}
-            >
-              <i className='fa-solid fa-user-check text-text-tertiary'></i>
-              <span className='text-sm font-semibold text-text-secondary'>Verify Account</span>
-            </button>
-          )}
+      </div>
+      {!user?.emailVerification && (
+        <div
+          className='absolute left-0 top-0 flex w-full items-center justify-between bg-red-500 px-5 py-2 md:py-3 sm:left-[200px] sm:w-[calc(100%-200px)]
+        '
+        >
+          <p className='text-sm text-white'>
+            Your account is not verified. Please check your email and verify your account.
+          </p>
+          <button
+            className='text-sm text-white underline underline-offset-2 hover:text-gray-200'
+            onClick={handleSendVerificationEmail}
+          >
+            Resend
+          </button>
         </div>
-      </aside>
-    </div>
+      )}
+    </>
   );
 }
 
