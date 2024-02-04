@@ -34,32 +34,76 @@ export default function TipTap() {
   const [readonly, setReadonly] = useState(currentNote?.readonly || false);
   const [pinned, setPinned] = useState(currentNote?.pinned || false);
   const [isSaving, setIsSaving] = useState(false);
-
-  function handleUpdateNote(field, value) {
-    if (currentNote?.[field] === value) return;
-    handleUpdateStickyNote($id, { [field]: value }, setIsSaving);
-  }
-  const onBack = () => handleBack(currentNote.$id, title, content);
-
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+
+  const onUpdate = (field, value) =>
+    currentNote?.[field] !== value && handleUpdateStickyNote($id, { [field]: value }, setIsSaving);
+
+  const onBack = () => handleBack(currentNote.$id, title, content);
 
   const editor = useEditor({
     extensions: extensions,
     content,
     editorProps: {
       attributes: {
-        class: 'focus:outline-none text-text-primary pb-10',
+        class: `focus:outline-none text-text-primary ${isTouchDevice() ? 'pb-10' : ''}`,
       },
     },
-    onUpdate: ({ editor }) => handleUpdateNote('content', editor.getHTML()),
+    onUpdate: ({ editor }) => onUpdate('content', editor.getHTML()),
     onFocus: () => isTouchDevice() && setIsKeyboardOpen(true),
     onBlur: () => isTouchDevice() && setIsKeyboardOpen(false),
   });
 
+  const actionsProps = {
+    currentNote,
+    isOpen: isActionsOpen,
+    readonly,
+    pinned,
+    fontFamily: fontFamily || DEFAULT_FONT_FAMILY,
+    handlers: {
+      onClose: () => setIsActionsOpen(false),
+      onCopy: () =>
+        copyToClipBoard(`
+        Note Title: ${title}
+        ------------------
+
+        Note Content:
+        ${editor?.getText()}
+        `),
+      onDelete(deletePermanently) {
+        $id && handleDeleteStickyNote($id, deletePermanently);
+      },
+      onBack,
+      onReadOnly: () => setReadonly(!readonly),
+      onPin() {
+        setPinned(!pinned);
+        onUpdate('pinned', !pinned);
+      },
+      onDuplicate() {
+        const note = {
+          title: title + ' (copy)',
+          content,
+          bgColor,
+          textColor,
+          fontFamily,
+          pinned,
+          readonly,
+        };
+        handleAddStickyNote(note, true);
+      },
+      onExport: (format) => exportAs(format, editor, title),
+      onChangeFontFamily(fontFamily) {
+        setFontFamily(fontFamily);
+        document.querySelector('.tiptap').style.fontFamily = fontFamily;
+        onUpdate('fontFamily', fontFamily);
+      },
+    },
+  };
+
   useEffect(() => {
     if (!editor) return;
     editor.setEditable(!readonly);
-    handleUpdateNote('readonly', readonly);
+    onUpdate('readonly', readonly);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editor, readonly]);
 
@@ -69,64 +113,15 @@ export default function TipTap() {
   }, [fontFamily]);
 
   return (
-    <div
-      className={
-        'grid h-full ' +
-        (isTouchDevice() ? ' grid-rows-[40px_auto]' : ' grid-rows-[40px_auto_42px]')
-      }
-    >
+    <>
       <ActionBar editor={editor} onBack={onBack} onOpenActions={() => setIsActionsOpen(true)} />
-      <Actions
-        currentNote={currentNote}
-        isOpen={isActionsOpen}
-        readonly={readonly}
-        pinned={pinned}
-        fontFamily={fontFamily || DEFAULT_FONT_FAMILY}
-        handlers={{
-          onClose: () => setIsActionsOpen(false),
-          onCopy: () =>
-            copyToClipBoard(`
-            Note Title: ${title}
-            ------------------
-
-            Note Content:
-            ${editor?.getText()}
-            `),
-          onDelete(deletePermanently) {
-            $id && handleDeleteStickyNote($id, deletePermanently);
-          },
-          onBack,
-          onReadOnly: () => setReadonly(!readonly),
-          onPin() {
-            setPinned(!pinned);
-            handleUpdateNote('pinned', !pinned);
-          },
-          onDuplicate() {
-            const note = {
-              title: title + ' (copy)',
-              content,
-              bgColor,
-              textColor,
-              fontFamily,
-              pinned,
-              readonly,
-            };
-            handleAddStickyNote(note, true);
-          },
-          onExport: (format) => exportAs(format, editor, title),
-          onChangeFontFamily(fontFamily) {
-            setFontFamily(fontFamily);
-            document.querySelector('.tiptap').style.fontFamily = fontFamily;
-            handleUpdateNote('fontFamily', fontFamily);
-          },
-        }}
-      >
+      <Actions {...actionsProps}>
         <div className='space-y-2'>
           <span className='text-sm  font-medium text-text-secondary'>Background Color</span>
           <BackgroundColorPicker
             onChange={(color) => {
               setBgColor(color);
-              handleUpdateNote('bgColor', color);
+              onUpdate('bgColor', color);
             }}
             bgColor={bgColor}
           />
@@ -136,13 +131,13 @@ export default function TipTap() {
           <TextColorPicker
             onChange={(color) => {
               setTextColor(color);
-              handleUpdateNote('textColor', color);
+              onUpdate('textColor', color);
             }}
             textColor={textColor}
           />
         </div>
       </Actions>
-      <div className='tiptap no_scrollbar grid grid-rows-[90px_auto] gap-3 overflow-auto p-3'>
+      <div className='tiptap grid grid-rows-[90px_auto] gap-3 overflow-auto'>
         <NoteInfo
           editor={editor}
           updateDate={$updatedAt}
@@ -150,7 +145,7 @@ export default function TipTap() {
           title={title}
           setTitle={(title) => {
             setTitle(title);
-            handleUpdateNote('title', title);
+            onUpdate('title', title);
           }}
         />
         <EditorContent editor={editor} />
@@ -170,7 +165,7 @@ export default function TipTap() {
           <CustomBubbleMenu editor={editor} />
         </BubbleMenu>
       )}
-    </div>
+    </>
   );
 }
 
@@ -181,7 +176,7 @@ function NoteInfo({ editor, updateDate, isSaving, title, setTitle }) {
       <input
         type='text'
         placeholder='Note Title'
-        className='w-full appearance-none border-none bg-transparent text-4xl font-bold text-text-primary outline-none placeholder:text-text-secondary sm:text-[40px]'
+        className='w-full appearance-none border-none bg-transparent text-4xl font-bold text-text-primary outline-none dark:placeholder:text-[#373737] placeholder:text-[#e1e1e0] sm:text-[40px]'
         value={title}
         onChange={(e) => setTitle(e.target.value)}
       />

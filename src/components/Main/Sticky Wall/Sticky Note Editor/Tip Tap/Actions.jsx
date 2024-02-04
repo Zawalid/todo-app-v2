@@ -177,7 +177,7 @@ function FontFamilies({ fontFamily, onChangeFontFamily }) {
       <span className='text-sm  font-medium text-text-secondary'>Font Family</span>
       <div className='flex gap-3'>
         {families.map(({ name, label }) => (
-          <div className='text-center ' key={name} onClick={() => onChangeFontFamily(name)}>
+          <div className='flex flex-col items-center gap-3' key={name} onClick={() => onChangeFontFamily(name)}>
             <button
               className={
                 'h-16 w-16 rounded-md border transition-colors duration-200 p-3 text-lg font-medium  hover:border-primary hover:text-primary sm:h-14 sm:w-14 ' +

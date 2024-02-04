@@ -13,13 +13,5 @@ export function StickyNoteEditor() {
   }, []);
 
   if (!currentNote) return <SpinnerLoader />;
-  return (
-    <>
-      <div className=' grid flex-1 overflow-auto bg-background-primary' id='editor'>
-        <div className='relative flex h-full flex-col overflow-hidden rounded-lg'>
-          <TipTap />
-        </div>
-      </div>
-    </>
-  );
+  return <TipTap />;
 }

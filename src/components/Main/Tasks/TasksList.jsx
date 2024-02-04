@@ -90,37 +90,39 @@ export default function TasksList({ dueDate, listId, tasks, message, isOnlyCompl
   };
 
   return (
-    <div
-      className='relative flex h-full flex-col gap-3 overflow-hidden  overflow-x-hidden'
-      ref={parent}
-    >
-      {isOnlyCompletedTasks || (
-        <AddTask dueDate={dueDate} listId={listId} disabled={isSelecting} className='flex-1 ' />
-      )}
-      {createPortal(
-        <Actions {...actionsProps} />,
-        document.querySelector('#title') || document.body,
-      )}
-
-      <List
-        filteredTasks={filteredTasks}
-        isSelecting={isSelecting}
-        currentPage={currentPage}
-        rowsPerPage={rowsPerPage}
-      />
-
-      <NoFilteredTasksMessage
-        filter={filter}
-        message={message.noFilterPart}
-        display={filteredTasks.length === 0 && tasks.length > 0}
-      />
-
-      <NoTasksMessage message={message} display={tasks.length === 0} />
-
-      {filteredTasks.length > 0 && Pagination}
-
-      {Modal}
-    </div>
+<>
+      <div
+        className='relative flex h-full flex-col gap-3 overflow-hidden  overflow-x-hidden'
+        ref={parent}
+      >
+        {isOnlyCompletedTasks || (
+          <AddTask dueDate={dueDate} listId={listId} disabled={isSelecting} className='flex-1 ' />
+        )}
+        {createPortal(
+          <Actions {...actionsProps} />,
+          document.querySelector('#title') || document.body,
+        )}
+  
+        <List
+          filteredTasks={filteredTasks}
+          isSelecting={isSelecting}
+          currentPage={currentPage}
+          rowsPerPage={rowsPerPage}
+        />
+  
+        <NoFilteredTasksMessage
+          filter={filter}
+          message={message.noFilterPart}
+          display={filteredTasks.length === 0 && tasks.length > 0}
+        />
+  
+        <NoTasksMessage message={message} display={tasks.length === 0} />
+  
+  
+      </div>
+        {filteredTasks.length > 0 && Pagination}
+        {Modal}
+</>
   );
 }
 
@@ -135,7 +137,7 @@ function List({ filteredTasks, isSelecting, currentPage, rowsPerPage }) {
   const direction = searchParams.get('direction') || 'asc';
 
   return (
-    <ul className='mt-3 h-full space-y-2 overflow-y-auto overflow-x-hidden' ref={parent}>
+    <ul className='h-full space-y-2  overflow-y-auto overflow-x-hidden' ref={parent}>
       {filteredTasks
         .toSorted((a, b) => {
           if (sortBy === 'cDate') {

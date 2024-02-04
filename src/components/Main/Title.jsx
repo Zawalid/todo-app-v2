@@ -1,6 +1,6 @@
 export function Title({ title, count }) {
   return (
-    <div className='flex items-center  justify-between gap-5 overflow-x-auto' id='title'>
+    <div className='flex items-center mb-2 justify-between gap-5 overflow-x-auto' id='title'>
       <div className='flex flex-row-reverse items-center gap-5'>
         <div className='flex items-center gap-5'>
           <h1 className='truncate text-2xl font-bold text-text-primary sm:text-3xl md:text-4xl'>
