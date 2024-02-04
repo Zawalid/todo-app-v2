@@ -14,7 +14,7 @@ export function Menu() {
   const [isOpen, setIsOpen] = useState(window.matchMedia('(min-width: 1024px)').matches);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isTrashOpen, setIsTrashOpen] = useState(false);
-  const {showInSideBar} = useSelector((state) => state.settings.sidebar);
+  const { showInSideBar } = useSelector((state) => state.settings.sidebar);
   const menu = useRef(null);
   const activeTab = useHref();
 
@@ -24,8 +24,8 @@ export function Menu() {
 
   useEffect(() => {
     const keyboardShortcuts = (e) => {
-      e.altKey && e.key === 's' && setIsSettingsOpen(true);
-      e.altKey && e.key === 't' && setIsTrashOpen(true);
+      e.altKey &&  e.shiftKey && e.key === 'S' && setIsSettingsOpen(true);
+      e.altKey &&  e.shiftKey && e.key === 'T' && setIsTrashOpen(true);
       e.key === 'Escape' &&
         (isSettingsOpen
           ? setIsSettingsOpen(false)
