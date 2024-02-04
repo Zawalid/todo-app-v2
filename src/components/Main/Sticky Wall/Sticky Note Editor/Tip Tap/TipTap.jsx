@@ -115,6 +115,34 @@ export default function TipTap() {
   return (
     <>
       <ActionBar editor={editor} onBack={onBack} onOpenActions={() => setIsActionsOpen(true)} />
+      <div className='tiptap grid grid-rows-[90px_auto] gap-1 overflow-auto'>
+        <NoteInfo
+          editor={editor}
+          updateDate={$updatedAt}
+          isSaving={isSaving}
+          title={title}
+          setTitle={(title) => {
+            setTitle(title);
+            onUpdate('title', title);
+          }}
+        />
+        <EditorContent editor={editor} />
+      </div>
+      {<ToolBar editor={editor} isKeyboardOpen={isKeyboardOpen} readonly={readonly} />}
+      {editor && (
+        <BubbleMenu
+          editor={editor}
+          tippyOptions={{
+            duration: 300,
+            theme: 'bubbleMenu',
+            interactive: true,
+            arrow: false,
+          }}
+        >
+          <CustomBubbleMenu editor={editor} />
+        </BubbleMenu>
+      )}
+
       <Actions {...actionsProps}>
         <div className='space-y-2'>
           <span className='text-sm  font-medium text-text-secondary'>Background Color</span>
@@ -137,34 +165,6 @@ export default function TipTap() {
           />
         </div>
       </Actions>
-      <div className='tiptap grid grid-rows-[90px_auto] gap-3 overflow-auto'>
-        <NoteInfo
-          editor={editor}
-          updateDate={$updatedAt}
-          isSaving={isSaving}
-          title={title}
-          setTitle={(title) => {
-            setTitle(title);
-            onUpdate('title', title);
-          }}
-        />
-        <EditorContent editor={editor} />
-      </div>
-      {<ToolBar editor={editor} isKeyboardOpen={isKeyboardOpen} readonly={readonly} />}
-
-      {editor && (
-        <BubbleMenu
-          editor={editor}
-          tippyOptions={{
-            duration: 300,
-            theme: 'bubbleMenu',
-            interactive: true,
-            arrow: false,
-          }}
-        >
-          <CustomBubbleMenu editor={editor} />
-        </BubbleMenu>
-      )}
     </>
   );
 }
@@ -176,7 +176,7 @@ function NoteInfo({ editor, updateDate, isSaving, title, setTitle }) {
       <input
         type='text'
         placeholder='Note Title'
-        className='w-full appearance-none border-none bg-transparent text-4xl font-bold text-text-primary outline-none dark:placeholder:text-[#373737] placeholder:text-[#e1e1e0] sm:text-[40px]'
+        className='w-full appearance-none border-none bg-transparent text-4xl font-bold text-text-primary outline-none placeholder:text-[#e1e1e0] dark:placeholder:text-[#373737] sm:text-[40px]'
         value={title}
         onChange={(e) => setTitle(e.target.value)}
       />
@@ -199,6 +199,8 @@ function NoteInfo({ editor, updateDate, isSaving, title, setTitle }) {
   );
 }
 
+
+// Export
 const turndownService = new TurndownService();
 
 const exportAs = (format, editor, title) => {

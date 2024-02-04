@@ -173,7 +173,7 @@ function TaskCheckbox({ checked, setChecked, isSelecting, isSelected }) {
   return (
     <div className='relative flex h-full'>
       <span
-        className={`absolute top-1/2 flex h-5 w-5 -translate-y-1/2 items-center justify-center rounded-full border   ${
+        className={`absolute top-1/2 flex h-5 w-5 transition-transform duration-500 -translate-y-1/2 items-center justify-center rounded-full border   ${
           isSelecting ? 'scale-1' : 'scale-0'
         } ${isSelected ? 'border-transparent bg-primary' : 'border-border  '}
         `}
@@ -191,7 +191,7 @@ function TaskCheckbox({ checked, setChecked, isSelecting, isSelected }) {
           setChecked(!checked);
           e.target.checked && completedSound.play();
         }}
-        className={'top-1/2 -translate-y-1/2   ' + (isSelecting ? 'scale-0' : 'scale-1')}
+        className={'top-1/2 transition-transform duration-500 -translate-y-1/2   ' + (isSelecting ? 'scale-0' : 'scale-1')}
       />
     </div>
   );
