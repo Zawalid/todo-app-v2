@@ -55,7 +55,7 @@ export function Lists() {
             ))}
           </ul>
           <button
-            className='my-4 flex w-full cursor-pointer items-center rounded-md py-2 text-sm text-text-secondary transition-colors duration-200 hover:bg-background-tertiary'
+            className='my-4 flex gap-4 w-full cursor-pointer items-center rounded-md px-3 py-2 text-sm text-text-secondary transition-colors duration-200 hover:bg-background-tertiary'
             ref={addNewListToggler}
             onClick={() => {
               setIsAddNewListOpen(!isAddNewListOpen);

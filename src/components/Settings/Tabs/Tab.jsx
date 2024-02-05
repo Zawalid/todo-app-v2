@@ -1,8 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Button } from '../../Common/Button';
-import { DevTool } from '@hookform/devtools';
 
-export function Tab({ children, saveButton, cancelButton, control }) {
+export function Tab({ children, saveButton, cancelButton }) {
   const parent = useRef(null);
 
   useEffect(() => {
@@ -39,7 +38,6 @@ export function Tab({ children, saveButton, cancelButton, control }) {
         <Button {...saveButton}>{saveButton.text || 'Save Changes'}</Button>
       </div>
 
-      {control && <DevTool control={control} placement='top-left' />}
     </div>
   );
 }

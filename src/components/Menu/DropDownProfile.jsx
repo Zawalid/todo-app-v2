@@ -10,7 +10,6 @@ import {
 import { IoChevronDownOutline, IoSyncOutline } from 'react-icons/io5';
 import { useDarkMode, useUser, useFetchAllElements, useModal } from '../../hooks';
 import { DropDown } from '../Common/DropDown';
-import { useEffect, useState } from 'react';
 
 export function DropDownProfile({ setIsSettingsOpen, setIsTrashOpen }) {
   return (
@@ -100,32 +99,11 @@ function ThemeToggler() {
 
 function SyncButton() {
   const { handleFetchAllElements, isLoading } = useFetchAllElements();
-  const [lastSync, setLastSync] = useState(0);
-
-  useEffect(() => {
-    if (isLoading) return;
-    const id = setInterval(() => {
-      setLastSync((prev) => +prev + 1);
-    }, 1000);
-
-    return () => clearInterval(id);
-  }, [setLastSync, isLoading]);
-
-  const lastSyncTime =
-    lastSync < 60 ? `${lastSync} seconds ago` : `${Math.floor(lastSync / 60)} minutes ago`;
 
   return (
-    <DropDown.Button
-      onClick={() => {
-        handleFetchAllElements();
-        setLastSync(0);
-      }}
-    >
+    <DropDown.Button onClick={handleFetchAllElements}>
       <IoSyncOutline className={isLoading ? 'animate-spin' : ''} />
       <span>{isLoading ? 'Syncing...' : 'Sync'}</span>
-      <span className='text-[8px]  text-text-tertiary'>
-        {lastSync > 0 ? lastSyncTime : 'Just now'}
-      </span>
     </DropDown.Button>
   );
 }
