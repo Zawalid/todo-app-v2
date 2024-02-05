@@ -1,5 +1,6 @@
+import { useSelector } from 'react-redux';
 import { COLLECTIONS_IDS } from '../utils/constants';
-import { useTasks, useLists, useStickyNotes, useTags, useUser, useLoadElements } from './index';
+import { useTasks, useLists, useStickyNotes, useTags,  useLoadElements } from './index';
 
 //* Im using this hook to fetch the elements from the database and set them in the state once i restore them and the reason i can't use this function in the Trash context is the providers are not mounted yet 
 
@@ -8,8 +9,9 @@ export function useRestoreElement() {
   const { setLists } = useLists();
   const { setStickyNotes } = useStickyNotes();
   const { setTags } = useTags();
-  const { user } = useUser();
   const { handleLoadElements } = useLoadElements();
+  const user = useSelector((state) => state.user.user);
+
 
   const setters = {
     tasks: setTasks,

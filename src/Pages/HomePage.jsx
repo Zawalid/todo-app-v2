@@ -1,18 +1,18 @@
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { useUser } from '../hooks/useUser';
 import { Logo } from '../components/Common/Logo';
 import ResetPassword from './ResetPassword';
 import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 const HomePage = () => {
-  const { checkIsUserAuthenticated } = useUser();
+  const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const isResetPassword = searchParams.get('userId') && searchParams.get('secret');
 
   useEffect(() => {
-    checkIsUserAuthenticated() && navigate('/app');
-  }, [checkIsUserAuthenticated, navigate]);
+    isAuthenticated && navigate('/app');
+  }, [isAuthenticated, navigate]);
 
   return (
     <div className='flex min-h-screen w-full flex-col'>

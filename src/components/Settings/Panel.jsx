@@ -2,9 +2,11 @@ import { cloneElement } from 'react';
 import { PiSidebar, PiGear, PiDevices, PiLockKey, PiPalette, PiUserCircle } from 'react-icons/pi';
 import { useUser } from '../../hooks';
 import { Overlay } from '../Common/Modal';
+import { useSelector } from 'react-redux';
 
 export function Panel({ isOpen, onClose, currentTab, setCurrentTab}) {
-  const { user, handleSendVerificationEmail } = useUser();
+  const { handleSendVerificationEmail } = useUser();
+  const user = useSelector((state) => state.user.user);
   
 
   return (

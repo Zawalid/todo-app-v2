@@ -7,7 +7,6 @@ import { useLists } from './useLists';
 import { useTags } from './useTags';
 import { useStickyNotes } from './useStickyNotes';
 import { useLoadElements } from './useLoadElements';
-import { useUser } from './useUser';
 
 const { tasksCollectionId, listsCollectionId, tagsCollectionId, stickyNotesCollectionId } =
   appWriteConfig;
@@ -18,9 +17,7 @@ export function useFetchAllElements() {
   const { setTags, setIsTagsLoading } = useTags();
   const { setStickyNotes, setIsNotesLoading } = useStickyNotes();
   const { handleLoadElements } = useLoadElements();
-  const { getCurrentUser } = useUser();
   const [isLoading, setIsLoading] = useState(false);
-
   const elements = [
     {
       collectionId: tasksCollectionId,
@@ -45,13 +42,11 @@ export function useFetchAllElements() {
   ];
 
   async function handleFetchAllElements() {
-    const user = await getCurrentUser();
     try {
       setIsLoading(true);
        await Promise.all(
         elements.map(async (element) => {
           await handleLoadElements(
-            user,
             element.collectionId,
             element.setElements,
             element.setIsLoading,
@@ -72,11 +67,11 @@ export function useFetchAllElements() {
     }
   }
 
-  function handleDeleteAllElements() {
+  function handleClearAllElements() {
     elements.forEach((element) => {
       element.setElements([]);
       element.setIsLoading && element.setIsLoading(true);
     });
   }
-  return { handleFetchAllElements, handleDeleteAllElements, isLoading };
+  return { handleFetchAllElements, handleClearAllElements, isLoading };
 }

@@ -3,6 +3,7 @@ import { databases, appWriteConfig, setPermissions } from '../lib/appwrite/confi
 import { ID, Query } from 'appwrite';
 import { toast } from 'sonner';
 import { COLLECTIONS_IDS, TRASH_CLEANUP_INTERVAL } from '../utils/constants';
+import { useSelector } from 'react-redux';
 
 const { databaseId: DATABASE_ID, trashCollectionId: TRASH_COLLECTION_ID } = appWriteConfig;
 
@@ -87,11 +88,11 @@ export default function TrashProvider({ children }) {
     [trash],
   );
   const [currentProcessedItem, setCurrentProcessedItem] = useState(null);
+  const user = useSelector((state) => state.user.user);
 
   // --- Creation ---
   async function createTrash(user) {
     try {
-      // const user = await getCurrentUser();
       const response = await databases.createDocument(
         DATABASE_ID,
         TRASH_COLLECTION_ID,
@@ -294,7 +295,7 @@ export default function TrashProvider({ children }) {
     );
   }
   // get trash from database
-  async function handleGetTrash(user) {
+  async function handleGetTrash() {
     try {
       if (!user) return;
       const response = await databases.listDocuments(DATABASE_ID, TRASH_COLLECTION_ID, [
@@ -339,6 +340,11 @@ export default function TrashProvider({ children }) {
     }
   }
 
+  async function initializeTrash() {
+    await handleGetTrash();
+    lastCleanedUp !== undefined && (await handleCleanUpTrash());
+  }
+
   // update trash in database
   useEffect(() => {
     if (isUpdated) {
@@ -347,10 +353,10 @@ export default function TrashProvider({ children }) {
     }
   }, [trash, isUpdated, $id]);
 
-  async function initializeTrash(user) {
-    await handleGetTrash(user);
-    lastCleanedUp !== undefined && (await handleCleanUpTrash());
-  }
+  useEffect(() => {
+    initializeTrash();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   return (
     <TrashContext.Provider
@@ -360,14 +366,12 @@ export default function TrashProvider({ children }) {
         trashLength,
         setCurrentTab,
         createTrash,
-        initializeTrash,
         handleAddToTrash,
         handleDeleteFromTrash,
         handleEmptyType,
         handleEmptyTrash,
         handleRestoreFromTrash,
         handleRestoreType,
-        handleGetTrash,
       }}
     >
       {children}

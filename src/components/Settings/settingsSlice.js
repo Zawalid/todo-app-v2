@@ -1,39 +1,37 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const DEFAULT_SETTINGS = {
-  settings: {
-    general: {
-      preferences: {
-        taskCompletionSound: true,
-        deletionSound: true,
-        animation: true,
-        defaultHomeView: 'inbox',
-      },
-      dateAndTime: {
-        dateFormat: 'MM/dd/yyyy',
-        timeFormat: 'HH:mm',
-        weekStartsOn: 'Monday',
-      },
-      tasks: {
-        defaultDueDate: '',
-        defaultPriority: 0,
-        weeklyDueDate: 'Sunday',
-        autoDeleteCompletedTasks: false,
-        taskDetailLevel: ['dueDate', 'list', 'priority', 'subtasks', 'tags'],
-      },
-      stickyNotes: {
-        autoSave: true,
-        defaultColor: '--custom-1',
-      },
+  general: {
+    preferences: {
+      taskCompletionSound: true,
+      deletionSound: true,
+      animation: true,
+      defaultHomeView: 'inbox',
     },
-    theme: {
-      primaryTheme: 'indigo',
-      autoDarkMode: true,
+    dateAndTime: {
+      dateFormat: 'MM/dd/yyyy',
+      timeFormat: 'HH:mm',
+      weekStartsOn: 'Monday',
     },
-    sidebar: {
-      showInSideBar: ['inbox', 'stickyWall', 'today', 'upcoming', 'lists', 'tags'],
-      showCount: true,
+    tasks: {
+      defaultDueDate: '',
+      defaultPriority: 0,
+      weeklyDueDate: 'Sunday',
+      autoDeleteCompletedTasks: false,
+      taskDetailLevel: ['dueDate', 'list', 'priority', 'subtasks', 'tags'],
     },
+    stickyNotes: {
+      autoSave: true,
+      defaultColor: '--custom-1',
+    },
+  },
+  theme: {
+    primaryTheme: 'indigo',
+    autoDarkMode: true,
+  },
+  sidebar: {
+    showInSideBar: ['inbox', 'stickyWall', 'today', 'upcoming', 'lists', 'tags'],
+    showCount: true,
   },
 };
 

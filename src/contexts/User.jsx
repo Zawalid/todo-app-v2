@@ -5,6 +5,8 @@ import { ID, Query } from 'appwrite';
 import { toast } from 'sonner';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTrash } from '../hooks';
+import { useDispatch, useSelector } from 'react-redux';
+import { logUserIn, logUserOut, updateUserProfile } from '../app/userSlice';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 const USERS_COLLECTION_ID = appWriteConfig.usersCollectionId;
@@ -12,11 +14,12 @@ const USERS_COLLECTION_ID = appWriteConfig.usersCollectionId;
 export const UserContext = createContext();
 
 export default function UserProvider({ children }) {
-  const [user, setUser] = useState(null);
+  const user = useSelector((state) => state.user.user);
   const [isLoading, setIsLoading] = useState(false);
   const [searchParams] = useSearchParams();
   const { createTrash } = useTrash();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   // ------------- Authentication
 
@@ -25,12 +28,7 @@ export default function UserProvider({ children }) {
       const newAccount = await account.create(ID.unique(), user.email, user.password, user.name);
       const avatarUrl = avatars.getInitials(user.name);
       await handleSaveUserToDb(
-        {
-          email: user.email,
-          name: user.name,
-          avatar: avatarUrl,
-          accountID: newAccount.$id,
-        },
+        { email: user.email, name: user.name, avatar: avatarUrl, accountID: newAccount.$id },
         newAccount.$id,
       );
       await createTrash(user);
@@ -58,7 +56,6 @@ export default function UserProvider({ children }) {
     try {
       setIsLoading(true);
       const newAccount = await handleCreateUserAccount(user);
-      console.log(newAccount);
       if (!newAccount) return;
       await handleSignIn(user.email, user.password);
     } catch (err) {
@@ -73,6 +70,7 @@ export default function UserProvider({ children }) {
       setIsLoading(true);
       const session = await account.createEmailSession(email, password);
       if (!session) throw new Error('Something went wrong');
+      await getCurrentUser();
     } catch (err) {
       toast.error(getErrorMessage(err));
     } finally {
@@ -83,7 +81,7 @@ export default function UserProvider({ children }) {
   async function handleSignOut() {
     try {
       await account.deleteSession('current');
-      setUser(null);
+      dispatch(logUserOut());
     } catch (error) {
       toast.error('Something went wrong. Please try again.');
     }
@@ -91,7 +89,6 @@ export default function UserProvider({ children }) {
 
   async function getCurrentUser() {
     try {
-      if (user) return user;
       const currentAccount = await account.get();
       const res = await databases.listDocuments(DATABASE_ID, USERS_COLLECTION_ID, [
         Query.equal('accountID', currentAccount.$id),
@@ -100,22 +97,15 @@ export default function UserProvider({ children }) {
         ...res.documents[0],
         ...currentAccount,
       };
-      setUser(currentUser);
-      return currentUser;
+      dispatch(logUserIn(currentUser));
     } catch (error) {
       if (error.code === 401) {
         localStorage.removeItem('cookieFallback');
         return navigate('/sign-in');
       }
       toast.error(error.message);
-      setUser(null);
+      dispatch(logUserOut());
     }
-  }
-
-  function checkIsUserAuthenticated() {
-    const cookieFallback = localStorage.getItem('cookieFallback');
-    const isAuthenticated = cookieFallback && cookieFallback !== '[]';
-    return isAuthenticated;
   }
 
   // ------------- Password
@@ -187,13 +177,8 @@ export default function UserProvider({ children }) {
   async function handleUpdateName(name) {
     try {
       await account.updateName(name);
-      setUser((user) => {
-        return {
-          ...user,
-          name,
-        };
-      });
       await handleUpdateUser({ name });
+      dispatch(updateUserProfile({ name }));
     } catch (error) {
       throw new Error(error);
     }
@@ -202,12 +187,7 @@ export default function UserProvider({ children }) {
   async function handleUpdateEmail(email, password) {
     try {
       await account.updateEmail(email, password);
-      setUser((user) => {
-        return {
-          ...user,
-          email,
-        };
-      });
+      dispatch(updateUserProfile({ email }));
       await handleUpdateUser({ email });
     } catch (error) {
       throw new Error(error);
@@ -221,13 +201,7 @@ export default function UserProvider({ children }) {
       if (user.avatarId) await handleDeleteFile(user.avatarId);
       // Update the user
       await handleUpdateUser({ avatar: url, avatarId: id });
-      setUser((user) => {
-        return {
-          ...user,
-          avatar: url,
-          avatarId: id,
-        };
-      });
+      dispatch(updateUserProfile({ avatar: url, avatarId: id }));
     } catch (error) {
       console.log(error);
     }
@@ -238,12 +212,7 @@ export default function UserProvider({ children }) {
       // Delete the old avatar
       if (user.avatarId) await handleDeleteFile(user.avatarId);
       await handleUpdateUser({ avatar: avatarUrl, avatarId: '' });
-      setUser((user) => {
-        return {
-          ...user,
-          avatar: avatarUrl,
-        };
-      });
+      dispatch(updateUserProfile({ avatar: avatarUrl, avatarId: '' }));
     } catch (error) {
       console.log(error);
     }
@@ -306,14 +275,11 @@ export default function UserProvider({ children }) {
 
   async function handleDeleteSessions(sessionsIds) {
     try {
-      toast.promise(
-        Promise.all(sessionsIds.map((sessionId) => account.deleteSession(sessionId))),
-        {
-          loading: 'Deleting sessions...',
-          success: 'Sessions deleted',
-          error: 'Something went wrong. Please try again.',
-        },
-      );
+      toast.promise(Promise.all(sessionsIds.map((sessionId) => account.deleteSession(sessionId))), {
+        loading: 'Deleting sessions...',
+        success: 'Sessions deleted',
+        error: 'Something went wrong. Please try again.',
+      });
     } catch (error) {
       console.log(error);
     }
@@ -332,7 +298,6 @@ export default function UserProvider({ children }) {
   }
 
   async function handleVerifyAccount(userId, secret) {
-    const user = await getCurrentUser();
     if (user.emailVerification) return;
     try {
       toast.promise(account.updateVerification(userId, secret), {
@@ -346,7 +311,7 @@ export default function UserProvider({ children }) {
   }
 
   useEffect(() => {
-    if (!checkIsUserAuthenticated()) return;
+    // if (!checkIsUserAuthenticated()) return;
     // Get the current user
     getCurrentUser();
     // Verify the account
@@ -354,18 +319,15 @@ export default function UserProvider({ children }) {
       handleVerifyAccount(searchParams.get('userId'), searchParams.get('secret'));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [searchParams]);
 
   return (
     <UserContext.Provider
       value={{
-        user,
         isLoading,
-        checkIsUserAuthenticated,
         handleSignUp,
         handleSignIn,
         handleSignOut,
-        getCurrentUser,
         handleUpdateProfile,
         handleUpdatePassword,
         handleGetSessions,
@@ -397,7 +359,7 @@ function getErrorMessage(err) {
     case `The current user has been blocked. You can unblock the user by making a request to the User API's "Update User Status" endpoint or in the Appwrite Console's Auth section.`:
       return 'Invalid email or password. Please try again.';
     case 'User with the requested ID could not be found.':
-      return 'The email you entered is not associated with an account. Please try again.';
+      return 'The email you entkered is not associated with an account. Please try again.';
     case 'Invalid token passed in the request.':
     case 'Invalid `userId` param':
       return 'Invalid link or link expired. Please request a new one.';
