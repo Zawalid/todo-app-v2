@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useTasks } from '../../../../hooks/useTasks';
+import { PiPlusBold } from 'react-icons/pi';
 
 export function AddTask({ dueDate, listId, className, disabled, onAdd }) {
   const [value, setValue] = useState('');
@@ -28,15 +29,15 @@ export function AddTask({ dueDate, listId, className, disabled, onAdd }) {
         disabled ? 'bg-background-disabled ' : 'bg-background-secondary '
       }`}
     >
-      <i
-        className={`fa-solid fa-plus text-xl ${
+      <PiPlusBold
+        className={`text-xl ${
           disabled ? 'text-text-disabled' : 'text-text-tertiary'
         }`}
-      ></i>
+      />
       <form className='w-full' onSubmit={handleSubmit}>
         <input
           type='text'
-          className='w-full  bg-transparent p-2 text-sm text-text-primary  outline-none placeholder:text-text-tertiary disabled:text-text-disabled disabled:placeholder:text-text-disabled '
+          className='w-full  bg-transparent p-2.5 text-sm text-text-primary  outline-none placeholder:text-text-tertiary disabled:text-text-disabled disabled:placeholder:text-text-disabled '
           placeholder='Add New Task'
           name='task'
           value={value}

@@ -8,7 +8,7 @@ import { DEFAULT_FONT_FAMILY } from '../../../../../utils/constants';
 import { ToolBar } from './ToolBar';
 import { ActionBar } from './ActionBar';
 import { CustomBubbleMenu } from './editor/CustomBubbleMenu';
-import { copyToClipBoard, exportDownload, isTouchDevice } from '../../../../../utils/helpers';
+import { copyToClipBoard, exportDownload, isElementEmpty, isTouchDevice } from '../../../../../utils/helpers';
 import { useStickyNotes } from '../../../../../hooks';
 import { BackgroundColorPicker } from '../BackgroundColorPicker';
 import { TextColorPicker } from '../TextColorPicker';
@@ -60,6 +60,7 @@ export default function TipTap() {
     readonly,
     pinned,
     fontFamily: fontFamily || DEFAULT_FONT_FAMILY,
+    disabled : !title && isElementEmpty(content),
     handlers: {
       onClose: () => setIsActionsOpen(false),
       onCopy: () =>
@@ -111,6 +112,10 @@ export default function TipTap() {
     if (!document.querySelector('.tiptap')) return;
     document.querySelector('.tiptap').style.fontFamily = fontFamily || DEFAULT_FONT_FAMILY;
   }, [fontFamily]);
+
+  useEffect(() => {
+    document.title = `I Do | ${title || 'Untitled'}`;
+  }, [title]);
 
   return (
     <>

@@ -1,6 +1,10 @@
 import { useState } from 'react';
 import Drawer from '../../../Common/Drawer';
 import { TaskDates } from './TaskDates';
+import { IoDuplicateOutline, IoCopyOutline } from 'react-icons/io5';
+import { PiCheckBold, PiSignOut, PiTrash } from 'react-icons/pi';
+import { PiX } from 'react-icons/pi';
+import { IoChevronBack } from 'react-icons/io5';
 
 export default function TaskActions({
   isOpen,
@@ -21,26 +25,25 @@ export default function TaskActions({
     <Drawer onClose={onClose} shouldClose={!listSelectionOpen}>
       <div>
         <button className='menu_element w-full justify-items-start' onClick={onCopy}>
-          <i className='fa-solid fa-copy  text-lg text-text-secondary'></i>
-          <span className='font-semibold text-text-primary'>Copy to clipboard</span>
+          <IoCopyOutline />
+          <span className='font-semibold text-text-secondary'>Copy to clipboard</span>
         </button>
         <button className='menu_element w-full justify-items-start' onClick={onDuplicate}>
-          <i className='fa-solid fa-clone  text-lg text-text-secondary'></i>
-          <span className='font-semibold text-text-primary'>Duplicate Task</span>
+          <IoDuplicateOutline />
+          <span className='font-semibold text-text-secondary'>Duplicate Task</span>
         </button>
         <button
           className='menu_element w-full justify-items-start'
           onClick={() => setListSelectionOpen(true)}
         >
-          <i className='fa-solid fa-arrow-right-from-bracket text-lg text-text-secondary'></i>
-          <span className='font-semibold text-text-primary'>Move Task To</span>
+          <PiSignOut /> <span className='font-semibold text-text-secondary'>Move Task To</span>
         </button>
         <button
-          className='menu_element w-full justify-items-start text-red-500
+          className='menu_element trash w-full justify-items-start text-red-500
            hover:bg-red-500 hover:text-white'
           onClick={onDelete}
         >
-          <i className='fa-solid fa-trash-can  text-lg '></i>
+          <PiTrash className='text-red-500' />
           <span className='font-semibold '>Delete Task</span>
         </button>
       </div>
@@ -76,7 +79,7 @@ function SelectList({
     >
       <div className='flex items-center justify-between'>
         <button onClick={() => setListSelectionOpen(false)}>
-          <i className='fa-solid fa-arrow-left text-xl text-text-secondary'></i>
+          <IoChevronBack className='text-text-secondary' />
         </button>
         <h3 className='flex-1 text-center text-lg font-semibold text-text-secondary'>
           Select List
@@ -87,7 +90,7 @@ function SelectList({
             onClose();
           }}
         >
-          <i className='fa-solid fa-xmark text-2xl text-text-secondary'></i>
+          <PiX size={20} className='text-text-secondary' />
         </button>
       </div>
       <ul className='mt-3 h-[150px] space-y-2 overflow-auto overflow-x-hidden pr-2'>
@@ -104,9 +107,7 @@ function SelectList({
               currentListId !== list.id && onMove(list.id);
             }}
           >
-            {currentListId === list.id && (
-              <i className='fa-solid fa-check  text-text-secondary'></i>
-            )}
+            {currentListId === list.id && <PiCheckBold className='text-text-secondary' />}
             <span
               className='h-5 w-5 rounded-sm'
               style={{ backgroundColor: `var(${list.color})` }}

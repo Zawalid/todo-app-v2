@@ -10,6 +10,44 @@ import { useModal } from '../../../hooks/useModal';
 import { Title } from '../Title';
 import { StickyWallSkeleton } from '../../Skeletons';
 import { NotesGroup } from './NotesGroup';
+import { PiPlusBold } from 'react-icons/pi';
+
+const groups = {
+  year: {
+    condition: (note, group) => new Date(note.$createdAt).getFullYear() === group,
+    getSet: (note) => new Date(note.$createdAt).getFullYear(),
+  },
+  month: {
+    condition: (note, group) =>
+      new Date(note.$createdAt).getMonth() === new Date(group).getMonth() &&
+      new Date(note.$createdAt).getFullYear() === new Date(group).getFullYear(),
+    getSet: (note) =>
+      new Date(note.$createdAt).toLocaleDateString(undefined, { month: 'long', year: 'numeric' }),
+  },
+  day: {
+    condition: (note, group) =>
+      new Date(note.$createdAt).getDate() === new Date(group).getDate() &&
+      new Date(note.$createdAt).getMonth() === new Date(group).getMonth() &&
+      new Date(note.$createdAt).getFullYear() === new Date(group).getFullYear(),
+    getSet: (note) =>
+      new Date(note.$createdAt).toLocaleDateString(undefined, {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+      }),
+  },
+  'a-z': {
+    condition: (note, group) => {
+      const firstLetter = note.title[0]?.trim().toUpperCase() || 'U';
+      return firstLetter === group;
+    },
+    getSet: (note) => note.title[0]?.trim().toUpperCase(),
+  },
+  color: {
+    condition: (note, group) => note.bgColor === group,
+    getSet: (note) => note.bgColor,
+  },
+};
 
 export default function StickyWall() {
   const {
@@ -200,11 +238,7 @@ export default function StickyWall() {
                     <NotesGroup
                       key={t}
                       render={render}
-                      group={
-                        groupBy === 'color'
-                          ? window.getComputedStyle(document.documentElement).getPropertyValue(t)
-                          : t
-                      }
+                      group={t}
                       view={view}
                       isSelecting={isSelecting}
                       isCollapsed={isCollapsed}
@@ -236,44 +270,7 @@ function AddNote({ isSelecting }) {
       className='fixed bottom-16 right-5 grid h-12 w-12 place-content-center rounded-full bg-primary p-2 shadow-lg transition-colors duration-200  hover:bg-primary-hover sm:right-8'
       onClick={() => navigate('new')}
     >
-      <i className='fa-regular fa-plus text-xl text-white'></i>
+<PiPlusBold color='white' size={20} />
     </button>
   );
 }
-
-const groups = {
-  year: {
-    condition: (note, group) => new Date(note.$createdAt).getFullYear() === group,
-    getSet: (note) => new Date(note.$createdAt).getFullYear(),
-  },
-  month: {
-    condition: (note, group) =>
-      new Date(note.$createdAt).getMonth() === new Date(group).getMonth() &&
-      new Date(note.$createdAt).getFullYear() === new Date(group).getFullYear(),
-    getSet: (note) =>
-      new Date(note.$createdAt).toLocaleDateString(undefined, { month: 'long', year: 'numeric' }),
-  },
-  day: {
-    condition: (note, group) =>
-      new Date(note.$createdAt).getDate() === new Date(group).getDate() &&
-      new Date(note.$createdAt).getMonth() === new Date(group).getMonth() &&
-      new Date(note.$createdAt).getFullYear() === new Date(group).getFullYear(),
-    getSet: (note) =>
-      new Date(note.$createdAt).toLocaleDateString(undefined, {
-        month: 'long',
-        day: 'numeric',
-        year: 'numeric',
-      }),
-  },
-  'a-z': {
-    condition: (note, group) => {
-      const firstLetter = note.title[0]?.trim().toUpperCase() || 'U';
-      return firstLetter === group;
-    },
-    getSet: (note) => note.title[0]?.trim().toUpperCase(),
-  },
-  color: {
-    condition: (note, group) => note.bgColor === group,
-    getSet: (note) => note.bgColor,
-  },
-};

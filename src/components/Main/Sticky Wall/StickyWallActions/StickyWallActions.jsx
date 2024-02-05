@@ -4,6 +4,8 @@ import GroupBy from './GroupBy';
 import OrderBy from './OrderBy';
 import SortBy from './SortBy';
 import SelectionIcons from '../../../Common/SelectionIcons';
+import { PiDotsThreeOutlineVerticalFill, PiGridFourFill, PiListBold, PiTrash } from 'react-icons/pi';
+import { TbLayoutNavbarExpandFilled,TbLayoutNavbarCollapseFilled } from "react-icons/tb";
 
 const options = {
   className: 'w-60',
@@ -42,7 +44,7 @@ export default function StickyWallActions({
         onUnSelectAll={unSelectAll}
       >
         <DropDown
-          toggler={<i className='fa-solid fa-ellipsis-v'></i>}
+          toggler={<PiDotsThreeOutlineVerticalFill />}
           togglerClassName='icon-button not-active'
           options={{ className: 'w-60 max-h-[100%]', shouldCloseOnClick: false }}
         >
@@ -58,7 +60,7 @@ export default function StickyWallActions({
           <DropDown.Divider />
 
           <DropDown.Button onClick={deleteAll} isDeleteButton={true}>
-            <i className='fa-solid fa-trash-can '></i>
+            <PiTrash />
             <span>Delete All</span>
           </DropDown.Button>
         </DropDown>
@@ -67,11 +69,10 @@ export default function StickyWallActions({
       <div className='flex items-center gap-3'>
         <CustomTippy content={isCollapsed ? 'Expand' : 'Collapse'}>
           <button className='icon-button not-active' onClick={() => setIsCollapsed(!isCollapsed)}>
-            {isCollapsed ? (
-              <i className='fa-solid fa-table-list'></i>
-            ) : (
-              <i className='fa-solid fa-rectangle-list'></i>
-            )}
+            {isCollapsed ? 
+              <TbLayoutNavbarExpandFilled />             : 
+                <TbLayoutNavbarCollapseFilled />            
+            }
           </button>
         </CustomTippy>
         <CustomTippy content='List View'>
@@ -79,7 +80,7 @@ export default function StickyWallActions({
             className={view === 'list' ? 'icon-button active' : 'icon-button not-active'}
             onClick={() => setView('list')}
           >
-            <i className='fa-solid fa-list'></i>
+<PiListBold />
           </button>
         </CustomTippy>
         <CustomTippy content='Grid View'>
@@ -87,17 +88,7 @@ export default function StickyWallActions({
             className={view === 'grid' ? 'icon-button active' : 'icon-button not-active'}
             onClick={() => setView('grid')}
           >
-            <svg
-              stroke='currentColor'
-              fill='currentColor'
-              strokeWidth='0'
-              viewBox='0 0 512 512'
-              height='16px'
-              width='16px'
-              xmlns='http://www.w3.org/2000/svg'
-            >
-              <path d='M204 240H68a36 36 0 01-36-36V68a36 36 0 0136-36h136a36 36 0 0136 36v136a36 36 0 01-36 36zm240 0H308a36 36 0 01-36-36V68a36 36 0 0136-36h136a36 36 0 0136 36v136a36 36 0 01-36 36zM204 480H68a36 36 0 01-36-36V308a36 36 0 0136-36h136a36 36 0 0136 36v136a36 36 0 01-36 36zm240 0H308a36 36 0 01-36-36V308a36 36 0 0136-36h136a36 36 0 0136 36v136a36 36 0 01-36 36z'></path>
-            </svg>
+            <PiGridFourFill />
           </button>
         </CustomTippy>
       </div>

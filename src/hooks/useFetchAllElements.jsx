@@ -1,12 +1,13 @@
-import { appWriteConfig } from '../lib/appwrite/config';
+import { useState } from 'react';
 import { toast } from 'sonner';
+import { LuServerOff } from "react-icons/lu";
+import { appWriteConfig } from '../lib/appwrite/config';
 import { useTasks } from './useTasks';
 import { useLists } from './useLists';
 import { useTags } from './useTags';
 import { useStickyNotes } from './useStickyNotes';
 import { useLoadElements } from './useLoadElements';
 import { useUser } from './useUser';
-import { useState } from 'react';
 
 const { tasksCollectionId, listsCollectionId, tagsCollectionId, stickyNotesCollectionId } =
   appWriteConfig;
@@ -61,7 +62,7 @@ export function useFetchAllElements() {
       console.log(error);
       if (error.message === 'Server Error') {
         toast.error(' Server Error, Please try again later', {
-          icon: <i className='fa-solid fa-server text-lg'></i>,
+          icon: <LuServerOff />
         });
       } else {
         toast.error('Something went wrong, Please try again later');

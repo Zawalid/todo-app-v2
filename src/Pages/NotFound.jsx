@@ -11,7 +11,7 @@ export default function NotFound() {
           </p>
           <Link
             to={-1}
-            className='block w-fit m-auto rounded-lg bg-primary px-4 py-2 font-medium text-white  hover:bg-primary-hover active:bg-indigo-700'
+            className='block w-fit m-auto rounded-lg bg-primary px-4 py-2 font-medium text-white  hover:bg-primary-hover'
           >
             Go back
           </Link>

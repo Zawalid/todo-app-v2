@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ColorPicker } from './ColorPicker';
 import CustomTippy from '../../../../../Common/CustomTippy';
+import { FaHighlighter } from 'react-icons/fa';
 
 export function Highlighter({ editor, readonly }) {
   const [color, setColor] = useState('#ffda77');
@@ -20,7 +21,7 @@ export function Highlighter({ editor, readonly }) {
           disabled={disabled}
           className={editor.isActive('highlight') ? 'icon-button active' : 'icon-button not-active'}
         >
-          <i className='fa-solid fa-highlighter'></i>
+         <FaHighlighter />
         </button>
       </CustomTippy>
     </ColorPicker>

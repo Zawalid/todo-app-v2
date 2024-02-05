@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { CheckBox } from '../../Common/CheckBox';
+import { PiPen, PiTrash } from 'react-icons/pi';
 
 export function SubTask({ title, onEdit, onDelete, isCompleted, onComplete }) {
   const [checked, setChecked] = useState(isCompleted);
@@ -26,9 +27,9 @@ export function SubTask({ title, onEdit, onDelete, isCompleted, onComplete }) {
         onChange={(e) => (setSubtask(e.target.value), onEdit(e.target.value))}
         onBlur={() => (setIsEditing(false), onEdit(subtask))}
       />
-      <div className='ml-5 flex items-center'>
+      <div className='flex gap-1 items-center'>
         <button
-          className='grid h-8 w-8 place-content-center rounded-full bg-background-primary text-sm text-text-tertiary  hover:bg-background-secondary'
+          className='icon-button not-active small'
           onClick={(e) => {
             e.target.parentElement.parentElement.parentElement
               .querySelector('[type="text"]')
@@ -36,13 +37,13 @@ export function SubTask({ title, onEdit, onDelete, isCompleted, onComplete }) {
             setIsEditing(!isEditing);
           }}
         >
-          <i className='fas fa-pen cursor-pointer'></i>
+          <PiPen />
         </button>
         <button
-          className='grid h-8 w-8 place-content-center rounded-full bg-background-primary text-sm text-text-tertiary  hover:bg-background-secondary'
+          className='icon-button not-active small '
           onClick={onDelete}
         >
-          <i className='fas fa-trash cursor-pointer'></i>
+          <PiTrash />
         </button>
       </div>
     </li>

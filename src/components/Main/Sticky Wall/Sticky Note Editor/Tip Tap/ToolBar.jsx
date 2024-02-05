@@ -7,6 +7,29 @@ import { isTouchDevice } from '../../../../../utils/helpers';
 import { DropDown } from '../../../../Common/DropDown';
 import { useHref } from 'react-router';
 
+import {
+  FaBold,
+  FaItalic,
+  FaStrikethrough,
+  FaUnderline,
+  FaCode,
+  FaSuperscript,
+  FaSubscript,
+  FaHeading,
+  FaParagraph,
+  FaListUl,
+  FaListOl,
+  FaCheckSquare,
+  FaQuoteRight,
+  FaAlignLeft,
+  FaAlignCenter,
+  FaAlignRight,
+} from 'react-icons/fa';
+import { FaTextSlash, FaLinkSlash } from 'react-icons/fa6';
+import { BsFillTerminalFill } from 'react-icons/bs';
+import { GoHorizontalRule } from 'react-icons/go';
+import { PiKeyReturn } from 'react-icons/pi';
+
 export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
   const [keyboardHeight, setKeyboardHeight] = useState(0);
   const activeTab = useHref();
@@ -47,7 +70,7 @@ export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
               disabled={readonly || !editor.can().chain().focus().toggleBold().run()}
               className={editor.isActive('bold') ? 'icon-button active' : 'icon-button not-active '}
             >
-              <i className='fa-solid fa-bold'></i>
+              <FaBold />{' '}
             </button>
           </CustomTippy>
           <CustomTippy content='Italic'>
@@ -58,7 +81,7 @@ export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
                 editor.isActive('italic') ? 'icon-button active' : 'icon-button not-active'
               }
             >
-              <i className='fa-solid fa-italic'></i>
+              <FaItalic />
             </button>
           </CustomTippy>
           <CustomTippy content='Strike'>
@@ -69,7 +92,7 @@ export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
                 editor.isActive('strike') ? 'icon-button active' : 'icon-button not-active'
               }
             >
-              <i className='fa-solid fa-strikethrough'></i>
+              <FaStrikethrough />
             </button>
           </CustomTippy>
           <CustomTippy content='Underline'>
@@ -80,7 +103,7 @@ export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
                 editor.isActive('underline') ? 'icon-button active' : 'icon-button not-active'
               }
             >
-              <i className='fa-solid fa-underline'></i>
+              <FaUnderline />
             </button>
           </CustomTippy>
           <CustomTippy content='Code'>
@@ -89,7 +112,7 @@ export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
               disabled={readonly || !editor.can().chain().focus().toggleCode().run()}
               className={editor.isActive('code') ? 'icon-button active' : 'icon-button not-active'}
             >
-              <i className='fa-solid fa-code'></i>
+              <FaCode />
             </button>
           </CustomTippy>
           <Highlighter editor={editor} readonly={readonly} />
@@ -102,7 +125,7 @@ export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
                 editor.isActive('superscript') ? 'icon-button active' : 'icon-button not-active'
               }
             >
-              <i className='fa-solid fa-superscript'></i>
+              <FaSuperscript />
             </button>
           </CustomTippy>
           <CustomTippy content='Subscript'>
@@ -113,7 +136,7 @@ export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
                 editor.isActive('subscript') ? 'icon-button active' : 'icon-button not-active'
               }
             >
-              <i className='fa-solid fa-subscript'></i>
+              <FaSubscript />
             </button>
           </CustomTippy>
           <AddLink editor={editor} readonly={readonly} />
@@ -123,7 +146,7 @@ export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
               disabled={readonly || !editor.isActive('link')}
               className={editor.isActive('link') ? 'icon-button active' : 'icon-button not-active'}
             >
-              <i className='fa-solid fa-link-slash'></i>
+              <FaLinkSlash />
             </button>
           </CustomTippy>
         </div>
@@ -135,7 +158,9 @@ export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
             }}
             toggler={
               <CustomTippy content='Heading'>
-                <i className='fa-solid fa-heading'></i>
+                <span>
+                  <FaHeading />
+                </span>
               </CustomTippy>
             }
             togglerClassName={
@@ -156,8 +181,8 @@ export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
                     .run()
                 }
               >
-                <span>
-                  <i className='fa-solid fa-heading'></i>
+                <span className='flex items-'>
+                  <FaHeading size={14}/>
                   <span className='text-[10px] font-bold'>{i + 1}</span>
                 </span>
               </DropDown.Button>
@@ -171,7 +196,7 @@ export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
               }
               disabled={readonly}
             >
-              <i className='fa-solid fa-paragraph'></i>
+              <FaParagraph />
             </button>
           </CustomTippy>
           <CustomTippy content='Bullets'>
@@ -182,7 +207,7 @@ export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
               }
               disabled={readonly}
             >
-              <i className='fa-solid fa-list-ul'></i>
+              <FaListUl />
             </button>
           </CustomTippy>
           <CustomTippy content='Numbered'>
@@ -193,7 +218,7 @@ export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
               }
               disabled={readonly}
             >
-              <i className='fa-solid fa-list-ol'></i>
+              <FaListOl />
             </button>
           </CustomTippy>
           <CustomTippy content='Task'>
@@ -204,7 +229,7 @@ export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
               }
               disabled={readonly}
             >
-              <i className='fa-regular fa-check-square'></i>
+              <FaCheckSquare />
             </button>
           </CustomTippy>
           <CustomTippy content='Code Block'>
@@ -215,18 +240,7 @@ export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
               }
               disabled={readonly}
             >
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                fill='currentColor'
-                viewBox='0 0 24 24'
-                width='15px'
-                height='15px'
-              >
-                <g>
-                  <path fill='none' d='M0 0h24v24H0z'></path>
-                  <path d='M3 3h18a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h16V5H4zm8 10h6v2h-6v-2zm-3.333-3L5.838 9.172l1.415-1.415L11.495 12l-4.242 4.243-1.415-1.415L8.667 12z'></path>
-                </g>
-              </svg>
+              <BsFillTerminalFill />
             </button>
           </CustomTippy>
         </div>
@@ -241,7 +255,7 @@ export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
               }
               disabled={readonly}
             >
-              <i className='fa-solid fa-quote-right'></i>
+              <FaQuoteRight />
             </button>
           </CustomTippy>
           <CustomTippy content='Horizontal Rule'>
@@ -250,18 +264,7 @@ export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
               className='icon-button not-active'
               disabled={readonly}
             >
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                fill='currentColor'
-                viewBox='0 0 24 24'
-                width='15px'
-                height='15px'
-              >
-                <g>
-                  <path fill='none' d='M0 0h24v24H0z'></path>
-                  <path d='M2 11h2v2H2v-2zm4 0h12v2H6v-2zm14 0h2v2h-2v-2z'></path>
-                </g>
-              </svg>
+              <GoHorizontalRule />
             </button>
           </CustomTippy>
         </div>
@@ -278,7 +281,7 @@ export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
               }
               disabled={readonly}
             >
-              <i className='fa-solid fa-align-left'></i>
+              <FaAlignLeft />
             </button>
           </CustomTippy>
           <CustomTippy content='Align Center'>
@@ -291,7 +294,7 @@ export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
               }
               disabled={readonly}
             >
-              <i className='fa-solid fa-align-center'></i>
+              <FaAlignCenter />
             </button>
           </CustomTippy>
           <CustomTippy content='Align Right'>
@@ -304,7 +307,7 @@ export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
               }
               disabled={readonly}
             >
-              <i className='fa-solid fa-align-right'></i>
+              <FaAlignRight />
             </button>
           </CustomTippy>
         </div>
@@ -317,12 +320,7 @@ export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
               className='icon-button not-active'
               disabled={readonly}
             >
-              <svg xmlns='http://www.w3.org/2000/svg' fill='currentColor' viewBox='0 0 24 24'>
-                <g>
-                  <path fill='none' d='M0 0h24v24H0z'></path>
-                  <path d='M15 18h1.5a2.5 2.5 0 1 0 0-5H3v-2h13.5a4.5 4.5 0 1 1 0 9H15v2l-4-3 4-3v2zM3 4h18v2H3V4zm6 14v2H3v-2h6z'></path>
-                </g>
-              </svg>
+              <PiKeyReturn />
             </button>
           </CustomTippy>
           <CustomTippy content='Clear Content'>
@@ -331,7 +329,7 @@ export const ToolBar = ({ editor, isKeyboardOpen, readonly }) => {
               onClick={() => editor.commands.clearContent()}
               disabled={readonly}
             >
-              <i className='fa-solid fa-text-slash'></i>
+              <FaTextSlash />
             </button>
           </CustomTippy>
         </div>

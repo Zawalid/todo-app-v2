@@ -151,3 +151,15 @@ function SignOutButton() {
     </DropDown.Button>
   );
 }
+
+export function IconThemeToggler() {
+  const { theme, toggleDarkMode } = useDarkMode();
+  return (
+    <button
+      onClick={() => toggleDarkMode(theme === 'dark' ? 'light' : 'dark')}
+      className='icon-button not-active'
+    >
+      {theme === 'dark' ? <PiSunDim size={20} /> : <PiMoonStars size={20} />}
+    </button>
+  );
+}

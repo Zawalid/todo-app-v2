@@ -1,26 +1,28 @@
+import { PiDotsThreeOutlineVerticalFill, PiPalette, PiPencilSimple, PiTrash } from 'react-icons/pi';
+import {IoChevronDownOutline} from 'react-icons/io5'
 import { Colors } from '../../Common/Colors';
 import { DropDown } from '../../Common/DropDown';
 
 export function ListAction({ onDelete, onChangeColor, color, onOpenRenameInput }) {
   return (
     <DropDown
-      toggler={<i className='fas fa-ellipsis-vertical w-  text-text-tertiary '></i>}
+      toggler={<PiDotsThreeOutlineVerticalFill />}
       togglerClassName='icon-button not-active small'
       options={{
         className: 'w-72 md:w-60',
       }}
     >
       <DropDown.Button onClick={onOpenRenameInput}>
-        <i className='fa-solid fa-pen '></i>
+      <PiPencilSimple />
         <span>Rename List</span>
       </DropDown.Button>
 
       <DropDown.NestedMenu
         toggler={
           <DropDown.Button>
-            <i className='fa-solid fa-palette'></i>
+<PiPalette />
             <span className='text-start'>Change Color</span>
-            <i className='fa-solid fa-chevron-down'></i>
+            <IoChevronDownOutline />
           </DropDown.Button>
         }
         options={{ className: 'w-60 md:w-48',  shouldCloseOnClick: false }}
@@ -31,7 +33,7 @@ export function ListAction({ onDelete, onChangeColor, color, onOpenRenameInput }
         </div>
       </DropDown.NestedMenu>
       <DropDown.Button onClick={onDelete} isDeleteButton={true}>
-        <i className='fa-solid fa-trash-can '></i>
+        <PiTrash />
         <span>Delete List</span>
       </DropDown.Button>
     </DropDown>

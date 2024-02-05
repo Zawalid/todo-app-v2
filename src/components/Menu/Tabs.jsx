@@ -1,4 +1,4 @@
-import { NavLink, useHref } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { useTasks, useStickyNotes } from '../../hooks';
 import { useSelector } from 'react-redux';
 import { TABS } from './TabsList';
@@ -10,10 +10,7 @@ export function Tabs() {
   const { stickyNotes } = useStickyNotes();
   const completedTasks = tasks.filter((task) => task.isCompleted);
 
-  const { defaultHomeView } = useSelector((state) => state.settings.general.preferences);
   const { showInSideBar, showCount } = useSelector((state) => state.settings.sidebar);
-  // To check whether the current tab is the home in order to add manually the active class
-  const noActiveTab = ['', '/'].includes(useHref().split('/app')[1]);
 
   const counts = {
     inbox: tasks.length,
@@ -31,12 +28,7 @@ export function Tabs() {
           const tab = TABS[t];
           return (
             <li key={tab.name}>
-              <NavLink
-                to={t.replace('W', '-w')}
-                className={`menu_element group ${
-                  defaultHomeView === tab.name && noActiveTab ? 'active' : ''
-                }`}
-              >
+              <NavLink to={t.replace('W', '-w')} className='menu_element group'>
                 {tab.icon}
                 <span className='text-sm capitalize text-text-secondary'>
                   {tab.name.replace('W', ' W')}

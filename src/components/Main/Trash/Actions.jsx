@@ -1,9 +1,10 @@
+import { PiDotsThreeOutlineVerticalFill, PiTrash } from 'react-icons/pi';
 import { DropDown } from '../../Common/DropDown';
 
 export function Actions({ trash, currentTab, trashLength, onDeleteAll, onRestoreAll, onEmptyTrash }) {
   return (
     <DropDown
-      toggler={<i className='fa-solid fa-ellipsis-v'></i>}
+      toggler={<PiDotsThreeOutlineVerticalFill />}
       togglerClassName='icon-button not-active small'
       options={{ className: 'w-60 max-h-[100%]', shouldCloseOnClick: false }}
     >
@@ -12,15 +13,15 @@ export function Actions({ trash, currentTab, trashLength, onDeleteAll, onRestore
         disabled={trash[currentTab]?.length === 0}
         onClick={onDeleteAll}
       >
-        <i className='fa-solid fa-trash-can '></i>
+       <PiTrash />
         <span>Delete All</span>
       </DropDown.Button>
       <DropDown.Button disabled={trash[currentTab]?.length === 0} onClick={onRestoreAll}>
-        <i className='fa-solid fa-trash-can '></i>
+       <PiTrash />
         <span>Restore All</span>
       </DropDown.Button>
       <DropDown.Button isDeleteButton={true} disabled={trashLength === 0} onClick={onEmptyTrash}>
-        <i className='fa-solid fa-trash-can '></i>
+       <PiTrash />
         <span>Empty Trash</span>
       </DropDown.Button>
     </DropDown>

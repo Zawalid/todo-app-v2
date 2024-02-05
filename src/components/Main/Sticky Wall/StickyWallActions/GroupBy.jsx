@@ -1,41 +1,43 @@
+import { LiaLayerGroupSolid } from 'react-icons/lia';
+import { PiCheckBold } from 'react-icons/pi';
+import { IoChevronForward } from 'react-icons/io5';
+
 import { DropDown } from '../../../Common/DropDown';
 
-export default function GroupBy({ groupBy, setGroupBy,options }) {
+export default function GroupBy({ groupBy, setGroupBy, options }) {
   return (
     <DropDown.NestedMenu
       toggler={
         <DropDown.Button className='justify-between'>
-          <i className='fa-solid fa-layer-group'></i>{' '}
-          <span className='text-start'>Group By</span>
-          <i className='fa-solid fa-chevron-right'></i>
+          <LiaLayerGroupSolid /> <span className='text-start'>Group By</span>
+          <IoChevronForward />
         </DropDown.Button>
       }
       options={options}
-
     >
       <DropDown.Button onClick={() => setGroupBy('default')} className='justify-between'>
         <span>Default</span>
-        {groupBy === 'default' && <i className='fa-solid fa-check'></i>}
+        {groupBy === 'default' && <PiCheckBold />}
       </DropDown.Button>
       <DropDown.Button onClick={() => setGroupBy('year')} className='justify-between'>
         <span>Year</span>
-        {groupBy === 'year' && <i className='fa-solid fa-check'></i>}
+        {groupBy === 'year' && <PiCheckBold />}
       </DropDown.Button>
       <DropDown.Button onClick={() => setGroupBy('month')} className='justify-between'>
         <span>Month</span>
-        {groupBy === 'month' && <i className='fa-solid fa-check'></i>}
+        {groupBy === 'month' && <PiCheckBold />}
       </DropDown.Button>
       <DropDown.Button onClick={() => setGroupBy('day')} className='justify-between'>
         <span>Day</span>
-        {groupBy === 'day' && <i className='fa-solid fa-check'></i>}
+        {groupBy === 'day' && <PiCheckBold />}
       </DropDown.Button>
       <DropDown.Button onClick={() => setGroupBy('a-z')} className='justify-between'>
         <span>A-Z</span>
-        {groupBy === 'a-z' && <i className='fa-solid fa-check'></i>}
+        {groupBy === 'a-z' && <PiCheckBold />}
       </DropDown.Button>
       <DropDown.Button onClick={() => setGroupBy('color')} className='justify-between'>
         <span>Color</span>
-        {groupBy === 'color' && <i className='fa-solid fa-check'></i>}
+        {groupBy === 'color' && <PiCheckBold />}
       </DropDown.Button>
     </DropDown.NestedMenu>
   );

@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { PiCheckCircleFill, PiCircle } from 'react-icons/pi';
 
 export function StickyNote({ stickyNote, onClick, listView, isSelecting, isSelected }) {
   const { title, content, $createdAt = new Date(), bgColor, textColor } = stickyNote;
@@ -11,7 +12,7 @@ export function StickyNote({ stickyNote, onClick, listView, isSelecting, isSelec
   return (
     <button
       className={
-        'group relative flex w-full flex-col transition-[width,height] duration-300 gap-3 overflow-hidden rounded-lg px-5 py-3 shadow-[rgba(3_3_3_0.08)_0px_6px_16px] ' +
+        'group relative flex w-full flex-col gap-3 overflow-hidden rounded-lg px-5 py-3 shadow-[rgba(3_3_3_0.08)_0px_6px_16px] transition-[width,height] duration-300 ' +
         (listView ? 'h-[130px]' : 'h-[270px] ')
       }
       style={{
@@ -57,11 +58,7 @@ export function StickyNote({ stickyNote, onClick, listView, isSelecting, isSelec
               color: textColor,
             }}
           >
-            {isSelected ? (
-              <i className='fa-solid fa-circle-check text-lg'></i>
-            ) : (
-              <i className='fa-regular fa-circle text-lg'></i>
-            )}
+            {isSelected ? <PiCheckCircleFill size={20} /> : <PiCircle size={20} />}
           </span>
         </div>
       </>

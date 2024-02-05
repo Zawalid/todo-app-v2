@@ -1,4 +1,7 @@
+import { Controller, useWatch } from 'react-hook-form';
+import papaparse from 'papaparse';
 import { PiDownloadSimpleLight, PiListChecks } from 'react-icons/pi';
+import { IoChevronDownOutline } from "react-icons/io5";
 import { BsBraces, BsFiletypeCsv } from 'react-icons/bs';
 import { TaskDueDate } from '../../../Task Info/TaskDueDate';
 import { TaskPriority } from '../../../Task Info/TaskPriority';
@@ -7,8 +10,6 @@ import Switch from '../../../Common/Switch';
 import { CheckBox } from '../../../Common/CheckBox';
 import { useLists, useTags, useTasks } from '../../../../hooks';
 import { exportDownload } from '../../../../utils/helpers';
-import papaparse from 'papaparse';
-import { Controller, useWatch } from 'react-hook-form';
 
 export function Tasks({ control, setValue }) {
   const tasksSettings = useWatch({ control, name: 'tasks' });
@@ -68,7 +69,7 @@ export function Tasks({ control, setValue }) {
             toggler={
               <DropDown.Toggler>
                 <span>{weeklyDueDate}</span>
-                <i className='fa-solid fa-chevron-down text-xs'></i>
+                <IoChevronDownOutline />
               </DropDown.Toggler>
             }
             options={{ className: 'w-48' }}
@@ -146,7 +147,7 @@ function TaskDisplay({ control, setSetting }) {
             {allDetails.filter((detail) => taskDetailLevel.includes(detail)).length} of{' '}
             {allDetails.length} visible
           </span>
-          <i className='fa-solid fa-chevron-down text-xs'></i>
+          <IoChevronDownOutline />
         </DropDown.Toggler>
       }
       options={{ className: 'w-48', shouldCloseOnClick: false }}

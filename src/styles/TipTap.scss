@@ -100,7 +100,7 @@
     font-family: 'JetBrainsMono', monospace;
     padding: 0.75rem 1rem;
 
-    html.dark & {
+    html[data-theme='dark'] & {
       background: #1e1e1e;
     }
 
@@ -117,9 +117,8 @@
   }
 
   blockquote {
-    margin: revert;
     padding-left: 1rem;
-    border-left: 3px solid #0d0d0d1a;
+    border-left: 3px solid var(--text-secondary);
   }
   hr {
     border: none;

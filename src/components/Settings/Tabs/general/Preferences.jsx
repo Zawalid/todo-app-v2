@@ -1,4 +1,5 @@
 import { PiSliders } from 'react-icons/pi';
+import { IoChevronDownOutline } from "react-icons/io5";
 import Switch from '../../../Common/Switch';
 import { DropDown } from '../../../Common/DropDown';
 import { Controller, useWatch } from 'react-hook-form';
@@ -64,7 +65,7 @@ export function Preferences({ control, setValue }) {
             toggler={
               <DropDown.Toggler>
                 <span className='capitalize'>{defaultHomeView}</span>
-                <i className='fa-solid fa-chevron-down text-xs'></i>
+                <IoChevronDownOutline />
               </DropDown.Toggler>
             }
             options={{ className: 'w-48' }}

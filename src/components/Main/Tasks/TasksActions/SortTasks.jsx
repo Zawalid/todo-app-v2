@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { IoChevronUpOutline, IoChevronDownOutline } from 'react-icons/io5';
 
 export function SortTasks() {
   return (
@@ -47,11 +48,12 @@ function Button({ sortKey, title }) {
         });
       }}
     >
-      <i
-        className={`fa-solid ${
-          direction === 'asc' ? 'fa-sort-up' : 'fa-sort-desc '
-        } absolute left-2 mr-3 ${isActive ? '' : 'hidden'}`}
-      ></i>
+      {direction === 'asc' ? (
+        <IoChevronUpOutline className={`absolute top-1.5 left-2 mr-3 ${isActive ? '' : 'hidden'}`} />
+      ) : (
+        <IoChevronDownOutline className={`absolute top-1.5 left-2 mr-3 ${isActive ? '' : 'hidden'}`} />
+      )}
+
       {title}
     </button>
   );

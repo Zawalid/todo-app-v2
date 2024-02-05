@@ -5,6 +5,7 @@ import { useLists } from '../../../hooks/useLists';
 import { ListsSkeleton } from '../../Skeletons';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { TABS } from '../TabsList';
+import { PiPlusBold } from 'react-icons/pi';
 
 export function Lists() {
   const { lists, isListsLoading } = useLists();
@@ -61,7 +62,7 @@ export function Lists() {
               setTimeout(() => addNewListContainer.current?.querySelector('input').focus(), 100);
             }}
           >
-            <i className='fas  fa-plus w-10 text-text-tertiary'></i>
+            <PiPlusBold className='text-text-tertiary' />
             Add New List
           </button>
           {isAddNewListOpen && (

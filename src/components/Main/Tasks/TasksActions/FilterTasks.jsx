@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { DropDown } from '../../../Common/DropDown';
+import { MdFilterListAlt } from "react-icons/md";
 
 const filters = [
   'all',
@@ -58,7 +59,7 @@ export function FilterTasks({ isOnlyCompletedTasks }) {
     <DropDown
       toggler={
         <>
-          <i className='fas fa-filter absolute left-3 top-2 text-text-tertiary '></i>
+        <MdFilterListAlt className='absolute left-3 top-2 text-text-tertiary ' />
           <span className='ml-2 capitalize text-text-tertiary'>
             {filters.find((f) => f === filter) || 'All'}
           </span>

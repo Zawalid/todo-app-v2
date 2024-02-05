@@ -12,6 +12,7 @@ import { usePagination } from '../usePagination';
 import SelectionIcons from '../../Common/SelectionIcons';
 import { useModal } from '../../../hooks/useModal';
 import { createPortal } from 'react-dom';
+import { PiDotsThreeOutlineVerticalFill } from 'react-icons/pi';
 
 const filtersConditions = {
   all: () => true,
@@ -90,7 +91,7 @@ export default function TasksList({ dueDate, listId, tasks, message, isOnlyCompl
   };
 
   return (
-<>
+    <>
       <div
         className='relative flex h-full flex-col gap-3 overflow-hidden  overflow-x-hidden'
         ref={parent}
@@ -102,27 +103,25 @@ export default function TasksList({ dueDate, listId, tasks, message, isOnlyCompl
           <Actions {...actionsProps} />,
           document.querySelector('#title') || document.body,
         )}
-  
+
         <List
           filteredTasks={filteredTasks}
           isSelecting={isSelecting}
           currentPage={currentPage}
           rowsPerPage={rowsPerPage}
         />
-  
+
         <NoFilteredTasksMessage
           filter={filter}
           message={message.noFilterPart}
           display={filteredTasks.length === 0 && tasks.length > 0}
         />
-  
+
         <NoTasksMessage message={message} display={tasks.length === 0} />
-  
-  
       </div>
-        {filteredTasks.length > 0 && Pagination}
-        {Modal}
-</>
+      {filteredTasks.length > 0 && Pagination}
+      {Modal}
+    </>
   );
 }
 
@@ -223,7 +222,7 @@ function Actions({
         maxWidth='auto'
       >
         <button className='icon-button not-active'>
-          <i className='fa-solid fa-ellipsis-v text-xl'></i>
+        <PiDotsThreeOutlineVerticalFill />
         </button>
       </Tippy>
     </SelectionIcons>

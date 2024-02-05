@@ -1,10 +1,12 @@
-import { Routes, Route } from 'react-router-dom';
-import { Toaster } from 'sonner';
-import { useDarkMode } from './hooks/';
 import { Suspense, lazy } from 'react';
-import { SpinnerLoader } from './components/Common/SpinnerLoader';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { Toaster } from 'sonner';
+import { FaSpinner } from 'react-icons/fa6';
 import './styles/App.css';
 
+import { useDarkMode } from './hooks/';
+
+import { SpinnerLoader } from './components/Common/SpinnerLoader';
 import Inbox from './components/Main/Tasks/Inbox';
 import TodayTasks from './components/Main/Tasks/TodayTasks';
 import ListTasks from './components/Main/Tasks/ListTasks';
@@ -40,7 +42,7 @@ function App() {
       <Routes>
         <Route path='/' element={<HomePage />} />
         <Route path='app' element={<AppLayout />}>
-          <Route index element={tabs[defaultHomeView]} />
+          <Route index element={<Navigate to={defaultHomeView} />} />
           {Object.keys(tabs).map((tab) => (
             <Route key={tab} path={tab.replace(' ', '-')} element={tabs[tab]} />
           ))}
@@ -61,9 +63,7 @@ function App() {
       <Toaster
         position={window.innerWidth < 768 ? 'bottom-center' : 'bottom-right'}
         theme={theme}
-        loadingIcon={
-          <i className='fa-solid fa-spinner animate-spin text-lg text-text-secondary'></i>
-        }
+        loadingIcon={<FaSpinner className='animate-spin text-lg text-text-secondary' />}
         toastOptions={{
           className: 'sonner-toast',
           duration: 2000,

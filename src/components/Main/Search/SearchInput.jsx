@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { PiX } from 'react-icons/pi';
+import { IoMdSearch } from 'react-icons/io';
 
 export function SearchInput() {
   const [query, setQuery] = useState('');
@@ -34,16 +36,16 @@ export function SearchInput() {
       />
       <button
         type='button'
-        className={`absolute right-9 top-[6px] cursor-pointer rounded-sm  px-[5px]  text-text-tertiary  hover:bg-background-tertiary ${
+        className={`absolute right-9 top-1/2 -translate-y-1/2 cursor-pointer rounded-sm  px-[5px] py-[2px]  text-text-tertiary  hover:bg-background-tertiary ${
           query?.trim() === '' ? 'scale-0' : 'scale-100'
         }`}
         onClick={() => search('')}
       >
-        <i className='fas fa-xmark'></i>
+        < PiX />
       </button>
 
-      <button className='absolute right-2 top-[6px] cursor-pointer rounded-sm  px-1 py-[2px] text-sm text-text-tertiary  hover:bg-background-tertiary'>
-        <i className='fas fa-search '></i>
+      <button className='absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer rounded-sm  px-1 py-[2px] text-text-tertiary  hover:bg-background-tertiary'>
+        <IoMdSearch />
       </button>
     </form>
   );
