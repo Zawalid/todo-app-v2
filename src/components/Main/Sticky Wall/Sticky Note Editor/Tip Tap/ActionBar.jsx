@@ -5,7 +5,6 @@ import { MdOutlineFullscreen, MdOutlineFullscreenExit } from 'react-icons/md';
 import { PiDotsThreeOutlineVerticalFill } from 'react-icons/pi';
 import { HiOutlineChevronLeft } from 'react-icons/hi';
 import { GrUndo, GrRedo } from 'react-icons/gr';
-import { IconThemeToggler } from '../../../../Menu/DropDownProfile';
 
 export function ActionBar({ editor, onBack, onOpenActions }) {
   const [isFullScreen, setIsFullScreen] = useState(document.fullscreenElement);
@@ -20,10 +19,12 @@ export function ActionBar({ editor, onBack, onOpenActions }) {
 
   if (!editor) return null;
   return (
-    <div className='flex items-center justify-between'>
-      <button className='icon-button not-active' onClick={onBack}>
-        <HiOutlineChevronLeft />{' '}
-      </button>
+    <div className='flex items-center justify-between' id='actionBar'>
+      <div className='flex flex-row-reverse gap-2'>
+        <button className='icon-button not-active' onClick={onBack}>
+          <HiOutlineChevronLeft />{' '}
+        </button>
+      </div>
       <div className='flex items-center gap-2 border-background-tertiary '>
         <CustomTippy content='Undo'>
           <button
@@ -44,8 +45,7 @@ export function ActionBar({ editor, onBack, onOpenActions }) {
           </button>
         </CustomTippy>
         <CustomTippy content='Toggle Dark Mode'>
-          <span>
-            <IconThemeToggler />
+          <span className='themeToggler'>
           </span>
         </CustomTippy>
         <CustomTippy content={isFullScreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}>

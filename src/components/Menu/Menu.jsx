@@ -5,7 +5,7 @@ import { Lists } from './Lists/Lists';
 import { Tags } from './Tags/Tags';
 import { Tabs } from './Tabs';
 import { SearchInput } from '../Main/Search/SearchInput';
-import { DropDownProfile } from './DropDownProfile';
+import { DropDownProfile, IconThemeToggler } from './DropDownProfile';
 import Settings from '../Settings/Settings';
 import Trash from '../Main/Trash/Trash';
 import { useSelector } from 'react-redux';
@@ -91,7 +91,14 @@ export function Menu() {
           <button className='icon-button  not-active' onClick={() => setIsOpen(true)}>
             <BsLayoutSidebarInsetReverse />
           </button>,
-          document.querySelector('#title > div') || document.body,
+          (activeTab.match(/\/app\/sticky-wall\/(.+)/)
+            ? document.querySelector('#actionBar > div')
+            : document.querySelector('#title > div')) || document.body,
+        )}
+      {isOpen ||
+        createPortal(
+          <IconThemeToggler />,
+          document.querySelector('#actionBar .themeToggler') || document.body,
         )}
     </>
   );
