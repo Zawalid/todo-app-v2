@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import CustomTippy from '../../../../../Common/CustomTippy';
+import { PiPlusBold } from 'react-icons/pi';
 
 function Colors({ onClick }) {
   const colors = [
@@ -73,7 +74,7 @@ export function ColorPicker({
                 className='absolute h-8 w-8 cursor-pointer opacity-0'
                 onChange={handleColorChange}
               />
-              <i className='fa-solid fa-plus text-text-secondary'></i>
+              <PiPlusBold />
             </button>
           </>
         }
@@ -85,7 +86,7 @@ export function ColorPicker({
         maxWidth={175}
       >
         <div
-          className=' cursor-pointer rounded-sm px-1'
+          className='border border-border cursor-pointer rounded-sm px-1'
           style={{
             backgroundColor: disabled ? '#cacaca' : color,
           }}

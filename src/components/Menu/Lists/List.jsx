@@ -3,6 +3,9 @@ import { NavLink, useHref, useNavigate } from 'react-router-dom';
 import { ListAction } from './ListAction';
 import { useIsTitleTaken, useLists, useTasks } from '../../../hooks';
 import { useModal } from '../../../hooks/useModal';
+import { PiCheckCircle } from 'react-icons/pi';
+import { FaRegCircleXmark } from "react-icons/fa6";
+
 
 export function List({ list }) {
   const { $id, title, color } = list;
@@ -90,14 +93,13 @@ export function List({ list }) {
             className='w-full  border-none bg-transparent py-2 text-sm text-text-primary  focus:outline-none '
             defaultValue={title}
             ref={newListTitle}
-            onBlur={renameList}
             onChange={(e) => setTitle(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && !isNewTitleTaken && e.target.blur()}
+            onKeyDown={(e) => e.key === 'Enter' && renameList(e)}
           />
-          {isNewTitleTaken ? (
-            <i className='fa-regular fa-circle-xmark text-red-500'></i>
+          {isNewTitleTaken ?(
+            <FaRegCircleXmark className='text-red-500' />
           ) : (
-            <i className='fa-regular fa-circle-check text-green-500'></i>
+            <PiCheckCircle className='text-green-500' />
           )}
         </div>
       </li>

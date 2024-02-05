@@ -1,9 +1,11 @@
 import { Tag } from '../Menu/Tags/Tag';
 import { useTags } from '../../hooks/useTags';
 import { DropDown } from '../Common/DropDown';
+import { PiPlusBold } from 'react-icons/pi';
 
 export function TaskTags({ taskTagsIds, handleAddTagToTask, handleDeleteTagFromTask }) {
   const { tags } = useTags();
+  const validTags = taskTagsIds.filter((id) => tags.find((tag) => tag.$id === id));
   return (
     <>
       <label className='justify-self-start text-sm text-text-tertiary'>Tags</label>
@@ -11,11 +13,11 @@ export function TaskTags({ taskTagsIds, handleAddTagToTask, handleDeleteTagFromT
         toggler={
           <DropDown.Toggler>
             <span> Add Tag</span>
-            {taskTagsIds.length === 0 ? (
-              <i className='fas fa-plus text-text-secondary'></i>
+            {validTags.length === 0 ? (
+              <PiPlusBold />
             ) : (
               <span className='grid h-5 w-5 place-content-center rounded-full bg-primary text-xs text-white'>
-                {taskTagsIds.length}
+                {validTags.length}
               </span>
             )}
           </DropDown.Toggler>

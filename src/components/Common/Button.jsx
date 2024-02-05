@@ -1,3 +1,5 @@
+import { FaSpinner } from "react-icons/fa6";
+
 export function Button({
   children,
   isLoading,
@@ -33,7 +35,7 @@ export function Button({
     >
       {isLoading ? (
         <div className='flex items-center gap-3 text-white'>
-          <i className='fa-solid fa-spinner animate-spin'></i>
+          <FaSpinner className='animate-spin' />
           <span>{`${children.split(' ')[0]}ing ${children.split(' ')[1]}...`}</span>
         </div>
       ) : (

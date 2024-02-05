@@ -3,6 +3,11 @@ import { DropDown } from '../../../../Common/DropDown';
 import { DEFAULT_FONT_FAMILY } from '../../../../../utils/constants';
 import { useModal } from '../../../../../hooks/useModal';
 import { Overlay } from '../../../../Common/Modal';
+import { GiPin } from 'react-icons/gi';
+import { TbPencilCancel } from 'react-icons/tb';
+import { IoDuplicateOutline, IoCopyOutline } from 'react-icons/io5';
+import { PiExport, PiTrash,PiFilePdf,PiFileHtml,PiFileText } from 'react-icons/pi';
+import { BsMarkdown } from "react-icons/bs";
 
 export function Actions({
   children,
@@ -11,6 +16,7 @@ export function Actions({
   readonly,
   pinned,
   fontFamily,
+  disabled,
   handlers: {
     onClose,
     onCopy,
@@ -50,87 +56,92 @@ export function Actions({
           </div>
           <hr className='border border-border' />
 
-          <div>
-            <div className='transition-col flex items-center justify-between rounded-md px-3  py-2 duration-200 hover:bg-background-secondary '>
+          <div className='space-y-1'>
+            <div
+              className={`flex items-center justify-between rounded-md px-3 py-2  transition-colors duration-200  ${
+                disabled
+                  ? 'bg-background-disabled text-text-disabled'
+                  : 'text-text-secondary hover:bg-background-secondary'
+              }`}
+            >
               <label
-                className=' grid grid-cols-[15px_auto] items-center gap-2 text-sm font-medium  text-text-secondary'
+                className='grid grid-cols-[15px_auto] items-center gap-2 text-sm font-medium '
                 htmlFor='pin'
               >
-                <i className='fa-solid fa-thumbtack'></i> <span>Pin</span>
+                <GiPin />
+                Pin
               </label>
-              <Switch id='pin' checked={pinned} onChange={onPin} />
+              <Switch id='pin' checked={pinned} onChange={onPin} disabled={disabled} />
             </div>
-            <div className='transition-col flex items-center justify-between rounded-md px-3  py-2 duration-200 hover:bg-background-secondary '>
+            <div
+              className={`flex items-center justify-between rounded-md px-3 py-2  transition-colors duration-200  ${
+                disabled
+                  ? 'bg-background-disabled text-text-disabled'
+                  : 'text-text-secondary hover:bg-background-secondary'
+              }`}
+            >
               <label
-                className=' grid grid-cols-[15px_auto] items-center gap-2 text-sm font-medium  text-text-secondary'
+                className='grid grid-cols-[15px_auto] items-center gap-2 text-sm font-medium '
                 htmlFor='readonly'
               >
-                <svg
-                  viewBox='0 0 24 24'
-                  width='17px'
-                  height='17px'
-                  className='text-text-secondary'
-                  fill='currentColor'
-                >
-                  <path
-                    className='text-text-secondary'
-                    d='M16.1,9L17,9.9L7.9,19H7V18.1L16.1,9M19.7,3C19.5,3 19.2,3.1 19,3.3L17.2,5.1L20.9,8.9L22.7,7C23.1,6.6 23.1,6 22.7,5.6L20.4,3.3C20.2,3.1 19.9,3 19.7,3M16.1,6.2L5,17.2V21H8.8L19.8,9.9L16.1,6.2M8,5V4.5C8,3.1 6.9,2 5.5,2C4.1,2 3,3.1 3,4.5V5C2.4,5 2,5.4 2,6V10C2,10.6 2.4,11 3,11H8C8.6,11 9,10.6 9,10V6C9,5.4 8.6,5 8,5M7,5H4V4.5C4,3.7 4.7,3 5.5,3C6.3,3 7,3.7 7,4.5V5Z'
-                  ></path>
-                </svg>
+                <TbPencilCancel />
                 <span>Read only</span>
               </label>
-              <Switch id='readonly' checked={readonly} onChange={onReadOnly} />
+              <Switch id='readonly' checked={readonly} onChange={onReadOnly} disabled={disabled} />
             </div>
           </div>
           <hr className='border border-border' />
-          <div className='gap- flex flex-col'>
+          <div className='gap- flex flex-col gap-1'>
             <button
-              className='transition-col grid grid-cols-[15px_auto] items-center gap-2 rounded-md  px-3 py-2 text-sm font-medium  text-text-secondary duration-200 hover:bg-background-secondary hover:text-text-primary'
+              className='grid grid-cols-[15px_auto] items-center gap-2 rounded-md px-3  py-2 text-sm font-medium text-text-secondary  transition-colors duration-200 hover:bg-background-secondary hover:text-text-primary disabled:bg-background-disabled disabled:text-text-disabled'
               onClick={onCopy}
+              disabled={disabled}
             >
-              <i className='fa-solid fa-copy'></i>
+              <IoCopyOutline />
               <span className='text-start'>Copy Note</span>
             </button>
             <button
-              className='transition-col grid grid-cols-[15px_auto] items-center gap-2 rounded-md  px-3 py-2 text-sm font-medium  text-text-secondary duration-200 hover:bg-background-secondary hover:text-text-primary'
+              className='grid grid-cols-[15px_auto] items-center gap-2 rounded-md px-3  py-2 text-sm font-medium text-text-secondary  transition-colors duration-200 hover:bg-background-secondary hover:text-text-primary disabled:bg-background-disabled disabled:text-text-disabled'
               onClick={onDuplicate}
+              disabled={disabled}
             >
-              <i className='fa-solid fa-clone'></i>
+              <IoDuplicateOutline />
               <span className='text-start'>Duplicate Note</span>
             </button>
 
             <DropDown
               toggler={
                 <>
-                  <i className='fa-solid fa-file-export'></i>
+                  <PiExport />
                   <span className='text-start'>Export As</span>
                 </>
               }
-              togglerClassName='grid grid-cols-[15px_auto] items-center gap-2 text-sm font-medium  text-text-secondary  hover:text-text-primary hover:bg-background-secondary transition-col duration-200 py-2 px-3 rounded-md'
+              togglerClassName='grid grid-cols-[15px_auto] items-center gap-2 text-sm font-medium  text-text-secondary  hover:text-text-primary hover:bg-background-secondary transition-colors duration-200 py-2 px-3 rounded-md'
               options={{
                 className: 'w-[260px]',
                 placement: 'bottom-start',
               }}
+              togglerDisabled={disabled}
             >
-              <DropDown.Button className='text-center' onClick={() => onExport('pdf')}>
-                <i className='fa-solid fa-file-pdf w-4'></i>
-                <span>PDF</span>
+              <DropDown.Button  onClick={() => onExport('pdf')}>
+              <PiFilePdf />
+                              <span>PDF</span>
               </DropDown.Button>
-              <DropDown.Button className='text-center' onClick={() => onExport('text')}>
-                <i className='fa-solid fa-file-lines w-4'></i>
-                <span>Text</span>
+              <DropDown.Button  onClick={() => onExport('text')}>
+              <PiFileText /> 
+                             <span>Text</span>
               </DropDown.Button>
-              <DropDown.Button className='text-center' onClick={() => onExport('html')}>
-                <i className='fa-brands fa-html5 w-4'></i>
+              <DropDown.Button  onClick={() => onExport('html')}>
+              <PiFileHtml /> 
                 <span>HTML</span>
               </DropDown.Button>
-              <DropDown.Button className='text-center' onClick={() => onExport('markdown')}>
-                <i className='fa-brands fa-markdown w-4'></i>
+              <DropDown.Button  onClick={() => onExport('markdown')}>
+              <BsMarkdown /> 
                 <span>Markdown</span>
               </DropDown.Button>
             </DropDown>
             <button
-              className='transition-col grid grid-cols-[15px_auto] items-center gap-2 rounded-md px-3 py-2 text-sm font-medium  text-red-500 duration-200 hover:bg-background-secondary hover:text-red-500'
+              className='grid grid-cols-[15px_auto] items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-red-500  transition-colors duration-200 hover:bg-background-secondary hover:text-red-500'
               onClick={() => {
                 confirmDelete({
                   message: 'Are you sure you want to delete this sticky note?',
@@ -139,7 +150,7 @@ export function Actions({
                 });
               }}
             >
-              <i className='fa-solid fa-trash-can'></i>
+              <PiTrash />
               <span className='text-start'>Delete Note</span>
             </button>
           </div>
@@ -198,7 +209,7 @@ function FontFamilies({ fontFamily, onChangeFontFamily }) {
           >
             <button
               className={
-                'h-16 w-16 rounded-md border p-3 text-lg font-medium transition-colors duration-200  hover:border-primary hover:text-primary sm:h-14 sm:w-14 ' +
+                'transition-colorsors h-16 w-16 rounded-md border p-3 text-lg font-medium duration-200  hover:border-primary hover:text-primary sm:h-14 sm:w-14 ' +
                 (fontFamily === name
                   ? 'border-primary text-primary'
                   : 'border-border text-text-secondary')
@@ -207,7 +218,7 @@ function FontFamilies({ fontFamily, onChangeFontFamily }) {
             >
               Ag
             </button>
-            <span className='text-xs text-text-tertiary transition-colors  duration-200'>
+            <span className='transition-colorsors text-xs text-text-tertiary  duration-200'>
               {label}
             </span>
           </div>

@@ -15,6 +15,7 @@ import { useModal } from '../../../../hooks/useModal';
 import { copyToClipBoard } from '../../../../utils/helpers';
 
 import completedSoundFile from '../../../../assets/completed.mp3';
+import { PiCalendarBold, PiCheckBold, PiWarningBold } from 'react-icons/pi';
 
 const completedSound = new Audio(completedSoundFile);
 
@@ -29,7 +30,7 @@ const priorities = {
   },
   3: {
     label: 'High',
-    color: '#ff0000',
+    color: '#f92626',
   },
 };
 
@@ -56,7 +57,7 @@ export function Task({
   const { lists } = useLists();
   const { tasks, handleAddTask, handleUpdateTask } = useTasks();
   const { handleOpenTask, handleCompleteTask, handleDeleteTask } = useTasks();
-  const { openModal : confirmDelete , isModalOpen } = useModal();
+  const { openModal: confirmDelete, isModalOpen } = useModal();
   const isPassed = isTaskOverdue(dueDate);
   const bind = useLongPress(() => !isModalOpen && !isSelecting && setIsTaskActionsOpen(true), {
     detect: 'touch',
@@ -89,7 +90,7 @@ export function Task({
     >
       <button
         className={
-          ' grid min-h-[49px] w-full transition-transform duration-300 select-none grid-cols-[20px_auto] items-center gap-3 rounded-lg border border-border px-3 py-2  text-start   hover:translate-y-1  sm:px-5   ' +
+          ' grid min-h-[49px] w-full select-none grid-cols-[20px_auto] items-center gap-3 rounded-lg border border-border px-3 py-2 text-start transition-transform  duration-300   hover:translate-y-1  sm:px-5   ' +
           (checked ? 'bg-background-tertiary ' : '')
         }
       >
@@ -123,7 +124,9 @@ export function Task({
 
             {isPassed && !checked && (
               <CustomTippy content='Overdue'>
-                <i className='fa-solid  fa-calendar-xmark text-lg text-red-500'></i>
+                <span>
+                  <PiCalendarBold className='text-lg text-red-500' />
+                </span>
               </CustomTippy>
             )}
           </div>
@@ -173,16 +176,16 @@ function TaskCheckbox({ checked, setChecked, isSelecting, isSelected }) {
   return (
     <div className='relative flex h-full'>
       <span
-        className={`absolute top-1/2 flex h-5 w-5 transition-transform duration-500 -translate-y-1/2 items-center justify-center rounded-full border   ${
+        className={`absolute top-1/2 flex h-5 w-5 -translate-y-1/2 items-center justify-center rounded-full border transition-transform duration-500   ${
           isSelecting ? 'scale-1' : 'scale-0'
         } ${isSelected ? 'border-transparent bg-primary' : 'border-border  '}
         `}
       >
-        <i
-          className={`fa-solid fa-check  text-xs text-white ${
+        <PiCheckBold
+          className={`text-xs text-white ${
             isSelected ? 'opacity-100' : 'opacity-0'
           }`}
-        ></i>
+    />
       </span>
 
       <CheckBox
@@ -191,7 +194,10 @@ function TaskCheckbox({ checked, setChecked, isSelecting, isSelected }) {
           setChecked(!checked);
           e.target.checked && completedSound.play();
         }}
-        className={'top-1/2 transition-transform duration-500 -translate-y-1/2   ' + (isSelecting ? 'scale-0' : 'scale-1')}
+        className={
+          'top-1/2 -translate-y-1/2 transition-transform duration-500   ' +
+          (isSelecting ? 'scale-0' : 'scale-1')
+        }
       />
     </div>
   );
@@ -200,11 +206,11 @@ function TaskDueDate({ dueDate, isPassed, checked }) {
   if (!dueDate) return null;
   return (
     <div className='flex items-center gap-2'>
-      <i
+      <PiCalendarBold
         className={
           'fas fa-calendar-alt  ' + (isPassed && !checked ? 'text-red-500' : 'text-text-tertiary')
         }
-      ></i>
+        />
       <span
         className={
           'text-xs font-semibold ' + (isPassed && !checked ? 'text-red-500' : 'text-text-secondary')
@@ -229,7 +235,7 @@ function TaskSubtasks({ subtasks }) {
         <span className='border-r border-background-primary pr-2'>{subtasks.length}</span>
         <span className='flex items-center gap-1'>
           {subtasks.filter((subtask) => JSON.parse(subtask).isCompleted).length}
-          <i className='fas fa-check '></i>
+         <PiCheckBold />
         </span>
       </div>
       <span className='text-xs font-semibold text-text-secondary'>Subtasks</span>
@@ -257,12 +263,11 @@ function TaskPriority({ priority }) {
   if (!priority) return null;
   return (
     <div className='flex items-center gap-2'>
-      <i
-        className='fas fa-triangle-exclamation text-lg'
+      <PiWarningBold 
         style={{
           color: priorities[+priority].color,
         }}
-      ></i>
+        />
       <span className='text-xs font-semibold text-text-secondary'>
         {priorities[+priority].label}
       </span>

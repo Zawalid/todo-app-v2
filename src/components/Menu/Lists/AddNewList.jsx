@@ -2,6 +2,8 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Colors } from '../../Common/Colors';
 import { useIsTitleTaken } from '../../../hooks/useIsTitleTaken';
 import { useLists } from '../../../hooks/useLists';
+import { PiCheckCircle } from 'react-icons/pi';
+import { FaRegCircleXmark } from "react-icons/fa6";
 
 export function AddNewList({ reference, isOpen }) {
   const { lists, handleAddList } = useLists();
@@ -13,7 +15,7 @@ export function AddNewList({ reference, isOpen }) {
   const [value, setValue] = useState('');
   const [color, setColor] = useState('--custom-1');
   const inputEl = useRef(null);
-  const [isTitleTaken, , setTitle] = useIsTitleTaken(lists);
+  const [isTitleTaken,  setTitle] = useIsTitleTaken(lists);
 
   useEffect(() => {
     function handleKeyDown(e) {
@@ -57,9 +59,9 @@ export function AddNewList({ reference, isOpen }) {
         </form>
         {value.trim() !== '' &&
           (isTitleTaken ? (
-            <i className='fa-regular fa-circle-xmark text-red-500'></i>
+            <FaRegCircleXmark className='text-red-500' />
           ) : (
-            <i className='fa-regular fa-circle-check text-green-500'></i>
+            <PiCheckCircle className='text-green-500' />
           ))}
       </div>
       <div className='mt-3 flex flex-wrap items-center justify-start gap-2'>

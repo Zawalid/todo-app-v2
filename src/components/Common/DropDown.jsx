@@ -35,7 +35,7 @@ export function DropDown({
     >
       <button
         onClick={(e) => e.stopPropagation()}
-        className={togglerClassName}
+        className={`${togglerClassName} disabled:bg-background-disabled disabled:text-text-disabled` }
         disabled={togglerDisabled}
       >
         {toggler}

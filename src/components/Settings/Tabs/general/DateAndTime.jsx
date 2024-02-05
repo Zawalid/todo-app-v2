@@ -1,4 +1,5 @@
 import { PiCalendar } from 'react-icons/pi';
+import { IoChevronDownOutline } from "react-icons/io5";
 import { DropDown } from '../../../Common/DropDown';
 import { format } from 'date-fns';
 import { Controller, useWatch } from 'react-hook-form';
@@ -24,7 +25,7 @@ export function DateAndTime({ control, setValue }) {
             toggler={
               <DropDown.Toggler>
                 <span>{weekStartsOn}</span>
-                <i className='fa-solid fa-chevron-down text-xs'></i>
+                <IoChevronDownOutline />
               </DropDown.Toggler>
             }
             options={{ className: 'w-48' }}
@@ -64,7 +65,7 @@ function DateFormat({ control, setValue }) {
         toggler={
           <DropDown.Toggler>
             <span>{format(sampleDate, dateFormat)}</span>
-            <i className='fa-solid fa-chevron-down text-xs'></i>
+            <IoChevronDownOutline />
           </DropDown.Toggler>
         }
         options={{ className: 'w-48' }}
@@ -107,7 +108,7 @@ function TimeFormat({ control, setValue }) {
         toggler={
           <DropDown.Toggler>
             <span>{format(sampleDate, timeFormat)}</span>
-            <i className='fa-solid fa-chevron-down text-xs'></i>
+            <IoChevronDownOutline />
           </DropDown.Toggler>
         }
         options={{ className: 'w-48' }}

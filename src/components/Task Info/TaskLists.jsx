@@ -1,6 +1,8 @@
 import { useLists } from '../../hooks/useLists';
 import { isTouchDevice } from '../../utils/helpers';
 import { DropDown } from '../Common/DropDown';
+import { IoChevronDownOutline } from 'react-icons/io5';
+
 
 export function TaskLists({ taskListId, setTaskListId }) {
   const { lists } = useLists();
@@ -15,7 +17,7 @@ export function TaskLists({ taskListId, setTaskListId }) {
               {' '}
               {lists?.find((list) => list.$id === taskListId)?.title || 'None'}{' '}
             </span>
-            <i className='fa-solid fa-chevron-down ml-2 text-xs'></i>
+            <IoChevronDownOutline />
           </DropDown.Toggler>
         }
       >

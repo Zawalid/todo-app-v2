@@ -1,6 +1,8 @@
 import { useRef, useState } from 'react';
 import { isTaskOverdue } from '../../utils/Dates';
 import { DropDown } from '../Common/DropDown';
+import { PiCalendarBold, PiX } from 'react-icons/pi';
+import { IoChevronDownOutline } from 'react-icons/io5';
 
 export function TaskDueDate({ taskDueDate, setTaskDueDate, inSettings }) {
   const [date, setDate] = useState(taskDueDate);
@@ -15,7 +17,6 @@ export function TaskDueDate({ taskDueDate, setTaskDueDate, inSettings }) {
     tomorrow.toISOString().split('T')[0],
     '',
   ].includes(taskDueDate);
-
 
   function handleAddDueDate(dueDate) {
     const date =
@@ -39,7 +40,7 @@ export function TaskDueDate({ taskDueDate, setTaskDueDate, inSettings }) {
             className={isOverDue ? 'text-red-500' : 'text-text-secondary'}
             onClick={() => setTaskDueDate('')}
           >
-            <i className='fa-solid fa-xmark'></i>
+            <PiX />
           </button>
         )}
         <DropDown
@@ -53,7 +54,7 @@ export function TaskDueDate({ taskDueDate, setTaskDueDate, inSettings }) {
                   ? 'Tomorrow'
                   : taskDueDate}
               </span>
-              <i className='fa-solid fa-calendar-days  text-sm'></i>
+              <PiCalendarBold />
             </DropDown.Toggler>
           }
           options={{ className: 'w-52', shouldCloseOnClick: false }}
@@ -62,9 +63,8 @@ export function TaskDueDate({ taskDueDate, setTaskDueDate, inSettings }) {
             onClick={() => handleAddDueDate('Today')}
             isCurrent={taskDueDate === today.toISOString().split('T')[0]}
           >
-            <i className='fa-solid fa-calendar  text-text-tertiary'></i>
-            <span className='text-start text-text-primary '>Today</span>
-            <span className='text-text-tertiary'>
+            <span>Today</span>
+            <span className='text-end text-text-tertiary'>
               {today.toLocaleDateString(undefined, { weekday: 'short' })}
             </span>
           </DropDown.Button>
@@ -72,9 +72,8 @@ export function TaskDueDate({ taskDueDate, setTaskDueDate, inSettings }) {
             onClick={() => handleAddDueDate('Tomorrow')}
             isCurrent={taskDueDate === tomorrow.toISOString().split('T')[0]}
           >
-            <i className='fa-solid fa-calendar  text-text-tertiary'></i>
-            <span className='text-start text-text-primary '>Tomorrow</span>
-            <span className='text-text-tertiary'>
+            <span>Tomorrow</span>
+            <span className='text-end text-text-tertiary'>
               {tomorrow.toLocaleDateString(undefined, { weekday: 'short' })}
             </span>{' '}
           </DropDown.Button>
@@ -82,20 +81,17 @@ export function TaskDueDate({ taskDueDate, setTaskDueDate, inSettings }) {
           <DropDown.NestedMenu
             toggler={
               <DropDown.Button isCurrent={isPicked && taskDueDate}>
-                <i className='fa-solid fa-calendar  text-text-tertiary'></i>
-                <span className='text-start text-text-primary '>
-                  {isPicked ? taskDueDate : 'Pick a date'}
-                </span>
-                <i className='fa-solid fa-chevron-down text-text-tertiary  '></i>
+                <span>{isPicked ? taskDueDate : 'Pick a date'}</span>
+                  <IoChevronDownOutline className='absolute right-2' />
               </DropDown.Button>
             }
             options={{ className: 'w-52', placement: 'bottom', shouldCloseOnClick: false }}
-            togglerClassName='w-full'
+            togglerClassName='w-full relative'
           >
             <label className='text-text-primary '>
               <input
                 type='date'
-                className='w-full bg-transparent p-2 focus:outline-none'
+                className='w-full bg-transparent  focus:outline-none'
                 value={date}
                 onChange={(e) => {
                   setDate(e.target.value);

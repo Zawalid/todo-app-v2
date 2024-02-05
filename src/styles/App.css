@@ -15,6 +15,9 @@
   & svg {
     @apply text-lg text-text-secondary;
   }
+  &.trash svg {
+    @apply text-red-500;
+  }
   & .count {
     @apply grid place-content-center rounded-sm bg-background-tertiary py-[1px] transition-colors duration-200  group-hover:bg-background-primary;
   }
@@ -41,10 +44,10 @@
   &:not(:disabled).active {
     @apply bg-primary  text-white;
   }
-
   &:not(:disabled).not-active {
     @apply bg-background-secondary text-text-tertiary hover:bg-background-tertiary;
   }
+
 
   &.small {
     @apply h-7 w-7;
@@ -74,7 +77,7 @@
     @apply hover:bg-red-500 hover:text-white;
   }
   &.disabled {
-    @apply  bg-background-disabled text-text-disabled cursor-default
+    @apply cursor-default bg-background-disabled text-text-disabled;
   }
 }
 

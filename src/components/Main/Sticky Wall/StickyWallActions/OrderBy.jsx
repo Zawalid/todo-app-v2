@@ -1,23 +1,28 @@
+import { MdOutlineSortByAlpha } from 'react-icons/md';
+import { PiCheckBold } from 'react-icons/pi';
+import { IoChevronForward } from 'react-icons/io5';
+
 import { DropDown } from '../../../Common/DropDown';
 
-export default function OrderBy({  direction, setDirection, sortBy,options }) {
+export default function OrderBy({ direction, setDirection, sortBy, options }) {
   return (
     <DropDown.NestedMenu
-      toggler={ <DropDown.Button className='justify-between'>
-      <i className='fa-solid fa-arrow-down-z-a'></i>{' '}
-      <span className='text-start'>Order By</span>
-      <i className='fa-solid fa-chevron-right'></i>
-    </DropDown.Button>}
-            options={options}
-
+      toggler={
+        <DropDown.Button className='justify-between'>
+          <MdOutlineSortByAlpha />
+          <span className='text-start'>Order By</span>
+          <IoChevronForward />
+        </DropDown.Button>
+      }
+      options={options}
     >
       <DropDown.Button onClick={() => setDirection('asc')} className='justify-between'>
         <span>{sortBy === 'title' ? 'A-Z' : 'Oldest-Newest'}</span>
-        {direction === 'asc' && <i className='fa-solid fa-check'></i>}
+        {direction === 'asc' && <PiCheckBold />}
       </DropDown.Button>
       <DropDown.Button onClick={() => setDirection('desc')} className='justify-between'>
         <span>{sortBy === 'title' ? 'Z-A' : 'Newest-Oldest'}</span>
-        {direction === 'desc' && <i className='fa-solid fa-check'></i>}
+        {direction === 'desc' && <PiCheckBold />}
       </DropDown.Button>
     </DropDown.NestedMenu>
   );

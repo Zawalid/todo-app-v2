@@ -1,3 +1,4 @@
+import { IoChevronDownOutline } from "react-icons/io5";
 import { DropDown } from '../Common/DropDown';
 
 export const TaskPriority = ({ taskPriority, setTaskPriority, inSettings }) => {
@@ -30,7 +31,7 @@ export const TaskPriority = ({ taskPriority, setTaskPriority, inSettings }) => {
         toggler={
           <DropDown.Toggler>
             <span> {priorities.find((priority) => priority.value === +taskPriority)?.label} </span>
-            <i className='fa-solid fa-chevron-down text-xs'></i>
+            <IoChevronDownOutline />
           </DropDown.Toggler>
         }
       >

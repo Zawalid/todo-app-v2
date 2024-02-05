@@ -7,6 +7,7 @@ import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { useModal } from '../../../hooks/useModal';
 import { Actions } from './Actions';
 import Modal from '../../Common/Modal';
+import { PiInfoFill, PiX } from 'react-icons/pi';
 
 export default function Trash({ isOpen, onClose }) {
   const {
@@ -87,7 +88,7 @@ export default function Trash({ isOpen, onClose }) {
           />
           {onClose && (
             <button className='icon-button sm:hidden not-active small' onClick={onClose}>
-              <i className='fa-solid fa-xmark'></i>
+               <PiX />
             </button>
           )}
         </div>
@@ -146,7 +147,7 @@ function Items({ trash, currentTab, onDelete, onRestore }) {
 function Info() {
   return (
     <div className='flex items-center justify-center gap-2'>
-      <i className='fa-solid fa-info-circle text-blue-400'></i>
+      <PiInfoFill  className=' text-blue-400'/>
       <p className='text-[10px] font-medium text-text-tertiary sm:text-xs '>
         Items in the trash will be automatically cleared after 30 days.
       </p>

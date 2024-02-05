@@ -12,6 +12,7 @@ import { useHref } from 'react-router-dom';
 import { useModal } from '../../hooks/useModal';
 import { Actions } from './Actions';
 import { Button } from '../Common/Button';
+import { PiCheckBold, PiXBold } from 'react-icons/pi';
 
 export function TaskInfo() {
   const {
@@ -147,7 +148,7 @@ export function TaskInfo() {
             onClick={() => (isChanged ? handleSaveChanges() : setIsTaskOpen(false))}
             id='closeTaskInfo'
           >
-            <i className='fa-solid fa-check text-white '></i>
+            <PiCheckBold color='white' />
           </button>
         ) : (
           <div className='flex items-center gap-3'>
@@ -156,7 +157,7 @@ export function TaskInfo() {
               onClick={() => setIsTaskOpen(false)}
               id='closeTaskInfo'
             >
-              <i className='fa-solid fa-xmark text-lg text-text-tertiary'></i>
+             <PiXBold />
             </button>
             <Actions
               date={{

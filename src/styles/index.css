@@ -1,4 +1,3 @@
-@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -16,8 +15,9 @@
     --text-secondary: #333333;
     --text-tertiary: #666666;
     --text-disabled: #bbbbbb;
+    --text-placeholder: #e1e1e0;
     --border: rgba(0, 0, 0, 0.1);
-    
+
     /* Colors */
     --custom-1: #ff6b6b;
     --custom-2: #da77f2;
@@ -42,6 +42,7 @@
     --text-secondary: #cacaca;
     --text-tertiary: #b3b3b3;
     --text-disabled: #444444;
+    --text-placeholder: #373737;
     --border: rgba(255, 255, 255, 0.1);
 
     /* Colors */

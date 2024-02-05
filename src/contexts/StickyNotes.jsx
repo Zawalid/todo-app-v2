@@ -205,15 +205,19 @@ export default function StickyNotesProvider({ children }) {
       const note = await databases.getDocument(DATABASE_ID, STICKY_NOTES_COLLECTION_ID, id);
       setCurrentNote(note);
     } catch (error) {
-      toast.error('Failed to fetch the sticky note.', {
-        duration: 4000,
-        action: {
-          label: 'Try again',
-          onClick: async () => {
-            await handleGetStickyNote();
+      toast.error(
+        error.code === 404 ? 'Sticky note not found.' : 'Something went wrong while fetching note.',
+        {
+          duration: 4000,
+          action: {
+            label: 'Try again',
+            onClick: async () => {
+              await handleGetStickyNote();
+            },
           },
         },
-      });
+      );
+      navigate('/app/sticky-wall');
     }
   }
 

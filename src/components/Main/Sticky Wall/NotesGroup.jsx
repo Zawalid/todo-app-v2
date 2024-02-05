@@ -1,9 +1,21 @@
+import { useNavigate } from 'react-router-dom';
 import { StickyNote } from './StickyNote';
 import { useStickyNotes } from '../../../hooks/useStickyNotes';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { GiPin } from 'react-icons/gi';
+import { RxCountdownTimer } from 'react-icons/rx';
+import { IoChevronUp, IoChevronDown } from 'react-icons/io5';
 
-export function NotesGroup({ render, group, view, isSelecting, isCollapsed, parent, condition, groupBy }) {
+export function NotesGroup({
+  render,
+  group,
+  view,
+  isSelecting,
+  isCollapsed,
+  parent,
+  condition,
+  groupBy,
+}) {
   const [isGroupOpen, setIsGroupOpen] = useState(true);
   const { stickyNotes, selectedNotes, setSelectedNotes } = useStickyNotes();
   const navigate = useNavigate();
@@ -11,6 +23,11 @@ export function NotesGroup({ render, group, view, isSelecting, isCollapsed, pare
   useEffect(() => {
     setIsGroupOpen(!isCollapsed);
   }, [isCollapsed]);
+
+  const color =
+    groupBy === 'color'
+      ? window.getComputedStyle(document.documentElement).getPropertyValue(group)
+      : null;
 
   if (!stickyNotes.some(condition) || !group) return null;
 
@@ -21,31 +38,30 @@ export function NotesGroup({ render, group, view, isSelecting, isCollapsed, pare
         onClick={() => setIsGroupOpen((prev) => !prev)}
       >
         <span className={`flex items-center gap-2 ${groupBy === 'color' ? 'uppercase' : ''}`}>
-          {group === 'Recent' && <i className='fa-solid fa-clock-rotate-left mr-2'></i>}
-          {group === 'Pinned' && <i className='fa-solid fa-thumbtack mr-2'></i>}
+          {group === 'Recent' && <RxCountdownTimer />}
+          {group === 'Pinned' && <GiPin />}
           {groupBy === 'color' && (
-            <div className='h-5 w-5 rounded-[3px]' style={{ backgroundColor: group }}></div>
+            <div className='h-5 w-5 rounded-[3px]' style={{ backgroundColor: color }}></div>
           )}
-          {group}
+          {color || group}
         </span>
-        {isGroupOpen ? (
-          <i className='fa-solid fa-chevron-up ml-1 text-xs'></i>
-        ) : (
-          <i className='fa-solid fa-chevron-down ml-1 text-xs'></i>
-        )}
+        {isGroupOpen ? <IoChevronUp /> : <IoChevronDown />}
       </button>
       <div
-        className={'flex-1 overflow-auto ' +
+        className={
+          'flex-1 overflow-auto ' +
           (view === 'list'
             ? 'space-y-3 '
             : ' grid grid-cols-[repeat(auto-fill,minmax(270px,1fr))] gap-4 ') +
-          (isGroupOpen ? 'h-auto' : 'h-0')}
+          (isGroupOpen ? 'h-auto' : 'h-0')
+        }
         ref={parent}
       >
         {render()
           .filter(condition)
           .map((stickyNote) => {
-            const isSelected = selectedNotes.filter((note) => note.$id === stickyNote.$id).length > 0;
+            const isSelected =
+              selectedNotes.filter((note) => note.$id === stickyNote.$id).length > 0;
             return (
               <StickyNote
                 key={stickyNote.$id}
@@ -53,14 +69,15 @@ export function NotesGroup({ render, group, view, isSelecting, isCollapsed, pare
                 onClick={() => {
                   isSelecting
                     ? setSelectedNotes((prev) => {
-                      if (isSelected) return prev.filter((t) => t.$id !== stickyNote.$id);
-                      else return [...prev, { $id: stickyNote.$id, title: stickyNote.title }];
-                    })
+                        if (isSelected) return prev.filter((t) => t.$id !== stickyNote.$id);
+                        else return [...prev, { $id: stickyNote.$id, title: stickyNote.title }];
+                      })
                     : navigate(`/app/sticky-wall/${stickyNote.$id}`);
                 }}
                 listView={view === 'list'}
                 isSelecting={isSelecting}
-                isSelected={isSelected} />
+                isSelected={isSelected}
+              />
             );
           })}
       </div>

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import CustomTippy from '../../../../../Common/CustomTippy';
+import { FaLink } from 'react-icons/fa';
 
 export const AddLink = ({ editor,readonly }) => {
   const [url, setUrl] = useState('');
@@ -57,7 +58,8 @@ export const AddLink = ({ editor,readonly }) => {
         className={editor.isActive('link') ? 'icon-button active' : 'icon-button not-active'}
         onClick={() => setUrl(editor.isActive('link') ? editor.getAttributes('link').href : '')}
       >
-        <i className='fa-solid fa-link'></i>
+          <FaLink />
+
       </button>
     </CustomTippy>
   );

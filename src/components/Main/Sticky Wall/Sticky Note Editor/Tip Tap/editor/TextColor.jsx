@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ColorPicker } from './ColorPicker';
 import CustomTippy from '../../../../../Common/CustomTippy';
+import { FaPaintBrush } from 'react-icons/fa';
 
 export function TextColor({ editor, readonly }) {
   const [color, setColor] = useState(
@@ -22,7 +23,7 @@ export function TextColor({ editor, readonly }) {
           disabled={disabled}
           className='icon-button not-active'
         >
-          <i className='fa-solid fa-paintbrush'></i>
+          <FaPaintBrush />
         </button>
       </CustomTippy>
     </ColorPicker>

@@ -1,14 +1,15 @@
 import { useTags } from '../../../hooks/useTags';
 import { useModal } from '../../../hooks/useModal';
+import { PiX } from 'react-icons/pi';
 
 export function Tag({ tag, showDeleteButton, customClassName, onDeleteTag, onSelectTag }) {
   const { handleDeleteTag } = useTags();
-  const { openModal : confirmDelete  } = useModal();
+  const { openModal: confirmDelete } = useModal();
   return (
     <>
       <div
         className={
-          'grid items-center gap-1 overflow-hidden pt-5' +
+          'grid items-center gap-1 overflow-hidden' +
           (showDeleteButton ? ' grid-cols-[16px_auto]' : '')
         }
       >
@@ -25,7 +26,7 @@ export function Tag({ tag, showDeleteButton, customClassName, onDeleteTag, onSel
                   });
             }}
           >
-            <i className='fas fa-xmark text-red-500'></i>
+            < PiX className='text-red-500' />
           </button>
         )}
         <li
