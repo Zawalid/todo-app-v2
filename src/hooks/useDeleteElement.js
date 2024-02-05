@@ -1,14 +1,14 @@
+import { useSelector } from 'react-redux';
 import { appWriteConfig, databases } from '../lib/appwrite/config';
 import { useLoadElements } from './useLoadElements';
 import { useTrash } from './useTrash';
-import { useUser } from './useUser';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 
 export function useDeleteElement() {
   const { handleAddToTrash } = useTrash();
   const { handleLoadElements } = useLoadElements();
-  const { user } = useUser();
+  const user = useSelector((state) => state.user.user);
 
   async function handleDeleteElement(
     id,

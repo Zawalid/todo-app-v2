@@ -8,10 +8,12 @@ import { Tab } from '../Tab';
 import { useReactHookForm } from '../../useReactHookForm';
 import { Controller, useWatch } from 'react-hook-form';
 import { Label } from '../../../Common/Label';
+import { useSelector } from 'react-redux';
 
 export default function Account() {
-  const { getCurrentUser, handleUpdateProfile } = useUser();
+  const { handleUpdateProfile } = useUser();
   const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
+  const user = useSelector((state) => state.user.user);
   const {
     control,
     isUpdated,
@@ -25,7 +27,6 @@ export default function Account() {
     onCancel,
   } = useReactHookForm({
     defaultValues: async () => {
-      const user = await getCurrentUser();
       return {
         name: user.name,
         email: user.email,

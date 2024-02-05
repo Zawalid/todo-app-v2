@@ -1,14 +1,14 @@
 import { Outlet, Navigate } from 'react-router-dom';
-import { useUser } from '../hooks/useUser';
 import bgImage from '../assets/bg.png';
 import { Logo } from '../components/Common/Logo';
+import { useSelector } from 'react-redux';
 
 function AuthLayout() {
-  const { checkIsUserAuthenticated } = useUser();
+  const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
 
   return (
     <>
-      {checkIsUserAuthenticated() ? (
+      {isAuthenticated ? (
         <Navigate to='/app' replace={true} />
       ) : (
         <div className='flex h-full  w-full p-5 '>

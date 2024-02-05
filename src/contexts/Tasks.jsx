@@ -3,8 +3,9 @@ import { ID } from 'appwrite';
 import { databases, appWriteConfig, setPermissions } from '../lib/appwrite/config';
 import { toast } from 'sonner';
 import { checkIfToday, checkIfTomorrow, isDateInCurrentWeek } from '../utils/Dates';
-import { useDeleteElement, useUser } from '../hooks';
+import { useDeleteElement, } from '../hooks';
 import { getDeletionMessage } from '../utils/helpers';
+import { useSelector } from 'react-redux';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 const TASKS_COLLECTION_ID = appWriteConfig.tasksCollectionId;
@@ -19,8 +20,8 @@ export default function TasksProvider({ children }) {
   const [isAddingTask, setIsAddingTask] = useState(false);
   const [selectedTasks, setSelectedTasks] = useState([]);
   const { handleDeleteElement } = useDeleteElement();
-  const { user } = useUser();
   const [currentProcessedTask, setCurrentProcessedTask] = useState(null);
+  const user = useSelector((state) => state.user.user);
 
   const todayTasks = tasks?.filter((task) => checkIfToday(task.dueDate));
   const tomorrowTasks = tasks?.filter((task) => checkIfTomorrow(task.dueDate));

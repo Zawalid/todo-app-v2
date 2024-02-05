@@ -9,10 +9,8 @@ const DEFAULT_OPTIONS = {
   showCheckBox: true,
   icon : <PiWarningFill />
 };
-import deletedSoundFile from '../../assets/deleted.mp3';
 import { Button } from './Button';
 import { PiWarningFill } from 'react-icons/pi';
-const deletedSound = new Audio(deletedSoundFile);
 
 export const ModalContext = createContext();
 
@@ -31,7 +29,6 @@ export function ModalProvider({ children }) {
   };
   const onConfirm = useCallback(() => {
     options.onConfirm(isChecked);
-    setTimeout(() => deletedSound.play(), 300);
     closeModal();
   }, [options, isChecked]);
   const onCancel = () => {

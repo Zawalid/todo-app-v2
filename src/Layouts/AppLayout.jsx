@@ -1,36 +1,35 @@
 import { TaskInfo } from '../components/Task Info/TaskInfo';
 import { Menu } from '../components/Menu/Menu';
-import { useTrash, useUser } from '../hooks';
 import { Navigate, Outlet } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useFetchAllElements } from '../hooks/useFetchAllElements';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
+import { useSelector } from 'react-redux';
 
 export default function AppLayout() {
-  const { checkIsUserAuthenticated, user } = useUser();
-  const { handleFetchAllElements, handleDeleteAllElements } = useFetchAllElements();
-  const { initializeTrash } = useTrash();
+  const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
+  const { handleFetchAllElements, handleClearAllElements } = useFetchAllElements();
 
   useEffect(() => {
     const fetch = () => {
       handleFetchAllElements();
-      initializeTrash(user);
     };
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') fetch();
     };
-    if (checkIsUserAuthenticated()) {
+    if (isAuthenticated) {
       fetch();
       document.addEventListener('visibilitychange', handleVisibilityChange);
     }
     return () => {
-      !checkIsUserAuthenticated() && handleDeleteAllElements();
+      // To clear all elements from the state when the user logs out
+      !isAuthenticated && handleClearAllElements();
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, []);
 
-  if (checkIsUserAuthenticated()) {
+  if (isAuthenticated) {
     return (
       <>
         <Menu />

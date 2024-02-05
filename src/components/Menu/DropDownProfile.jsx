@@ -10,6 +10,7 @@ import {
 import { IoChevronDownOutline, IoSyncOutline } from 'react-icons/io5';
 import { useDarkMode, useUser, useFetchAllElements, useModal } from '../../hooks';
 import { DropDown } from '../Common/DropDown';
+import { useSelector } from 'react-redux';
 
 export function DropDownProfile({ setIsSettingsOpen, setIsTrashOpen }) {
   return (
@@ -56,7 +57,7 @@ export function DropDownProfile({ setIsSettingsOpen, setIsTrashOpen }) {
 }
 
 function Profile() {
-  const { user } = useUser();
+  const user = useSelector((state) => state.user.user);
 
   return (
     <div className='transition-color flex flex-1 items-center justify-between gap-3 rounded-md px-1.5 py-1 duration-200 hover:bg-background-tertiary'>

@@ -3,9 +3,9 @@ import { databases, appWriteConfig, setPermissions } from '../lib/appwrite/confi
 import { ID } from 'appwrite';
 import { useDeleteElement } from '../hooks/useDeleteElement';
 import { toast } from 'sonner';
-import { useUser } from '../hooks/useUser';
 import { getDeletionMessage, isElementEmpty } from '../utils/helpers';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 const STICKY_NOTES_COLLECTION_ID = appWriteConfig.stickyNotesCollectionId;
@@ -19,7 +19,7 @@ export default function StickyNotesProvider({ children }) {
   const [currentProcessedNote, setCurrentProcessedNote] = useState(null);
   const [isNotesLoading, setIsNotesLoading] = useState(true);
   const { handleDeleteElement } = useDeleteElement();
-  const { user } = useUser();
+  const user = useSelector((state) => state.user.user);
   const navigate = useNavigate();
 
   async function handleAddStickyNote(note, duplicate) {

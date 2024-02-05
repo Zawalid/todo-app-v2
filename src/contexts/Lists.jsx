@@ -3,7 +3,7 @@ import { databases, appWriteConfig, setPermissions } from '../lib/appwrite/confi
 import { ID } from 'appwrite';
 import { useDeleteElement } from '../hooks/useDeleteElement';
 import { toast } from 'sonner';
-import { useUser } from '../hooks/useUser';
+import { useSelector } from 'react-redux';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 const LISTS_COLLECTION_ID = '65422c65a17f95378d53';
@@ -14,7 +14,7 @@ function ListsProvider({ children }) {
   const [lists, setLists] = useState();
   const [isListsLoading, setIsListsLoading] = useState(true);
   const { handleDeleteElement } = useDeleteElement();
-  const { user } = useUser();
+  const user = useSelector((state) => state.user.user);
   const [currentProcessedList, setCurrentProcessedList] = useState(null);
 
   async function handleAddList(title, color, list) {

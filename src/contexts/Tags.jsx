@@ -3,7 +3,7 @@ import { databases, appWriteConfig, setPermissions } from '../lib/appwrite/confi
 import { ID } from 'appwrite';
 import { useDeleteElement } from '../hooks/useDeleteElement';
 import { toast } from 'sonner';
-import { useUser } from '../hooks/useUser';
+import { useSelector } from 'react-redux';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 const TAGS_COLLECTION_ID = appWriteConfig.tagsCollectionId;
@@ -14,7 +14,7 @@ function TagsProvider({ children }) {
   const [tags, setTags] = useState([]);
   const [isTagsLoading, setIsTagsLoading] = useState(true);
   const { handleDeleteElement } = useDeleteElement();
-  const { user } = useUser();
+  const user = useSelector((state) => state.user.user);
 
   async function handleAddTag(title, bgColor, textColor) {
     const toastId = toast.promise(
