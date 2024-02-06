@@ -64,7 +64,7 @@ export default function Trash({ isOpen, onClose }) {
                   currentTab === 'stickyNotes' ? 'sticky notes' : currentTab
                 } permanently ?`,
                 confirmText: 'Delete All',
-                showCheckBox: false,
+                showCheckbox: false,
                 onConfirm: async () => {
                   handleEmptyType(currentTab);
                 },
@@ -75,7 +75,7 @@ export default function Trash({ isOpen, onClose }) {
                 title: 'Empty Trash',
                 message: 'Are you sure you want to empty trash ?',
                 confirmText: 'Empty',
-                showCheckBox: false,
+                showCheckbox: false,
                 onConfirm: async () => {
                   handleEmptyTrash();
                 },
@@ -104,7 +104,7 @@ export default function Trash({ isOpen, onClose }) {
                 ? 'sticky note'
                 : currentTab.slice(0, currentTab.length - 1)
             } permanently ?`,
-            showCheckBox: false,
+            showCheckbox: false,
             onConfirm: async () => {
               handleDeleteFromTrash(currentTab, JSON.parse(item).id);
             },

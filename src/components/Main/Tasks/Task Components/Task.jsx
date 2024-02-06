@@ -14,12 +14,10 @@ import CustomTippy from '../../../Common/CustomTippy';
 import { useModal } from '../../../../hooks/useModal';
 import { copyToClipBoard } from '../../../../utils/helpers';
 
-import completedSoundFile from '../../../../assets/completed.mp3';
 import { PiCalendarBold, PiCheckBold, PiWarningBold } from 'react-icons/pi';
 import { useSelector } from 'react-redux';
 import { useFormatDateAndTime } from '../../../../hooks/useFormatDateAndTime';
 
-const completedSound = new Audio(completedSoundFile);
 
 const priorities = {
   1: {
@@ -135,6 +133,7 @@ export function Task({
           setChecked={setChecked}
           isSelecting={isSelecting}
           isSelected={isSelected}
+          onDelete={async () => handleDeleteTask($id)}
         />
         <div className=' overflow-hidden'>
           <span
@@ -212,7 +211,6 @@ export function Task({
 }
 
 function TaskCheckbox({ checked, setChecked, isSelecting, isSelected }) {
-  const { taskCompletionSound } = useSelector((state) => state.settings.general.preferences);
   return (
     <div className='relative flex h-full'>
       <span
@@ -226,11 +224,7 @@ function TaskCheckbox({ checked, setChecked, isSelecting, isSelected }) {
 
       <CheckBox
         checked={checked}
-        onChange={(e) => {
-          setChecked(!checked);
-          if (!taskCompletionSound) return;
-          e.target.checked && completedSound.play();
-        }}
+        onChange={() => setChecked(!checked)}
         className={
           'top-1/2 -translate-y-1/2 transition-transform duration-500   ' +
           (isSelecting ? 'scale-0' : 'scale-1')

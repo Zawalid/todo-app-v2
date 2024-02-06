@@ -108,7 +108,16 @@ input[type='checkbox'] {
   @apply absolute  z-[5] h-full max-h-full w-full !important;
 }
 .setting {
-  @apply flex flex-col gap-3 xs:grid xs:grid-cols-[auto_144px] xs:items-center xs:gap-6 sm:gap-10;
+  @apply flex flex-col gap-x-3 gap-y-3 xs:grid xs:grid-cols-[auto_144px] xs:items-center xs:gap-x-6 sm:gap-x-10;
+
+  & .sub-setting {
+    @apply col-span-2 flex w-full items-center justify-between gap-3 p-4;
+  }
+
+  &.disabled,
+  .sub-setting.disabled {
+    @apply pointer-events-none text-text-disabled opacity-40;
+  }
 
   &.not-done {
     @apply cursor-not-allowed;
@@ -123,7 +132,7 @@ input[type='checkbox'] {
   & p {
     @apply mt-2 text-xs text-text-tertiary;
   }
-  & > :last-child {
+  & > :not(:first-child) {
     @apply justify-self-end;
   }
 }

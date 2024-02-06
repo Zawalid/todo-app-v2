@@ -18,6 +18,7 @@ const DEFAULT_SETTINGS = {
       defaultPriority: 0,
       weeklyDueDate: 'Sunday',
       autoDeleteCompletedTasks: false,
+      deletePermanently: false,
       taskDetailLevel: ['dueDate', 'list', 'priority', 'subtasks', 'tags'],
     },
     stickyNotes: {
@@ -33,6 +34,7 @@ const DEFAULT_SETTINGS = {
     showInSideBar: ['inbox', 'stickyWall', 'today', 'upcoming', 'lists', 'tags'],
     showCount: true,
   },
+  isDefault: true,
 };
 
 const settingsReducer = createSlice({
@@ -42,6 +44,7 @@ const settingsReducer = createSlice({
     updateSettings(state, action) {
       const { category, settings } = action.payload;
       state[category] = settings;
+      state.isDefault = false;
     },
     resetSettings(state) {
       Object.assign(state, DEFAULT_SETTINGS);
