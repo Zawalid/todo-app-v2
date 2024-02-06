@@ -6,6 +6,7 @@ import { Task } from './Task Components/Task';
 import { AddTask } from './Task Components/AddTask';
 import { UpcomingSkeleton } from '../../Skeletons';
 import { useAutoAnimate } from '../../../hooks/useAutoAnimate';
+import { useSelector } from 'react-redux';
 
 const periods = [
   {
@@ -25,12 +26,11 @@ const periods = [
     id: 'thisWeek',
     tasks: 'thisWeekTasks',
     dueDate: format(endOfWeek(new Date()), 'yyyy-MM-dd'),
-  }
+  },
 ];
 export default function Upcoming() {
   const { upcomingTasks, isTasksLoading } = useTasks();
   const wrapper = useRef(null);
-
 
   useEffect(() => {
     document.title = `I Do | Upcoming`;
@@ -65,6 +65,7 @@ function PeriodTasks({ title, period, parentRef, isToday }) {
   const [parent] = useAutoAnimate({
     duration: 500,
   });
+  const { weekStartsOn } = useSelector((state) => state.settings.general.dateAndTime);
 
   const tasks = {
     todayTasks,
@@ -91,7 +92,9 @@ function PeriodTasks({ title, period, parentRef, isToday }) {
       <h1 className='mb-3 border-b border-border p-4 pb-3 text-xl font-bold text-text-primary sm:text-2xl'>
         {title}
         {title === 'This Week' && (
-          <span className='ml-3 text-xs text-text-tertiary'>(Mon - Sun)</span>
+          <span className='ml-3 text-xs text-text-tertiary'>
+            {weekStartsOn === 1 ? 'Mon - Sun' : 'Sun - Sat'}
+          </span>
         )}
       </h1>
       <i

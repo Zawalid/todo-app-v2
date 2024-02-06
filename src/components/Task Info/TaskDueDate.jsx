@@ -8,7 +8,6 @@ import { useFormatDateAndTime } from '../../hooks/useFormatDateAndTime';
 export function TaskDueDate({ taskDueDate, setTaskDueDate, inSettings }) {
   const [date, setDate] = useState(taskDueDate);
   const format = useFormatDateAndTime()
-
   const instanceRef = useRef(null);
   const today = new Date();
   const tomorrow = new Date(today);
