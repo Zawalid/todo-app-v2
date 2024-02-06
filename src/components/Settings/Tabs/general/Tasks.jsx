@@ -1,7 +1,7 @@
 import { Controller, useWatch } from 'react-hook-form';
 import papaparse from 'papaparse';
 import { PiDownloadSimpleLight, PiListChecks } from 'react-icons/pi';
-import { IoChevronDownOutline } from "react-icons/io5";
+import { IoChevronDownOutline } from 'react-icons/io5';
 import { BsBraces, BsFiletypeCsv } from 'react-icons/bs';
 import { TaskDueDate } from '../../../Task Info/TaskDueDate';
 import { TaskPriority } from '../../../Task Info/TaskPriority';
@@ -60,7 +60,7 @@ export function Tasks({ control, setValue }) {
             render={({ field }) => <input {...field} type='hidden' />}
           />
         </div>
-        <div className='setting'>
+        <div className='setting done'>
           <div>
             <h4>Weekly Due Date</h4>
             <p>Tasks added in {'This Week'} will have their due date set to the selected day.</p>
@@ -74,7 +74,7 @@ export function Tasks({ control, setValue }) {
             }
             options={{ className: 'w-48' }}
           >
-            {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map(
+            {['Sunday','Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map(
               (day) => (
                 <DropDown.Button
                   key={day}
@@ -116,7 +116,7 @@ export function Tasks({ control, setValue }) {
             render={({ field }) => <input {...field} type='hidden' />}
           />
         </div>
-        <div className='setting'>
+        <div className='setting done'>
           <div>
             <h4>Export Tasks</h4>
             <p>Export all your tasks.</p>
@@ -214,14 +214,11 @@ function ExportTasks() {
         </DropDown.Toggler>
       }
     >
-      <DropDown.Button
-        className='text-center'
-        onClick={() => exportAs(updatedTasks(false), 'json')}
-      >
+      <DropDown.Button onClick={() => exportAs(updatedTasks(false), 'json')}>
         <BsBraces />
         <span>JSON</span>
       </DropDown.Button>
-      <DropDown.Button className='text-center' onClick={() => exportAs(updatedTasks(true), 'csv')}>
+      <DropDown.Button onClick={() => exportAs(updatedTasks(true), 'csv')}>
         <BsFiletypeCsv />
         <span>CSV</span>
       </DropDown.Button>

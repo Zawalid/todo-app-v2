@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { format, addDays, endOfWeek } from 'date-fns';
+import { format, addDays, setDay } from 'date-fns';
 import { Title } from '../Title';
 import { useTasks } from '../../../hooks';
 import { Task } from './Task Components/Task';
@@ -25,9 +25,23 @@ const periods = [
     title: 'This Week',
     id: 'thisWeek',
     tasks: 'thisWeekTasks',
-    dueDate: format(endOfWeek(new Date()), 'yyyy-MM-dd'),
+    dueDate: (weeklyDueDate) => {
+      const dueDay = dayMapping[weeklyDueDate];
+      const dueDate = setDay(new Date(), dueDay);
+      return format(dueDate, 'yyyy-MM-dd');
+    },
   },
 ];
+const dayMapping = {
+  Sunday: 0,
+  Monday: 1,
+  Tuesday: 2,
+  Wednesday: 3,
+  Thursday: 4,
+  Friday: 5,
+  Saturday: 6,
+};
+
 export default function Upcoming() {
   const { upcomingTasks, isTasksLoading } = useTasks();
   const wrapper = useRef(null);
@@ -65,7 +79,10 @@ function PeriodTasks({ title, period, parentRef, isToday }) {
   const [parent] = useAutoAnimate({
     duration: 500,
   });
-  const { weekStartsOn } = useSelector((state) => state.settings.general.dateAndTime);
+  const {
+    dateAndTime: { weekStartsOn },
+    tasks: { weeklyDueDate },
+  } = useSelector((state) => state.settings.general);
 
   const tasks = {
     todayTasks,
@@ -107,7 +124,10 @@ function PeriodTasks({ title, period, parentRef, isToday }) {
         onClick={() => setIsFullScreen((prev) => !prev)}
       ></i>
 
-      <AddTask dueDate={period.dueDate} className='mx-4 mb-3' />
+      <AddTask
+        dueDate={period.title === 'This Week' ? period.dueDate(weeklyDueDate) : period.dueDate}
+        className='mx-4 mb-3'
+      />
       <ul
         className={
           'flex-1 space-y-2 overflow-auto overflow-x-hidden  px-4 ' +
