@@ -34,7 +34,7 @@ export function Tabs() {
                 <span className='flex items-center gap-2'>
                   Quick Access
                   <code className='shortcut '>
-                    <kbd>Alt</kbd> + <kbd>{tab.name.at(0)}</kbd>
+                    <kbd>Alt</kbd> + <kbd>{tab.name.at(0).toUpperCase()}</kbd>
                   </code>
                 </span>
               }

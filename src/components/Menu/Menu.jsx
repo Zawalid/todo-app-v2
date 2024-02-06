@@ -22,7 +22,7 @@ export function Menu() {
   const navigate = useNavigate();
 
   useEffect(() => {
-setIsOpen(window.matchMedia('(min-width: 1024px)').matches);
+    setIsOpen(window.matchMedia('(min-width: 1024px)').matches);
   }, [activeTab]);
 
   useEffect(() => {
@@ -33,6 +33,7 @@ setIsOpen(window.matchMedia('(min-width: 1024px)').matches);
       e.altKey && e.key === 'u' && navigate('/app/upcoming');
       e.altKey && e.key === 'c' && navigate('/app/completed');
       e.altKey && e.key === 's' && navigate('/app/sticky-wall');
+      e.ctrlKey && e.altKey && e.key === 'n' && navigate('/app/sticky-wall/new');
       e.altKey && e.shiftKey && e.key === 'S' && setIsSettingsOpen(true);
       e.altKey && e.shiftKey && e.key === 'T' && setIsTrashOpen(true);
 
@@ -42,7 +43,6 @@ setIsOpen(window.matchMedia('(min-width: 1024px)').matches);
     document.addEventListener('keydown', keyboardShortcuts);
     return () => document.removeEventListener('keydown', keyboardShortcuts);
   }, [isSettingsOpen, isTrashOpen, isOpen, navigate]);
-
 
   return (
     <>
