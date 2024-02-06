@@ -70,7 +70,7 @@ function Button({
 
 function Toggler({ children }) {
   return (
-    <span className='flex w-36 cursor-pointer items-center justify-between rounded-lg border border-border  bg-background-secondary p-2 text-start  text-sm text-text-secondary  focus:outline-none'>
+    <span className='flex w-36 hover:bg-background-tertiary transition-colors duration-200 cursor-pointer items-center justify-between rounded-lg border border-border  bg-background-secondary p-2 text-start  text-sm text-text-secondary  focus:outline-none'>
       {children}
     </span>
   );

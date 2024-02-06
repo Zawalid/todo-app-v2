@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { useTasks } from '../../../../hooks/useTasks';
 import { PiPlusBold } from 'react-icons/pi';
+import { useSelector } from 'react-redux';
 
 export function AddTask({ dueDate, listId, className, disabled, onAdd }) {
   const [value, setValue] = useState('');
   const { isAddingTask, handleAddTask } = useTasks();
+  const { defaultDueDate, defaultPriority } = useSelector((state) => state.settings.general.tasks);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -12,12 +14,12 @@ export function AddTask({ dueDate, listId, className, disabled, onAdd }) {
     const newTask = {
       title: value,
       note: '',
-      dueDate: dueDate || '',
+      dueDate: dueDate || defaultDueDate,
       listId: listId || 'none',
       subtasks: [],
       isCompleted: false,
       tagsIds: [],
-      priority: 0,
+      priority: defaultPriority,
     };
     onAdd ? onAdd(value) : handleAddTask(newTask);
     setValue('');
@@ -29,11 +31,7 @@ export function AddTask({ dueDate, listId, className, disabled, onAdd }) {
         disabled ? 'bg-background-disabled ' : 'bg-background-secondary '
       }`}
     >
-      <PiPlusBold
-        className={`text-xl ${
-          disabled ? 'text-text-disabled' : 'text-text-tertiary'
-        }`}
-      />
+      <PiPlusBold className={`text-xl ${disabled ? 'text-text-disabled' : 'text-text-tertiary'}`} />
       <form className='w-full' onSubmit={handleSubmit}>
         <input
           type='text'

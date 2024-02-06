@@ -15,6 +15,7 @@ import { TextColorPicker } from '../TextColorPicker';
 
 import '../../../../../styles/TipTap.scss';
 import { Actions } from './Actions';
+import { useFormatDateAndTime } from '../../../../../hooks/useFormatDateAndTime';
 
 export default function TipTap() {
   const {
@@ -175,6 +176,8 @@ export default function TipTap() {
 }
 
 function NoteInfo({ editor, updateDate, isSaving, title, setTitle }) {
+  const format = useFormatDateAndTime()
+
   if (!editor) return null;
   return (
     <div className='space-y-3'>
@@ -188,10 +191,7 @@ function NoteInfo({ editor, updateDate, isSaving, title, setTitle }) {
 
       <p id='info' className='flex flex-wrap items-center gap-2 text-xs text-text-tertiary'>
         <span>
-          {new Intl.DateTimeFormat('en-US', {
-            dateStyle: 'medium',
-            timeStyle: 'short',
-          }).format(new Date(updateDate || Date.now()))}
+          {format(new Date(updateDate || Date.now()))}
         </span>
         <span className='h-3 w-[1px] bg-text-tertiary '></span>
         <span>{editor.storage?.characterCount?.characters()} characters</span>

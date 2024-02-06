@@ -1,5 +1,5 @@
 import { PiCalendar } from 'react-icons/pi';
-import { IoChevronDownOutline } from "react-icons/io5";
+import { IoChevronDownOutline } from 'react-icons/io5';
 import { DropDown } from '../../../Common/DropDown';
 import { format } from 'date-fns';
 import { Controller, useWatch } from 'react-hook-form';
@@ -16,7 +16,7 @@ export function DateAndTime({ control, setValue }) {
         <DateFormat control={control} setValue={setValue} />
         <TimeFormat control={control} setValue={setValue} />
 
-        <div className='setting'>
+        <div className='setting '>
           <div>
             <h4>Week starts on</h4>
             <p>First day of the week.</p>
@@ -24,17 +24,20 @@ export function DateAndTime({ control, setValue }) {
           <DropDown
             toggler={
               <DropDown.Toggler>
-                <span>{weekStartsOn}</span>
+                <span>{weekStartsOn === 0 ? 'Sunday' : 'Monday'}</span>
                 <IoChevronDownOutline />
               </DropDown.Toggler>
             }
             options={{ className: 'w-48' }}
           >
-            {['Monday', 'Sunday'].map((day) => (
+            {[
+              { day: 'Sunday', value: 0 },
+              { day: 'Monday', value: 1 },
+            ].map(({ day, value }) => (
               <DropDown.Button
                 key={day}
-                isCurrent={day === weekStartsOn}
-                onClick={() => setValue('dateAndTime.weekStartsOn', day, { shouldDirty: true })}
+                isCurrent={value === weekStartsOn}
+                onClick={() => setValue('dateAndTime.weekStartsOn', value, { shouldDirty: true })}
               >
                 <span>{day}</span>
               </DropDown.Button>
@@ -58,7 +61,7 @@ function DateFormat({ control, setValue }) {
   const sampleDate = new Date();
 
   return (
-    <div className='setting'>
+    <div className='setting '>
       <h4>Date Format</h4>
 
       <DropDown
@@ -101,7 +104,7 @@ function TimeFormat({ control, setValue }) {
   const sampleDate = new Date();
 
   return (
-    <div className='setting'>
+    <div className='setting '>
       <h4>Time Format</h4>
 
       <DropDown

@@ -4,6 +4,7 @@ import { Tab } from './Tab';
 import { useModal } from '../../../hooks/useModal';
 import { Button } from '../../Common/Button';
 import { useAutoAnimate } from '../../../hooks/useAutoAnimate';
+import { useFormatDateAndTime } from '../../../hooks/useFormatDateAndTime';
 
 const BROWSERS_IMAGES = [
   {
@@ -124,6 +125,9 @@ export default function Sessions() {
 }
 
 function Session({ session, onDelete }) {
+  const format = useFormatDateAndTime()
+
+
   if (!session) return null;
   const {
     clientName: browserName,
@@ -154,10 +158,7 @@ function Session({ session, onDelete }) {
         </p>
         <p className='text-xs font-medium text-text-tertiary sm:text-sm'>
           Signed in{' '}
-          {new Intl.DateTimeFormat('en-US', {
-            dateStyle: 'medium',
-            timeStyle: 'short',
-          }).format(new Date(signedInAt))}
+          {format(new Date(signedInAt))}
         </p>
       </div>
       {current || (

@@ -22,12 +22,13 @@ export default function TasksProvider({ children }) {
   const { handleDeleteElement } = useDeleteElement();
   const [currentProcessedTask, setCurrentProcessedTask] = useState(null);
   const user = useSelector((state) => state.user.user);
+  const {weekStartsOn} = useSelector((state) => state.settings.general.dateAndTime);
 
   const todayTasks = tasks?.filter((task) => checkIfToday(task.dueDate));
   const tomorrowTasks = tasks?.filter((task) => checkIfTomorrow(task.dueDate));
   const thisWeekTasks = tasks?.filter((task) => {
     if (!task.dueDate) return;
-    return isDateInCurrentWeek(task.dueDate);
+    return isDateInCurrentWeek(task.dueDate,weekStartsOn);
   });
   const upcomingTasks = [
     ...todayTasks,

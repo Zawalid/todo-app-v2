@@ -9,8 +9,7 @@ export function Tab({ children, saveButton, cancelButton }) {
 
     // Disable all settings that aren't implemented yet
     tab.querySelectorAll('.setting')?.forEach((setting) => {
-      if (setting.classList.contains('done')) return;
-      setting.classList.add('not-done');
+      if (!setting.classList.contains('not-done')) return;
       [...setting.children].forEach((child) => {
         child.style.pointerEvents = 'none';
       });
@@ -37,7 +36,6 @@ export function Tab({ children, saveButton, cancelButton }) {
         )}
         <Button {...saveButton}>{saveButton.text || 'Save Changes'}</Button>
       </div>
-
     </div>
   );
 }

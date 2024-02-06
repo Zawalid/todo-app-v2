@@ -13,7 +13,7 @@ export function StickyNotes({ control, setValue }) {
         <h3 className='font-bold'>Sticky Notes</h3>
       </div>
       <div className='space-y-5 md:pl-5'>
-        <div className='setting'>
+        <div className='setting not-done'>
           <h4>Auto Save</h4>
           <Controller
             name='stickyNotes.autoSave'
@@ -21,7 +21,7 @@ export function StickyNotes({ control, setValue }) {
             render={({ field }) => <Switch checked={field.value} {...field} />}
           />{' '}
         </div>
-        <div className='setting'>
+        <div className='setting not-done'>
           <div>
             <h4>Default Color</h4>
             <p>Initial color for all new sticky notes. You can modify this for each note later.</p>
@@ -41,7 +41,6 @@ export function StickyNotes({ control, setValue }) {
             />
           </div>
         </div>
-        <div className='setting'></div>
       </div>
     </>
   );

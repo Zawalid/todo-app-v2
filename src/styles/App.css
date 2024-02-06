@@ -63,7 +63,7 @@
   & :nth-child(2) {
     @apply flex-1;
   }
-  & svg {
+  & > svg {
     @apply w-5 text-start text-lg;
   }
   &.small {

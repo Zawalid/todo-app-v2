@@ -17,6 +17,7 @@ import { copyToClipBoard } from '../../../../utils/helpers';
 import completedSoundFile from '../../../../assets/completed.mp3';
 import { PiCalendarBold, PiCheckBold, PiWarningBold } from 'react-icons/pi';
 import { useSelector } from 'react-redux';
+import { useFormatDateAndTime } from '../../../../hooks/useFormatDateAndTime';
 
 const completedSound = new Audio(completedSoundFile);
 
@@ -63,6 +64,7 @@ export function Task({
   const bind = useLongPress(() => !isModalOpen && !isSelecting && setIsTaskActionsOpen(true), {
     detect: 'touch',
   });
+  const { taskDetailLevel } = useSelector((state) => state.settings.general.tasks);
 
   const listName = useMemo(() => lists?.find((l) => l?.$id === listId)?.title, [listId, lists]);
   const listColor = useMemo(() => lists?.find((l) => l?.$id === listId)?.color, [listId, lists]);
@@ -82,6 +84,39 @@ export function Task({
     isCompleted !== checked && handleCompleteTask($id, checked);
     // eslint-disable-next-line
   }, [checked]);
+
+  // A list of details components
+  const details = {
+    list: <TaskList listId={listId} listName={listName} listColor={listColor} />,
+    dueDate: <TaskDueDate dueDate={dueDate} isPassed={isPassed} checked={checked} />,
+    subtasks: <TaskSubtasks subtasks={subtasks} />,
+    tags: <TaskTags tagsIds={tagsIds} />,
+    priority: <TaskPriority priority={priority} />,
+  };
+
+  // A list of details that the task has
+  const taskExistingDetails = [
+    {
+      detail: 'list',
+      value: listName,
+    },
+    {
+      detail: 'dueDate',
+      value: dueDate,
+    },
+    {
+      detail: 'subtasks',
+      value: subtasks?.length > 0,
+    },
+    {
+      detail: 'tags',
+      value: tagsIds?.length > 0,
+    },
+    {
+      detail: 'priority',
+      value: priority !== 0,
+    },
+  ];
 
   return (
     <li
@@ -111,17 +146,20 @@ export function Task({
             {title}
           </span>
           <div className='flex items-center justify-between gap-5'>
-            {[listName, dueDate, subtasks?.length > 0, tagsIds?.length > 0, priority !== 0].some(
-              (c) => c,
-            ) && (
-              <div className='mt-2 flex max-h-[40px] flex-wrap items-center gap-x-5 gap-y-3 overflow-auto'>
-                <TaskDueDate dueDate={dueDate} isPassed={isPassed} checked={checked} />
-                <TaskSubtasks subtasks={subtasks} />
-                <TaskPriority priority={priority} />
-                <TaskTags tagsIds={tagsIds} />
-                <TaskList listId={listId} listName={listName} listColor={listColor} />
-              </div>
-            )}
+            {/* 
+            So this complicated line of code does the following :
+              - Check if the task has at least on detail that is not empty
+              - Check if the task has at least one detail that is not empty and is included in the taskDetailLevel
+              - If the above conditions are met, then it will display the details
+            */}
+            {taskExistingDetails.some(({ value }) => value) &&
+              taskExistingDetails
+                .filter(({ value }) => value)
+                .filter(({ detail }) => taskDetailLevel.includes(detail)).length > 0 && (
+                <div className='mt-2 flex max-h-[40px] flex-wrap items-center gap-x-5 gap-y-3 overflow-auto'>
+                  {taskDetailLevel.map((detail) => details[detail])}
+                </div>
+              )}
 
             {isPassed && !checked && (
               <CustomTippy content='Overdue'>
@@ -202,6 +240,8 @@ function TaskCheckbox({ checked, setChecked, isSelecting, isSelected }) {
   );
 }
 function TaskDueDate({ dueDate, isPassed, checked }) {
+  const format = useFormatDateAndTime();
+
   if (!dueDate) return null;
   return (
     <div className='flex items-center gap-2'>
@@ -221,7 +261,7 @@ function TaskDueDate({ dueDate, isPassed, checked }) {
           ? 'Tomorrow'
           : checkIfYesterday(dueDate)
           ? 'Yesterday'
-          : dueDate}
+          : format(dueDate, false)}
       </span>
     </div>
   );

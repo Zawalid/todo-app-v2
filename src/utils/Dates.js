@@ -24,11 +24,16 @@ export function checkIfYesterday(date) {
   return isYesterday(new Date(date));
 }
 
-export function isDateInCurrentWeek(dateToCheck) {
-  const startOfWeekDate = startOfWeek(new Date());
-  const endOfWeekDate = endOfWeek(new Date());
+export function isDateInCurrentWeek(dateToCheck, weekStartsOn) {
+  const startOfWeekDate = startOfWeek(new Date(), {
+    weekStartsOn,
+  });
+  const endOfWeekDate = endOfWeek(new Date(), {
+    weekStartsOn,
+  });
   return isWithinInterval(new Date(dateToCheck), { start: startOfWeekDate, end: endOfWeekDate });
 }
 
 export function isTaskOverdue(dateToCheck) {
-  return isBefore(startOfDay(new Date(dateToCheck)), startOfDay(new Date()));}
+  return isBefore(startOfDay(new Date(dateToCheck)), startOfDay(new Date()));
+}

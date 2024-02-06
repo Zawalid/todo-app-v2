@@ -13,7 +13,7 @@ export function Preferences({ control, setValue }) {
         <PiSliders size={22} /> <h3 className='font-bold'>Preferences</h3>
       </div>
       <div className='space-y-5 md:pl-5'>
-        <div className='setting done'>
+        <div className='setting '>
           <div>
             <h4>Task Completion Sound</h4>
             <p className='mt-2 text-xs text-text-secondary'>
@@ -40,7 +40,7 @@ export function Preferences({ control, setValue }) {
             render={({ field }) => <Switch checked={field.value} {...field} />}
           />
         </div>
-        <div className='setting done'>
+        <div className='setting '>
           <div>
             <h4>Animation</h4>
             <p className='mt-2 text-xs text-text-secondary'>
@@ -54,7 +54,7 @@ export function Preferences({ control, setValue }) {
             render={({ field }) => <Switch checked={field.value} {...field} />}
           />
         </div>
-        <div className='setting done'>
+        <div className='setting '>
           <div>
             <h4>Default Home View</h4>
             <p className='mt-2 text-xs text-text-secondary'>
