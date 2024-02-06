@@ -1,10 +1,12 @@
 import { useEffect } from 'react';
 import { PiCheckCircleFill, PiCircle } from 'react-icons/pi';
 import { NavLink } from 'react-router-dom';
+import { useFormatDateAndTime } from '../../../hooks/useFormatDateAndTime';
 
 export function StickyNote({ stickyNote, onSelect, listView, isSelecting, isSelected }) {
   const { title, content, $createdAt = new Date(), bgColor, textColor } = stickyNote;
   const firstParagraph = content.match(/<p>([^<]*)<\/p>/)?.[1];
+  const format = useFormatDateAndTime()
 
   useEffect(() => {
     document.documentElement.style.setProperty('--line-clamp', listView ? '1' : '8');
@@ -48,10 +50,7 @@ export function StickyNote({ stickyNote, onSelect, listView, isSelecting, isSele
                 color: textColor,
               }}
             >
-              {new Intl.DateTimeFormat('en-US', {
-                dateStyle: 'medium',
-                timeStyle: 'short',
-              }).format(new Date($createdAt))}
+              {format(new Date($createdAt))}
             </span>
 
             <span

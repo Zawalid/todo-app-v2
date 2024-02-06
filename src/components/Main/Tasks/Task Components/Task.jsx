@@ -17,6 +17,7 @@ import { copyToClipBoard } from '../../../../utils/helpers';
 import completedSoundFile from '../../../../assets/completed.mp3';
 import { PiCalendarBold, PiCheckBold, PiWarningBold } from 'react-icons/pi';
 import { useSelector } from 'react-redux';
+import { useFormatDateAndTime } from '../../../../hooks/useFormatDateAndTime';
 
 const completedSound = new Audio(completedSoundFile);
 
@@ -202,6 +203,8 @@ function TaskCheckbox({ checked, setChecked, isSelecting, isSelected }) {
   );
 }
 function TaskDueDate({ dueDate, isPassed, checked }) {
+  const format = useFormatDateAndTime()
+
   if (!dueDate) return null;
   return (
     <div className='flex items-center gap-2'>
@@ -221,7 +224,7 @@ function TaskDueDate({ dueDate, isPassed, checked }) {
           ? 'Tomorrow'
           : checkIfYesterday(dueDate)
           ? 'Yesterday'
-          : dueDate}
+          : format(dueDate,false)}
       </span>
     </div>
   );

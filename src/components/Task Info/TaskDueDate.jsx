@@ -3,9 +3,12 @@ import { isTaskOverdue } from '../../utils/Dates';
 import { DropDown } from '../Common/DropDown';
 import { PiCalendarBold, PiX } from 'react-icons/pi';
 import { IoChevronDownOutline } from 'react-icons/io5';
+import { useFormatDateAndTime } from '../../hooks/useFormatDateAndTime';
 
 export function TaskDueDate({ taskDueDate, setTaskDueDate, inSettings }) {
   const [date, setDate] = useState(taskDueDate);
+  const format = useFormatDateAndTime()
+
   const instanceRef = useRef(null);
   const today = new Date();
   const tomorrow = new Date(today);
@@ -81,7 +84,7 @@ export function TaskDueDate({ taskDueDate, setTaskDueDate, inSettings }) {
           <DropDown.NestedMenu
             toggler={
               <DropDown.Button isCurrent={isPicked && taskDueDate}>
-                <span>{isPicked ? taskDueDate : 'Pick a date'}</span>
+                <span>{isPicked ? format(taskDueDate,false) : 'Pick a date'}</span>
                   <IoChevronDownOutline className='absolute right-2' />
               </DropDown.Button>
             }

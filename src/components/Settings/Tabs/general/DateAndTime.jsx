@@ -58,7 +58,7 @@ function DateFormat({ control, setValue }) {
   const sampleDate = new Date();
 
   return (
-    <div className='setting'>
+    <div className='setting done'>
       <h4>Date Format</h4>
 
       <DropDown
@@ -101,7 +101,7 @@ function TimeFormat({ control, setValue }) {
   const sampleDate = new Date();
 
   return (
-    <div className='setting'>
+    <div className='setting done'>
       <h4>Time Format</h4>
 
       <DropDown

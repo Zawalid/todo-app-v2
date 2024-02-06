@@ -8,6 +8,7 @@ import { TbPencilCancel } from 'react-icons/tb';
 import { IoDuplicateOutline, IoCopyOutline } from 'react-icons/io5';
 import { PiExport, PiTrash,PiFilePdf,PiFileHtml,PiFileText } from 'react-icons/pi';
 import { BsMarkdown } from "react-icons/bs";
+import { useFormatDateAndTime } from '../../../../../hooks/useFormatDateAndTime';
 
 export function Actions({
   children,
@@ -30,6 +31,8 @@ export function Actions({
   },
 }) {
   const { openModal: confirmDelete } = useModal();
+  const format = useFormatDateAndTime()
+
   return (
     <>
       <Overlay isOpen={isOpen} onClose={onClose} />
@@ -159,17 +162,11 @@ export function Actions({
             <hr className='mb-2 border border-border' />
             <p className='mb-1 text-xs font-medium text-text-secondary '>
               Created :{' '}
-              {new Intl.DateTimeFormat('en-US', {
-                dateStyle: 'medium',
-                timeStyle: 'short',
-              }).format(new Date(currentNote?.$createdAt || Date.now()))}
+              {format(new Date(currentNote?.$createdAt || Date.now()))}
             </p>
             <p className='text-xs font-medium text-text-secondary '>
               Last modified :{' '}
-              {new Intl.DateTimeFormat('en-US', {
-                dateStyle: 'medium',
-                timeStyle: 'short',
-              }).format(new Date(currentNote?.$updatedAt || Date.now()))}
+              {format(new Date(currentNote?.$updatedAt || Date.now()))}
             </p>
           </div>
         </div>
