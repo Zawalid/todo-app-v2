@@ -23,7 +23,7 @@ export function Tasks({ control, setValue }) {
         <PiListChecks size={22} /> <h3 className='font-bold'>Tasks</h3>
       </div>
       <div className='space-y-5 md:pl-5'>
-        <div className='setting'>
+        <div className='setting done'>
           <div>
             <h4>Default Due Date</h4>
             <p className='mt-2 text-xs text-text-secondary'>
@@ -42,7 +42,7 @@ export function Tasks({ control, setValue }) {
             render={({ field }) => <input {...field} type='hidden' />}
           />
         </div>
-        <div className='setting'>
+        <div className='setting done'>
           <div>
             <h4>Default Priority</h4>
             <p className='mt-2 text-xs text-text-secondary'>
