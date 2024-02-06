@@ -1,6 +1,5 @@
 import {
   PiGear,
-  PiKeyboard,
   PiMoonStars,
   PiSignOut,
   PiSignOutBold,
@@ -23,8 +22,7 @@ export function DropDownProfile({ setIsSettingsOpen, setIsTrashOpen }) {
         <PiGear className='text-text-tertiary' />
         <span>Settings</span>
         <code className='shortcut'>
-          <kbd>Alt</kbd> + <kbd>S</kbd>
-          {/* <kbd>⇧ </kbd> +  */}
+          <kbd>Alt</kbd> + <kbd>⇧ </kbd> +  <kbd>S</kbd>
         </code>
       </DropDown.Button>
 
@@ -32,22 +30,13 @@ export function DropDownProfile({ setIsSettingsOpen, setIsTrashOpen }) {
         <PiTrashLight className='text-text-tertiary' />
         <span>Trash</span>
         <code className='shortcut'>
-          <kbd>Alt</kbd> + <kbd>T</kbd>
-          {/* <kbd>⇧ </kbd> +  */}
+          <kbd>Alt</kbd> + <kbd>⇧ </kbd> +  <kbd>T</kbd>
         </code>
       </DropDown.Button>
       <DropDown.Divider />
 
       <ThemeToggler />
       <SyncButton />
-      <DropDown.Divider />
-      <DropDown.Button disabled={true}>
-        <PiKeyboard />
-        <span>Keyboard Shortcuts</span>
-        <code className='shortcut'>
-          <kbd>⇧ </kbd> + <kbd>/</kbd>
-        </code>
-      </DropDown.Button>
 
       <DropDown.Divider />
 
