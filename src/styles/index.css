@@ -127,7 +127,7 @@
   @apply box-border;
 }
 
-html.color-transition {
+html:not([data-animation='false']).color-transition {
   * {
     @apply transition-colors duration-200 !important;
   }
@@ -142,10 +142,20 @@ html.color-transition {
   }
 }
 
+html[data-animation='false'] {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
 body {
   font-family: 'Lexend Deca', sans-serif;
   @apply h-[100dvh] overflow-hidden bg-background-primary !important;
 }
+
 #root {
   @apply flex h-full bg-background-primary p-2;
 }

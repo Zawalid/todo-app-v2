@@ -6,13 +6,13 @@ import { useEffect, useState } from 'react';
 import { isTaskOverdue } from '../../../utils/Dates';
 import { useSearchParams } from 'react-router-dom';
 import { useTasks } from '../../../hooks/useTasks';
-import { useAutoAnimate } from '@formkit/auto-animate/react';
 import useDeleteMultiple from '../useDeleteMultiple';
 import { usePagination } from '../usePagination';
 import SelectionIcons from '../../Common/SelectionIcons';
 import { useModal } from '../../../hooks/useModal';
 import { createPortal } from 'react-dom';
 import { PiDotsThreeOutlineVerticalFill } from 'react-icons/pi';
+import { useAutoAnimate } from '../../../hooks/useAutoAnimate';
 
 const filtersConditions = {
   all: () => true,

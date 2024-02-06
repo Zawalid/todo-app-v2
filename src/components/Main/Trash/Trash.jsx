@@ -3,11 +3,11 @@ import trashIcon from '../../../assets/trash.png';
 import { Item } from './Item';
 import { useRestoreElement, useLists, useTrash } from '../../../hooks';
 import { toast } from 'sonner';
-import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { useModal } from '../../../hooks/useModal';
 import { Actions } from './Actions';
 import Modal from '../../Common/Modal';
 import { PiInfoFill, PiX } from 'react-icons/pi';
+import { useAutoAnimate } from '../../../hooks/useAutoAnimate';
 
 export default function Trash({ isOpen, onClose }) {
   const {

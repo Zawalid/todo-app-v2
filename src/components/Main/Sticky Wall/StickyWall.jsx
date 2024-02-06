@@ -1,5 +1,4 @@
 import { useStickyNotes } from '../../../hooks/useStickyNotes';
-import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { useEffect, useState } from 'react';
 import StickyWallActions from './StickyWallActions/StickyWallActions';
 import useDeleteMultiple from '../useDeleteMultiple';
@@ -12,6 +11,7 @@ import { StickyWallSkeleton } from '../../Skeletons';
 import { NotesGroup } from './NotesGroup';
 import { PiPlusBold } from 'react-icons/pi';
 import CustomTippy from '../../Common/CustomTippy';
+import { useAutoAnimate } from '../../../hooks/useAutoAnimate';
 
 const groups = {
   year: {

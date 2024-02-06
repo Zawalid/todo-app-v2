@@ -10,7 +10,12 @@ export default function DarkModeProvider({ children }) {
     window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
   );
 
-  const { primaryTheme, autoDarkMode } = useSelector((state) => state.settings.theme);
+  const {
+    theme: { primaryTheme, autoDarkMode },
+    general: {
+      preferences: { animation },
+    },
+  } = useSelector((state) => state.settings);
 
   const toggleDarkMode = useCallback(
     (theme) => {
@@ -40,6 +45,10 @@ export default function DarkModeProvider({ children }) {
 
     return () => (media.onchange = null);
   }, [autoDarkMode, toggleDarkMode]);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-animation', animation);
+  }, [animation]);
 
   return (
     <DarkModeContext.Provider value={{ theme, toggleDarkMode }}>

@@ -3,8 +3,8 @@ import { Menu } from '../components/Menu/Menu';
 import { Navigate, Outlet } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useFetchAllElements } from '../hooks/useFetchAllElements';
-import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { useSelector } from 'react-redux';
+import { useAutoAnimate } from '../hooks/useAutoAnimate';
 
 export default function AppLayout() {
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
