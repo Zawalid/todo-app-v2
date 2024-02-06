@@ -1,11 +1,11 @@
 import { useEffect, useState, useRef } from 'react';
 import { format, addDays, endOfWeek } from 'date-fns';
-import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { Title } from '../Title';
 import { useTasks } from '../../../hooks';
 import { Task } from './Task Components/Task';
 import { AddTask } from './Task Components/AddTask';
 import { UpcomingSkeleton } from '../../Skeletons';
+import { useAutoAnimate } from '../../../hooks/useAutoAnimate';
 
 const periods = [
   {

@@ -3,8 +3,8 @@ import { Tag } from './Tag';
 import { AddNewTag } from './AddNewTag';
 import { useTags } from '../../../hooks/useTags';
 import { TagsSkeleton } from '../../Skeletons';
-import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { TABS } from '../TabsList';
+import { useAutoAnimate } from '../../../hooks/useAutoAnimate';
 
 export function Tags() {
   const { tags, isTagsLoading } = useTags();

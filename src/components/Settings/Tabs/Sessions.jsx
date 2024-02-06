@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useUser } from '../../../hooks';
-import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { Tab } from './Tab';
 import { useModal } from '../../../hooks/useModal';
 import { Button } from '../../Common/Button';
+import { useAutoAnimate } from '../../../hooks/useAutoAnimate';
 
 const BROWSERS_IMAGES = [
   {

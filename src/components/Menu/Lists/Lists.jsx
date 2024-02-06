@@ -3,9 +3,9 @@ import { List } from './List';
 import { AddNewList } from './AddNewList';
 import { useLists } from '../../../hooks/useLists';
 import { ListsSkeleton } from '../../Skeletons';
-import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { TABS } from '../TabsList';
 import { PiPlusBold } from 'react-icons/pi';
+import { useAutoAnimate } from '../../../hooks/useAutoAnimate';
 
 export function Lists() {
   const { lists, isListsLoading } = useLists();

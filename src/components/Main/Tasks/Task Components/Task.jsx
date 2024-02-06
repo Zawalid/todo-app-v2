@@ -16,6 +16,7 @@ import { copyToClipBoard } from '../../../../utils/helpers';
 
 import completedSoundFile from '../../../../assets/completed.mp3';
 import { PiCalendarBold, PiCheckBold, PiWarningBold } from 'react-icons/pi';
+import { useSelector } from 'react-redux';
 
 const completedSound = new Audio(completedSoundFile);
 
@@ -173,6 +174,7 @@ export function Task({
 }
 
 function TaskCheckbox({ checked, setChecked, isSelecting, isSelected }) {
+  const { taskCompletionSound } = useSelector((state) => state.settings.general.preferences);
   return (
     <div className='relative flex h-full'>
       <span
@@ -181,17 +183,14 @@ function TaskCheckbox({ checked, setChecked, isSelecting, isSelected }) {
         } ${isSelected ? 'border-transparent bg-primary' : 'border-border  '}
         `}
       >
-        <PiCheckBold
-          className={`text-xs text-white ${
-            isSelected ? 'opacity-100' : 'opacity-0'
-          }`}
-    />
+        <PiCheckBold className={`text-xs text-white ${isSelected ? 'opacity-100' : 'opacity-0'}`} />
       </span>
 
       <CheckBox
         checked={checked}
         onChange={(e) => {
           setChecked(!checked);
+          if (!taskCompletionSound) return;
           e.target.checked && completedSound.play();
         }}
         className={
@@ -210,7 +209,7 @@ function TaskDueDate({ dueDate, isPassed, checked }) {
         className={
           'fas fa-calendar-alt  ' + (isPassed && !checked ? 'text-red-500' : 'text-text-tertiary')
         }
-        />
+      />
       <span
         className={
           'text-xs font-semibold ' + (isPassed && !checked ? 'text-red-500' : 'text-text-secondary')
@@ -235,7 +234,7 @@ function TaskSubtasks({ subtasks }) {
         <span className='border-r border-background-primary pr-2'>{subtasks.length}</span>
         <span className='flex items-center gap-1'>
           {subtasks.filter((subtask) => JSON.parse(subtask).isCompleted).length}
-         <PiCheckBold />
+          <PiCheckBold />
         </span>
       </div>
       <span className='text-xs font-semibold text-text-secondary'>Subtasks</span>
@@ -263,11 +262,11 @@ function TaskPriority({ priority }) {
   if (!priority) return null;
   return (
     <div className='flex items-center gap-2'>
-      <PiWarningBold 
+      <PiWarningBold
         style={{
           color: priorities[+priority].color,
         }}
-        />
+      />
       <span className='text-xs font-semibold text-text-secondary'>
         {priorities[+priority].label}
       </span>

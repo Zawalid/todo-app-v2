@@ -1,4 +1,4 @@
-import { useAutoAnimate } from '@formkit/auto-animate/react';
+import { useAutoAnimate } from '../../../hooks/useAutoAnimate';
 import { AddTask } from '../../Main/Tasks/Task Components/AddTask';
 import { SubTask } from './SubTask';
 

@@ -1,4 +1,3 @@
-import { useNavigate } from 'react-router-dom';
 import { StickyNote } from './StickyNote';
 import { useStickyNotes } from '../../../hooks/useStickyNotes';
 import { useEffect, useState } from 'react';
@@ -18,7 +17,6 @@ export function NotesGroup({
 }) {
   const [isGroupOpen, setIsGroupOpen] = useState(true);
   const { stickyNotes, selectedNotes, setSelectedNotes } = useStickyNotes();
-  const navigate = useNavigate();
 
   useEffect(() => {
     setIsGroupOpen(!isCollapsed);
@@ -29,7 +27,7 @@ export function NotesGroup({
       ? window.getComputedStyle(document.documentElement).getPropertyValue(group)
       : null;
 
-  if (!stickyNotes.some(condition) || !group) return null;
+  if (!stickyNotes?.some(condition) || !group) return null;
 
   return (
     <>
@@ -66,13 +64,11 @@ export function NotesGroup({
               <StickyNote
                 key={stickyNote.$id}
                 stickyNote={stickyNote}
-                onClick={() => {
-                  isSelecting
-                    ? setSelectedNotes((prev) => {
-                        if (isSelected) return prev.filter((t) => t.$id !== stickyNote.$id);
-                        else return [...prev, { $id: stickyNote.$id, title: stickyNote.title }];
-                      })
-                    : navigate(`/app/sticky-wall/${stickyNote.$id}`);
+                onSelect={() => {
+                  setSelectedNotes((prev) => {
+                    if (isSelected) return prev.filter((t) => t.$id !== stickyNote.$id);
+                    else return [...prev, { $id: stickyNote.$id, title: stickyNote.title }];
+                  });
                 }}
                 listView={view === 'list'}
                 isSelecting={isSelecting}

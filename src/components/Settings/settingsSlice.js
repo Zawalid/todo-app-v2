@@ -41,7 +41,7 @@ const settingsReducer = createSlice({
   reducers: {
     updateSettings(state, action) {
       const { category, settings } = action.payload;
-      state.settings[category] = settings;
+      state[category] = settings;
     },
     resetSettings(state) {
       Object.assign(state, DEFAULT_SETTINGS);
