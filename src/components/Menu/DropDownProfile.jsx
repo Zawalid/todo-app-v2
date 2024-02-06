@@ -109,7 +109,7 @@ function SignOutButton() {
           title: 'Sign Out',
           message: 'Are you sure you want to sign out?',
           onConfirm: handleSignOut,
-          showCheckBox: false,
+          showCheckbox: false,
           confirmText: 'Sign Out',
           icon: <PiSignOutBold />,
         })

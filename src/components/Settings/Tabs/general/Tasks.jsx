@@ -93,7 +93,7 @@ export function Tasks({ control, setValue }) {
             render={({ field }) => <input {...field} type='hidden' />}
           />
         </div>
-        <div className='setting not-done'>
+        <div className='setting'>
           <div>
             <h4>Auto Delete Completed Tasks</h4>
             <p>Automatically delete tasks once they are marked as completed.</p>
@@ -103,6 +103,22 @@ export function Tasks({ control, setValue }) {
             name='tasks.autoDeleteCompletedTasks'
             render={({ field }) => <Switch {...field} checked={field.value} />}
           />
+          <div
+            className={`sub-setting ${!tasksSettings.autoDeleteCompletedTasks ? 'disabled' : ''}`}
+          >
+            <h4>Delete Permanently</h4>
+            <Controller
+              control={control}
+              name='tasks.deletePermanently'
+              render={({ field }) => (
+                <Switch
+                  {...field}
+                  disabled={!tasksSettings.autoDeleteCompletedTasks}
+                  checked={field.value}
+                />
+              )}
+            />
+          </div>
         </div>
         <div className='setting'>
           <div>
@@ -159,9 +175,7 @@ function TaskDisplay({ control, setSetting }) {
             className='justify-between'
             onClick={() => setTaskDetailLevel(detail)}
           >
-            <span className='capitalize'>
-              {detail}
-            </span>
+            <span className='capitalize'>{detail}</span>
             <div className='flex justify-end'>
               <CheckBox
                 id={detail}

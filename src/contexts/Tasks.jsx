@@ -3,12 +3,15 @@ import { ID } from 'appwrite';
 import { databases, appWriteConfig, setPermissions } from '../lib/appwrite/config';
 import { toast } from 'sonner';
 import { checkIfToday, checkIfTomorrow, isDateInCurrentWeek } from '../utils/Dates';
-import { useDeleteElement, } from '../hooks';
+import { useDeleteElement } from '../hooks';
 import { getDeletionMessage } from '../utils/helpers';
 import { useSelector } from 'react-redux';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 const TASKS_COLLECTION_ID = appWriteConfig.tasksCollectionId;
+
+import completedSoundFile from '../assets/completed.mp3';
+const completedSound = new Audio(completedSoundFile);
 
 export const TasksContext = createContext();
 
@@ -22,13 +25,17 @@ export default function TasksProvider({ children }) {
   const { handleDeleteElement } = useDeleteElement();
   const [currentProcessedTask, setCurrentProcessedTask] = useState(null);
   const user = useSelector((state) => state.user.user);
-  const {weekStartsOn} = useSelector((state) => state.settings.general.dateAndTime);
+  const {
+    preferences: { taskCompletionSound },
+    dateAndTime: { weekStartsOn },
+    tasks: { autoDeleteCompletedTasks, deletePermanently: autoDeletePermanently },
+  } = useSelector((state) => state.settings.general);
 
   const todayTasks = tasks?.filter((task) => checkIfToday(task.dueDate));
   const tomorrowTasks = tasks?.filter((task) => checkIfTomorrow(task.dueDate));
   const thisWeekTasks = tasks?.filter((task) => {
     if (!task.dueDate) return;
-    return isDateInCurrentWeek(task.dueDate,weekStartsOn);
+    return isDateInCurrentWeek(task.dueDate, weekStartsOn);
   });
   const upcomingTasks = [
     ...todayTasks,
@@ -101,11 +108,13 @@ export default function TasksProvider({ children }) {
   }
 
   async function handleCompleteTask(id, isCompleted) {
+    if (taskCompletionSound && isCompleted) completedSound.play();
     try {
       setTasks((tasks) => tasks.map((task) => (task.$id === id ? { ...task, isCompleted } : task)));
       await databases.updateDocument(DATABASE_ID, TASKS_COLLECTION_ID, id, {
         isCompleted,
       });
+      if (autoDeleteCompletedTasks && isCompleted) handleDeleteTask(id, autoDeletePermanently);
     } catch (error) {
       console.log(error);
     }

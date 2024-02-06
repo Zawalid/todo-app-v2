@@ -6,7 +6,7 @@ const DEFAULT_OPTIONS = {
   message: '',
   title: '',
   confirmText: 'Delete',
-  showCheckBox: true,
+  showCheckbox: true,
   icon : <PiWarningFill />
 };
 import { Button } from './Button';
@@ -61,7 +61,7 @@ export function ModalProvider({ children }) {
           {options.message}
         </h4>
 
-        {options.showCheckBox && (
+        {options.showCheckbox && (
           <div className='flex items-center gap-3'>
             <CheckBox
               checked={isChecked}

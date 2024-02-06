@@ -1,13 +1,15 @@
 import { cloneElement } from 'react';
 import { PiSidebar, PiGear, PiDevices, PiLockKey, PiPalette, PiUserCircle } from 'react-icons/pi';
-import { useUser } from '../../hooks';
 import { Overlay } from '../Common/Modal';
-import { useSelector } from 'react-redux';
+import { BiReset } from 'react-icons/bi';
+import { Button } from '../Common/Button';
+import { useDispatch } from 'react-redux';
+import { resetSettings } from '../../app/settingsSlice';
+import { useModal } from '../../hooks';
 
-export function Panel({ isOpen, onClose, currentTab, setCurrentTab}) {
-  const { handleSendVerificationEmail } = useUser();
-  const user = useSelector((state) => state.user.user);
-  
+export function Panel({ isOpen, onClose, currentTab, setCurrentTab }) {
+  const dispatch = useDispatch();
+  const { openModal: confirmReset } = useModal();
 
   return (
     <>
@@ -53,23 +55,24 @@ export function Panel({ isOpen, onClose, currentTab, setCurrentTab}) {
           currentTab={currentTab}
           setCurrentTab={setCurrentTab}
         />
-      </div>
-      {!user?.emailVerification && (
-        <div
-          className='absolute left-0 top-0 flex w-full items-center justify-between bg-red-500 px-5 py-2 md:py-3 sm:left-[200px] sm:w-[calc(100%-200px)]
-        '
+        <Button
+          type='outline-delete'
+          size='small'
+          className='mt-auto flex w-full items-center gap-3'
+          onClick={() =>
+            confirmReset({
+              title: 'Reset Settings',
+              message: 'Are you sure you want to reset all settings to default?',
+              onConfirm: () => dispatch(resetSettings()),
+              confirmText: 'Reset',
+              showCheckbox: false,
+            })
+          }
         >
-          <p className='text-sm text-white'>
-            Your account is not verified. Please check your email and verify your account.
-          </p>
-          <button
-            className='text-sm text-white underline underline-offset-2 hover:text-gray-200'
-            onClick={handleSendVerificationEmail}
-          >
-            Resend
-          </button>
-        </div>
-      )}
+          <BiReset size={20} />
+          <span className='font-medium'>Reset Settings</span>
+        </Button>
+      </div>
     </>
   );
 }

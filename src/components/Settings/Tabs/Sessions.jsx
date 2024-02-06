@@ -62,7 +62,7 @@ export default function Sessions() {
         await handleDeleteSession(sessionId);
         setSessions((sessions) => sessions.filter((session) => session.$id !== sessionId));
       },
-      showCheckBox: false,
+      showCheckbox: false,
       confirmText: 'Revoke',
     });
   }
@@ -80,7 +80,7 @@ export default function Sessions() {
               await handleDeleteSessions();
               setSessions([]);
             },
-            showCheckBox: false,
+            showCheckbox: false,
             confirmText: 'Revoke All',
           });
         },
