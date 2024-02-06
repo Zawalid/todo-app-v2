@@ -16,7 +16,7 @@ export function DateAndTime({ control, setValue }) {
         <DateFormat control={control} setValue={setValue} />
         <TimeFormat control={control} setValue={setValue} />
 
-        <div className='setting done'>
+        <div className='setting '>
           <div>
             <h4>Week starts on</h4>
             <p>First day of the week.</p>
@@ -61,7 +61,7 @@ function DateFormat({ control, setValue }) {
   const sampleDate = new Date();
 
   return (
-    <div className='setting done'>
+    <div className='setting '>
       <h4>Date Format</h4>
 
       <DropDown
@@ -104,7 +104,7 @@ function TimeFormat({ control, setValue }) {
   const sampleDate = new Date();
 
   return (
-    <div className='setting done'>
+    <div className='setting '>
       <h4>Time Format</h4>
 
       <DropDown

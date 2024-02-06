@@ -45,7 +45,7 @@ export default function Theme() {
             render={({ field }) => <input type='hidden' {...field} />}
           />
         </div>
-        <div className='setting done'>
+        <div className='setting '>
           <div>
             <h4>Auto Dark Mode</h4>
             <p>Automatically switch between light and dark themes when your system does.</p>

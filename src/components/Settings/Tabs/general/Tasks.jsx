@@ -23,7 +23,7 @@ export function Tasks({ control, setValue }) {
         <PiListChecks size={22} /> <h3 className='font-bold'>Tasks</h3>
       </div>
       <div className='space-y-5 md:pl-5'>
-        <div className='setting done'>
+        <div className='setting '>
           <div>
             <h4>Default Due Date</h4>
             <p className='mt-2 text-xs text-text-secondary'>
@@ -42,7 +42,7 @@ export function Tasks({ control, setValue }) {
             render={({ field }) => <input {...field} type='hidden' />}
           />
         </div>
-        <div className='setting done'>
+        <div className='setting '>
           <div>
             <h4>Default Priority</h4>
             <p className='mt-2 text-xs text-text-secondary'>
@@ -60,7 +60,7 @@ export function Tasks({ control, setValue }) {
             render={({ field }) => <input {...field} type='hidden' />}
           />
         </div>
-        <div className='setting done'>
+        <div className='setting '>
           <div>
             <h4>Weekly Due Date</h4>
             <p>Tasks added in {'This Week'} will have their due date set to the selected day.</p>
@@ -74,7 +74,7 @@ export function Tasks({ control, setValue }) {
             }
             options={{ className: 'w-48' }}
           >
-            {['Sunday','Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map(
+            {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map(
               (day) => (
                 <DropDown.Button
                   key={day}
@@ -93,7 +93,7 @@ export function Tasks({ control, setValue }) {
             render={({ field }) => <input {...field} type='hidden' />}
           />
         </div>
-        <div className='setting'>
+        <div className='setting not-done'>
           <div>
             <h4>Auto Delete Completed Tasks</h4>
             <p>Automatically delete tasks once they are marked as completed.</p>
@@ -116,7 +116,7 @@ export function Tasks({ control, setValue }) {
             render={({ field }) => <input {...field} type='hidden' />}
           />
         </div>
-        <div className='setting done'>
+        <div className='setting '>
           <div>
             <h4>Export Tasks</h4>
             <p>Export all your tasks.</p>
@@ -159,20 +159,23 @@ function TaskDisplay({ control, setSetting }) {
             className='justify-between'
             onClick={() => setTaskDetailLevel(detail)}
           >
-            <label htmlFor={detail} className='capitalize'>
+            <span className='capitalize'>
               {detail}
-            </label>
-            <CheckBox
-              id={detail}
-              checked={taskDetailLevel.includes(detail)}
-              onChange={() => setTaskDetailLevel(detail)}
-            />
+            </span>
+            <div className='flex justify-end'>
+              <CheckBox
+                id={detail}
+                checked={taskDetailLevel.includes(detail)}
+                onChange={() => setTaskDetailLevel(detail)}
+              />
+            </div>
           </DropDown.Button>
         );
       })}
     </DropDown>
   );
 }
+
 function ExportTasks() {
   const { tasks } = useTasks();
   const { tags } = useTags();
@@ -225,7 +228,6 @@ function ExportTasks() {
     </DropDown>
   );
 }
-
 const exportAs = (tasks, format) => {
   const json = JSON.stringify(tasks);
   const csv = papaparse.unparse(json, {});

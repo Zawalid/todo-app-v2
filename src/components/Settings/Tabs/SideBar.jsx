@@ -35,7 +35,7 @@ export default function SideBar() {
             render={({ field }) => <input {...field} type='hidden' />}
           />
         </div>
-        <div className='done setting'>
+        <div className='setting'>
           <div>
             <h4>Show count</h4>
             <p>Show the number of tasks in each list.</p>
