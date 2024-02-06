@@ -48,7 +48,6 @@
     @apply bg-background-secondary text-text-tertiary hover:bg-background-tertiary;
   }
 
-
   &.small {
     @apply h-7 w-7;
     & i,
@@ -129,7 +128,10 @@ input[type='checkbox'] {
   }
 }
 .shortcut {
-  @apply rounded-md bg-background-secondary px-2  py-0.5 text-[10px];
+  @apply rounded-md  bg-background-secondary  px-2 py-0.5 text-[10px];
+}
+.tippy-box[data-theme~='custom'] .shortcut {
+  @apply bg-background-tertiary;
 }
 
 #themeToggler div {

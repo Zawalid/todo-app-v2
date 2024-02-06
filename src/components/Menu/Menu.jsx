@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { useHref } from 'react-router-dom';
+import { useHref, useNavigate } from 'react-router-dom';
 import { Lists } from './Lists/Lists';
 import { Tags } from './Tags/Tags';
 import { Tabs } from './Tabs';
@@ -10,6 +10,7 @@ import Settings from '../Settings/Settings';
 import Trash from '../Main/Trash/Trash';
 import { useSelector } from 'react-redux';
 import { BsLayoutSidebarInset, BsLayoutSidebarInsetReverse } from 'react-icons/bs';
+import CustomTippy from '../Common/CustomTippy';
 
 export function Menu() {
   const [isOpen, setIsOpen] = useState(window.matchMedia('(min-width: 1024px)').matches);
@@ -18,28 +19,30 @@ export function Menu() {
   const { showInSideBar } = useSelector((state) => state.settings.sidebar);
   const menu = useRef(null);
   const activeTab = useHref();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    setIsOpen(window.matchMedia('(min-width: 1024px)').matches);
+setIsOpen(window.matchMedia('(min-width: 1024px)').matches);
   }, [activeTab]);
 
   useEffect(() => {
     const keyboardShortcuts = (e) => {
-      // e.altKey &&  e.shiftKey && e.key === 'S' && setIsSettingsOpen(true);
-      // e.altKey &&  e.shiftKey && e.key === 'T' && setIsTrashOpen(true);
-      e.altKey && e.key === 's' && setIsSettingsOpen(true);
-      e.altKey && e.key === 't' && setIsTrashOpen(true);
-      e.key === 'Escape' &&
-        (isSettingsOpen
-          ? setIsSettingsOpen(false)
-          : isTrashOpen
-          ? setIsTrashOpen(false)
-          : setIsOpen(false));
+      e.ctrlKey && e.key === '/' && setIsOpen(!isOpen);
+      e.altKey && e.key === 'i' && navigate('/app/inbox');
+      e.altKey && e.key === 't' && navigate('/app/today');
+      e.altKey && e.key === 'u' && navigate('/app/upcoming');
+      e.altKey && e.key === 'c' && navigate('/app/completed');
+      e.altKey && e.key === 's' && navigate('/app/sticky-wall');
+      e.altKey && e.shiftKey && e.key === 'S' && setIsSettingsOpen(true);
+      e.altKey && e.shiftKey && e.key === 'T' && setIsTrashOpen(true);
+
+      e.key === 'Escape' && (isSettingsOpen ? setIsSettingsOpen(false) : setIsTrashOpen(false));
     };
 
     document.addEventListener('keydown', keyboardShortcuts);
     return () => document.removeEventListener('keydown', keyboardShortcuts);
-  }, [isSettingsOpen, isTrashOpen]);
+  }, [isSettingsOpen, isTrashOpen, isOpen, navigate]);
+
 
   return (
     <>
@@ -60,13 +63,24 @@ export function Menu() {
                 setIsSettingsOpen={setIsSettingsOpen}
                 setIsTrashOpen={setIsTrashOpen}
               />
-              <button
-                className='icon-button not-active'
-                onClick={() => setIsOpen(false)}
-                id='closeMenu'
+              <CustomTippy
+                content={
+                  <span className='flex items-center gap-2'>
+                    Close Sidebar
+                    <code className='shortcut bg-background-tertiary'>
+                      <kbd>Ctrl</kbd> + <kbd>/</kbd>
+                    </code>
+                  </span>
+                }
               >
-                <BsLayoutSidebarInset />
-              </button>
+                <button
+                  className='icon-button not-active'
+                  onClick={() => setIsOpen(false)}
+                  id='closeMenu'
+                >
+                  <BsLayoutSidebarInset />
+                </button>
+              </CustomTippy>
             </div>
 
             <div className='mb-3 overflow-y-auto overflow-x-hidden pr-3'>
@@ -88,9 +102,20 @@ export function Menu() {
       )}
       {isOpen ||
         createPortal(
-          <button className='icon-button  not-active' onClick={() => setIsOpen(true)}>
-            <BsLayoutSidebarInsetReverse />
-          </button>,
+          <CustomTippy
+            content={
+              <span className='flex items-center gap-2'>
+                Open Sidebar
+                <code className='shortcut bg-background-tertiary'>
+                  <kbd>Ctrl</kbd> + <kbd>/</kbd>
+                </code>
+              </span>
+            }
+          >
+            <button className='icon-button  not-active' onClick={() => setIsOpen(true)}>
+              <BsLayoutSidebarInsetReverse />
+            </button>
+          </CustomTippy>,
           (activeTab.match(/\/app\/sticky-wall\/(.+)/)
             ? document.querySelector('#actionBar > div')
             : document.querySelector('#title > div')) || document.body,
