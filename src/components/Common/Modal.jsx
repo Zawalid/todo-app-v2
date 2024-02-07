@@ -30,7 +30,7 @@ export function Overlay({ children, isOpen, onClose,className='z-30' }) {
 function Content({ children, isOpen, className }) {
   return (
     <div
-      className={`rounded-lg flex flex-col transition-transform duration-300 border-border bg-background-primary ${className} ${
+      className={`rounded-lg flex flex-col transition-transform duration-200 border-border bg-background-primary ${className} ${
         isOpen ? 'scale-100' : 'scale-0'
       }`}
     >

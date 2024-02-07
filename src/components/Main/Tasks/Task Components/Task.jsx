@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { cloneElement, useEffect, useMemo, useState } from 'react';
 import { useLongPress } from 'use-long-press';
 import { Tag } from '../../../Menu/Tags/Tag';
 import {
@@ -154,7 +154,7 @@ export function Task({
               .filter(({ value }) => value)
               .filter(({ detail }) => taskDetailLevel.includes(detail)).length > 0 && (
               <div className='mt-2 flex max-h-[40px] flex-wrap items-center gap-x-5 gap-y-3 overflow-auto'>
-                {taskDetailLevel.map((detail) => details[detail])}
+                {taskDetailLevel.map((detail) => cloneElement(details[detail], { key: detail }))}
               </div>
             )}
 
