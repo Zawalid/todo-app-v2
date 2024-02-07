@@ -4,6 +4,7 @@ import { ID } from 'appwrite';
 import { useDeleteElement } from '../hooks/useDeleteElement';
 import { toast } from 'sonner';
 import { useSelector } from 'react-redux';
+import { useDeleteSound } from '../hooks/useDeleteSound';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 const LISTS_COLLECTION_ID = '65422c65a17f95378d53';
@@ -16,6 +17,7 @@ function ListsProvider({ children }) {
   const { handleDeleteElement } = useDeleteElement();
   const user = useSelector((state) => state.user.user);
   const [currentProcessedList, setCurrentProcessedList] = useState(null);
+  const playDeleteSound = useDeleteSound();
 
   async function handleAddList(title, color, list) {
     const newList = list ? list : { title, color };
@@ -96,8 +98,8 @@ function ListsProvider({ children }) {
       {
         loading: 'Deleting list...',
         success: () => {
-          toast.dismiss(toastId);
-          toast.success('List has been successfully deleted.');
+          playDeleteSound();
+          return 'List has been successfully deleted.';
         },
         error: () => {
           toast.dismiss(toastId);

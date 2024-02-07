@@ -17,6 +17,8 @@ export default function ListTasks() {
     document.title = `I Do | ${listTitle}`;
   }, [listTitle]);
 
+  if (!listId) return null;
+
   return (
     <>
       <Title title={listTitle} count={listTasks.length} />
