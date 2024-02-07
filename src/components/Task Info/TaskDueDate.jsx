@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { isTaskOverdue } from '../../utils/Dates';
 import { DropDown } from '../Common/DropDown';
 import { PiCalendarBold, PiX } from 'react-icons/pi';
@@ -8,7 +8,6 @@ import { useFormatDateAndTime } from '../../hooks/useFormatDateAndTime';
 export function TaskDueDate({ taskDueDate, setTaskDueDate, inSettings }) {
   const [date, setDate] = useState(taskDueDate);
   const format = useFormatDateAndTime()
-  const instanceRef = useRef(null);
   const today = new Date();
   const tomorrow = new Date(today);
   const isOverDue = isTaskOverdue(taskDueDate);
@@ -28,7 +27,6 @@ export function TaskDueDate({ taskDueDate, setTaskDueDate, inSettings }) {
         ? tomorrow.toISOString().split('T')[0]
         : dueDate;
     setTaskDueDate(date);
-    instanceRef?.current?.hide();
   }
 
   return (
