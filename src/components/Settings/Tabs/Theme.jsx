@@ -9,7 +9,7 @@ export default function Theme() {
   const { control, isUpdated, setValue, onSubmit, onCancel } = useReactHookForm({
     settingCategory: 'theme',
   });
-  const currentTheme = useWatch({ control, name: 'primaryTheme' });
+  const primaryTheme = useWatch({ control, name: 'primaryTheme' });
 
   return (
     <Tab
@@ -19,7 +19,7 @@ export default function Theme() {
       }}
       cancelButton={{
         onClick: () =>
-          onCancel((setting) => (document.documentElement.className = setting.primaryTheme)),
+          onCancel((setting) =>  document.documentElement.setAttribute('data-theme-primary', setting.primaryTheme)),
         disabled: !isUpdated,
       }}
       control={control}
@@ -28,13 +28,13 @@ export default function Theme() {
         <div className='setting done block'>
           <h4>Themes</h4>
           <p>Choose a theme for your interface.</p>
-          <div className='mt-4 grid max-h-[360px] grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-3 overflow-auto pr-1'>
+          <div className='mt-4 grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-3'>
             {themes.map((theme) => (
               <ThemeExample
                 key={theme}
                 theme={theme}
                 onSelect={() => setValue('primaryTheme', theme, { shouldDirty: true })}
-                isCurrent={currentTheme === theme}
+                isCurrent={primaryTheme === theme}
               />
             ))}
           </div>
