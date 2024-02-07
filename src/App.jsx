@@ -1,10 +1,8 @@
-import { Suspense, lazy } from 'react';
+import { Suspense, lazy, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'sonner';
 import { FaSpinner } from 'react-icons/fa6';
 import './styles/App.css';
-
-import { useDarkMode } from './hooks/';
 
 import { SpinnerLoader } from './components/Common/SpinnerLoader';
 import Inbox from './components/Main/Tasks/Inbox';
@@ -34,8 +32,16 @@ const tabs = {
 };
 
 function App() {
-  const { theme } = useDarkMode();
-  const { defaultHomeView } = useSelector((state) => state.settings.general.preferences);
+  const { themeMode, primaryTheme } = useSelector((state) => state.settings.theme);
+  const { defaultHomeView, animation } = useSelector((state) => state.settings.general.preferences);
+
+  // Initialize the theme and primary theme color and animation on mount
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', themeMode);
+    document.documentElement.setAttribute('data-theme-primary', primaryTheme);
+    document.documentElement.setAttribute('data-animation', animation);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Suspense fallback={<SpinnerLoader />}>
@@ -62,7 +68,7 @@ function App() {
 
       <Toaster
         position={window.innerWidth < 768 ? 'bottom-center' : 'bottom-right'}
-        theme={theme}
+        theme={themeMode}
         loadingIcon={<FaSpinner className='animate-spin text-lg text-text-secondary' />}
         toastOptions={{
           className: 'sonner-toast',

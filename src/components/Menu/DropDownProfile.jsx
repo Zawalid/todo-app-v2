@@ -7,9 +7,10 @@ import {
   PiTrashLight,
 } from 'react-icons/pi';
 import { IoChevronDownOutline, IoSyncOutline } from 'react-icons/io5';
-import { useDarkMode, useUser, useFetchAllElements, useModal } from '../../hooks';
+import { useUser, useFetchAllElements, useModal } from '../../hooks';
 import { DropDown } from '../Common/DropDown';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { changeThemeMode } from '../../app/settingsSlice';
 
 export function DropDownProfile({ setIsSettingsOpen, setIsTrashOpen }) {
   return (
@@ -22,7 +23,7 @@ export function DropDownProfile({ setIsSettingsOpen, setIsTrashOpen }) {
         <PiGear className='text-text-tertiary' />
         <span>Settings</span>
         <code className='shortcut'>
-          <kbd>Alt</kbd> + <kbd>⇧ </kbd> +  <kbd>S</kbd>
+          <kbd>Alt</kbd> + <kbd>⇧ </kbd> + <kbd>S</kbd>
         </code>
       </DropDown.Button>
 
@@ -30,7 +31,7 @@ export function DropDownProfile({ setIsSettingsOpen, setIsTrashOpen }) {
         <PiTrashLight className='text-text-tertiary' />
         <span>Trash</span>
         <code className='shortcut'>
-          <kbd>Alt</kbd> + <kbd>⇧ </kbd> +  <kbd>T</kbd>
+          <kbd>Alt</kbd> + <kbd>⇧ </kbd> + <kbd>T</kbd>
         </code>
       </DropDown.Button>
       <DropDown.Divider />
@@ -68,18 +69,20 @@ function Profile() {
 }
 
 function ThemeToggler() {
-  const { theme, toggleDarkMode } = useDarkMode();
+  const { themeMode } = useSelector((state) => state.settings.theme);
+  const dispatch = useDispatch();
+
   return (
     <DropDown.Button
-      onClick={() => toggleDarkMode(theme === 'dark' ? 'light' : 'dark')}
+      onClick={() => dispatch(changeThemeMode(themeMode === 'dark' ? 'light' : 'dark'))}
       className='relative py-[18px]'
       id='themeToggler'
     >
-      <div className={theme === 'dark' ? 'translate-y-9' : 'translate-y-0'}>
+      <div className={themeMode === 'dark' ? 'translate-y-9' : 'translate-y-0'}>
         <PiMoonStars size={18} />
         <span>Dark Mode</span>
       </div>
-      <div className={theme === 'light' ? 'translate-y-9' : 'translate-y-0'}>
+      <div className={themeMode === 'light' ? 'translate-y-9' : 'translate-y-0'}>
         <PiSunDim size={18} />
         <span>Light Mode</span>
       </div>
@@ -121,13 +124,14 @@ function SignOutButton() {
 }
 
 export function IconThemeToggler() {
-  const { theme, toggleDarkMode } = useDarkMode();
+  const { themeMode } = useSelector((state) => state.settings.theme);
+  const dispatch = useDispatch();
   return (
     <button
-      onClick={() => toggleDarkMode(theme === 'dark' ? 'light' : 'dark')}
+      onClick={() => dispatch(changeThemeMode(themeMode === 'dark' ? 'light' : 'dark'))}
       className='icon-button not-active'
     >
-      {theme === 'dark' ? <PiSunDim size={20} /> : <PiMoonStars size={20} />}
+      {themeMode === 'dark' ? <PiSunDim size={20} /> : <PiMoonStars size={20} />}
     </button>
   );
 }

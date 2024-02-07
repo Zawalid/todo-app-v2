@@ -22,13 +22,12 @@ const DEFAULT_SETTINGS = {
       taskDetailLevel: ['dueDate', 'list', 'priority', 'subtasks', 'tags'],
     },
     stickyNotes: {
-      autoSave: true,
       defaultColor: '--custom-1',
     },
   },
   theme: {
+    themeMode: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
     primaryTheme: 'indigo',
-    autoDarkMode: true,
   },
   sidebar: {
     showInSideBar: ['inbox', 'stickyWall', 'today', 'upcoming', 'lists', 'tags'],
@@ -45,13 +44,20 @@ const settingsReducer = createSlice({
       const { category, settings } = action.payload;
       state[category] = settings;
       state.isDefault = false;
+      document.documentElement.setAttribute('data-animation', state.general.preferences.animation);
     },
     resetSettings(state) {
       Object.assign(state, DEFAULT_SETTINGS);
     },
+    changeThemeMode(state, action) {
+      state.theme.themeMode = action.payload;
+      document.documentElement.classList.add('color-transition');
+      document.documentElement.setAttribute('data-theme', action.payload);
+      setTimeout(() => document.documentElement.classList.remove('color-transition'), 400);
+    },
   },
 });
 
-export const { updateSettings, resetSettings } = settingsReducer.actions;
+export const { updateSettings, resetSettings, changeThemeMode } = settingsReducer.actions;
 
 export default settingsReducer.reducer;
