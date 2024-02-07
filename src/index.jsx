@@ -23,19 +23,19 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <PersistGate loading={null} persistor={persistor}>
         <BrowserRouter>
           <ModalProvider>
-              <TrashProvider>
-                <UserProvider>
-                  <ListsProvider>
-                    <TasksProvider>
-                      <StickyNotesProvider>
-                        <TagsProvider>
-                          <App />
-                        </TagsProvider>
-                      </StickyNotesProvider>
-                    </TasksProvider>
-                  </ListsProvider>
-                </UserProvider>
-              </TrashProvider>
+            <TrashProvider>
+              <UserProvider>
+                <ListsProvider>
+                  <TasksProvider>
+                    <StickyNotesProvider>
+                      <TagsProvider>
+                        <App />
+                      </TagsProvider>
+                    </StickyNotesProvider>
+                  </TasksProvider>
+                </ListsProvider>
+              </UserProvider>
+            </TrashProvider>
           </ModalProvider>
         </BrowserRouter>
       </PersistGate>
