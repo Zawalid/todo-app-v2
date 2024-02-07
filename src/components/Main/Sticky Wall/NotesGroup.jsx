@@ -46,13 +46,9 @@ export function NotesGroup({
         {isGroupOpen ? <IoChevronUp /> : <IoChevronDown />}
       </button>
       <div
-        className={
-          'flex-1 overflow-auto ' +
-          (view === 'list'
-            ? 'space-y-3 '
-            : ' grid grid-cols-[repeat(auto-fill,minmax(270px,1fr))] gap-4 ') +
-          (isGroupOpen ? 'h-auto' : 'h-0')
-        }
+        className={`flex-1 gap-4 overflow-auto ${
+          view === 'list' ? 'space-y-3 ' : ' grid grid-cols-[repeat(auto-fill,minmax(270px,1fr))]'
+        } ${isGroupOpen ? 'h-auto' : 'h-0'}`}
         ref={parent}
       >
         {render()

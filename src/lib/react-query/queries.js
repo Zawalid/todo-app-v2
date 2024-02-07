@@ -2,9 +2,11 @@ import { useQuery } from '@tanstack/react-query';
 import { GET_TASKS } from './keys';
 import { getTask, getTasks } from '../appwrite/api/tasksApi';
 import { useSelector } from 'react-redux';
+import { checkIfToday, checkIfTomorrow, isDateInCurrentWeek } from '../../utils/Dates';
 
 //* Tasks Queries
 
+// All tasks
 export function useTasks() {
   const user = useSelector((state) => state.user.user);
 
@@ -13,9 +15,52 @@ export function useTasks() {
     queryFn: async () => await getTasks(user.$id),
   });
 
-  return { tasks: data, isLoading: isPending, isError, error };
+  return { tasks: data?.documents, isLoading: isPending, isError, error };
 }
 
+// Today tasks
+export function useTodayTasks() {
+  const { tasks, isLoading, isError, error } = useTasks();
+  const todayTasks = tasks?.filter((task) => checkIfToday(task.dueDate));
+
+  return { todayTasks, isLoading, isError, error };
+}
+
+// Upcoming tasks
+export function useUpcomingTasks() {
+  const { tasks, isLoading, isError, error } = useTasks();
+  const { weekStartsOn } = useSelector((state) => state.settings.general.dateAndTime);
+
+  const todayTasks = tasks?.filter((task) => checkIfToday(task.dueDate));
+  const tomorrowTasks = tasks?.filter((task) => checkIfTomorrow(task.dueDate));
+  const thisWeekTasks = tasks?.filter((task) => isDateInCurrentWeek(task.dueDate, weekStartsOn));
+
+  const upcomingTasks = [
+    ...todayTasks,
+    ...tomorrowTasks,
+    ...thisWeekTasks.filter((t) => ![...todayTasks, ...tomorrowTasks].includes(t)),
+  ];
+
+  return { upcomingTasks, todayTasks, tomorrowTasks, thisWeekTasks, isLoading, isError, error };
+}
+
+// Completed tasks
+export function useCompletedTasks() {
+  const { tasks, isLoading, isError, error } = useTasks();
+  const completedTasks = tasks?.filter((task) => task.isCompleted);
+
+  return { completedTasks, isLoading, isError, error };
+}
+
+// List tasks
+export function useListTasks(listId) {
+  const { tasks, isLoading, isError, error } = useTasks();
+  const listTasks = tasks?.filter((task) => task.listId === listId);
+
+  return { listTasks, isLoading, isError, error };
+}
+
+// Task
 export function useTask(taskId) {
   const { data, isPending, isError, error } = useQuery({
     queryKey: [[GET_TASKS, taskId]],

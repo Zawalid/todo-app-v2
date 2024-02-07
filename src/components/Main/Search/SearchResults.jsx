@@ -1,17 +1,19 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useTasks, useStickyNotes } from '../../../hooks/';
+import { useStickyNotes } from '../../../hooks/';
 import { Task } from '../Tasks/Task Components/Task';
 import { StickyNote } from '../Sticky Wall/StickyNote';
 import { Tabs } from '../../Common/Tabs';
 import { Title } from '../Title';
 import noResults from '../../../assets/no_result.png';
 import { useAutoAnimate } from '../../../hooks/useAutoAnimate';
+import { useTasks, useUpcomingTasks } from '../../../lib/react-query/queries';
 
 export default function SearchResults() {
   const [currentTab, setCurrentTab] = useState('all');
   const { searchQuery } = useParams();
-  const { tasks, todayTasks, upcomingTasks } = useTasks();
+  const { tasks } = useTasks();
+  const { todayTasks, upcomingTasks } = useUpcomingTasks();
   const { stickyNotes } = useStickyNotes();
   const navigate = useNavigate();
 

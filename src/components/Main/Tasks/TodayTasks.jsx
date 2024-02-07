@@ -1,22 +1,24 @@
 import { useEffect } from 'react';
-import { useTasks } from '../../../hooks';
-import { checkIfToday } from '../../../utils/Dates';
 import { TasksSkeleton } from '../../Skeletons';
 import { Title } from '../Title';
 import TasksList from './TasksList';
+import { useTodayTasks } from '../../../lib/react-query/queries';
 
 export default function TodayTasks() {
-  const { tasks, isTasksLoading } = useTasks();
-  const todayTasks = tasks.filter((task) => checkIfToday(task.dueDate));
+  const { todayTasks, isLoading, isError, error } = useTodayTasks();
 
   useEffect(() => {
     document.title = `I Do | Today`;
   }, []);
 
+  if (isError) {
+    return <p>{error.message}</p>;
+  }
+
   return (
     <>
-      <Title title='Today' count={todayTasks.length} />
-      {isTasksLoading ? (
+      <Title title='Today' count={todayTasks?.length} />
+      {isLoading ? (
         <TasksSkeleton number={6} />
       ) : (
         <TasksList

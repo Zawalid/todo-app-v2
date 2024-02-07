@@ -5,14 +5,10 @@ import { useEffect } from 'react';
 import { useFetchAllElements } from '../hooks/useFetchAllElements';
 import { useSelector } from 'react-redux';
 import { useAutoAnimate } from '../hooks/useAutoAnimate';
-import { useTasks } from '../lib/react-query/queries';
 
 export default function AppLayout() {
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
   const { handleFetchAllElements, handleClearAllElements } = useFetchAllElements();
-
-const {tasks} = useTasks() 
-
 
   useEffect(() => {
     const fetch = () => {
