@@ -1,5 +1,4 @@
 import { CiStickyNote } from 'react-icons/ci';
-import Switch from '../../../Common/Switch';
 import { Colors } from '../../../Common/Colors';
 import { Controller, useWatch } from 'react-hook-form';
 
@@ -13,15 +12,7 @@ export function StickyNotes({ control, setValue }) {
         <h3 className='font-bold'>Sticky Notes</h3>
       </div>
       <div className='space-y-5 md:pl-5'>
-        <div className='setting not-done'>
-          <h4>Auto Save</h4>
-          <Controller
-            name='stickyNotes.autoSave'
-            control={control}
-            render={({ field }) => <Switch checked={field.value} {...field} />}
-          />{' '}
-        </div>
-        <div className='setting not-done'>
+        <div className='setting'>
           <div>
             <h4>Default Color</h4>
             <p>Initial color for all new sticky notes. You can modify this for each note later.</p>

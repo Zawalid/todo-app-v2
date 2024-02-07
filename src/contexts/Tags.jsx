@@ -4,6 +4,7 @@ import { ID } from 'appwrite';
 import { useDeleteElement } from '../hooks/useDeleteElement';
 import { toast } from 'sonner';
 import { useSelector } from 'react-redux';
+import { useDeleteSound } from '../hooks/useDeleteSound';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 const TAGS_COLLECTION_ID = appWriteConfig.tagsCollectionId;
@@ -15,6 +16,8 @@ function TagsProvider({ children }) {
   const [isTagsLoading, setIsTagsLoading] = useState(true);
   const { handleDeleteElement } = useDeleteElement();
   const user = useSelector((state) => state.user.user);
+  const playDeleteSound = useDeleteSound();
+
 
   async function handleAddTag(title, bgColor, textColor) {
     const toastId = toast.promise(
@@ -57,8 +60,8 @@ function TagsProvider({ children }) {
       {
         loading: 'Deleting tag...',
         success: () => {
-          toast.dismiss(toastId);
-          toast.success('Tag  has been successfully deleted.');
+          playDeleteSound();
+          'Tag  has been successfully deleted.';
         },
         error: () => {
           toast.dismiss(toastId);

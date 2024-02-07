@@ -4,6 +4,7 @@ import { ID, Query } from 'appwrite';
 import { toast } from 'sonner';
 import { COLLECTIONS_IDS, TRASH_CLEANUP_INTERVAL } from '../utils/constants';
 import { useSelector } from 'react-redux';
+import { useDeleteSound } from '../hooks/useDeleteSound';
 
 const { databaseId: DATABASE_ID, trashCollectionId: TRASH_COLLECTION_ID } = appWriteConfig;
 
@@ -89,6 +90,7 @@ export default function TrashProvider({ children }) {
   );
   const [currentProcessedItem, setCurrentProcessedItem] = useState(null);
   const user = useSelector((state) => state.user.user);
+  const playDeleteSound = useDeleteSound();
 
   // --- Creation ---
   async function createTrash(user) {
@@ -134,7 +136,10 @@ export default function TrashProvider({ children }) {
       Promise.all([deleteElement(type, itemId), deleteItem(type, itemId)]),
       {
         loading: `Deleting ${element} permanently...`,
-        success: ` ${element} has been deleted permanently.`,
+        success: () => {
+          playDeleteSound();
+          return `${element} has been deleted permanently.`;
+        },
         error: (error) => {
           console.log(error);
           toast.dismiss(toastId);
@@ -241,6 +246,7 @@ export default function TrashProvider({ children }) {
         loading: `Emptying ${element} from trash...`,
         success: () => {
           dispatch({ type: 'EMPTY_TYPE', payload: type });
+          playDeleteSound();
           return `${element} have been successfully emptied.`;
         },
         error: () => {
@@ -276,6 +282,7 @@ export default function TrashProvider({ children }) {
         loading: 'Emptying trash...',
         success: () => {
           dispatch({ type: 'EMPTY_TRASH' });
+          playDeleteSound();
           return autoCleanUp ? null : 'Trash has been successfully emptied.';
         },
         error: () => {
@@ -355,7 +362,7 @@ export default function TrashProvider({ children }) {
 
   useEffect(() => {
     initializeTrash();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   return (

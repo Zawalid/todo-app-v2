@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import { getDeletionMessage, isElementEmpty } from '../utils/helpers';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useDeleteSound } from '../hooks/useDeleteSound';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 const STICKY_NOTES_COLLECTION_ID = appWriteConfig.stickyNotesCollectionId;
@@ -20,7 +21,9 @@ export default function StickyNotesProvider({ children }) {
   const [isNotesLoading, setIsNotesLoading] = useState(true);
   const { handleDeleteElement } = useDeleteElement();
   const user = useSelector((state) => state.user.user);
+  const { defaultColor } = useSelector((state) => state.settings.general.stickyNotes);
   const navigate = useNavigate();
+  const playDeleteSound = useDeleteSound();
 
   async function handleAddStickyNote(note, duplicate) {
     try {
@@ -90,6 +93,7 @@ export default function StickyNotesProvider({ children }) {
         stickyNotes,
         setStickyNotes,
       );
+
       return;
     }
 
@@ -105,8 +109,8 @@ export default function StickyNotesProvider({ children }) {
       {
         loading: 'Deleting note...',
         success: () => {
-          toast.dismiss(toastId);
-          toast.success(getDeletionMessage('sticky note', 'success', true));
+          playDeleteSound();
+          return getDeletionMessage('sticky note', 'success', true);
         },
         error: () => {
           toast.dismiss(toastId);
@@ -135,8 +139,8 @@ export default function StickyNotesProvider({ children }) {
       {
         loading: 'Deleting sticky notes...',
         success: () => {
-          toast.dismiss(toastId);
-          toast.success(getDeletionMessage('sticky note', 'success', false, false));
+          playDeleteSound();
+          return getDeletionMessage('sticky note', 'success', false, false);
         },
         error: () => {
           toast.dismiss(toastId);
@@ -166,10 +170,8 @@ export default function StickyNotesProvider({ children }) {
       {
         loading: 'Deleting sticky notes...',
         success: () => {
-          toast.dismiss(toastId);
-          toast.success(
-            getDeletionMessage('sticky note', 'success', false, true, selectedNotes.length),
-          );
+          playDeleteSound();
+          return getDeletionMessage('sticky note', 'success', false, true, selectedNotes.length);
         },
         error: () => {
           toast.dismiss(toastId);
@@ -196,7 +198,7 @@ export default function StickyNotesProvider({ children }) {
       const note = {
         title: '',
         content: '<p></p>',
-        bgColor: '--custom-1',
+        bgColor: defaultColor,
         textColor: '#fff',
         readonly: false,
         pinned: false,

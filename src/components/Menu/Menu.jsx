@@ -37,7 +37,7 @@ export function Menu() {
       e.altKey && e.shiftKey && e.key === 'S' && setIsSettingsOpen(true);
       e.altKey && e.shiftKey && e.key === 'T' && setIsTrashOpen(true);
 
-      e.key === 'Escape' && (isSettingsOpen ? setIsSettingsOpen(false) : setIsTrashOpen(false));
+      e.key === 'Escape' && (isTrashOpen ? setIsTrashOpen(false) : setIsSettingsOpen(false));
     };
 
     document.addEventListener('keydown', keyboardShortcuts);

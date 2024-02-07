@@ -11,6 +11,7 @@ const DATABASE_ID = appWriteConfig.databaseId;
 const TASKS_COLLECTION_ID = appWriteConfig.tasksCollectionId;
 
 import completedSoundFile from '../assets/completed.mp3';
+import { useDeleteSound } from '../hooks/useDeleteSound';
 const completedSound = new Audio(completedSoundFile);
 
 export const TasksContext = createContext();
@@ -30,6 +31,7 @@ export default function TasksProvider({ children }) {
     dateAndTime: { weekStartsOn },
     tasks: { autoDeleteCompletedTasks, deletePermanently: autoDeletePermanently },
   } = useSelector((state) => state.settings.general);
+  const playDeleteSound = useDeleteSound();
 
   const todayTasks = tasks?.filter((task) => checkIfToday(task.dueDate));
   const tomorrowTasks = tasks?.filter((task) => checkIfTomorrow(task.dueDate));
@@ -129,8 +131,8 @@ export default function TasksProvider({ children }) {
       {
         loading: 'Deleting task...',
         success: () => {
-          toast.dismiss(toastId);
-          toast.success(getDeletionMessage('task', 'success', true));
+          playDeleteSound();
+          return getDeletionMessage('task', 'success', true);
         },
         error: () => {
           toast.dismiss(toastId);
@@ -169,8 +171,8 @@ export default function TasksProvider({ children }) {
       {
         loading: 'Deleting all tasks...',
         success: () => {
-          toast.dismiss(toastId);
-          toast.success(getDeletionMessage('task', 'success', false, false));
+          playDeleteSound();
+          return getDeletionMessage('task', 'success', false, false);
         },
         error: () => {
           toast.dismiss(toastId);
@@ -211,10 +213,8 @@ export default function TasksProvider({ children }) {
             ? 'Deleting task...'
             : `Deleting ${selectedTasks.length} tasks...`,
         success: () => {
-          toast.dismiss(toastId);
-          toast.success(getDeletionMessage('task', 'success', false, true, selectedTasks.length), {
-            duration: 4000,
-          });
+          playDeleteSound();
+          return getDeletionMessage('task', 'success', false, true, selectedTasks.length);
         },
         error: () => {
           toast.dismiss(toastId);

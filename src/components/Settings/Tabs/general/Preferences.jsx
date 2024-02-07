@@ -26,7 +26,7 @@ export function Preferences({ control, setValue }) {
             render={({ field }) => <Switch checked={field.value} {...field} />}
           />
         </div>
-        <div className='setting not-done'>
+        <div className='setting'>
           <div>
             <h4>Deletion Sound</h4>
             <p className='mt-2 text-xs text-text-secondary'>
