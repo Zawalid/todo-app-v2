@@ -17,7 +17,7 @@ import { copyToClipBoard } from '../../../../utils/helpers';
 import { PiCalendarBold, PiCheckBold, PiWarningBold } from 'react-icons/pi';
 import { useSelector } from 'react-redux';
 import { useFormatDateAndTime } from '../../../../hooks/useFormatDateAndTime';
-
+import { NavLink } from 'react-router-dom';
 
 const priorities = {
   1: {
@@ -48,7 +48,7 @@ export function Task({
     $createdAt,
     $updatedAt,
   },
-  onClick,
+  onSelect,
   isSelecting,
   isSelected,
 }) {
@@ -56,7 +56,7 @@ export function Task({
   const [checked, setChecked] = useState(isCompleted);
   const { lists } = useLists();
   const { tasks, handleAddTask, handleUpdateTask } = useTasks();
-  const { handleOpenTask, handleCompleteTask, handleDeleteTask } = useTasks();
+  const { handleCompleteTask, handleDeleteTask } = useTasks();
   const { openModal: confirmDelete, isModalOpen } = useModal();
   const isPassed = isTaskOverdue(dueDate);
   const bind = useLongPress(() => !isModalOpen && !isSelecting && setIsTaskActionsOpen(true), {
@@ -117,96 +117,93 @@ export function Task({
   ];
 
   return (
-    <li
+    <NavLink
+      to={isSelecting || $id}
       id='task'
-      onClick={(e) => (isSelecting ? onClick() : e.target.closest('#task') && handleOpenTask($id))}
+      onClick={() => isSelecting && onSelect()}
+      className={`grid min-h-[49px] w-full select-none grid-cols-[20px_auto] items-center gap-3 rounded-lg border border-border px-3 py-2 text-start transition-transform  duration-300   hover:translate-y-1  sm:px-5   ${
+        checked ? 'bg-background-tertiary ' : ''
+      }`}
       {...bind()}
     >
-      <button
-        className={
-          ' grid min-h-[49px] w-full select-none grid-cols-[20px_auto] items-center gap-3 rounded-lg border border-border px-3 py-2 text-start transition-transform  duration-300   hover:translate-y-1  sm:px-5   ' +
-          (checked ? 'bg-background-tertiary ' : '')
-        }
-      >
-        <TaskCheckbox
-          checked={checked}
-          setChecked={setChecked}
-          isSelecting={isSelecting}
-          isSelected={isSelected}
-          onDelete={async () => handleDeleteTask($id)}
-        />
-        <div className=' overflow-hidden'>
-          <span
-            className={
-              'block truncate text-sm font-medium text-text-secondary ' +
-              (checked ? 'line-through' : '')
-            }
-          >
-            {title}
-          </span>
-          <div className='flex items-center justify-between gap-5'>
-            {/* 
+      <TaskCheckbox
+        checked={checked}
+        setChecked={setChecked}
+        isSelecting={isSelecting}
+        isSelected={isSelected}
+        onDelete={async () => handleDeleteTask($id)}
+      />
+      <div className=' overflow-hidden'>
+        <span
+          className={
+            'block truncate text-sm font-medium text-text-secondary ' +
+            (checked ? 'line-through' : '')
+          }
+        >
+          {title}
+        </span>
+        <div className='flex items-center justify-between gap-5'>
+          {/* 
             So this complicated line of code does the following :
               - Check if the task has at least on detail that is not empty
               - Check if the task has at least one detail that is not empty and is included in the taskDetailLevel
               - If the above conditions are met, then it will display the details
             */}
-            {taskExistingDetails.some(({ value }) => value) &&
-              taskExistingDetails
-                .filter(({ value }) => value)
-                .filter(({ detail }) => taskDetailLevel.includes(detail)).length > 0 && (
-                <div className='mt-2 flex max-h-[40px] flex-wrap items-center gap-x-5 gap-y-3 overflow-auto'>
-                  {taskDetailLevel.map((detail) => details[detail])}
-                </div>
-              )}
-
-            {isPassed && !checked && (
-              <CustomTippy content='Overdue'>
-                <span>
-                  <PiCalendarBold className='text-lg text-red-500' />
-                </span>
-              </CustomTippy>
+          {taskExistingDetails.some(({ value }) => value) &&
+            taskExistingDetails
+              .filter(({ value }) => value)
+              .filter(({ detail }) => taskDetailLevel.includes(detail)).length > 0 && (
+              <div className='mt-2 flex max-h-[40px] flex-wrap items-center gap-x-5 gap-y-3 overflow-auto'>
+                {taskDetailLevel.map((detail) => details[detail])}
+              </div>
             )}
-          </div>
+
+          {isPassed && !checked && (
+            <CustomTippy content='Overdue'>
+              <span>
+                <PiCalendarBold className='text-lg text-red-500' />
+              </span>
+            </CustomTippy>
+          )}
         </div>
-        <TaskActions
-          isOpen={isTaskActionsOpen}
-          onClose={() => setIsTaskActionsOpen(false)}
-          onDelete={() => {
-            setIsTaskActionsOpen(false);
-            confirmDelete({
-              title: 'Delete task',
-              message: 'Are you sure you want to delete this task?',
-              onConfirm: async () => handleDeleteTask($id),
-            });
-          }}
-          onCopy={() => {
-            copyToClipBoard(`Task Title: ${title}\n\nTask Note:\n${note}`);
-            setIsTaskActionsOpen(false);
-          }}
-          onDuplicate={() => {
-            setIsTaskActionsOpen(false);
-            const task = {
-              title: `${title} (copy)`,
-              note,
-              dueDate,
-              subtasks,
-              tagsIds,
-              priority,
-              listId,
-            };
-            handleAddTask(task, true);
-          }}
-          date={{
-            created: $createdAt,
-            updated: $updatedAt,
-          }}
-          lists={updatedLists}
-          onMove={(listId) => handleUpdateTask($id, { listId })}
-          currentListId={listId}
-        />
-      </button>
-    </li>
+      </div>
+      <TaskActions
+        isOpen={isTaskActionsOpen}
+        onClose={() => setIsTaskActionsOpen(false)}
+        onDelete={() => {
+          setIsTaskActionsOpen(false);
+          confirmDelete({
+            title: 'Delete task',
+            message: 'Are you sure you want to delete this task?',
+            onConfirm: async () => handleDeleteTask($id),
+          });
+        }}
+        onCopy={() => {
+          copyToClipBoard(`Task Title: ${title}\n\nTask Note:\n${note}`);
+          setIsTaskActionsOpen(false);
+        }}
+        onDuplicate={() => {
+          setIsTaskActionsOpen(false);
+          const task = {
+            title: `${title} (copy)`,
+            note,
+            dueDate,
+            subtasks,
+            tagsIds,
+            priority,
+            listId,
+          };
+          handleAddTask(task, true);
+        }}
+        date={{
+          created: $createdAt,
+          updated: $updatedAt,
+        }}
+        lists={updatedLists}
+        onMove={(listId) => handleUpdateTask($id, { listId })}
+        currentListId={listId}
+      />
+    </NavLink>
   );
 }
 

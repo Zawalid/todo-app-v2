@@ -136,7 +136,7 @@ function List({ filteredTasks, isSelecting, currentPage, rowsPerPage }) {
   const direction = searchParams.get('direction') || 'asc';
 
   return (
-    <ul className='h-full space-y-2  overflow-y-auto overflow-x-hidden' ref={parent}>
+    <div className='h-full space-y-2  overflow-y-auto overflow-x-hidden' ref={parent}>
       {filteredTasks
         .toSorted((a, b) => {
           if (sortBy === 'cDate') {
@@ -166,7 +166,7 @@ function List({ filteredTasks, isSelecting, currentPage, rowsPerPage }) {
             <Task
               key={task.$id}
               task={task}
-              onClick={() => {
+              onSelect={() => {
                 setSelectedTasks((prev) => {
                   if (isSelected) return prev.filter((t) => t.$id !== $id);
                   else return [...prev, { $id, title, listId }];
@@ -177,7 +177,7 @@ function List({ filteredTasks, isSelecting, currentPage, rowsPerPage }) {
             />
           );
         })}
-    </ul>
+    </div>
   );
 }
 
@@ -222,7 +222,7 @@ function Actions({
         maxWidth='auto'
       >
         <button className='icon-button not-active'>
-        <PiDotsThreeOutlineVerticalFill />
+          <PiDotsThreeOutlineVerticalFill />
         </button>
       </Tippy>
     </SelectionIcons>

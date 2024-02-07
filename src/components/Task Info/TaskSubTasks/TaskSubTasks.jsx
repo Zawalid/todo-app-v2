@@ -13,6 +13,8 @@ export function TaskSubTasks({
     duration: 500,
   });
 
+  if(!taskSubtasks) return null;
+
   return (
     <div className='mt-7 flex-shrink-0 pb-5 '>
       <h2 className='mb-4 text-xl font-bold text-text-secondary'>Subtasks :</h2>

@@ -5,7 +5,10 @@ import { PiPlusBold } from 'react-icons/pi';
 
 export function TaskTags({ taskTagsIds, handleAddTagToTask, handleDeleteTagFromTask }) {
   const { tags } = useTags();
+  if (!taskTagsIds) return null;
+
   const validTags = taskTagsIds.filter((id) => tags.find((tag) => tag.$id === id));
+
   return (
     <>
       <label className='justify-self-start text-sm text-text-tertiary'>Tags</label>

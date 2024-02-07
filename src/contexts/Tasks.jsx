@@ -19,8 +19,6 @@ export const TasksContext = createContext();
 export default function TasksProvider({ children }) {
   const [tasks, setTasks] = useState([]);
   const [isTasksLoading, setIsTasksLoading] = useState(true);
-  const [currentTask, setCurrentTask] = useState(null);
-  const [isTaskOpen, setIsTaskOpen] = useState(false);
   const [isAddingTask, setIsAddingTask] = useState(false);
   const [selectedTasks, setSelectedTasks] = useState([]);
   const { handleDeleteElement } = useDeleteElement();
@@ -125,7 +123,6 @@ export default function TasksProvider({ children }) {
   async function handleDeleteTask(id, deletePermanently) {
     if (currentProcessedTask === id) return;
     setCurrentProcessedTask(id);
-    setIsTaskOpen(false);
     const toastId = toast.promise(
       handleDeleteElement(id, TASKS_COLLECTION_ID, deletePermanently, 'tasks', tasks, setTasks),
       {
@@ -153,7 +150,6 @@ export default function TasksProvider({ children }) {
 
   async function handleDeleteAllTasks(deletedTasks, deletePermanently) {
     setCurrentProcessedTask('multiple');
-    setIsTaskOpen(false);
 
     const toastId = toast.promise(
       Promise.all(
@@ -193,7 +189,6 @@ export default function TasksProvider({ children }) {
 
   async function handleDeleteMultipleTasks(deletePermanently) {
     setCurrentProcessedTask('multiple');
-    setIsTaskOpen(false);
     const toastId = toast.promise(
       Promise.all(
         selectedTasks.map((task) =>
@@ -233,26 +228,16 @@ export default function TasksProvider({ children }) {
     );
   }
 
-  async function handleOpenTask(id) {
-    if (currentProcessedTask === id || currentProcessedTask === 'multiple') return;
-    if (id) {
-      setCurrentTask(tasks.find((task) => task.$id === id));
-      setIsTaskOpen(true);
-    }
-  }
-
   return (
     <TasksContext.Provider
       value={{
         tasks,
         isTasksLoading,
-        currentTask,
         todayTasks,
         tomorrowTasks,
         thisWeekTasks,
         upcomingTasks,
         selectedTasks,
-        isTaskOpen,
         isAddingTask,
         setIsTasksLoading,
         handleAddTask,
@@ -261,8 +246,6 @@ export default function TasksProvider({ children }) {
         handleCompleteTask,
         handleDeleteAllTasks,
         handleDeleteMultipleTasks,
-        handleOpenTask,
-        setIsTaskOpen,
         setTasks,
         setSelectedTasks,
       }}

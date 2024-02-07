@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { GET_TASKS } from './keys';
-import { getTask, getTasks } from '../appwrite/api/tasksApi';
+import { getTasks } from '../appwrite/api/tasksApi';
 import { useSelector } from 'react-redux';
 import { checkIfToday, checkIfTomorrow, isDateInCurrentWeek } from '../../utils/Dates';
 
@@ -58,16 +58,6 @@ export function useListTasks(listId) {
   const listTasks = tasks?.filter((task) => task.listId === listId);
 
   return { listTasks, isLoading, isError, error };
-}
-
-// Task
-export function useTask(taskId) {
-  const { data, isPending, isError, error } = useQuery({
-    queryKey: [[GET_TASKS, taskId]],
-    queryFn: () => getTask(taskId),
-  });
-
-  return { task: data, isLoading: isPending, isError, error };
 }
 
 //* Lists Queries
