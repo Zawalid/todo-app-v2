@@ -276,8 +276,8 @@ function AddNote({ isSelecting }) {
         </span>
       }
     >
-      <NavLink to='new'>
-        <button className='fixed bottom-20 right-5 grid h-12 w-12 place-content-center rounded-full bg-primary p-2 shadow-lg transition-colors duration-200  hover:bg-primary-hover sm:right-8'>
+      <NavLink to='new' className='fixed bottom-20 right-5 sm:right-8'>
+        <button className='grid h-12 w-12 place-content-center rounded-full bg-primary p-2 shadow-lg transition-colors duration-200  hover:bg-primary-hover'>
           <PiPlusBold color='white' size={20} />
         </button>
       </NavLink>

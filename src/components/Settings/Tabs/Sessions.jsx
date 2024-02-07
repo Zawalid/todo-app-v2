@@ -77,8 +77,11 @@ export default function Sessions() {
             title: 'Revoke All Sessions',
             message: 'Are you sure you want to revoke all sessions?',
             onConfirm: async () => {
-              await handleDeleteSessions();
-              setSessions([]);
+              const sessionsIds = sessions
+                .filter((session) => !session.current)
+                .map((session) => session.$id);
+              await handleDeleteSessions(sessionsIds);
+              setSessions((prev) => prev.filter((session) => session.current));
             },
             showCheckbox: false,
             confirmText: 'Revoke All',
@@ -125,8 +128,7 @@ export default function Sessions() {
 }
 
 function Session({ session, onDelete }) {
-  const format = useFormatDateAndTime()
-
+  const format = useFormatDateAndTime();
 
   if (!session) return null;
   const {
@@ -157,15 +159,14 @@ function Session({ session, onDelete }) {
           {ip || 'Unknown IP'} - {countryName || 'Unknown Location'}
         </p>
         <p className='text-xs font-medium text-text-tertiary sm:text-sm'>
-          Signed in{' '}
-          {format(new Date(signedInAt))}
+          Signed in {format(new Date(signedInAt))}
         </p>
       </div>
       {current || (
         <Button
           type='outline-delete'
-          size={window.matchMedia(('(max-width : 640px)')).matches ? 'small' : 'default'}
-          onClick={() => onDelete(current ? 'current' : $id)}
+          size={window.matchMedia('(max-width : 640px)').matches ? 'small' : 'default'}
+          onClick={() => onDelete($id)}
         >
           Revoke
         </Button>
@@ -176,7 +177,7 @@ function Session({ session, onDelete }) {
 
 function NoSessions() {
   return (
-    <div className=' grid h-full place-content-center'>
+    <div className=' grid h-40 place-content-center'>
       <p className='text-sm text-text-tertiary'>No active sessions</p>
     </div>
   );
@@ -184,7 +185,7 @@ function NoSessions() {
 
 function Error() {
   return (
-    <div className=' grid h-full place-content-center'>
+    <div className=' grid h-40 place-content-center'>
       <p className='text-sm text-text-tertiary'>Something went wrong. Please try again later.</p>
     </div>
   );

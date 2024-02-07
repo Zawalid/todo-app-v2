@@ -11,7 +11,7 @@ const DEFAULT_SETTINGS = {
     dateAndTime: {
       dateFormat: 'MM/dd/yyyy',
       timeFormat: 'HH:mm',
-      weekStartsOn: 'Monday',
+      weekStartsOn: 1,
     },
     tasks: {
       defaultDueDate: '',
