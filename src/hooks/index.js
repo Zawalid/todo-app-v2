@@ -12,7 +12,5 @@ export { useFetchAllElements } from './useFetchAllElements';
 
 export { useIsTitleTaken } from './useIsTitleTaken';
 export { useLocalStorageState } from './useLocalStorageState';
-export { useDarkMode } from './useDarkMode';
 export { useModal } from './useModal';
-// export { useAutoAnimate } from './useAutoAnimate';
 

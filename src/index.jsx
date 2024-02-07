@@ -4,7 +4,6 @@ import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from './app/store.js';
 
-import DarkModeProvider from './contexts/DarkModeContext.jsx';
 import TrashProvider from './contexts/Trash.jsx';
 import UserProvider from './contexts/User.jsx';
 import ListsProvider from './contexts/Lists.jsx';
@@ -24,7 +23,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <PersistGate loading={null} persistor={persistor}>
         <BrowserRouter>
           <ModalProvider>
-            <DarkModeProvider>
               <TrashProvider>
                 <UserProvider>
                   <ListsProvider>
@@ -38,7 +36,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                   </ListsProvider>
                 </UserProvider>
               </TrashProvider>
-            </DarkModeProvider>
           </ModalProvider>
         </BrowserRouter>
       </PersistGate>

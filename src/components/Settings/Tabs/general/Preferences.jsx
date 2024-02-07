@@ -1,5 +1,5 @@
 import { PiSliders } from 'react-icons/pi';
-import { IoChevronDownOutline } from "react-icons/io5";
+import { IoChevronDownOutline } from 'react-icons/io5';
 import Switch from '../../../Common/Switch';
 import { DropDown } from '../../../Common/DropDown';
 import { Controller, useWatch } from 'react-hook-form';
@@ -44,7 +44,7 @@ export function Preferences({ control, setValue }) {
           <div>
             <h4>Animation</h4>
             <p className='mt-2 text-xs text-text-secondary'>
-              Enable or disable interface animations.
+              For a richer and more interactive experience, keep animations enabled.{' '}
             </p>
           </div>
 
@@ -70,7 +70,7 @@ export function Preferences({ control, setValue }) {
             }
             options={{ className: 'w-48' }}
           >
-            {['inbox', 'today', 'upcoming', 'completed','sticky wall'].map((tab) => (
+            {['inbox', 'today', 'upcoming', 'completed', 'sticky wall'].map((tab) => (
               <DropDown.Button
                 key={tab}
                 isCurrent={tab === defaultHomeView}

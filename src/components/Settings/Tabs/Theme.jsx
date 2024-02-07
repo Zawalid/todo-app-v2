@@ -1,10 +1,9 @@
 import { PiCheckBold, PiCheckSquareThin } from 'react-icons/pi';
-import Switch from '../../Common/Switch';
 import { Controller, useWatch } from 'react-hook-form';
 import { useReactHookForm } from '../useReactHookForm';
 import { Tab } from './Tab';
 
-const themes = ['indigo', 'green', 'red', 'orange', 'purple', 'teal','crimson', 'maroon'];
+const themes = ['indigo', 'green', 'red', 'orange', 'purple', 'teal', 'crimson', 'maroon'];
 
 export default function Theme() {
   const { control, isUpdated, setValue, onSubmit, onCancel } = useReactHookForm({
@@ -44,17 +43,6 @@ export default function Theme() {
             control={control}
             render={({ field }) => <input type='hidden' {...field} />}
           />
-        </div>
-        <div className='setting '>
-          <div>
-            <h4>Auto Dark Mode</h4>
-            <p>Automatically switch between light and dark themes when your system does.</p>
-          </div>
-          <Controller
-            name='autoDarkMode'
-            control={control}
-            render={({ field }) => <Switch checked={field.value} {...field} />}
-          />{' '}
         </div>
       </div>
     </Tab>
