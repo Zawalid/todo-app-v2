@@ -25,63 +25,60 @@ const SignUpForm = lazy(() => import('./Pages/auth/SignUpForm'));
 const ForgotPassword = lazy(() => import('./Pages/auth/ForgotPassword'));
 const NotFound = lazy(() => import('./Pages/NotFound'));
 
-// const tabs = {
-//   inbox: <Inbox />,
-//   today: <TodayTasks />,
-//   upcoming: <Upcoming />,
-//   'sticky wall': <StickyWall />,
-//   completed: <CompletedTasks />,
-// };
-const tabs = {
-  inbox: {
+const tasksRoutes = [
+  {
+    path: 'inbox',
     element: <Inbox />,
-    title: 'Inbox',
     child: {
       path: ':taskId',
       element: <Inbox />,
     },
   },
-  today: {
+  {
+    path: 'today',
     element: <TodayTasks />,
-    title: 'Today',
     child: {
       path: ':taskId',
       element: <TodayTasks />,
     },
   },
-  upcoming: {
+  {
+    path: 'upcoming',
     element: <Upcoming />,
-    title: 'Upcoming',
     child: {
       path: ':taskId',
       element: <Upcoming />,
     },
   },
-  completed: {
+  {
+    path: 'completed',
     element: <CompletedTasks />,
-    title: 'Completed',
     child: {
       path: ':taskId',
       element: <CompletedTasks />,
     },
   },
-  'sticky wall': {
-    element: <StickyWall />,
-    title: 'Sticky Wall',
-    child: {
-      path: ':noteId',
-      element: <StickyNoteEditor />,
-    },
-  },
-  'lists/:listName': {
+  {
+    path: 'lists/:listName',
     element: <ListTasks />,
-    title: 'List',
     child: {
       path: ':taskId',
       element: <ListTasks />,
     },
   },
-};
+  {
+    path: 'search/',
+    element: <SearchResults />,
+  },
+  {
+    path: 'search/:searchQuery',
+    element: <SearchResults />,
+    child: {
+      path: ':taskId',
+      element: <SearchResults />,
+    }
+  },
+];
 
 const queryClient = new QueryClient();
 
@@ -103,16 +100,19 @@ function App() {
       <Suspense fallback={<SpinnerLoader />}>
         <Routes>
           <Route path='/' element={<HomePage />} />
+
           <Route path='app' element={<AppLayout />}>
-            <Route index element={<Navigate to={defaultHomeView} />} />
-            {Object.entries(tabs).map(([key, value]) => (
-              <Route key={key} path={key} element={value.element}>
-                {value.child && <Route {...value.child} />}
+            <Route index element={<Navigate to={defaultHomeView.replace(' ','-')} />} />
+            {tasksRoutes.map((route, index) => (
+              <Route key={index} path={route.path} element={route.element}>
+                {route.child && (
+                  <Route key={index} path={route.child.path} element={route.child.element} />
+                )}
               </Route>
             ))}
+            <Route path='sticky-wall' element={<StickyWall />} />
             <Route path='sticky-wall/:noteId' element={<StickyNoteEditor />} />
-            <Route path='search/:searchQuery' element={<SearchResults />} />
-            <Route path='search' element={<SearchResults />} />
+    
           </Route>
 
           <Route element={<AuthLayout />}>
@@ -120,6 +120,7 @@ function App() {
             <Route path='sign-up' element={<SignUpForm />} />
             <Route path='forgot-password' element={<ForgotPassword />} />
           </Route>
+
           <Route path='*' element={<NotFound />} />
         </Routes>
 

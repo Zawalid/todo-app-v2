@@ -15,7 +15,7 @@ export function useTasks() {
     queryFn: async () => await getTasks(user.$id),
   });
 
-  return { tasks: data?.documents, isLoading: isPending, isError, error };
+  return { tasks: data, isLoading: isPending, isError, error };
 }
 
 // Today tasks
@@ -31,6 +31,8 @@ export function useUpcomingTasks() {
   const { tasks, isLoading, isError, error } = useTasks();
   const { weekStartsOn } = useSelector((state) => state.settings.general.dateAndTime);
 
+  if(!tasks) return { upcomingTasks: [], isLoading, isError, error };
+  
   const todayTasks = tasks?.filter((task) => checkIfToday(task.dueDate));
   const tomorrowTasks = tasks?.filter((task) => checkIfTomorrow(task.dueDate));
   const thisWeekTasks = tasks?.filter((task) => isDateInCurrentWeek(task.dueDate, weekStartsOn));

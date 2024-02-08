@@ -33,7 +33,7 @@ export default function SearchResults() {
     stickyWall: stickyNotes,
   };
 
-  const searchResults = sections[currentTab].filter((result) =>
+  const searchResults = sections[currentTab]?.filter((result) =>
     `${result.title ?? ''} ${result[currentTab === 'sticky-wall' ? 'content' : 'note'] ?? ''}`
       .toLowerCase()
       .includes(searchQuery?.toLowerCase()),
@@ -46,7 +46,7 @@ export default function SearchResults() {
 
   return (
     <>
-      <Title title='Results' count={searchResults.length} />
+      <Title title='Results' count={searchResults?.length} />
       <div className='relative flex h-full flex-col overflow-auto p-4' ref={parent}>
         <Tabs
           tabs={['All', 'Today', 'Upcoming', 'Sticky Wall']}
@@ -54,10 +54,10 @@ export default function SearchResults() {
           setCurrentTab={setCurrentTab}
         />
 
-        {searchResults.length > 0 && (
+        {searchResults?.length > 0 && (
           <Results searchResults={searchResults} currentTab={currentTab} />
         )}
-        {searchResults.length === 0 && <NoResults />}
+        {searchResults?.length === 0 && <NoResults />}
       </div>
     </>
   );

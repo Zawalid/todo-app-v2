@@ -49,7 +49,7 @@ export function List({ list }) {
     <>
       <li className='relative flex items-center gap-2 pr-2 '>
         <NavLink
-          to={`lists/${title}`}
+          to={`/app/${title}`}
           className='menu_element group flex-1  grid-cols-[30px_auto_35px] '
         >
           <div
@@ -58,7 +58,7 @@ export function List({ list }) {
               backgroundColor: `var(${listColor})`,
             }}
           ></div>
-          <span className='truncate  text-sm text-text-secondary outline-none   '>{title}</span>
+          <span className='truncate  text-sm text-text-secondary outline-none'>{title}</span>
           <div className='count mx-1'>
             <span className='text-xs font-semibold text-text-secondary'>{listTasks?.length}</span>
           </div>
@@ -69,7 +69,7 @@ export function List({ list }) {
             confirmDelete({
               title: 'Delete List',
               message: `Are you sure you want to delete this list ?`,
-              onConfirm: async () => handleDeleteList($id),
+              onConfirm: async (deletePermanently) => handleDeleteList($id, deletePermanently),
             })
           }
           onChangeColor={(color) => {

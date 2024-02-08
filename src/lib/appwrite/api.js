@@ -33,11 +33,17 @@ export async function getInitialsAvatar(name) {
   }
 }
 
-
-export async function getAll(documentId,userId) {
-  return await databases.listDocuments(databaseId, documentId, [
+export async function getAll(documentId, userId) {
+  const res = await databases.listDocuments(databaseId, documentId, [
     Query.equal('owner', [userId]),
     Query.equal('isTrashed', [false]),
     Query.limit(300),
   ]);
+  return res?.documents;
+}
+
+export async function deleteDocument(collectionId, documentId, deletePermanently) {
+  if (deletePermanently)
+    return await databases.deleteDocument(databaseId, collectionId, documentId);
+  return await databases.updateDocument(databaseId, collectionId, documentId, { isTrashed: true });
 }

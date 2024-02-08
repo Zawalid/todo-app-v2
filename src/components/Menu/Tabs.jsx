@@ -1,16 +1,23 @@
 import { NavLink } from 'react-router-dom';
-import { useTasks, useStickyNotes } from '../../hooks';
+import { useStickyNotes } from '../../hooks';
 import { useSelector } from 'react-redux';
 import { TABS } from './TabsList';
 import CustomTippy from '../Common/CustomTippy';
+import {
+  useCompletedTasks,
+  useTasks,
+  useTodayTasks,
+  useUpcomingTasks,
+} from '../../lib/react-query/queries';
 
 const orderedTabs = ['inbox', 'today', 'upcoming', 'completed', 'stickyWall'];
 
 export function Tabs() {
-  const { todayTasks, tasks, upcomingTasks } = useTasks();
+  const { tasks } = useTasks();
+  const { todayTasks } = useTodayTasks();
+  const { upcomingTasks } = useUpcomingTasks();
+  const { completedTasks } = useCompletedTasks();
   const { stickyNotes } = useStickyNotes();
-  const completedTasks = tasks.filter((task) => task.isCompleted);
-
   const { showInSideBar, showCount } = useSelector((state) => state.settings.sidebar);
 
   const counts = {

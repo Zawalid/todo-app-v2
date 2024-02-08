@@ -51,8 +51,8 @@ function Main() {
     <main
       className='relative  grid flex-1 grid-rows-[min-content_auto_min-content] gap-3 overflow-hidden bg-background-primary'
       ref={parent}
-    >
-      <Outlet />
+      >
+        <Outlet />
     </main>
   );
 }

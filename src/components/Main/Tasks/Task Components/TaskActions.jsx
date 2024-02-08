@@ -94,7 +94,7 @@ function SelectList({
         </button>
       </div>
       <ul className='mt-3 h-[150px] space-y-2 overflow-auto overflow-x-hidden pr-2'>
-        {lists.map((list) => (
+        {lists?.map((list) => (
           <li
             className={`menu_element w-full justify-items-start ${
               currentListId === list.id

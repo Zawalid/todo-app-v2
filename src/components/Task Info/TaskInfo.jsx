@@ -15,6 +15,7 @@ import { Button } from '../Common/Button';
 import { PiCheckBold, PiXBold } from 'react-icons/pi';
 import { useTasks } from '../../lib/react-query/queries';
 import { SpinnerLoader } from '../Common/SpinnerLoader';
+import { useDeleteTask, useDuplicateTask, useUpdateTask } from '../../lib/react-query/mutations';
 
 const emptyInfo = {
   taskTitle: '',
@@ -27,18 +28,22 @@ const emptyInfo = {
 };
 
 export function TaskInfo() {
-  const { taskId } = useParams();
-  const { tasks, isLoading, isError, error } = useTasks();
-  const { handleAddTask, handleUpdateTask, handleDeleteTask } = useTasks();
-  const currentTask = tasks?.find((task) => task.$id === taskId);
-
   const [taskInfo, setTaskInfo] = useState(emptyInfo);
-
   const [isChanged, setIsChanged] = useState(false);
-  const { openModal: confirmDelete } = useModal();
-  const currentTab = useHref().split('/')[2];
+  const { tasks, isLoading, isError, error } = useTasks();
+  const { taskId } = useParams();
   const navigate = useNavigate();
+  const currentTab = useHref()
+    .split('/')
+    .slice(0, useHref().split('/').length - 1)
+    .join('/');
+  const { openModal: confirmDelete } = useModal();
 
+  const { mutate: updateTask } = useUpdateTask();
+  const { mutate: duplicateTask } = useDuplicateTask();
+  const { mutate: deleteTask } = useDeleteTask();
+
+  const currentTask = tasks?.find((task) => task?.$id === taskId);
   const { taskTitle, taskNote, taskListId, taskDueDate, taskTagsIds, taskPriority, taskSubtasks } =
     taskInfo;
 
@@ -136,10 +141,12 @@ export function TaskInfo() {
         tagsIds: taskTagsIds,
         priority: taskPriority,
       };
-      // setIsTaskOpen(false);
-      handleUpdateTask(currentTask.$id, editedTask);
+      close();
+      updateTask({ id: currentTask.$id, task: editedTask });
     }
   }
+
+  const close = () => navigate(currentTab);
 
   const render = () => {
     if (!taskId) return null;
@@ -152,27 +159,20 @@ export function TaskInfo() {
     if (isError) return <div>Error: {error.message}</div>;
     return (
       <>
-        <div className='grid grid-cols-[auto_60px] items-center gap-5 pb-3'>
+        <div className='grid grid-cols-[auto_min-content] items-center gap-5 pb-3'>
           <h2 className='truncate text-xl font-bold text-text-secondary'>
             {taskTitle ? taskTitle : 'Untitled'}
           </h2>
           {isTouchDevice() ? (
             <button
               className='flex h-7 w-7 items-center justify-center rounded-full bg-primary hover:bg-primary-hover'
-              onClick={() => (isChanged ? handleSaveChanges() : navigate(currentTab))}
+              onClick={() => (isChanged ? handleSaveChanges() : close())}
               id='closeTaskInfo'
             >
               <PiCheckBold color='white' />
             </button>
           ) : (
-            <div className='flex items-center gap-3'>
-              <button
-                className='icon-button not-active small absolute right-4 top-4'
-                onClick={() => navigate(currentTab)}
-                id='closeTaskInfo'
-              >
-                <PiXBold />
-              </button>
+            <div className='flex items-center gap-2'>
               <Actions
                 date={{
                   created: currentTask?.$createdAt,
@@ -193,13 +193,16 @@ export function TaskInfo() {
                     priority: currentTask?.priority,
                     listId: currentTask?.listId,
                   };
-                  handleAddTask(task, true);
+                  duplicateTask({ task });
                 }}
               />
+              <button className='icon-button not-active small ' onClick={close} id='closeTaskInfo'>
+                <PiXBold />
+              </button>
             </div>
           )}
         </div>
-        <div className='overflow-y-auto pr-3'>
+        <div className={`overflow-y-auto ${isTouchDevice() ? '' : 'pr-3'}`}>
           <TaskTitleAndNote
             taskTitle={taskTitle}
             setTaskTitle={(taskTitle) => setTaskInfo((prev) => ({ ...prev, taskTitle }))}
@@ -243,7 +246,10 @@ export function TaskInfo() {
                 confirmDelete({
                   title: 'Delete Task',
                   message: 'Are you sure you want to delete this task?',
-                  onConfirm: async () => handleDeleteTask(currentTask.$id),
+                  onConfirm: (deletePermanently) => {
+                    deleteTask({ id: currentTask.$id, deletePermanently });
+                    close();
+                  },
                 })
               }
             >
@@ -258,21 +264,15 @@ export function TaskInfo() {
     );
   };
 
-  // if (!taskId) return null;
-  // if (isLoading) return <div>Loading...</div>;
-  // if (isError) return <div>Error: {error.message}</div>;
-
   return (
     <>
-      {taskId && isTouchDevice() && (
-        <Drawer onClose={() => navigate(currentTab)}>{render()}</Drawer>
-      )}
+      {taskId && isTouchDevice() && <Drawer onClose={close}>{render()}</Drawer>}
 
       {!isTouchDevice() && (
         <aside
           className={`fixed z-10 flex flex-col border bg-background-primary  transition-menu duration-500 lg:relative lg:rounded-xl lg:first-line:rounded-xl ${
             taskId
-              ? ' right-0 top-0 ml-3 h-full w-full items-stretch border-border p-4 shadow-md sm:w-[380px]'
+              ? 'right-0 top-0 ml-3 h-full w-full items-stretch border-border p-4 shadow-md sm:w-[380px]'
               : 'w-0 items-center overflow-hidden  border-transparent p-0'
           }`}
           id='taskInfo'
