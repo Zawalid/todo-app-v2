@@ -3,7 +3,7 @@ import { useLists } from '../lib/react-query/queries';
 
 export function useListTitle(id, currentTitle) {
   const { lists } = useLists();
-  const untitledLists = lists?.filter((l) => l.title.startsWith('Untitled')).map((l) => l.title);
+  const untitledLists = lists?.filter((l) => l.title?.startsWith('Untitled')).map((l) => l.title);
 
   const defaultTitle = useMemo(() => {
     const untitledNumber = getTheUntitledNumber(untitledLists);

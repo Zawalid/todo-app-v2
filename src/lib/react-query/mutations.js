@@ -3,15 +3,33 @@ import { useSelector } from 'react-redux';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import {
-  ADD_LIST,
+  GET_TASKS,
   ADD_TASK,
+  UPDATE_TASK,
   DELETE_TASK,
   GET_LISTS,
-  GET_TASKS,
+  ADD_LIST,
   UPDATE_LIST,
-  UPDATE_TASK,
+  DELETE_LIST,
+  GET_TAGS,
+  ADD_TAG,
+  DELETE_TAG,
+  GET_STICKY_NOTES,
+  ADD_STICKY_NOTE,
+  UPDATE_STICKY_NOTE,
+  DELETE_STICKY_NOTE,
 } from './keys';
-import { addList, addTask, deleteTask, deleteTasks, updateList, updateTask } from '../appwrite/api';
+import {
+  addList,
+  addTag,
+  addTask,
+  deleteList,
+  deleteTag,
+  deleteTask,
+  deleteTasks,
+  updateList,
+  updateTask,
+} from '../appwrite/api';
 
 import completedSoundFile from '../../assets/completed.mp3';
 import deleteSoundFile from '../../assets/deleted.mp3';
@@ -109,10 +127,14 @@ function useUpdateMutation(props) {
     mutationFn: props.updateItem,
     updateQueryFn: (oldData, variables) => {
       return oldData
-        ? oldData.map((item) => (item.$id === variables.id ? {
-          ...item,
-          ...Object.values(variables)[1],
-        } : item))
+        ? oldData.map((item) =>
+            item.$id === variables.id
+              ? {
+                  ...item,
+                  ...Object.values(variables)[1],
+                }
+              : item,
+          )
         : oldData;
     },
     messages: null,
@@ -272,9 +294,9 @@ export function useUpdateList() {
 // Delete list
 export function useDeleteList() {
   return useDeleteMutation({
-    mutationKey: DELETE_TASK,
+    mutationKey: DELETE_LIST,
     queryKey: GET_LISTS,
-    deleteItem: deleteTask,
+    deleteItem: deleteList,
     messages: {
       success: 'List has been successfully deleted.',
       error: 'Failed to delete the list.',
@@ -282,3 +304,34 @@ export function useDeleteList() {
     },
   });
 }
+
+//* --- Tags
+// Add tag
+export function useAddTag() {
+  return useAddMutation({
+    mutationKey: ADD_TAG,
+    queryKey: GET_TAGS,
+    addItem: addTag,
+    messages: {
+      success: 'Tag has been successfully added.',
+      error: 'Failed to add the tag.',
+      loading: 'Adding tag...',
+    },
+  });
+}
+
+// Delete tag
+export function useDeleteTag() {
+  return useDeleteMutation({
+    mutationKey: DELETE_TAG,
+    queryKey: GET_TAGS,
+    deleteItem: deleteTag,
+    messages: {
+      success: 'Tag has been successfully deleted.',
+      error: 'Failed to delete the tag.',
+      loading: 'Deleting tag...',
+    },
+  });
+}
+
+//* --- Sticky Notes

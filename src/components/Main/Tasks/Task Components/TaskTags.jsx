@@ -1,5 +1,5 @@
+import { useTags } from '../../../../lib/react-query/queries';
 import { Tag } from '../../../Menu/Tags/Tag';
-import { useTags } from '../../../../hooks';
 
 export function TaskTags({ tagsIds }) {
   const { tags } = useTags();

@@ -1,5 +1,6 @@
 import { ID, Query } from 'appwrite';
 import { appWriteConfig, avatars, databases, setPermissions, storage } from './config';
+import { GiConwayLifeGlider } from 'react-icons/gi';
 
 const {
   imagesStorageId,
@@ -97,14 +98,33 @@ export const addList = async ({ list, owner }) => {
     setPermissions(owner),
   );
   return res;
-}
+};
 
 export const updateList = async ({ id, list }) => {
   const res = await databases.updateDocument(databaseId, listsCollectionId, id, list);
   return res;
-}
+};
 
 export const deleteList = async ({ id, deletePermanently }) => {
   deleteDocument(listsCollectionId, id, deletePermanently);
+};
+
+
+// * ------- Tags Api ------- *//
+
+export const getTags = async (userId) => await getAll(tagsCollectionId, userId);
+
+export const addTag = async ({ tag, owner }) => {
+  const res = await databases.createDocument(
+    databaseId,
+    tagsCollectionId,
+    ID.unique(),
+    { ...tag, owner },
+    setPermissions(owner),
+  );
+  return res;
 }
 
+export const deleteTag = async ({ id, deletePermanently }) => {
+  deleteDocument(tagsCollectionId, id, deletePermanently);
+}

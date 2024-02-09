@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { GET_LISTS, GET_TASKS } from './keys';
-import { getLists, getTasks } from '../appwrite/api';
+import { GET_LISTS, GET_TAGS, GET_TASKS,GET_STICKY_NOTES } from './keys';
+import { getLists, getTags, getTasks } from '../appwrite/api';
 import { useSelector } from 'react-redux';
 import { checkIfToday, checkIfTomorrow, isDateInCurrentWeek } from '../../utils/Dates';
 
@@ -75,3 +75,39 @@ export function useLists() {
 
   return { lists: data, isLoading: isPending, isError, error };
 }
+
+//* Tags Queries
+
+// All tags
+export function useTags() {
+  const user = useSelector((state) => state.user.user);
+
+  const { data, isPending, isError, error } = useQuery({
+    queryKey: [GET_TAGS],
+    queryFn: async () => await getTags(user.$id),
+  });
+
+  return { tags: data, isLoading: isPending, isError, error };
+}
+
+//* Sticky Notes Queries
+
+// // All sticky notes
+// export function useStickyNotes() {
+//   const user = useSelector((state) => state.user.user);
+
+//   const { data, isPending, isError, error } = useQuery({
+//     queryKey: [GET_STICKY_NOTES],
+//     queryFn: async () => await getStickyNotes(user.$id),
+//   });
+
+//   return { stickyNotes: data, isLoading: isPending, isError, error };
+// }
+
+// // Get sticky note by id
+// export function useStickyNoteById(stickyNoteId) {
+//   const { stickyNotes, isLoading, isError, error } = useStickyNotes();
+//   const stickyNote = stickyNotes?.find((note) => note.$id === stickyNoteId);
+
+//   return { stickyNote, isLoading, isError, error };
+// }

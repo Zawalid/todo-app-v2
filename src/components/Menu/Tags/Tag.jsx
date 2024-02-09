@@ -1,9 +1,9 @@
-import { useTags } from '../../../hooks/useTags';
 import { useModal } from '../../../hooks/useModal';
 import { PiX } from 'react-icons/pi';
+import { useDeleteTag } from '../../../lib/react-query/mutations';
 
 export function Tag({ tag, showDeleteButton, customClassName, onDeleteTag, onSelectTag }) {
-  const { handleDeleteTag } = useTags();
+  const { mutate: deleteTag } = useDeleteTag();
   const { openModal: confirmDelete } = useModal();
   return (
     <>
@@ -22,11 +22,12 @@ export function Tag({ tag, showDeleteButton, customClassName, onDeleteTag, onSel
                 : confirmDelete({
                     title: 'Delete Tag',
                     message: `Are you sure you want to delete this tag ?`,
-                    onConfirm: async () => handleDeleteTag(tag.$id),
+                    onConfirm: async (deletePermanently) =>
+                      deleteTag({ id: tag.$id, deletePermanently }),
                   });
             }}
           >
-            < PiX className='text-red-500' />
+            <PiX className='text-red-500' />
           </button>
         )}
         <li

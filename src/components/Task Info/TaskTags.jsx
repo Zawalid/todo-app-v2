@@ -1,13 +1,13 @@
 import { Tag } from '../Menu/Tags/Tag';
-import { useTags } from '../../hooks/useTags';
 import { DropDown } from '../Common/DropDown';
 import { PiPlusBold } from 'react-icons/pi';
+import { useTags } from '../../lib/react-query/queries';
 
 export function TaskTags({ taskTagsIds, handleAddTagToTask, handleDeleteTagFromTask }) {
   const { tags } = useTags();
   if (!taskTagsIds) return null;
 
-  const validTags = taskTagsIds.filter((id) => tags.find((tag) => tag.$id === id));
+  const validTags = taskTagsIds.filter((id) => tags?.find((tag) => tag.$id === id));
 
   return (
     <>
