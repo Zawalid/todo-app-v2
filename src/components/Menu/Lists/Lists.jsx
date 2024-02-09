@@ -70,8 +70,9 @@ export function Lists() {
             Add New List
           </button>
           {isAddNewListOpen && (
-            <AddNewList reference={addNewListContainer} isOpen={isAddNewListOpen}
-            onClose={() => setIsAddNewListOpen(false)}
+            <AddNewList
+              reference={addNewListContainer}
+              onClose={() => setIsAddNewListOpen(false)}
             />
           )}
         </>

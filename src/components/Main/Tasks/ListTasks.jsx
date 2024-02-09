@@ -16,8 +16,8 @@ export default function ListTasks() {
     document.title = `I Do | ${listTitle}`;
   }, [listTitle]);
 
-  if (isError) {
-    return <p>{error.message}</p>;
+  if (isError || !listId) {
+    return <p>{error?.message || 'Error'}</p>;
   }
 
   return (

@@ -10,7 +10,6 @@ export { useRestoreElement } from './useRestoreElement';
 export { useLoadElements } from './useLoadElements';
 export { useFetchAllElements } from './useFetchAllElements';
 
-export { useIsTitleTaken } from './useIsTitleTaken';
 export { useLocalStorageState } from './useLocalStorageState';
 export { useModal } from './useModal';
 
