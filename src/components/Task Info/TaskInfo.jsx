@@ -14,8 +14,8 @@ import { Actions } from './Actions';
 import { Button } from '../Common/Button';
 import { PiCheckBold, PiXBold } from 'react-icons/pi';
 import { useTasks } from '../../lib/react-query/queries';
-import { SpinnerLoader } from '../Common/SpinnerLoader';
 import { useDeleteTask, useAddTask, useUpdateTask } from '../../lib/react-query/mutations';
+import { TaskInfoSkeleton } from '../Skeletons/TaskInfoSkeleton';
 
 const emptyInfo = {
   taskTitle: '',
@@ -153,7 +153,7 @@ export function TaskInfo() {
     if (isLoading)
       return (
         <div className='relative h-full'>
-          <SpinnerLoader />
+          <TaskInfoSkeleton />
         </div>
       );
     if (isError) return <div>Error: {error.message}</div>;
