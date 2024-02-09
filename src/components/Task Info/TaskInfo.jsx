@@ -15,7 +15,7 @@ import { Button } from '../Common/Button';
 import { PiCheckBold, PiXBold } from 'react-icons/pi';
 import { useTasks } from '../../lib/react-query/queries';
 import { SpinnerLoader } from '../Common/SpinnerLoader';
-import { useDeleteTask, useDuplicateTask, useUpdateTask } from '../../lib/react-query/mutations';
+import { useDeleteTask, useAddTask, useUpdateTask } from '../../lib/react-query/mutations';
 
 const emptyInfo = {
   taskTitle: '',
@@ -40,7 +40,7 @@ export function TaskInfo() {
   const { openModal: confirmDelete } = useModal();
 
   const { mutate: updateTask } = useUpdateTask();
-  const { mutate: duplicateTask } = useDuplicateTask();
+  const { mutate: duplicateTask } = useAddTask({ isDuplicate: true });
   const { mutate: deleteTask } = useDeleteTask();
 
   const currentTask = tasks?.find((task) => task?.$id === taskId);

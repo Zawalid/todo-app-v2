@@ -7,7 +7,7 @@ import { NavLink } from 'react-router-dom';
 import {
   useCompleteTask,
   useDeleteTask,
-  useDuplicateTask,
+  useAddTask,
   useUpdateTask,
 } from '../../../../lib/react-query/mutations';
 import { useTasks } from '../../../../lib/react-query/queries';
@@ -56,7 +56,7 @@ export function Task({
   const { taskDetailLevel } = useSelector((state) => state.settings.general.tasks);
 
   const { tasks } = useTasks();
-  const { mutate: duplicateTask } = useDuplicateTask();
+  const { mutate: duplicateTask } = useAddTask({ isDuplicate: true });
   const { mutate: updateTask } = useUpdateTask();
   const { mutate: completeTask } = useCompleteTask();
   const { mutate: deleteTask } = useDeleteTask();

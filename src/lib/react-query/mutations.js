@@ -5,9 +5,20 @@ import { addTask, deleteTask, deleteTasks, updateTask } from '../appwrite/api/ta
 import { toast } from 'sonner';
 
 import completedSoundFile from '../../assets/completed.mp3';
+import deleteSoundFile from '../../assets/deleted.mp3';
 const completedSound = new Audio(completedSoundFile);
+const deletedSound = new Audio(deleteSoundFile);
 
-function useMutationWithToast({ mutationKey, queryKey, mutationFn, updateQueryFn, messages }) {
+function useMutationWithToast({
+  mutationKey,
+  queryKey,
+  mutationFn,
+  updateQueryFn,
+  messages,
+  onMutate,
+  onSuccess,
+  onError,
+}) {
   const user = useSelector((state) => state.user.user);
   const queryClient = useQueryClient();
   let toastId;
@@ -17,17 +28,22 @@ function useMutationWithToast({ mutationKey, queryKey, mutationFn, updateQueryFn
     mutationFn: async (variables) => await mutationFn({ ...variables, owner: user.$id }),
 
     onMutate: (variables) => {
+      if (onMutate) onMutate(variables);
+
       if (!messages) return;
       toast.loading(messages.loadingMessage, { id: toastId });
     },
     onSuccess: (data, variables) => {
       queryClient.setQueryData([queryKey], (oldData) => updateQueryFn(oldData, data, variables));
+      if (onSuccess) onSuccess(data, variables);
 
       if (!messages) return;
       toast.dismiss(toastId);
       toast.success(messages.successMessage, { id: toastId });
     },
     onError: (error) => {
+      if (onError) onError(error);
+
       if (!messages) return;
       toast.dismiss(toastId);
       toast.error(messages.errorMessage, {
@@ -79,31 +95,25 @@ function useDeleteAllMutation(props) {
   });
 }
 
-//* --- Tasks
-// Add task
-export function useAddTask() {
-  return useAddMutation({
-    mutationKey: ADD_TASK,
-    queryKey: GET_TASKS,
-    addItem: addTask,
-    messages: {
-      successMessage: 'Task has been successfully added.',
-      errorMessage: 'Failed to add the task.',
-      loadingMessage: 'Adding task...',
-    },
-  });
+function useDeleteSound() {
+  const { deletionSound } = useSelector((state) => state.settings.general.preferences);
+  const playDeleteSound = () => deletionSound && deletedSound.play();
+  return playDeleteSound;
 }
 
-// Duplicate task
-export function useDuplicateTask() {
+//* --- Tasks
+// Add & Duplicate task
+export function useAddTask({ isDuplicate } = {}) {
   return useAddMutation({
     mutationKey: ADD_TASK,
     queryKey: GET_TASKS,
     addItem: addTask,
     messages: {
-      successMessage: 'Task has been successfully duplicated.',
-      errorMessage: 'Failed to duplicate the task.',
-      loadingMessage: 'Duplicating task...',
+      successMessage: isDuplicate
+        ? 'Task has been successfully duplicated.'
+        : 'Task has been successfully added.',
+      errorMessage: isDuplicate ? 'Failed to duplicate the task.' : 'Failed to add the task.',
+      loadingMessage: isDuplicate ? 'Duplicating task...' : 'Adding task...',
     },
   });
 }
@@ -124,23 +134,34 @@ export function useUpdateTask() {
 
 // Complete Task
 export function useCompleteTask() {
-  // const {
-  //   preferences: { taskCompletionSound },
-  //   tasks: { autoDeleteCompletedTasks, deletePermanently },
-  // } = useSelector((state) => state.settings.general);
+  const {
+    preferences: { taskCompletionSound },
+    tasks: { autoDeleteCompletedTasks, deletePermanently },
+  } = useSelector((state) => state.settings.general);
+
+  const { mutate: deleteTask } = useDeleteTask({
+    messages: null,
+  });
 
   return useUpdateMutation({
     mutationKey: UPDATE_TASK,
     queryKey: GET_TASKS,
     updateItem: updateTask,
     messages: null,
+    onMutate: (variables) => {
+      if (taskCompletionSound && variables.task.isCompleted) completedSound.play();
+    },
+    onSuccess: (data, variables) => {
+      if (autoDeleteCompletedTasks)
+        deleteTask({ id: variables.id, deletePermanently: deletePermanently });
+    },
   });
 }
 
 // Delete task
-export function useDeleteTask() {
-  // const { deletionSound } = useSelector((state) => state.settings.general.preferences);
-  // const playDeleteSound = useDeleteSound();
+export function useDeleteTask(options) {
+  const { deletionSound } = useSelector((state) => state.settings.general.preferences);
+  const playDeleteSound = useDeleteSound();
 
   return useDeleteMutation({
     mutationKey: DELETE_TASK,
@@ -151,13 +172,15 @@ export function useDeleteTask() {
       errorMessage: 'Failed to delete the task.',
       loadingMessage: 'Deleting task...',
     },
+    onSuccess: () => deletionSound && playDeleteSound(),
+    ...options,
   });
 }
 
 // Delete All Tasks
 export function useDeleteTasks() {
-  // const { deletionSound } = useSelector((state) => state.settings.general.preferences);
-  // const playDeleteSound = useDeleteSound();
+  const { deletionSound } = useSelector((state) => state.settings.general.preferences);
+  const playDeleteSound = useDeleteSound();
 
   return useDeleteAllMutation({
     mutationKey: DELETE_TASK,
@@ -168,5 +191,6 @@ export function useDeleteTasks() {
       errorMessage: 'Failed to delete the tasks.',
       loadingMessage: 'Deleting tasks...',
     },
+    onSuccess: () => deletionSound && playDeleteSound(),
   });
 }
