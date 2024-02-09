@@ -9,6 +9,24 @@ import deleteSoundFile from '../../assets/deleted.mp3';
 const completedSound = new Audio(completedSoundFile);
 const deletedSound = new Audio(deleteSoundFile);
 
+/* 
+? To use normal mutation not an optimistic mutation : 
+
+  -- onSuccess: (data, variables) => queryClient.setQueryData([queryKey], (oldData) => updateQueryFn(oldData, data, variables));
+
+  -- useUpdateMutation :
+  updateQueryFn: (oldData, data, variables) =>  oldData.map((item) => (item.$id === variables.id ? data : item));
+
+  -- useDeleteMutation :
+updateQueryFn: (oldData, data, variables) => oldData ? oldData.filter((item) => item.$id !== variables.id) : oldData,
+
+  -- useDeleteAllMutation :
+updateQueryFn: (oldData, data, variables) => oldData ? oldData.filter((item) => !variables.deleted.includes(item.$id)) : oldData,
+
+  -- Reset the toasts messages
+
+*/
+
 function useMutationWithToast({
   mutationKey,
   queryKey,
@@ -18,43 +36,50 @@ function useMutationWithToast({
   onMutate,
   onSuccess,
   onError,
+  isOptimistic = true,
 }) {
   const user = useSelector((state) => state.user.user);
   const queryClient = useQueryClient();
   let toastId;
 
-  const { mutate, isPending, variables } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationKey: [mutationKey],
     mutationFn: async (variables) => await mutationFn({ ...variables, owner: user.$id }),
 
-    onMutate: (variables) => {
+    onMutate: async (variables) => {
       if (onMutate) onMutate(variables);
+      if (messages?.loading) toast.loading(messages.loading, { id: toastId });
 
-      if (!messages) return;
-      toast.loading(messages.loadingMessage, { id: toastId });
+      if (isOptimistic) {
+        await queryClient.cancelQueries({ queryKey: [queryClient] });
+        const oldData = queryClient.getQueryData([queryKey]);
+        queryClient.setQueryData([queryKey], (oldData) => updateQueryFn(oldData, variables));
+        return { oldData };
+      }
     },
     onSuccess: (data, variables) => {
-      queryClient.setQueryData([queryKey], (oldData) => updateQueryFn(oldData, data, variables));
       if (onSuccess) onSuccess(data, variables);
-
-      if (!messages) return;
-      toast.dismiss(toastId);
-      toast.success(messages.successMessage, { id: toastId });
+      if (messages?.success) {
+        toast.dismiss(toastId);
+        toast.success(messages.success, { id: toastId });
+      }
     },
-    onError: (error) => {
+    onError: (error, variables, context) => {
+      if (isOptimistic) queryClient.setQueryData([queryKey], context.oldData);
       if (onError) onError(error);
-
-      if (!messages) return;
-      toast.dismiss(toastId);
-      toast.error(messages.errorMessage, {
-        id: toastId,
-        duration: 4000,
-        action: {
-          label: 'Try again',
-          onClick: () => mutate(variables),
-        },
-      });
+      if (messages?.error) {
+        toast.dismiss(toastId);
+        toast.error(messages.error, {
+          id: toastId,
+          duration: 4000,
+          action: {
+            label: 'Try again',
+            onClick: () => mutate(variables),
+          },
+        });
+      }
     },
+    onSettled: () => queryClient.invalidateQueries({ queryKey: [queryKey] }),
   });
 
   return { mutate, isLoading: isPending };
@@ -63,6 +88,7 @@ function useMutationWithToast({
 function useAddMutation(props) {
   return useMutationWithToast({
     ...props,
+    isOptimistic: false,
     mutationFn: props.addItem,
     updateQueryFn: (oldData, data) => (oldData ? [...oldData, data] : oldData),
   });
@@ -72,8 +98,14 @@ function useUpdateMutation(props) {
   return useMutationWithToast({
     ...props,
     mutationFn: props.updateItem,
-    updateQueryFn: (oldData, data) =>
-      oldData ? oldData.map((item) => (item.$id === data.$id ? data : item)) : oldData,
+    updateQueryFn: (oldTasks, variables) => {
+      return oldTasks
+        ? oldTasks.map((task) =>
+            task.$id === variables.id ? { ...task, ...variables.task } : task,
+          )
+        : oldTasks;
+    },
+    messages: null,
   });
 }
 
@@ -81,8 +113,9 @@ function useDeleteMutation(props) {
   return useMutationWithToast({
     ...props,
     mutationFn: props.deleteItem,
-    updateQueryFn: (oldData, data, variables) =>
+    updateQueryFn: (oldData, variables) =>
       oldData ? oldData.filter((item) => item.$id !== variables.id) : oldData,
+    messages: null,
   });
 }
 
@@ -90,8 +123,9 @@ function useDeleteAllMutation(props) {
   return useMutationWithToast({
     ...props,
     mutationFn: props.deleteAllItems,
-    updateQueryFn: (oldData, data, variables) =>
+    updateQueryFn: (oldData, variables) =>
       oldData ? oldData.filter((item) => !variables.deleted.includes(item.$id)) : oldData,
+    messages: null,
   });
 }
 
@@ -109,11 +143,11 @@ export function useAddTask({ isDuplicate } = {}) {
     queryKey: GET_TASKS,
     addItem: addTask,
     messages: {
-      successMessage: isDuplicate
+      success: isDuplicate
         ? 'Task has been successfully duplicated.'
         : 'Task has been successfully added.',
-      errorMessage: isDuplicate ? 'Failed to duplicate the task.' : 'Failed to add the task.',
-      loadingMessage: isDuplicate ? 'Duplicating task...' : 'Adding task...',
+      error: isDuplicate ? 'Failed to duplicate the task.' : 'Failed to add the task.',
+      loading: isDuplicate ? 'Duplicating task...' : 'Adding task...',
     },
   });
 }
@@ -125,9 +159,9 @@ export function useUpdateTask() {
     queryKey: GET_TASKS,
     updateItem: updateTask,
     messages: {
-      successMessage: 'Task has been successfully updated.',
-      errorMessage: 'Failed to update the task.',
-      loadingMessage: 'Updating task...',
+      success: 'Task has been successfully updated.',
+      error: 'Failed to update the task.',
+      loading: 'Updating task...',
     },
   });
 }
@@ -168,9 +202,9 @@ export function useDeleteTask(options) {
     queryKey: GET_TASKS,
     deleteItem: deleteTask,
     messages: {
-      successMessage: 'Task has been successfully deleted.',
-      errorMessage: 'Failed to delete the task.',
-      loadingMessage: 'Deleting task...',
+      success: 'Task has been successfully deleted.',
+      error: 'Failed to delete the task.',
+      loading: 'Deleting task...',
     },
     onSuccess: () => deletionSound && playDeleteSound(),
     ...options,
@@ -187,9 +221,9 @@ export function useDeleteTasks() {
     queryKey: GET_TASKS,
     deleteAllItems: deleteTasks,
     messages: {
-      successMessage: 'Tasks have been successfully deleted.',
-      errorMessage: 'Failed to delete the tasks.',
-      loadingMessage: 'Deleting tasks...',
+      success: 'Tasks have been successfully deleted.',
+      error: 'Failed to delete the tasks.',
+      loading: 'Deleting tasks...',
     },
     onSuccess: () => deletionSound && playDeleteSound(),
   });
