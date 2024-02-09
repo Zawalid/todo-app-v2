@@ -22,7 +22,7 @@ export function TaskSubTasks({
       <AddTask onAdd={handleAddSubTask} className='' />
 
       <ul
-        className='mt-3 max-h-[300px] space-y-2 overflow-auto overflow-x-hidden px-3'
+        className='mt-3 max-h-[100px] space-y-2 overflow-auto overflow-x-hidden px-3'
         ref={parent}
       >
         {taskSubtasks?.map((subtask) => (

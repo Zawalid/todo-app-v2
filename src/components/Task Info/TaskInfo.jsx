@@ -165,7 +165,7 @@ export function TaskInfo() {
           </h2>
           {isTouchDevice() ? (
             <button
-              className='flex h-7 w-7 items-center justify-center rounded-full bg-primary hover:bg-primary-hover'
+              className={`flex h-8 w-8 items-center transition-colors duration-200 justify-center rounded-full ${isChanged ? 'bg-primary hover:bg-primary-hover' : 'bg-background-secondary'}`}
               onClick={() => (isChanged ? handleSaveChanges() : close())}
               id='closeTaskInfo'
             >
@@ -202,7 +202,7 @@ export function TaskInfo() {
             </div>
           )}
         </div>
-        <div className={`overflow-y-auto ${isTouchDevice() ? '' : 'pr-3'}`}>
+        <div className={`${isTouchDevice() ? '' : 'overflow-y-auto pr-3'}`}>
           <TaskTitleAndNote
             taskTitle={taskTitle}
             setTaskTitle={(taskTitle) => setTaskInfo((prev) => ({ ...prev, taskTitle }))}
