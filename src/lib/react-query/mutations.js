@@ -2,8 +2,16 @@ import { useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { ADD_TASK, DELETE_TASK, GET_TASKS, UPDATE_TASK } from './keys';
-import { addTask, deleteTask, deleteTasks, updateTask } from '../appwrite/api/tasksApi';
+import {
+  ADD_LIST,
+  ADD_TASK,
+  DELETE_TASK,
+  GET_LISTS,
+  GET_TASKS,
+  UPDATE_LIST,
+  UPDATE_TASK,
+} from './keys';
+import { addList, addTask, deleteTask, deleteTasks, updateList, updateTask } from '../appwrite/api';
 
 import completedSoundFile from '../../assets/completed.mp3';
 import deleteSoundFile from '../../assets/deleted.mp3';
@@ -99,12 +107,13 @@ function useUpdateMutation(props) {
   return useMutationWithToast({
     ...props,
     mutationFn: props.updateItem,
-    updateQueryFn: (oldTasks, variables) => {
-      return oldTasks
-        ? oldTasks.map((task) =>
-            task.$id === variables.id ? { ...task, ...variables.task } : task,
-          )
-        : oldTasks;
+    updateQueryFn: (oldData, variables) => {
+      return oldData
+        ? oldData.map((item) => (item.$id === variables.id ? {
+          ...item,
+          ...Object.values(variables)[1],
+        } : item))
+        : oldData;
     },
     messages: null,
   });
@@ -228,5 +237,48 @@ export function useDeleteTasks() {
       loading: 'Deleting tasks...',
     },
     onSuccess: () => deletionSound && playDeleteSound(),
+  });
+}
+
+//* --- Lists
+// Add list
+export function useAddList() {
+  return useAddMutation({
+    mutationKey: ADD_LIST,
+    queryKey: GET_LISTS,
+    addItem: addList,
+    messages: {
+      success: 'List has been successfully added.',
+      error: 'Failed to add the list.',
+      loading: 'Adding list...',
+    },
+  });
+}
+
+// Update list
+export function useUpdateList() {
+  return useUpdateMutation({
+    mutationKey: UPDATE_LIST,
+    queryKey: GET_LISTS,
+    updateItem: updateList,
+    messages: {
+      success: 'List has been successfully updated.',
+      error: 'Failed to update the list.',
+      loading: 'Updating list...',
+    },
+  });
+}
+
+// Delete list
+export function useDeleteList() {
+  return useDeleteMutation({
+    mutationKey: DELETE_TASK,
+    queryKey: GET_LISTS,
+    deleteItem: deleteTask,
+    messages: {
+      success: 'List has been successfully deleted.',
+      error: 'Failed to delete the list.',
+      loading: 'Deleting list...',
+    },
   });
 }

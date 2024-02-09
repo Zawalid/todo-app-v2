@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { GET_TASKS } from './keys';
-import { getTasks } from '../appwrite/api/tasksApi';
+import { GET_LISTS, GET_TASKS } from './keys';
+import { getLists, getTasks } from '../appwrite/api';
 import { useSelector } from 'react-redux';
 import { checkIfToday, checkIfTomorrow, isDateInCurrentWeek } from '../../utils/Dates';
 
@@ -31,8 +31,8 @@ export function useUpcomingTasks() {
   const { tasks, isLoading, isError, error } = useTasks();
   const { weekStartsOn } = useSelector((state) => state.settings.general.dateAndTime);
 
-  if(!tasks) return { upcomingTasks: [], isLoading, isError, error };
-  
+  if (!tasks) return { upcomingTasks: [], isLoading, isError, error };
+
   const todayTasks = tasks?.filter((task) => checkIfToday(task.dueDate));
   const tomorrowTasks = tasks?.filter((task) => checkIfTomorrow(task.dueDate));
   const thisWeekTasks = tasks?.filter((task) => isDateInCurrentWeek(task.dueDate, weekStartsOn));
@@ -63,3 +63,15 @@ export function useListTasks(listId) {
 }
 
 //* Lists Queries
+
+// All lists
+export function useLists() {
+  const user = useSelector((state) => state.user.user);
+
+  const { data, isPending, isError, error } = useQuery({
+    queryKey: [GET_LISTS],
+    queryFn: async () => await getLists(user.$id),
+  });
+
+  return { lists: data, isLoading: isPending, isError, error };
+}

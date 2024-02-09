@@ -10,9 +10,8 @@ import {
   useAddTask,
   useUpdateTask,
 } from '../../../../lib/react-query/mutations';
-import { useTasks } from '../../../../lib/react-query/queries';
+import { useTasks,useLists } from '../../../../lib/react-query/queries';
 
-import { useLists } from '../../../../hooks';
 import CustomTippy from '../../../Common/CustomTippy';
 import { useModal } from '../../../../hooks/useModal';
 import { isTaskOverdue } from '../../../../utils/Dates';

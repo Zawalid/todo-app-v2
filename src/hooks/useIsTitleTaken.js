@@ -1,25 +1,37 @@
 import { useEffect, useState } from 'react';
-import { useLists } from './useLists';
+import { useLists } from '../lib/react-query/queries';
 
 export function useIsTitleTaken(id, curTitle) {
   const { lists } = useLists();
   const [isNewTitleTaken, setIsNewTitleTaken] = useState(false);
-  const [title, setTitle] = useState(curTitle);
+  const [newTitle, setNewTitle] = useState(curTitle);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    const listWithSameTitle = lists?.find((list) => list.title?.trim() === title?.trim());
-
+    const listWithSameTitle = lists?.find((list) => list.title?.trim() === newTitle?.trim());
     const isSameList = listWithSameTitle?.$id === id;
+
     let isTaken = listWithSameTitle;
-    //make sure that the  title doesn't contain symbols (except spaces and _ and -)
+
+    setError(isTaken ? 'List with the same title already exists.' : '');
+
+    //make sure that the  newTitle doesn't contain symbols (except spaces and _ and -)
     const regex = /^[a-zA-Z0-9-_ ()]*$/;
-    if (!regex.test(title)) isTaken = true;
+    if (!regex.test(newTitle)) {
+      isTaken = true;
+      setError(isTaken ? 'List title can only contain (letters, numbers, spaces, _ , -).' : '');
+    }
+
+    // Make sure that the newTitle is not empty
     if (id) {
-      title?.trim() === '' && (isTaken = true);
+      if (newTitle?.trim() === '') {
+        isTaken = true;
+        setError(isTaken ? 'List title cannot be empty.' : '');
+      }
       isSameList && (isTaken = false);
     }
     setIsNewTitleTaken(isTaken);
-  }, [lists, id, title]);
+  }, [lists, id, newTitle]);
 
-  return [isNewTitleTaken, setTitle];
+  return [isNewTitleTaken, setNewTitle, error];
 }

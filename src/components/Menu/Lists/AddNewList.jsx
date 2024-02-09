@@ -1,21 +1,27 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Colors } from '../../Common/Colors';
 import { useIsTitleTaken } from '../../../hooks/useIsTitleTaken';
-import { useLists } from '../../../hooks/useLists';
 import { PiCheckCircle } from 'react-icons/pi';
-import { FaRegCircleXmark } from "react-icons/fa6";
+import { FaRegCircleXmark } from 'react-icons/fa6';
+import { useLists } from '../../../lib/react-query/queries';
+import { useAddList } from '../../../lib/react-query/mutations';
 
-export function AddNewList({ reference, isOpen }) {
-  const { lists, handleAddList } = useLists();
-  const untitledListsNumber = useMemo(
+export function AddNewList({ reference, isOpen, onClose }) {
+  const { lists } = useLists();
+  const { mutate: handleAddList } = useAddList();
+
+  const untitledLists = useMemo(
     () => lists?.filter((l) => l.title.startsWith('Untitled')).map((l) => l.title),
     [lists],
   );
 
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState(() => {
+    const untitledNumber = getTheUntitledNumber(untitledLists);
+    const title = `Untitled ${untitledNumber > 0 ? `(${untitledNumber})` : ''}`;
+    return title;
+  });
   const [color, setColor] = useState('--custom-1');
-  const inputEl = useRef(null);
-  const [isTitleTaken,  setTitle] = useIsTitleTaken(lists);
+  const [isTitleTaken, setNewTitle] = useIsTitleTaken();
 
   useEffect(() => {
     function handleKeyDown(e) {
@@ -26,11 +32,16 @@ export function AddNewList({ reference, isOpen }) {
     // eslint-disable-next-line
   }, [value, color, isOpen]);
 
+  useEffect(() => {
+    // in
+  });
+
   function handleAdd() {
-    const untitledNumber = getTheUntitledNumber(untitledListsNumber);
+    const untitledNumber = getTheUntitledNumber(untitledLists);
     const title = value ? value : `Untitled ${untitledNumber > 0 ? `(${untitledNumber})` : ''}`;
-    handleAddList(title.trim(), color);
+    handleAddList({ list: { title, color } });
     setValue('');
+    onClose();
   }
 
   return (
@@ -52,9 +63,8 @@ export function AddNewList({ reference, isOpen }) {
             value={value}
             onChange={(e) => {
               setValue(e.target.value);
-              setTitle(e.target.value);
+              setNewTitle(e.target.value);
             }}
-            ref={inputEl}
           />
         </form>
         {value.trim() !== '' &&

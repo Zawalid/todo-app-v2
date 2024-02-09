@@ -1,13 +1,14 @@
 import { Tabs } from '../../Common/Tabs';
 import trashIcon from '../../../assets/trash.png';
 import { Item } from './Item';
-import { useRestoreElement, useLists, useTrash } from '../../../hooks';
+import { useRestoreElement, useTrash } from '../../../hooks';
 import { toast } from 'sonner';
 import { useModal } from '../../../hooks/useModal';
 import { Actions } from './Actions';
 import Modal from '../../Common/Modal';
 import { PiInfoFill, PiX } from 'react-icons/pi';
 import { useAutoAnimate } from '../../../hooks/useAutoAnimate';
+import { useLists } from '../../../lib/react-query/queries';
 
 export default function Trash({ isOpen, onClose }) {
   const {

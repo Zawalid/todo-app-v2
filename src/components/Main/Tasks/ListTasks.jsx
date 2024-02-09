@@ -1,10 +1,9 @@
 import { useParams } from 'react-router-dom';
-import { useLists } from '../../../hooks';
 import { Title } from '../Title';
 import TasksList from './TasksList';
 import { TasksSkeleton } from '../../Skeletons';
 import { useEffect } from 'react';
-import { useListTasks } from '../../../lib/react-query/queries';
+import { useListTasks, useLists } from '../../../lib/react-query/queries';
 
 export default function ListTasks() {
   const { lists } = useLists();

@@ -8,8 +8,9 @@ import { TaskPriority } from '../../../Task Info/TaskPriority';
 import { DropDown } from '../../../Common/DropDown';
 import Switch from '../../../Common/Switch';
 import { CheckBox } from '../../../Common/CheckBox';
-import { useLists, useTags, useTasks } from '../../../../hooks';
+import {  useTags, useTasks } from '../../../../hooks';
 import { exportDownload } from '../../../../utils/helpers';
+import { useLists } from '../../../../lib/react-query/queries';
 
 export function Tasks({ control, setValue }) {
   const tasksSettings = useWatch({ control, name: 'tasks' });

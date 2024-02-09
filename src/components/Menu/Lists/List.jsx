@@ -1,18 +1,22 @@
 import { useEffect, useRef, useState } from 'react';
 import { NavLink, useHref, useNavigate } from 'react-router-dom';
 import { ListAction } from './ListAction';
-import { useIsTitleTaken, useLists } from '../../../hooks';
+import { useIsTitleTaken } from '../../../hooks';
 import { useModal } from '../../../hooks/useModal';
 import { PiCheckCircle } from 'react-icons/pi';
 import { FaRegCircleXmark } from 'react-icons/fa6';
 import { useListTasks } from '../../../lib/react-query/queries';
+import { useDeleteList, useUpdateList } from '../../../lib/react-query/mutations';
+import CustomTippy from '../../Common/CustomTippy';
 
 export function List({ list }) {
   const { $id, title, color } = list;
-  const { handleDeleteList, handleRenameList, handleChangeListColor } = useLists();
+  const { mutate: deleteList } = useDeleteList();
+  const { mutate: updateList } = useUpdateList();
+
   const { listTasks } = useListTasks($id);
   const [isRenameInputOpen, setIsRenameInputOpen] = useState(false);
-  const [isNewTitleTaken, setTitle] = useIsTitleTaken($id, title);
+  const [isNewTitleTaken, setNewTitle, error] = useIsTitleTaken($id, title);
   const [listColor, setListColor] = useState(color);
   const { openModal: confirmDelete } = useModal();
 
@@ -24,24 +28,25 @@ export function List({ list }) {
     function handleClickOutside(event) {
       if (newListTitle.current && !newListTitle.current.contains(event.target)) {
         setIsRenameInputOpen(false);
+        newListTitle.current && (newListTitle.current.value = title);
       }
     }
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []);
+  }, [title]);
 
   function openRenameInput() {
     setIsRenameInputOpen(true);
     setTimeout(() => newListTitle.current.focus(), 50);
   }
-  async function renameList(e) {
+  function renameList(e) {
     if (isNewTitleTaken) return;
     const newTitle = e.target.value.trim();
     if (newTitle === title) return;
     setIsRenameInputOpen(false);
-    await handleRenameList($id, newTitle);
+    updateList({ id: $id, list: { title: newTitle } });
     // Change the path to the new title if the renamed list is the active one
     path?.replace(/%20/g, ' ') === title && navigate(newTitle);
   }
@@ -49,7 +54,7 @@ export function List({ list }) {
     <>
       <li className='relative flex items-center gap-2 pr-2 '>
         <NavLink
-          to={`/app/${title}`}
+          to={`lists/${title}`}
           className='menu_element group flex-1  grid-cols-[30px_auto_35px] '
         >
           <div
@@ -69,12 +74,12 @@ export function List({ list }) {
             confirmDelete({
               title: 'Delete List',
               message: `Are you sure you want to delete this list ?`,
-              onConfirm: async (deletePermanently) => handleDeleteList($id, deletePermanently),
+              onConfirm: async (deletePermanently) => deleteList({ id: $id, deletePermanently }),
             })
           }
           onChangeColor={(color) => {
             setListColor(color);
-            handleChangeListColor($id, color);
+            updateList({ id: $id, list: { color } });
           }}
           color={listColor}
           onOpenRenameInput={openRenameInput}
@@ -90,11 +95,15 @@ export function List({ list }) {
             className='w-full  border-none bg-transparent py-2 text-sm text-text-primary  focus:outline-none '
             defaultValue={title}
             ref={newListTitle}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e) => setNewTitle(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && renameList(e)}
           />
           {isNewTitleTaken ? (
-            <FaRegCircleXmark className='text-red-500' />
+            <CustomTippy content={error}>
+              <span>
+                <FaRegCircleXmark className='text-red-500' />
+              </span>
+            </CustomTippy>
           ) : (
             <PiCheckCircle className='text-green-500' />
           )}
