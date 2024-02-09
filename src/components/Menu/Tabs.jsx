@@ -21,11 +21,11 @@ export function Tabs() {
   const { showInSideBar, showCount } = useSelector((state) => state.settings.sidebar);
 
   const counts = {
-    inbox: tasks.length,
-    completed: completedTasks.length,
-    stickyWall: stickyNotes.length,
-    today: todayTasks.length,
-    upcoming: upcomingTasks.length,
+    inbox: tasks?.length,
+    completed: completedTasks?.length,
+    today: todayTasks?.length,
+    upcoming: upcomingTasks?.length,
+    stickyWall: stickyNotes?.length,
   };
 
   return (

@@ -1,8 +1,9 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useRef } from 'react';
 import { useSelector } from 'react-redux';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import { ADD_TASK, DELETE_TASK, GET_TASKS, UPDATE_TASK } from './keys';
 import { addTask, deleteTask, deleteTasks, updateTask } from '../appwrite/api/tasksApi';
-import { toast } from 'sonner';
 
 import completedSoundFile from '../../assets/completed.mp3';
 import deleteSoundFile from '../../assets/deleted.mp3';
@@ -40,7 +41,7 @@ function useMutationWithToast({
 }) {
   const user = useSelector((state) => state.user.user);
   const queryClient = useQueryClient();
-  let toastId;
+  const toastId = useRef(null);
 
   const { mutate, isPending } = useMutation({
     mutationKey: [mutationKey],
@@ -48,7 +49,9 @@ function useMutationWithToast({
 
     onMutate: async (variables) => {
       if (onMutate) onMutate(variables);
-      if (messages?.loading) toast.loading(messages.loading, { id: toastId });
+      if (messages?.loading) {
+        toastId.current = toast.loading(messages.loading);
+      }
 
       if (isOptimistic) {
         await queryClient.cancelQueries({ queryKey: [queryClient] });
@@ -58,19 +61,18 @@ function useMutationWithToast({
       }
     },
     onSuccess: (data, variables) => {
-      if (onSuccess) onSuccess(data, variables);
-      if (messages?.success) {
-        toast.dismiss(toastId);
-        toast.success(messages.success, { id: toastId });
+      if (!isOptimistic) {
+        queryClient.setQueryData([queryKey], (oldData) => updateQueryFn(oldData, variables, data));
       }
+      if (onSuccess) onSuccess(data, variables);
+      if (messages?.success) toast.success(messages.success, { id: toastId.current });
     },
     onError: (error, variables, context) => {
       if (isOptimistic) queryClient.setQueryData([queryKey], context.oldData);
       if (onError) onError(error);
       if (messages?.error) {
-        toast.dismiss(toastId);
         toast.error(messages.error, {
-          id: toastId,
+          id: toastId.current,
           duration: 4000,
           action: {
             label: 'Try again',
@@ -79,7 +81,6 @@ function useMutationWithToast({
         });
       }
     },
-    onSettled: () => queryClient.invalidateQueries({ queryKey: [queryKey] }),
   });
 
   return { mutate, isLoading: isPending };
@@ -90,7 +91,7 @@ function useAddMutation(props) {
     ...props,
     isOptimistic: false,
     mutationFn: props.addItem,
-    updateQueryFn: (oldData, data) => (oldData ? [...oldData, data] : oldData),
+    updateQueryFn: (oldData, variables, data) => (oldData ? [...oldData, data] : oldData),
   });
 }
 
@@ -125,7 +126,8 @@ function useDeleteAllMutation(props) {
     mutationFn: props.deleteAllItems,
     updateQueryFn: (oldData, variables) =>
       oldData ? oldData.filter((item) => !variables.deleted.includes(item.$id)) : oldData,
-    messages: null,
+
+    isOptimistic: false,
   });
 }
 
