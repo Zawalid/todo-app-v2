@@ -109,7 +109,6 @@ export const deleteList = async ({ id, deletePermanently }) => {
   deleteDocument(listsCollectionId, id, deletePermanently);
 };
 
-
 // * ------- Tags Api ------- *//
 
 export const getTags = async (userId) => await getAll(tagsCollectionId, userId);
@@ -123,8 +122,41 @@ export const addTag = async ({ tag, owner }) => {
     setPermissions(owner),
   );
   return res;
-}
+};
 
 export const deleteTag = async ({ id, deletePermanently }) => {
   deleteDocument(tagsCollectionId, id, deletePermanently);
-}
+};
+
+// * ------- Sticky Notes Api ------- *//
+
+export const getStickyNotes = async (userId) => await getAll(stickyNotesCollectionId, userId);
+
+export const getStickyNoteById = async (id) => {
+  const res = await databases.getDocument(databaseId, stickyNotesCollectionId, id);
+  return res;
+};
+
+export const addStickyNote = async ({ stickyNote, owner }) => {
+  const res = await databases.createDocument(
+    databaseId,
+    stickyNotesCollectionId,
+    ID.unique(),
+    { ...stickyNote, owner },
+    setPermissions(owner),
+  );
+  return res;
+};
+
+export const updateStickyNote = async ({ id, stickyNote }) => {
+  const res = await databases.updateDocument(databaseId, stickyNotesCollectionId, id, stickyNote);
+  return res;
+};
+
+export const deleteStickyNote = async ({ id, deletePermanently }) => {
+  deleteDocument(stickyNotesCollectionId, id, deletePermanently);
+};
+
+export const deleteStickyNotes = async ({ deleted, deletePermanently }) => {
+  deleted.forEach((id) => deleteStickyNote({ id, deletePermanently }));
+};

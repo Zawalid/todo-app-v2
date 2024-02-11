@@ -34,7 +34,7 @@ export default function Settings({ isOpen, onClose }) {
             <PiArrowRight className={isPanelOpen ? 'rotate-180' : ''} />
           </button>
           <button
-            className='icon-button  not-active small text-text-tertiary  md:hidden'
+            className='icon-button  not-active small text-text-tertiary'
             onClick={onClose}
           >
             <PiX />

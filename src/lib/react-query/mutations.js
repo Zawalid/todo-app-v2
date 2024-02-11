@@ -29,6 +29,10 @@ import {
   deleteTasks,
   updateList,
   updateTask,
+  addStickyNote,
+  updateStickyNote,
+  deleteStickyNote,
+  deleteStickyNotes,
 } from '../appwrite/api';
 
 import completedSoundFile from '../../assets/completed.mp3';
@@ -69,7 +73,7 @@ function useMutationWithToast({
   const queryClient = useQueryClient();
   const toastId = useRef(null);
 
-  const { mutate, isPending } = useMutation({
+  const { mutate, isPending,data } = useMutation({
     mutationKey: [mutationKey],
     mutationFn: async (variables) => await mutationFn({ ...variables, owner: user.$id }),
 
@@ -109,7 +113,7 @@ function useMutationWithToast({
     },
   });
 
-  return { mutate, isLoading: isPending };
+  return { mutate, isLoading: isPending,data };
 }
 
 function useAddMutation(props) {
@@ -335,3 +339,62 @@ export function useDeleteTag() {
 }
 
 //* --- Sticky Notes
+// Add sticky note
+export function useAddStickyNote({ isDuplicate } = {}) {
+  return useAddMutation({
+    mutationKey: ADD_STICKY_NOTE,
+    queryKey: GET_STICKY_NOTES,
+    addItem: addStickyNote,
+    messages: {
+      success: isDuplicate
+        ? 'Sticky note has been successfully duplicated.'
+        : 'Sticky note has been successfully added.',
+      error: isDuplicate
+        ? 'Failed to duplicate the sticky note.'
+        : 'Failed to add the sticky note.',
+      loading: isDuplicate ? 'Duplicating sticky note...' : 'Adding sticky note...',
+    },
+  });
+}
+
+// Update sticky note
+export function useUpdateStickyNote() {
+  return useUpdateMutation({
+    mutationKey: UPDATE_STICKY_NOTE,
+    queryKey: GET_STICKY_NOTES,
+    updateItem: updateStickyNote,
+    messages: {
+      success: 'Sticky note has been successfully updated.',
+      error: 'Failed to update the sticky note.',
+      loading: 'Updating sticky note...',
+    },
+  });
+}
+
+// Delete sticky note
+export function useDeleteStickyNote() {
+  return useDeleteMutation({
+    mutationKey: DELETE_STICKY_NOTE,
+    queryKey: GET_STICKY_NOTES,
+    deleteItem: deleteStickyNote,
+    messages: {
+      success: 'Sticky note has been successfully deleted.',
+      error: 'Failed to delete the sticky note.',
+      loading: 'Deleting sticky note...',
+    },
+  });
+}
+
+// Delete All Sticky Notes
+export function useDeleteStickyNotes() {
+  return useDeleteAllMutation({
+    mutationKey: DELETE_STICKY_NOTE,
+    queryKey: GET_STICKY_NOTES,
+    deleteAllItems: deleteStickyNotes,
+    messages: {
+      success: 'Sticky notes have been successfully deleted.',
+      error: 'Failed to delete the sticky notes.',
+      loading: 'Deleting sticky notes...',
+    },
+  });
+}

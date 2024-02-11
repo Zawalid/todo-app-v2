@@ -1,5 +1,4 @@
 import { NavLink } from 'react-router-dom';
-import { useStickyNotes } from '../../hooks';
 import { useSelector } from 'react-redux';
 import { TABS } from './TabsList';
 import CustomTippy from '../Common/CustomTippy';
@@ -8,6 +7,7 @@ import {
   useTasks,
   useTodayTasks,
   useUpcomingTasks,
+  useStickyNotes
 } from '../../lib/react-query/queries';
 
 const orderedTabs = ['inbox', 'today', 'upcoming', 'completed', 'stickyWall'];

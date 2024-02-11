@@ -34,6 +34,7 @@ export function Menu() {
       e.altKey && e.key === 'c' && navigate('/app/completed');
       e.altKey && e.key === 's' && navigate('/app/sticky-wall');
       e.ctrlKey && e.altKey && e.key === 'n' && navigate('/app/sticky-wall/new');
+      e.ctrlKey && e.key === 'ArrowLeft' && navigate('/app/sticky-wall/');
       e.altKey && e.shiftKey && e.key === 'S' && setIsSettingsOpen(true);
       e.altKey && e.shiftKey && e.key === 'T' && setIsTrashOpen(true);
 

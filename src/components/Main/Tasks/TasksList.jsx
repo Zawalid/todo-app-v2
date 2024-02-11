@@ -213,6 +213,7 @@ function Actions({
       }}
       onSelectAll={selectAll}
       onUnSelectAll={unSelectAll}
+      disabled={filteredTasks.length === 0}
     >
       <Tippy
         content={
@@ -232,7 +233,8 @@ function Actions({
         placement='bottom'
         maxWidth='auto'
       >
-        <button className='icon-button not-active'>
+        <button className='icon-button not-active'       disabled={filteredTasks.length === 0}
+>
           <PiDotsThreeOutlineVerticalFill />
         </button>
       </Tippy>

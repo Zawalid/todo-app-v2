@@ -10,24 +10,24 @@ export default function AppLayout() {
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
   const { handleFetchAllElements, handleClearAllElements } = useFetchAllElements();
 
-  useEffect(() => {
-    const fetch = () => {
-      handleFetchAllElements();
-    };
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') fetch();
-    };
-    if (isAuthenticated) {
-      fetch();
-      document.addEventListener('visibilitychange', handleVisibilityChange);
-    }
-    return () => {
-      // To clear all elements from the state when the user logs out
-      !isAuthenticated && handleClearAllElements();
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // useEffect(() => {
+  //   const fetch = () => {
+  //     handleFetchAllElements();
+  //   };
+  //   const handleVisibilityChange = () => {
+  //     if (document.visibilityState === 'visible') fetch();
+  //   };
+  //   if (isAuthenticated) {
+  //     fetch();
+  //     document.addEventListener('visibilitychange', handleVisibilityChange);
+  //   }
+  //   return () => {
+  //     // To clear all elements from the state when the user logs out
+  //     !isAuthenticated && handleClearAllElements();
+  //     document.removeEventListener('visibilitychange', handleVisibilityChange);
+  //   };
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   if (isAuthenticated) {
     return (

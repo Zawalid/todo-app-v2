@@ -11,6 +11,7 @@ export default function SelectionIcons({
   onSelect,
   onSelectAll,
   onUnSelectAll,
+  disabled
 }) {
   return (
     <div className={`flex gap-3 ${isReverse ? 'flex-row-reverse' : ''}`}>
@@ -29,7 +30,9 @@ export default function SelectionIcons({
         </button>
       </CustomTippy>
       <CustomTippy content={isSelecting ? 'Cancel' : 'Select'}>
-        <button className='icon-button not-active' onClick={onSelect}>
+        <button className='icon-button not-active' 
+        disabled={disabled}
+        onClick={onSelect}>
           {isSelecting ? <PiX /> : <BiSelectMultiple />}
         </button>
       </CustomTippy>

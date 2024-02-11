@@ -6,8 +6,8 @@ import { Overlay } from '../../../../Common/Modal';
 import { GiPin } from 'react-icons/gi';
 import { TbPencilCancel } from 'react-icons/tb';
 import { IoDuplicateOutline, IoCopyOutline } from 'react-icons/io5';
-import { PiExport, PiTrash,PiFilePdf,PiFileHtml,PiFileText } from 'react-icons/pi';
-import { BsMarkdown } from "react-icons/bs";
+import { PiExport, PiTrash, PiFilePdf, PiFileHtml, PiFileText } from 'react-icons/pi';
+import { BsMarkdown } from 'react-icons/bs';
 import { useFormatDateAndTime } from '../../../../../hooks/useFormatDateAndTime';
 
 export function Actions({
@@ -31,7 +31,7 @@ export function Actions({
   },
 }) {
   const { openModal: confirmDelete } = useModal();
-  const format = useFormatDateAndTime()
+  const format = useFormatDateAndTime();
 
   return (
     <>
@@ -126,20 +126,20 @@ export function Actions({
               }}
               togglerDisabled={disabled}
             >
-              <DropDown.Button  onClick={() => onExport('pdf')}>
-              <PiFilePdf />
-                              <span>PDF</span>
+              <DropDown.Button onClick={() => onExport('pdf')}>
+                <PiFilePdf />
+                <span>PDF</span>
               </DropDown.Button>
-              <DropDown.Button  onClick={() => onExport('text')}>
-              <PiFileText /> 
-                             <span>Text</span>
+              <DropDown.Button onClick={() => onExport('text')}>
+                <PiFileText />
+                <span>Text</span>
               </DropDown.Button>
-              <DropDown.Button  onClick={() => onExport('html')}>
-              <PiFileHtml /> 
+              <DropDown.Button onClick={() => onExport('html')}>
+                <PiFileHtml />
                 <span>HTML</span>
               </DropDown.Button>
-              <DropDown.Button  onClick={() => onExport('markdown')}>
-              <BsMarkdown /> 
+              <DropDown.Button onClick={() => onExport('markdown')}>
+                <BsMarkdown />
                 <span>Markdown</span>
               </DropDown.Button>
             </DropDown>
@@ -149,7 +149,7 @@ export function Actions({
                 confirmDelete({
                   message: 'Are you sure you want to delete this sticky note?',
                   title: 'Delete Sticky Note',
-                  onConfirm: async () => (onDelete(), onBack()),
+                  onConfirm: async (deletePermanently) => (onDelete(deletePermanently), onBack()),
                 });
               }}
             >
@@ -161,12 +161,10 @@ export function Actions({
           <div className='mt-auto'>
             <hr className='mb-2 border border-border' />
             <p className='mb-1 text-xs font-medium text-text-secondary '>
-              Created :{' '}
-              {format(new Date(currentNote?.$createdAt || Date.now()))}
+              Created : {format(new Date(currentNote?.$createdAt || Date.now()))}
             </p>
             <p className='text-xs font-medium text-text-secondary '>
-              Last modified :{' '}
-              {format(new Date(currentNote?.$updatedAt || Date.now()))}
+              Last modified : {format(new Date(currentNote?.$updatedAt || Date.now()))}
             </p>
           </div>
         </div>
