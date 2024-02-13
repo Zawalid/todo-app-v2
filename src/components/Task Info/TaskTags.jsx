@@ -29,7 +29,7 @@ export function TaskTags({ taskTagsIds, handleAddTagToTask, handleDeleteTagFromT
           shouldCloseOnClick: false,
         }}
       >
-        {tags.map((tag) => (
+        {tags?.map((tag) => (
           <div key={tag.$id} className='grid grid-cols-[1fr_auto] items-center'>
             <div role='button'>
               <Tag

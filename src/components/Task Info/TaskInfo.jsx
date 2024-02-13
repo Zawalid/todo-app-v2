@@ -14,7 +14,11 @@ import { Actions } from './Actions';
 import { Button } from '../Common/Button';
 import { PiCheckBold, PiXBold } from 'react-icons/pi';
 import { useTasks } from '../../lib/react-query/queries';
-import { useDeleteTask, useAddTask, useUpdateTask } from '../../lib/react-query/mutations';
+import {
+  useDeleteTask,
+  useAddTask,
+  useUpdateTask,
+} from '../../lib/react-query/mutations';
 import { TaskInfoSkeleton } from '../Skeletons/TaskInfoSkeleton';
 
 const emptyInfo = {
@@ -33,6 +37,7 @@ export function TaskInfo() {
   const { tasks, isLoading, isError, error } = useTasks();
   const { taskId } = useParams();
   const navigate = useNavigate();
+  const currentTask = tasks?.find((task) => task?.$id === taskId);
   const currentTab = useHref()
     .split('/')
     .slice(0, useHref().split('/').length - 1)
@@ -43,7 +48,6 @@ export function TaskInfo() {
   const { mutate: duplicateTask } = useAddTask({ isDuplicate: true });
   const { mutate: deleteTask } = useDeleteTask();
 
-  const currentTask = tasks?.find((task) => task?.$id === taskId);
   const { taskTitle, taskNote, taskListId, taskDueDate, taskTagsIds, taskPriority, taskSubtasks } =
     taskInfo;
 
@@ -150,22 +154,22 @@ export function TaskInfo() {
 
   const render = () => {
     if (!taskId) return null;
-    if (isLoading)
-      return (
-        <div className='relative h-full'>
-          <TaskInfoSkeleton />
-        </div>
-      );
+    if (!currentTask) return <NoTask close={close} />;
+    if (isLoading) return <TaskInfoSkeleton />;
     if (isError) return <div>Error: {error.message}</div>;
     return (
       <>
         <div className='grid grid-cols-[auto_min-content] items-center gap-5 pb-3'>
-          <h2 className='truncate text-xl font-bold text-text-secondary'>
-            {taskTitle ? taskTitle : 'Untitled'}
-          </h2>
+          <div className='flex items-center gap-3'>
+            <h2 className='truncate text-xl font-bold text-text-secondary'>
+              {taskTitle ? taskTitle : 'Untitled'}
+            </h2>
+          </div>
           {isTouchDevice() ? (
             <button
-              className={`flex h-8 w-8 items-center transition-colors duration-200 justify-center rounded-full ${isChanged ? 'bg-primary hover:bg-primary-hover' : 'bg-background-secondary'}`}
+              className={`flex h-8 w-8 items-center justify-center rounded-full transition-colors duration-200 ${
+                isChanged ? 'bg-primary hover:bg-primary-hover' : 'bg-background-secondary'
+              }`}
               onClick={() => (isChanged ? handleSaveChanges() : close())}
               id='closeTaskInfo'
             >
@@ -270,7 +274,7 @@ export function TaskInfo() {
 
       {!isTouchDevice() && (
         <aside
-          className={`fixed z-10 flex flex-col border bg-background-primary  transition-menu duration-500 lg:relative lg:rounded-xl lg:first-line:rounded-xl ${
+          className={`fixed z-10 flex flex-col border bg-background-primary transition-menu duration-500 lg:relative lg:rounded-xl lg:first-line:rounded-xl ${
             taskId
               ? 'right-0 top-0 ml-3 h-full w-full items-stretch border-border p-4 shadow-md sm:w-[380px]'
               : 'w-0 items-center overflow-hidden  border-transparent p-0'
@@ -281,5 +285,25 @@ export function TaskInfo() {
         </aside>
       )}
     </>
+  );
+}
+
+function NoTask({ close }) {
+  return (
+    <div className='relative flex h-full min-h-[300px] w-full flex-col items-center justify-center gap-3 text-center'>
+      {isTouchDevice() || (
+        <button
+          className='icon-button not-active small absolute right-0 top-0 '
+          onClick={close}
+          id='closeTaskInfo'
+        >
+          <PiXBold />
+        </button>
+      )}
+      <h2 className='text-xl font-bold text-text-secondary'>No task found with the given ID.</h2>
+      <p className='text-sm text-text-tertiary '>
+        The task you are looking for does not exist or has been deleted.
+      </p>
+    </div>
   );
 }

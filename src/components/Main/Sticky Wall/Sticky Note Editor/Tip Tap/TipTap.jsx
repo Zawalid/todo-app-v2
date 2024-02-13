@@ -51,7 +51,7 @@ export default function TipTap({ currentNote, refetch }) {
 
   const onBack = () => {
     navigate('/app/sticky-wall');
-    refetch();
+    refetch?.();
   };
 
   const editor = useEditor({

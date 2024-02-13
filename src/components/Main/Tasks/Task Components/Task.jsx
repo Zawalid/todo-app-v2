@@ -2,7 +2,7 @@ import { cloneElement, useEffect, useMemo, useState } from 'react';
 import { useLongPress } from 'use-long-press';
 import { PiCalendarBold } from 'react-icons/pi';
 import { useSelector } from 'react-redux';
-import { NavLink } from 'react-router-dom';
+import {  useNavigate } from 'react-router-dom';
 
 import {
   useCompleteTask,
@@ -53,6 +53,7 @@ export function Task({
     detect: 'touch',
   });
   const { taskDetailLevel } = useSelector((state) => state.settings.general.tasks);
+  const navigate = useNavigate()
 
   const { tasks } = useTasks();
   const { mutate: duplicateTask } = useAddTask({ isDuplicate: true });
@@ -111,9 +112,8 @@ export function Task({
 
   return (
     <>
-      <NavLink
-        to={isSelecting || $id}
-        onClick={() => isSelecting && onSelect()}
+      <button
+        onClick={() => isSelecting ? onSelect() : navigate($id)}
         className={`grid min-h-[49px] w-full select-none grid-cols-[20px_auto] items-center gap-3 rounded-lg border border-border px-3 py-2 text-start transition-transform  duration-300 hover:translate-y-1 sm:px-5 ${
           checked ? 'bg-background-tertiary ' : ''
         } ${isLoading ? 'opacity-50' : ''}`}
@@ -159,7 +159,7 @@ export function Task({
             )}
           </div>
         </div>
-      </NavLink>
+      </button>
 
       <TaskActions
         isOpen={isTaskActionsOpen}

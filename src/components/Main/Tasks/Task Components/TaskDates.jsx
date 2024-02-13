@@ -3,7 +3,7 @@ import { useFormatDateAndTime } from '../../../../hooks/useFormatDateAndTime';
 export function TaskDates({ date }) {
   const format = useFormatDateAndTime();
 
-  if(!date) return null;
+  if(!date.created || !date.updated) return null;
   
   return (
     <>

@@ -1,6 +1,16 @@
 import { useQuery } from '@tanstack/react-query';
 import { GET_LISTS, GET_TAGS, GET_TASKS, GET_STICKY_NOTES, GET_STICKY_NOTE } from './keys';
-import { getLists, getStickyNoteById, getStickyNotes, getTags, getTasks } from '../appwrite/api';
+import {
+  getLists,
+  getStickyNoteById,
+  getStickyNotes,
+  getTags,
+  getTasks,
+  getTrashedLists,
+  getTrashedStickyNotes,
+  getTrashedTags,
+  getTrashedTasks,
+} from '../appwrite/api';
 import { useSelector } from 'react-redux';
 import { checkIfToday, checkIfTomorrow, isDateInCurrentWeek } from '../../utils/Dates';
 
@@ -106,25 +116,72 @@ export function useStickyNotes() {
 
 // Get sticky note by id
 export function useStickyNoteById(stickyNoteId) {
-const { defaultColor } = useSelector((state) => state.settings.general.stickyNotes);
+  const { defaultColor } = useSelector((state) => state.settings.general.stickyNotes);
 
-  const { data, isPending, isError, error,refetch } = useQuery({
+  const { data, isPending, isError, error, refetch } = useQuery({
     queryKey: [GET_STICKY_NOTE, { stickyNoteId }],
     queryFn: async () => await getStickyNoteById(stickyNoteId),
-    enabled : stickyNoteId !== 'new',
+    enabled: stickyNoteId !== 'new',
   });
 
-  if(stickyNoteId === 'new') return {
-    stickyNote : {
-      title: '',
-      content: '<p></p>',
-      bgColor: defaultColor,
-      textColor: '#fff',
-      readonly: false,
-      pinned: false,
-      fontFamily: `'Lexend Deca', sans-serif`,
-    }
-  }
+  if (stickyNoteId === 'new')
+    return {
+      stickyNote: {
+        title: '',
+        content: '<p></p>',
+        bgColor: defaultColor,
+        textColor: '#fff',
+        readonly: false,
+        pinned: false,
+        fontFamily: `'Lexend Deca', sans-serif`,
+      },
+    };
 
-  return { stickyNote: data, isLoading: isPending, isError, error,refetch };
+  return { stickyNote: data, isLoading: isPending, isError, error, refetch };
+}
+
+//* Trash Queries
+
+export function useTrashedTasks() {
+  const user = useSelector((state) => state.user.user);
+
+  const { data, isPending, isError, error } = useQuery({
+    queryKey: [GET_TASKS, { type: 'trashed' }],
+    queryFn: async () => await getTrashedTasks(user.$id),
+  });
+
+  return { trashedTasks: data, isLoading: isPending, isError, error };
+}
+
+export function useTrashedLists() {
+  const user = useSelector((state) => state.user.user);
+
+  const { data, isPending, isError, error } = useQuery({
+    queryKey: [GET_LISTS, { type: 'trashed' }],
+    queryFn: async () => await getTrashedLists(user.$id),
+  });
+
+  return { trashedLists: data, isLoading: isPending, isError, error };
+}
+
+export function useTrashedTags() {
+  const user = useSelector((state) => state.user.user);
+
+  const { data, isPending, isError, error } = useQuery({
+    queryKey: [GET_TAGS, { type: 'trashed' }],
+    queryFn: async () => await getTrashedTags(user.$id),
+  });
+
+  return { trashedTags: data, isLoading: isPending, isError, error };
+}
+
+export function useTrashedStickyNotes() {
+  const user = useSelector((state) => state.user.user);
+
+  const { data, isPending, isError, error } = useQuery({
+    queryKey: [GET_STICKY_NOTES, { type: 'trashed' }],
+    queryFn: async () => await getTrashedStickyNotes(user.$id),
+  });
+
+  return { trashedStickyNotes: data, isLoading: isPending, isError, error };
 }

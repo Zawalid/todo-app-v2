@@ -36,16 +36,15 @@ export function AddNewList({ reference, onClose }) {
             }}
           />
         </form>
-        {newTitle.trim() !== '' &&
-          (error ? (
-            <CustomTippy content={error}>
-              <span>
-                <FaRegCircleXmark className='text-red-500' />
-              </span>
-            </CustomTippy>
-          ) : (
-            <PiCheckCircle className='text-green-500' />
-          ))}
+        {error ? (
+          <CustomTippy content={error}>
+            <span>
+              <FaRegCircleXmark className='text-lg text-red-500' />
+            </span>
+          </CustomTippy>
+        ) : (
+          <PiCheckCircle className='text-xl text-green-500' />
+        )}
       </div>
       <div className='mt-3 flex flex-wrap items-center justify-start gap-2'>
         <Colors selectedColor={color} onSelect={(color) => setColor(color)} />

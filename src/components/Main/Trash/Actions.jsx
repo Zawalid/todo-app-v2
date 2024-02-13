@@ -1,7 +1,7 @@
 import { PiDotsThreeOutlineVerticalFill, PiTrash } from 'react-icons/pi';
 import { DropDown } from '../../Common/DropDown';
 
-export function Actions({ trash, currentTab, trashLength, onDeleteAll, onRestoreAll, onEmptyTrash }) {
+export function Actions({ trash = {}, currentTab, trashLength, onDeleteAll, onRestoreAll, onEmptyTrash }) {
   return (
     <DropDown
       toggler={<PiDotsThreeOutlineVerticalFill />}

@@ -5,10 +5,13 @@ import { MdOutlineFullscreen, MdOutlineFullscreenExit } from 'react-icons/md';
 import { PiCheckBold, PiDotsThreeOutlineVerticalFill } from 'react-icons/pi';
 import { HiOutlineChevronLeft } from 'react-icons/hi';
 import { GrUndo, GrRedo } from 'react-icons/gr';
+import { IconThemeToggler } from '../../../../Menu/DropDownProfile';
+import { useSelector } from 'react-redux';
+import { MenuToggler } from '../../../../Menu/Menu';
 
-export function ActionBar({ editor, onBack, onOpenActions,onAdd }) {
+export function ActionBar({ editor, onBack, onOpenActions, onAdd }) {
   const [isFullScreen, setIsFullScreen] = useState(document.fullscreenElement);
-
+  const { isMenuOpen } = useSelector((state) => state.user);
 
   useEffect(() => {
     window.addEventListener('visibilitychange', () => setIsFullScreen(document.fullscreenElement));
@@ -20,8 +23,8 @@ export function ActionBar({ editor, onBack, onOpenActions,onAdd }) {
 
   if (!editor) return null;
   return (
-    <div className='flex items-center justify-between' id='actionBar'>
-      <div className='flex flex-row-reverse gap-2'>
+    <div className='flex items-center justify-between'>
+      <div className='flex gap-2'>
         <CustomTippy
           content={
             <span className='flex items-center gap-2'>
@@ -36,6 +39,7 @@ export function ActionBar({ editor, onBack, onOpenActions,onAdd }) {
             <HiOutlineChevronLeft />
           </button>
         </CustomTippy>
+        {isMenuOpen || <MenuToggler />}
       </div>
       <div className='flex items-center gap-2 border-background-tertiary '>
         <CustomTippy content='Undo'>
@@ -56,9 +60,13 @@ export function ActionBar({ editor, onBack, onOpenActions,onAdd }) {
             <GrRedo />
           </button>
         </CustomTippy>
-        <CustomTippy content='Toggle Dark Mode'>
-          <span className='themeToggler'></span>
-        </CustomTippy>
+        {isMenuOpen || (
+          <CustomTippy content='Toggle Dark Mode'>
+            <span>
+              <IconThemeToggler />
+            </span>
+          </CustomTippy>
+        )}
         <CustomTippy content={isFullScreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}>
           <button
             onClick={() => {
@@ -79,7 +87,7 @@ export function ActionBar({ editor, onBack, onOpenActions,onAdd }) {
           </button>
         </CustomTippy>
         <button onClick={onAdd} className='icon-button not-active'>
-         <PiCheckBold />
+          <PiCheckBold />
         </button>
         <button onClick={onOpenActions} className='icon-button not-active'>
           <PiDotsThreeOutlineVerticalFill />

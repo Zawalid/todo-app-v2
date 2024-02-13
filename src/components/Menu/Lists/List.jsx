@@ -71,7 +71,7 @@ export function List({ list }) {
         />
         <form
           className={
-            'absolute  left-0 top-full z-[5] w-[95%] items-center overflow-hidden rounded-lg bg-background-primary px-3 shadow-[-4px_4px_1px_rgb(0,0,0,0.16)] ' +
+            'absolute border border-border left-0 top-full z-[5] w-[90%] py-1 items-center overflow-hidden rounded-lg bg-background-primary px-3 shadow-[-4px_4px_1px_rgb(0,0,0,0.16)] ' +
             (isRenameInputOpen ? 'flex' : 'hidden')
           }
           onSubmit={handleRename}
@@ -90,11 +90,11 @@ export function List({ list }) {
           {error ? (
             <CustomTippy content={error}>
               <span>
-                <FaRegCircleXmark className='text-red-500' />
+                <FaRegCircleXmark className='text-red-500 text-lg' />
               </span>
             </CustomTippy>
           ) : (
-            <PiCheckCircle className='text-green-500' />
+            <PiCheckCircle className='text-green-500 text-xl' />
           )}
         </form>
       </li>

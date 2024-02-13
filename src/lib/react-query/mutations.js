@@ -18,6 +18,14 @@ import {
   ADD_STICKY_NOTE,
   UPDATE_STICKY_NOTE,
   DELETE_STICKY_NOTE,
+  RESTORE_TASK,
+  RESTORE_LIST,
+  RESTORE_TAG,
+  RESTORE_STICKY_NOTE,
+  DELETE_TASK_PERMANENTLY,
+  DELETE_LIST_PERMANENTLY,
+  DELETE_TAG_PERMANENTLY,
+  DELETE_STICKY_NOTE_PERMANENTLY,
 } from './keys';
 import {
   addList,
@@ -33,30 +41,20 @@ import {
   updateStickyNote,
   deleteStickyNote,
   deleteStickyNotes,
+  restoreTask,
+  restoreList,
+  restoreTag,
+  restoreStickyNote,
+  deleteTaskPermanently,
+  deleteListPermanently,
+  deleteTagPermanently,
+  deleteStickyNotePermanently,
 } from '../appwrite/api';
 
 import completedSoundFile from '../../assets/completed.mp3';
 import deleteSoundFile from '../../assets/deleted.mp3';
 const completedSound = new Audio(completedSoundFile);
 const deletedSound = new Audio(deleteSoundFile);
-
-/* 
-? To use normal mutation not an optimistic mutation : 
-
-  -- onSuccess: (data, variables) => queryClient.setQueryData([queryKey], (oldData) => updateQueryFn(oldData, data, variables));
-
-  -- useUpdateMutation :
-  updateQueryFn: (oldData, data, variables) =>  oldData.map((item) => (item.$id === variables.id ? data : item));
-
-  -- useDeleteMutation :
-updateQueryFn: (oldData, data, variables) => oldData ? oldData.filter((item) => item.$id !== variables.id) : oldData,
-
-  -- useDeleteAllMutation :
-updateQueryFn: (oldData, data, variables) => oldData ? oldData.filter((item) => !variables.deleted.includes(item.$id)) : oldData,
-
-  -- Reset the toasts messages
-
-*/
 
 function useMutationWithToast({
   mutationKey,
@@ -73,7 +71,7 @@ function useMutationWithToast({
   const queryClient = useQueryClient();
   const toastId = useRef(null);
 
-  const { mutate, isPending,data } = useMutation({
+  const { mutate, isPending, data } = useMutation({
     mutationKey: [mutationKey],
     mutationFn: async (variables) => await mutationFn({ ...variables, owner: user.$id }),
 
@@ -113,7 +111,7 @@ function useMutationWithToast({
     },
   });
 
-  return { mutate, isLoading: isPending,data };
+  return { mutate, isLoading: isPending, data };
 }
 
 function useAddMutation(props) {
@@ -127,31 +125,38 @@ function useAddMutation(props) {
 
 function useUpdateMutation(props) {
   return useMutationWithToast({
-    ...props,
     mutationFn: props.updateItem,
     updateQueryFn: (oldData, variables) => {
-      return oldData
-        ? oldData.map((item) =>
-            item.$id === variables.id
-              ? {
-                  ...item,
-                  ...Object.values(variables)[1],
-                }
-              : item,
-          )
-        : oldData;
+      if (oldData) {
+        return oldData.map((item) => {
+          const updatedItem = props.isRestoring
+            ? { ...item, isTrashed: false }
+            : { ...item, ...Object.values(variables)[1] }; // This destructure the task or list...
+
+          return item.$id === variables.id ? updatedItem : item;
+        });
+      }
+      return oldData;
     },
     messages: null,
+    ...props,
   });
 }
 
 function useDeleteMutation(props) {
+  const { deletionSound } = useSelector((state) => state.settings.general.preferences);
+  const playDeleteSound = useDeleteSound();
+
   return useMutationWithToast({
     ...props,
     mutationFn: props.deleteItem,
     updateQueryFn: (oldData, variables) =>
       oldData ? oldData.filter((item) => item.$id !== variables.id) : oldData,
     messages: null,
+    onSuccess: () => {
+      props.onSuccess?.();
+      deletionSound && playDeleteSound();
+    },
   });
 }
 
@@ -250,9 +255,6 @@ export function useDeleteTask(options) {
 
 // Delete All Tasks
 export function useDeleteTasks() {
-  const { deletionSound } = useSelector((state) => state.settings.general.preferences);
-  const playDeleteSound = useDeleteSound();
-
   return useDeleteAllMutation({
     mutationKey: DELETE_TASK,
     queryKey: GET_TASKS,
@@ -262,7 +264,6 @@ export function useDeleteTasks() {
       error: 'Failed to delete the tasks.',
       loading: 'Deleting tasks...',
     },
-    onSuccess: () => deletionSound && playDeleteSound(),
   });
 }
 
@@ -396,5 +397,34 @@ export function useDeleteStickyNotes() {
       error: 'Failed to delete the sticky notes.',
       loading: 'Deleting sticky notes...',
     },
+  });
+}
+
+//* --- Trash
+
+// Tasks
+export function useRestoreTask() {
+  const queryClient = useQueryClient();
+  return useUpdateMutation({
+    mutationKey: RESTORE_TASK,
+    queryKey: [GET_TASKS, { type: 'trashed' }],
+    updateItem: restoreTask,
+    isRestoring: true,
+    onSuccess: () =>
+      queryClient.invalidateQueries({
+        queryKey: [GET_TASKS],
+      }),
+  });
+}
+export function useDeleteTaskPermanently() {
+  const queryClient = useQueryClient();
+  return useUpdateMutation({
+    mutationKey: DELETE_TASK_PERMANENTLY,
+    queryKey: [GET_TASKS, { type: 'trashed' }],
+    updateItem: deleteTaskPermanently,
+    onSuccess: () =>
+      queryClient.invalidateQueries({
+        queryKey: [GET_TASKS],
+      }),
   });
 }

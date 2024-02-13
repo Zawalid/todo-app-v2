@@ -1,6 +1,5 @@
 import { ID, Query } from 'appwrite';
 import { appWriteConfig, avatars, databases, setPermissions, storage } from './config';
-import { GiConwayLifeGlider } from 'react-icons/gi';
 
 const {
   imagesStorageId,
@@ -9,7 +8,6 @@ const {
   listsCollectionId,
   tagsCollectionId,
   stickyNotesCollectionId,
-  trashCollectionId,
 } = appWriteConfig;
 
 export async function handleUploadFile(file) {
@@ -42,18 +40,19 @@ export async function getInitialsAvatar(name) {
   }
 }
 
-export async function getAll(documentId, userId) {
-  const res = await databases.listDocuments(databaseId, documentId, [
+export async function getAll(collectionId, userId, trashed = false) {
+  const res = await databases.listDocuments(databaseId, collectionId, [
     Query.equal('owner', [userId]),
-    Query.equal('isTrashed', [false]),
+    Query.equal('isTrashed', [trashed]),
     Query.limit(300),
   ]);
   return res?.documents;
 }
 
 export async function deleteDocument(collectionId, documentId, deletePermanently) {
-  if (deletePermanently)
+  if (deletePermanently) {
     return await databases.deleteDocument(databaseId, collectionId, documentId);
+  }
   return await databases.updateDocument(databaseId, collectionId, documentId, { isTrashed: true });
 }
 
@@ -159,4 +158,39 @@ export const deleteStickyNote = async ({ id, deletePermanently }) => {
 
 export const deleteStickyNotes = async ({ deleted, deletePermanently }) => {
   deleted.forEach((id) => deleteStickyNote({ id, deletePermanently }));
+};
+
+// * ------- Trash Api ------- *//
+
+// Get trashed items
+export const getTrashedTasks = async (userId) => await getAll(tasksCollectionId, userId, true);
+export const getTrashedLists = async (userId) => await getAll(listsCollectionId, userId, true);
+export const getTrashedTags = async (userId) => await getAll(tagsCollectionId, userId, true);
+export const getTrashedStickyNotes = async (userId) =>
+  await getAll(stickyNotesCollectionId, userId, true);
+
+// Restore trashed items
+export const restoreTask = async ({ id }) => await updateTask({ id, task: { isTrashed: false } });
+export const restoreList = async ({ id }) => await updateList({ id, task: { isTrashed: false } });
+export const restoreTag = async ({ id }) => {
+  const res = await databases.updateDocument(databaseId, tagsCollectionId, id, {
+    isTrashed: false,
+  });
+  return res;
+};
+
+export const restoreStickyNote = async ({ id }) =>
+  await updateStickyNote({ id, task: { isTrashed: false } });
+
+// Delete trashed items permanently
+export const deleteTaskPermanently = async ({ id }) => {
+  await deleteTask({ id, deletePermanently: true });
+};
+export const deleteListPermanently = async ({ id }) => {
+  await deleteList({ id, deletePermanently: true });
+};
+export const deleteTagPermanently = async ({ id }) =>
+  await deleteTag({ id, deletePermanently: true });
+export const deleteStickyNotePermanently = async ({ id }) => {
+  await deleteStickyNote({ id, deletePermanently: true });
 };
