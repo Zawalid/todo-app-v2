@@ -42,14 +42,14 @@ export default function Trash({ isOpen, onClose }) {
           </button>
         </div>
       </div>
+      {
         {
-          {
-            tasks: <TrashedTasks />,
-            lists: <TrashedLists />,
-            tags: <TrashedTags />,
-            stickyNotes: <TrashedStickyNotes />,
-          }[currentTab]
-        }
+          tasks: <TrashedTasks />,
+          lists: <TrashedLists />,
+          tags: <TrashedTags />,
+          stickyNotes: <TrashedStickyNotes />,
+        }[currentTab]
+      }
     </Modal>
   );
 }

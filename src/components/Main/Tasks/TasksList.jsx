@@ -263,7 +263,6 @@ function NoTasksMessage({ message, display }) {
       <h2 className='text-center text-xl font-semibold text-text-secondary sm:text-2xl'>
         {message.noTasks}
       </h2>
-
       <p className=' font-medium text-text-tertiary'>
         {message.description || 'Add a new task to get started'}
       </p>

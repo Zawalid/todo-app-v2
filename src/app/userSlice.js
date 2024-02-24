@@ -12,11 +12,15 @@ const userSlice = createSlice({
   reducers: {
     logUserIn: (state, action) => {
       state.user = action.payload;
-      state.isAuthenticated = true;
+      localStorage.setItem('UID', action.payload.$id);
+    },
+    authenticateUser: (state, action) => {
+      state.isAuthenticated = action.payload;
     },
     logUserOut: (state) => {
       state.user = null;
       state.isAuthenticated = false;
+      localStorage.setItem('UID', null);
     },
     updateUserProfile: (state, action) => {
       state.user = { ...state.user, ...action.payload };
@@ -27,5 +31,6 @@ const userSlice = createSlice({
   },
 });
 
-export const { logUserIn, logUserOut,updateUserProfile,toggleMenu } = userSlice.actions;
+export const { logUserIn, authenticateUser, logUserOut, updateUserProfile, toggleMenu } =
+  userSlice.actions;
 export default userSlice.reducer;

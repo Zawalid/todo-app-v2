@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTrash } from '../hooks';
 import { useDispatch, useSelector } from 'react-redux';
-import { logUserIn, logUserOut, updateUserProfile } from '../app/userSlice';
+import { logUserIn, authenticateUser, logUserOut, updateUserProfile } from '../app/userSlice';
 
 const DATABASE_ID = appWriteConfig.databaseId;
 const USERS_COLLECTION_ID = appWriteConfig.usersCollectionId;
@@ -103,9 +103,21 @@ export default function UserProvider({ children }) {
         localStorage.removeItem('cookieFallback');
         return navigate('/sign-in');
       }
-      toast.error(error.message);
       dispatch(logUserOut());
     }
+  }
+
+  async function checkIsUserAuthenticated() {
+    // Check if the user is authenticated using the cookie fallback
+    const cookieFallback = localStorage.getItem('cookieFallback');
+    if (cookieFallback && !['{}', '[]', 'undefined', 'null'].includes(cookieFallback)) {
+      return true;
+    }
+    // Check if the user is authenticated using the appwrite session
+    const session = await account.get();
+    if (session) return true;
+
+    return false;
   }
 
   // ------------- Password
@@ -311,8 +323,7 @@ export default function UserProvider({ children }) {
   }
 
   useEffect(() => {
-    // if (!checkIsUserAuthenticated()) return;
-    // Get the current user
+    checkIsUserAuthenticated().then((isA) => dispatch(authenticateUser(isA)));
     getCurrentUser();
     // Verify the account
     if (searchParams.has('userId') && searchParams.has('secret') && searchParams.has('expire')) {

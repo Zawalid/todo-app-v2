@@ -40,7 +40,8 @@ export async function getInitialsAvatar(name) {
   }
 }
 
-export async function getAll(collectionId, userId, trashed = false) {
+export async function getAll(collectionId, trashed = false) {
+  const userId = localStorage.getItem('UID');
   const res = await databases.listDocuments(databaseId, collectionId, [
     Query.equal('owner', [userId]),
     Query.equal('isTrashed', [trashed]),
@@ -58,7 +59,7 @@ export async function deleteDocument(collectionId, documentId, deletePermanently
 
 //* ------- Tasks Api ------- *//
 
-export const getTasks = async (userId) => await getAll(tasksCollectionId, userId);
+export const getTasks = async () => await getAll(tasksCollectionId);
 
 export const addTask = async ({ task, owner }) => {
   const res = await databases.createDocument(
@@ -86,7 +87,7 @@ export const deleteTasks = async ({ deleted, deletePermanently }) => {
 
 //* ------- Lists Api ------- *//
 
-export const getLists = async (userId) => await getAll(listsCollectionId, userId);
+export const getLists = async () => await getAll(listsCollectionId);
 
 export const addList = async ({ list, owner }) => {
   const res = await databases.createDocument(
@@ -110,7 +111,7 @@ export const deleteList = async ({ id, deletePermanently }) => {
 
 // * ------- Tags Api ------- *//
 
-export const getTags = async (userId) => await getAll(tagsCollectionId, userId);
+export const getTags = async () => await getAll(tagsCollectionId);
 
 export const addTag = async ({ tag, owner }) => {
   const res = await databases.createDocument(
@@ -129,7 +130,7 @@ export const deleteTag = async ({ id, deletePermanently }) => {
 
 // * ------- Sticky Notes Api ------- *//
 
-export const getStickyNotes = async (userId) => await getAll(stickyNotesCollectionId, userId);
+export const getStickyNotes = async () => await getAll(stickyNotesCollectionId);
 
 export const getStickyNoteById = async (id) => {
   const res = await databases.getDocument(databaseId, stickyNotesCollectionId, id);
@@ -163,34 +164,26 @@ export const deleteStickyNotes = async ({ deleted, deletePermanently }) => {
 // * ------- Trash Api ------- *//
 
 // Get trashed items
-export const getTrashedTasks = async (userId) => await getAll(tasksCollectionId, userId, true);
-export const getTrashedLists = async (userId) => await getAll(listsCollectionId, userId, true);
-export const getTrashedTags = async (userId) => await getAll(tagsCollectionId, userId, true);
-export const getTrashedStickyNotes = async (userId) =>
-  await getAll(stickyNotesCollectionId, userId, true);
+export const getTrashedTasks = async () => getAll(tasksCollectionId, true);
+export const getTrashedLists = async () => getAll(listsCollectionId, true);
+export const getTrashedTags = async () => getAll(tagsCollectionId, true);
+export const getTrashedStickyNotes = async () => getAll(stickyNotesCollectionId, true);
 
 // Restore trashed items
-export const restoreTask = async ({ id }) => await updateTask({ id, task: { isTrashed: false } });
-export const restoreList = async ({ id }) => await updateList({ id, task: { isTrashed: false } });
+export const restoreTask = async ({ id }) => updateTask({ id, task: { isTrashed: false } });
+export const restoreList = async ({ id }) => updateList({ id, task: { isTrashed: false } });
 export const restoreTag = async ({ id }) => {
   const res = await databases.updateDocument(databaseId, tagsCollectionId, id, {
     isTrashed: false,
   });
   return res;
 };
-
 export const restoreStickyNote = async ({ id }) =>
-  await updateStickyNote({ id, task: { isTrashed: false } });
+  updateStickyNote({ id, task: { isTrashed: false } });
 
 // Delete trashed items permanently
-export const deleteTaskPermanently = async ({ id }) => {
-  await deleteTask({ id, deletePermanently: true });
-};
-export const deleteListPermanently = async ({ id }) => {
-  await deleteList({ id, deletePermanently: true });
-};
-export const deleteTagPermanently = async ({ id }) =>
-  await deleteTag({ id, deletePermanently: true });
-export const deleteStickyNotePermanently = async ({ id }) => {
-  await deleteStickyNote({ id, deletePermanently: true });
-};
+export const deleteTaskPermanently = async ({ id }) => deleteTask({ id, deletePermanently: true });
+export const deleteListPermanently = async ({ id }) => deleteList({ id, deletePermanently: true });
+export const deleteTagPermanently = async ({ id }) => deleteTag({ id, deletePermanently: true });
+export const deleteStickyNotePermanently = async ({ id }) =>
+  deleteStickyNote({ id, deletePermanently: true });

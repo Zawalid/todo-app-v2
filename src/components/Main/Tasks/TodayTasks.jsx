@@ -12,6 +12,7 @@ export default function TodayTasks() {
   }, []);
 
   if (isError) {
+    console.log(error)
     return <p>{error.message}</p>;
   }
 

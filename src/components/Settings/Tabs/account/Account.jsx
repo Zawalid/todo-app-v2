@@ -13,7 +13,7 @@ import { useSelector } from 'react-redux';
 export default function Account() {
   const { handleUpdateProfile } = useUser();
   const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
-  const user = useSelector((state) => state.user.user);
+  const user = useSelector((state) => state.user.user) || {};
   const {
     control,
     isUpdated,

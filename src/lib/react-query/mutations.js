@@ -56,6 +56,12 @@ import deleteSoundFile from '../../assets/deleted.mp3';
 const completedSound = new Audio(completedSoundFile);
 const deletedSound = new Audio(deleteSoundFile);
 
+function useDeleteSound() {
+  const { deletionSound } = useSelector((state) => state.settings.general.preferences);
+  const playDeleteSound = () => deletionSound && deletedSound.play();
+  return playDeleteSound;
+}
+
 function useMutationWithToast({
   mutationKey,
   queryKey,
@@ -67,13 +73,13 @@ function useMutationWithToast({
   onError,
   isOptimistic = true,
 }) {
-  const user = useSelector((state) => state.user.user);
   const queryClient = useQueryClient();
   const toastId = useRef(null);
+  const owner = localStorage.getItem('UID');
 
   const { mutate, isPending, data } = useMutation({
     mutationKey: [mutationKey],
-    mutationFn: async (variables) => await mutationFn({ ...variables, owner: user.$id }),
+    mutationFn: async (variables) => await mutationFn({ ...variables, owner }),
 
     onMutate: async (variables) => {
       if (onMutate) onMutate(variables);
@@ -154,8 +160,8 @@ function useDeleteMutation(props) {
       oldData ? oldData.filter((item) => item.$id !== variables.id) : oldData,
     messages: null,
     onSuccess: () => {
-      props.onSuccess?.();
       deletionSound && playDeleteSound();
+      props.onSuccess?.();
     },
   });
 }
@@ -171,10 +177,18 @@ function useDeleteAllMutation(props) {
   });
 }
 
-function useDeleteSound() {
-  const { deletionSound } = useSelector((state) => state.settings.general.preferences);
-  const playDeleteSound = () => deletionSound && deletedSound.play();
-  return playDeleteSound;
+function useRestoreMutation({ mutationKey, queryKey, restoreItem }) {
+  const queryClient = useQueryClient();
+  return useUpdateMutation({
+    mutationKey,
+    queryKey: [queryKey, { type: 'trashed' }],
+    updateItem: restoreItem,
+    isRestoring: true,
+    onSuccess: () =>
+      queryClient.invalidateQueries({
+        queryKey: [queryKey],
+      }),
+  });
 }
 
 //* --- Tasks
@@ -236,9 +250,6 @@ export function useCompleteTask() {
 
 // Delete task
 export function useDeleteTask(options) {
-  const { deletionSound } = useSelector((state) => state.settings.general.preferences);
-  const playDeleteSound = useDeleteSound();
-
   return useDeleteMutation({
     mutationKey: DELETE_TASK,
     queryKey: GET_TASKS,
@@ -248,7 +259,6 @@ export function useDeleteTask(options) {
       error: 'Failed to delete the task.',
       loading: 'Deleting task...',
     },
-    onSuccess: () => deletionSound && playDeleteSound(),
     ...options,
   });
 }
@@ -402,26 +412,43 @@ export function useDeleteStickyNotes() {
 
 //* --- Trash
 
-// Tasks
+// Restore element
 export function useRestoreTask() {
-  const queryClient = useQueryClient();
-  return useUpdateMutation({
+  return useRestoreMutation({
     mutationKey: RESTORE_TASK,
-    queryKey: [GET_TASKS, { type: 'trashed' }],
-    updateItem: restoreTask,
-    isRestoring: true,
-    onSuccess: () =>
-      queryClient.invalidateQueries({
-        queryKey: [GET_TASKS],
-      }),
+    queryKey: GET_TASKS,
+    restoreItem: restoreTask,
   });
 }
+export function useRestoreList() {
+  return useRestoreMutation({
+    mutationKey: RESTORE_LIST,
+    queryKey: GET_LISTS,
+    restoreItem: restoreList,
+  });
+}
+export function useRestoreTags() {
+  return useRestoreMutation({
+    mutationKey: RESTORE_LIST,
+    queryKey: GET_LISTS,
+    restoreItem: restoreTag,
+  });
+}
+export function useRestoreStickyNotes() {
+  return useRestoreMutation({
+    mutationKey: RESTORE_STICKY_NOTE,
+    queryKey: GET_STICKY_NOTES,
+    restoreItem: restoreStickyNote,
+  });
+}
+
+// Delete element
 export function useDeleteTaskPermanently() {
   const queryClient = useQueryClient();
-  return useUpdateMutation({
+  return useDeleteMutation({
     mutationKey: DELETE_TASK_PERMANENTLY,
     queryKey: [GET_TASKS, { type: 'trashed' }],
-    updateItem: deleteTaskPermanently,
+    deleteItem: deleteTaskPermanently,
     onSuccess: () =>
       queryClient.invalidateQueries({
         queryKey: [GET_TASKS],

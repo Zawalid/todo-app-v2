@@ -18,11 +18,9 @@ import { checkIfToday, checkIfTomorrow, isDateInCurrentWeek } from '../../utils/
 
 // All tasks
 export function useTasks() {
-  const user = useSelector((state) => state.user.user);
-
   const { data, isPending, isError, error } = useQuery({
     queryKey: [GET_TASKS],
-    queryFn: async () => await getTasks(user.$id),
+    queryFn: async () => await getTasks(),
   });
 
   return { tasks: data, isLoading: isPending, isError, error };
@@ -76,11 +74,9 @@ export function useListTasks(listId) {
 
 // All lists
 export function useLists() {
-  const user = useSelector((state) => state.user.user);
-
   const { data, isPending, isError, error } = useQuery({
     queryKey: [GET_LISTS],
-    queryFn: async () => await getLists(user.$id),
+    queryFn: async () => await getLists(),
   });
 
   return { lists: data, isLoading: isPending, isError, error };
@@ -90,11 +86,9 @@ export function useLists() {
 
 // All tags
 export function useTags() {
-  const user = useSelector((state) => state.user.user);
-
   const { data, isPending, isError, error } = useQuery({
     queryKey: [GET_TAGS],
-    queryFn: async () => await getTags(user.$id),
+    queryFn: async () => await getTags(),
   });
 
   return { tags: data, isLoading: isPending, isError, error };
@@ -104,11 +98,9 @@ export function useTags() {
 
 // All sticky notes
 export function useStickyNotes() {
-  const user = useSelector((state) => state.user.user);
-
   const { data, isPending, isError, error } = useQuery({
     queryKey: [GET_STICKY_NOTES],
-    queryFn: async () => await getStickyNotes(user.$id),
+    queryFn: async () => await getStickyNotes(),
   });
 
   return { stickyNotes: data, isLoading: isPending, isError, error };
@@ -143,44 +135,36 @@ export function useStickyNoteById(stickyNoteId) {
 //* Trash Queries
 
 export function useTrashedTasks() {
-  const user = useSelector((state) => state.user.user);
-
   const { data, isPending, isError, error } = useQuery({
     queryKey: [GET_TASKS, { type: 'trashed' }],
-    queryFn: async () => await getTrashedTasks(user.$id),
+    queryFn: async () => await getTrashedTasks(),
   });
 
   return { trashedTasks: data, isLoading: isPending, isError, error };
 }
 
 export function useTrashedLists() {
-  const user = useSelector((state) => state.user.user);
-
   const { data, isPending, isError, error } = useQuery({
     queryKey: [GET_LISTS, { type: 'trashed' }],
-    queryFn: async () => await getTrashedLists(user.$id),
+    queryFn: async () => await getTrashedLists(),
   });
 
   return { trashedLists: data, isLoading: isPending, isError, error };
 }
 
 export function useTrashedTags() {
-  const user = useSelector((state) => state.user.user);
-
   const { data, isPending, isError, error } = useQuery({
     queryKey: [GET_TAGS, { type: 'trashed' }],
-    queryFn: async () => await getTrashedTags(user.$id),
+    queryFn: async () => await getTrashedTags(),
   });
 
   return { trashedTags: data, isLoading: isPending, isError, error };
 }
 
 export function useTrashedStickyNotes() {
-  const user = useSelector((state) => state.user.user);
-
   const { data, isPending, isError, error } = useQuery({
     queryKey: [GET_STICKY_NOTES, { type: 'trashed' }],
-    queryFn: async () => await getTrashedStickyNotes(user.$id),
+    queryFn: async () => await getTrashedStickyNotes(),
   });
 
   return { trashedStickyNotes: data, isLoading: isPending, isError, error };

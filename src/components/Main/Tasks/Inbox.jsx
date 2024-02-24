@@ -12,6 +12,7 @@ export default function Inbox() {
   }, []);
 
   if (isError) {
+    console.log(error)
     return <p>{error.message}</p>;
   }
 
