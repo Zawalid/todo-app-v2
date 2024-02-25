@@ -12,6 +12,7 @@ const DEFAULT_OPTIONS = {
 import { Button } from './Button';
 import { PiWarningFill } from 'react-icons/pi';
 import { createPortal } from 'react-dom';
+import { useSelector } from 'react-redux';
 
 export const ModalContext = createContext();
 
@@ -19,9 +20,12 @@ export function ModalProvider({ children }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [options, setOptions] = useState(DEFAULT_OPTIONS);
+  const { deleteConfirmation, deletePermanently } = useSelector(
+    (state) => state.settings.general.preferences,
+  );
 
   const openModal = (newOptions) => {
-    setIsModalOpen(true);
+    deleteConfirmation || newOptions.notDeletion ? setIsModalOpen(true) : newOptions.onConfirm(deletePermanently);
     setOptions({ ...options, ...newOptions });
   };
   const closeModal = () => {

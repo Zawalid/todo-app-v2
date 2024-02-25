@@ -118,6 +118,7 @@ function SignOutButton() {
           showCheckbox: false,
           confirmText: 'Sign Out',
           icon: <PiSignOutBold />,
+          notDeletion: true,
         })
       }
     >

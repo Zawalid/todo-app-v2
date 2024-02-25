@@ -8,7 +8,9 @@ import { useListTasks, useLists } from '../../../lib/react-query/queries';
 export default function ListTasks() {
   const { lists } = useLists();
   const { listName } = useParams();
-  const listId = lists?.find((list) => list.title === listName?.replace('%20', ' '))?.$id;
+  const listId = lists?.find(
+    (list) => list.title.trim() === listName?.replace('%20', ' ').trim(),
+  )?.$id;
   const listTitle = listName?.replace('%20', ' ');
   const { listTasks, isLoading, isError, error } = useListTasks(listId);
 

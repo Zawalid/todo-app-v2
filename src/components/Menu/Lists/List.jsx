@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { NavLink, useHref, useNavigate } from 'react-router-dom';
+import { NavLink, useHref } from 'react-router-dom';
 import { ListAction } from './ListAction';
 import { useModal } from '../../../hooks/useModal';
 import { PiCheckCircle } from 'react-icons/pi';
@@ -16,8 +16,7 @@ export function List({ list }) {
   const { newTitle, setNewTitle, error } = useListTitle($id, title);
 
   const newListTitle = useRef(null);
-  const navigate = useNavigate();
-  const path = useHref().split('app/')[1];
+  const path = useHref().split('/app/lists/')[1];
 
   const { mutate: deleteList } = useDeleteList();
   const { mutate: updateList } = useUpdateList();
@@ -28,9 +27,11 @@ export function List({ list }) {
     e.preventDefault();
     if (error || newTitle === title) return;
     setIsRenameInputOpen(false);
-    updateList({ id: $id, list: { title: newTitle } });
-    // Change the path to the new title if the renamed list is the active one
-    path?.replace(/%20/g, ' ') === title && navigate(newTitle);
+    updateList({
+      id: $id,
+      list: { title: newTitle },
+      isCurrentList: path?.replace(/%20/g, ' ').trim() === title.trim(),
+    });
   }
   return (
     <>
@@ -71,7 +72,7 @@ export function List({ list }) {
         />
         <form
           className={
-            'absolute border border-border left-0 top-full z-[5] w-[90%] py-1 items-center overflow-hidden rounded-lg bg-background-primary px-3 shadow-[-4px_4px_1px_rgb(0,0,0,0.16)] ' +
+            'absolute left-0 top-full z-[5] w-[90%] items-center overflow-hidden rounded-lg border border-border bg-background-primary px-3 py-1 shadow-[-4px_4px_1px_rgb(0,0,0,0.16)] ' +
             (isRenameInputOpen ? 'flex' : 'hidden')
           }
           onSubmit={handleRename}
@@ -90,11 +91,11 @@ export function List({ list }) {
           {error ? (
             <CustomTippy content={error}>
               <span>
-                <FaRegCircleXmark className='text-red-500 text-lg' />
+                <FaRegCircleXmark className='text-lg text-red-500' />
               </span>
             </CustomTippy>
           ) : (
-            <PiCheckCircle className='text-green-500 text-xl' />
+            <PiCheckCircle className='text-xl text-green-500' />
           )}
         </form>
       </li>

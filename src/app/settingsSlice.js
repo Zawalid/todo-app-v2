@@ -7,6 +7,8 @@ const DEFAULT_SETTINGS = {
       deletionSound: true,
       animation: true,
       defaultHomeView: 'inbox',
+      deleteConfirmation: true,
+      deletePermanently: false,
     },
     dateAndTime: {
       dateFormat: 'MM/dd/yyyy',

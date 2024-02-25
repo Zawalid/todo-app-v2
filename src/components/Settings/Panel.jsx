@@ -66,6 +66,7 @@ export function Panel({ isOpen, onClose, currentTab, setCurrentTab }) {
               onConfirm: () => dispatch(resetSettings()),
               confirmText: 'Reset',
               showCheckbox: false,
+              notDeletion: true,
             })
           }
         >

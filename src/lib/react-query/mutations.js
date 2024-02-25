@@ -53,6 +53,7 @@ import {
 
 import completedSoundFile from '../../assets/completed.mp3';
 import deleteSoundFile from '../../assets/deleted.mp3';
+import { useNavigate } from 'react-router-dom';
 const completedSound = new Audio(completedSoundFile);
 const deletedSound = new Audio(deleteSoundFile);
 
@@ -88,6 +89,7 @@ function useMutationWithToast({
       }
 
       if (isOptimistic) {
+        console.log('isOptimistic')
         await queryClient.cancelQueries({ queryKey: [queryClient] });
         const oldData = queryClient.getQueryData([queryKey]);
         queryClient.setQueryData([queryKey], (oldData) => updateQueryFn(oldData, variables));
@@ -114,6 +116,7 @@ function useMutationWithToast({
           },
         });
       }
+      console.log(error)
     },
   });
 
@@ -316,6 +319,8 @@ export function useAddList() {
 
 // Update list
 export function useUpdateList() {
+const navigate = useNavigate()
+
   return useUpdateMutation({
     mutationKey: UPDATE_LIST,
     queryKey: GET_LISTS,
@@ -325,6 +330,11 @@ export function useUpdateList() {
       error: 'Failed to update the list.',
       loading: 'Updating list...',
     },
+    onSuccess : (data,variables) => {
+      if (variables.isCurrentList) {
+        navigate(`lists/${data.title}`);
+      }
+    }
   });
 }
 
