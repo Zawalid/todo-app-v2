@@ -451,8 +451,8 @@ export function useRestoreList() {
 }
 export function useRestoreTag() {
   return useRestoreMutation({
-    mutationKey: RESTORE_LIST,
-    queryKey: GET_LISTS,
+    mutationKey: RESTORE_TAG,
+    queryKey: GET_TAGS,
     restoreItem: restoreTag,
   });
 }
