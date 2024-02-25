@@ -191,6 +191,28 @@ function useRestoreMutation({ mutationKey, queryKey, restoreItem }) {
   });
 }
 
+function useDeletePermanentlyMutation(mutationKey, deleteItem, queryKey) {
+  const queryClient = useQueryClient();
+  return useDeleteMutation({
+    mutationKey,
+    queryKey: [queryKey, { type: 'trashed' }],
+    deleteItem,
+    onSuccess: () => {
+      /* 
+      The Problem is that the queryKey is  being invalidated after the mutation is successful but kind of instantly so the re-fetched data is not updated 
+      ! A Bad Solution !
+      */
+      setTimeout(
+        () =>
+          queryClient.invalidateQueries({
+            queryKey: [queryKey],
+          }),
+        1000,
+      );
+    },
+  });
+}
+
 //* --- Tasks
 // Add & Duplicate task
 export function useAddTask({ isDuplicate } = {}) {
@@ -427,14 +449,14 @@ export function useRestoreList() {
     restoreItem: restoreList,
   });
 }
-export function useRestoreTags() {
+export function useRestoreTag() {
   return useRestoreMutation({
     mutationKey: RESTORE_LIST,
     queryKey: GET_LISTS,
     restoreItem: restoreTag,
   });
 }
-export function useRestoreStickyNotes() {
+export function useRestoreStickyNote() {
   return useRestoreMutation({
     mutationKey: RESTORE_STICKY_NOTE,
     queryKey: GET_STICKY_NOTES,
@@ -444,14 +466,21 @@ export function useRestoreStickyNotes() {
 
 // Delete element
 export function useDeleteTaskPermanently() {
-  const queryClient = useQueryClient();
-  return useDeleteMutation({
-    mutationKey: DELETE_TASK_PERMANENTLY,
-    queryKey: [GET_TASKS, { type: 'trashed' }],
-    deleteItem: deleteTaskPermanently,
-    onSuccess: () =>
-      queryClient.invalidateQueries({
-        queryKey: [GET_TASKS],
-      }),
-  });
+  return useDeletePermanentlyMutation(DELETE_TASK_PERMANENTLY, deleteTaskPermanently, GET_TASKS);
+}
+
+export function useDeleteListPermanently() {
+  return useDeletePermanentlyMutation(DELETE_LIST_PERMANENTLY, deleteListPermanently, GET_LISTS);
+}
+
+export function useDeleteTagPermanently() {
+  return useDeletePermanentlyMutation(DELETE_TAG_PERMANENTLY, deleteTagPermanently, GET_TAGS);
+}
+
+export function useDeleteStickyNotePermanently() {
+  return useDeletePermanentlyMutation(
+    DELETE_STICKY_NOTE_PERMANENTLY,
+    deleteStickyNotePermanently,
+    GET_STICKY_NOTES,
+  );
 }

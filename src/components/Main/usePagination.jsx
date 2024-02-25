@@ -75,6 +75,7 @@ export function usePagination(itemsLength) {
             {rowsPerPageOptions.map((option) => (
               <DropDown.Button
                 key={option}
+                className='justify-center'
                 size='small'
                 onClick={() => dispatch({ type: 'CHANGE_ROWS_PER_PAGE', payload: option })}
                 isCurrent={option === rowsPerPage}

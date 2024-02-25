@@ -10,7 +10,10 @@ export function Item({ item, onDelete, onRestore }) {
       </span>
       <div className='flex'>
         <CustomTippy content='Restore'>
-          <button className='icon-button not-active' onClick={() => onRestore({ id: item.$id })}>
+          <button
+            className='icon-button not-active'
+            onClick={() => onRestore({ id: item.$id, title: item.title })}
+          >
             <TbRestore />
           </button>
         </CustomTippy>

@@ -135,12 +135,12 @@ export function useStickyNoteById(stickyNoteId) {
 //* Trash Queries
 
 export function useTrashedTasks() {
-  const { data, isPending, isError, error } = useQuery({
+  const { data, isPending, isError, error, refetch } = useQuery({
     queryKey: [GET_TASKS, { type: 'trashed' }],
     queryFn: async () => await getTrashedTasks(),
   });
 
-  return { trashedTasks: data, isLoading: isPending, isError, error };
+  return { trashedTasks: data, isLoading: isPending, isError, error, refetch };
 }
 
 export function useTrashedLists() {

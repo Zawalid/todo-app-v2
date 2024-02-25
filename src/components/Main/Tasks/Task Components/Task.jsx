@@ -114,7 +114,7 @@ export function Task({
     <>
       <button
         onClick={() => isSelecting ? onSelect() : navigate($id)}
-        className={`grid min-h-[49px] w-full select-none grid-cols-[20px_auto] items-center gap-3 rounded-lg border border-border px-3 py-2 text-start transition-transform  duration-300 hover:translate-y-1 sm:px-5 ${
+        className={`grid min-h-[49px] focus:outline-none  w-full select-none grid-cols-[20px_auto] items-center gap-3 rounded-lg border border-border px-3 py-2 text-start transition-transform  duration-300 focus:translate-y-1 hover:translate-y-1 sm:px-5 ${
           checked ? 'bg-background-tertiary ' : ''
         } ${isLoading ? 'opacity-50' : ''}`}
         {...bind()}

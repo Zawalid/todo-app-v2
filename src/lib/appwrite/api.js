@@ -171,7 +171,7 @@ export const getTrashedStickyNotes = async () => getAll(stickyNotesCollectionId,
 
 // Restore trashed items
 export const restoreTask = async ({ id }) => updateTask({ id, task: { isTrashed: false } });
-export const restoreList = async ({ id }) => updateList({ id, task: { isTrashed: false } });
+export const restoreList = async ({ id }) => updateList({ id, list: { isTrashed: false } });
 export const restoreTag = async ({ id }) => {
   const res = await databases.updateDocument(databaseId, tagsCollectionId, id, {
     isTrashed: false,
@@ -179,7 +179,7 @@ export const restoreTag = async ({ id }) => {
   return res;
 };
 export const restoreStickyNote = async ({ id }) =>
-  updateStickyNote({ id, task: { isTrashed: false } });
+  updateStickyNote({ id, stickyNote: { isTrashed: false } });
 
 // Delete trashed items permanently
 export const deleteTaskPermanently = async ({ id }) => deleteTask({ id, deletePermanently: true });

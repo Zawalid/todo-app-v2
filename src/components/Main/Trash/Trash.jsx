@@ -1,26 +1,15 @@
 import { Tabs } from '../../Common/Tabs';
-import { Actions } from './Actions';
 import Modal from '../../Common/Modal';
 import { PiX } from 'react-icons/pi';
 import { TrashedTasks, TrashedLists, TrashedTags, TrashedStickyNotes } from './Items';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function Trash({ isOpen, onClose }) {
   const [currentTab, setCurrentTab] = useState('tasks');
 
-  // const onRestore = async (item) => {
-  //   if (currentTab === 'lists') {
-  //     // If a list with the same title already exists, don't restore the list
-  //     const listTitle = JSON.parse(item).title;
-  //     const isListTitleTaken = lists?.some((list) => list.title === listTitle);
-  //     if (isListTitleTaken) {
-  //       toast.error('Failed to restore list . A list with the same title already exists.');
-  //       return;
-  //     }
-  //   }
-  //   // await handleRestoreFromTrash(currentTab, JSON.parse(item).id);
-  //   // handleRestoreElement(currentTab);
-  // };
+  useEffect(() => {
+    setCurrentTab('tasks');
+  }, [isOpen]);
 
   return (
     <Modal
@@ -36,7 +25,6 @@ export default function Trash({ isOpen, onClose }) {
           className='gap-5 sm:gap-8'
         />
         <div className='flex gap-2'>
-          <Actions />
           <button className='icon-button not-active small' onClick={onClose}>
             <PiX />
           </button>
@@ -44,7 +32,7 @@ export default function Trash({ isOpen, onClose }) {
       </div>
       {
         {
-          tasks: <TrashedTasks />,
+          tasks: <TrashedTasks isOpen={isOpen} />,
           lists: <TrashedLists />,
           tags: <TrashedTags />,
           stickyNotes: <TrashedStickyNotes />,
