@@ -21,6 +21,7 @@ const DEFAULT_SETTINGS = {
       weeklyDueDate: 'Sunday',
       autoDeleteCompletedTasks: false,
       deletePermanently: false,
+      deleteTasksWithList : false,
       taskDetailLevel: ['dueDate', 'list', 'priority', 'subtasks', 'tags'],
     },
     stickyNotes: {

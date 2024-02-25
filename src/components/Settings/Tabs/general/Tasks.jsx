@@ -122,6 +122,17 @@ export function Tasks({ control, setValue }) {
         </div>
         <div className='setting'>
           <div>
+            <h4>Delete Associated Tasks</h4>
+            <p>Automatically delete all tasks associated with a list when the list is deleted.</p>
+          </div>
+          <Controller
+            control={control}
+            name='tasks.deleteTasksWithList'
+            render={({ field }) => <Switch {...field} checked={field.value} />}
+          />
+        </div>
+        <div className='setting'>
+          <div>
             <h4>Task Detail Level</h4>
             <p>Choose the amount of detail displayed for each task.</p>
           </div>

@@ -4,22 +4,26 @@ import { ListAction } from './ListAction';
 import { useModal } from '../../../hooks/useModal';
 import { PiCheckCircle } from 'react-icons/pi';
 import { FaRegCircleXmark } from 'react-icons/fa6';
-import { useListTasks } from '../../../lib/react-query/queries';
-import { useDeleteList, useUpdateList } from '../../../lib/react-query/mutations';
+import { useListTasks, useTasks } from '../../../lib/react-query/queries';
+import { useDeleteList, useDeleteTasks, useUpdateList } from '../../../lib/react-query/mutations';
 import CustomTippy from '../../Common/CustomTippy';
 import { useListTitle } from '../../../hooks/useListTitle';
+import { useSelector } from 'react-redux';
 
 export function List({ list }) {
   const { $id, title, color } = list;
   const [listColor, setListColor] = useState(color);
   const [isRenameInputOpen, setIsRenameInputOpen] = useState(false);
   const { newTitle, setNewTitle, error } = useListTitle($id, title);
+  const { tasks } = useTasks();
+  const { deleteTasksWithList } = useSelector((state) => state.settings.general.tasks);
 
   const newListTitle = useRef(null);
   const path = useHref().split('/app/lists/')[1];
 
   const { mutate: deleteList } = useDeleteList();
   const { mutate: updateList } = useUpdateList();
+  const { mutate: deleteAllTasks } = useDeleteTasks();
   const { listTasks } = useListTasks($id);
   const { openModal: confirmDelete } = useModal();
 
@@ -57,7 +61,17 @@ export function List({ list }) {
             confirmDelete({
               title: 'Delete List',
               message: `Are you sure you want to delete this list ?`,
-              onConfirm: async (deletePermanently) => deleteList({ id: $id, deletePermanently }),
+              onConfirm: async (deletePermanently) => {
+                deleteList({ id: $id, deletePermanently });
+                // To delete all the tasks of the deleted list
+                if (!deleteTasksWithList) return;
+                const tasksToDelete = tasks.filter((task) => task.listId === $id);
+                if (tasksToDelete.length === 0) return;
+                deleteAllTasks({
+                  deleted: tasksToDelete.map((task) => task.$id),
+                  deletePermanently,
+                });
+              },
             })
           }
           onChangeColor={(color) => {

@@ -31,6 +31,7 @@ export default function TasksList({ dueDate, listId, tasks, message, isOnlyCompl
   const { Pagination, currentPage, rowsPerPage } = usePagination(filteredTasks.length);
   const { openModal: confirmDelete } = useModal();
   const { mutate: deleteAllTasks } = useDeleteTasks();
+  
 
   const { isSelecting, setIsSelecting, setIsDeleteMultipleModalOpen, Modal } = useDeleteMultiple({
     selectedItems: selectedTasks,
