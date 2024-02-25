@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { useUser } from '../../hooks/';
+import { useUser } from '../../hooks/useUser';
 import { AuthLink } from './AuthLink';
 import { Button } from '../../components/Common/Button';
 import { PasswordInput } from '../../components/Common/PasswordInput';

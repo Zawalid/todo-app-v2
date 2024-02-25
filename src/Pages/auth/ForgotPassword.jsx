@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../../components/Common/Button';
 import { InputField } from '../../components/Common/InputField';
-import { useUser } from '../../hooks';
+import { useUser } from '../../hooks/useUser';
 import { IoChevronBack } from 'react-icons/io5';
 
 export default function ForgotPassword() {

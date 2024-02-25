@@ -4,7 +4,6 @@ import { handleDeleteFile, handleUploadFile } from '../lib/appwrite/api';
 import { ID, Query } from 'appwrite';
 import { toast } from 'sonner';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useTrash } from '../hooks';
 import { useDispatch, useSelector } from 'react-redux';
 import { logUserIn, authenticateUser, logUserOut, updateUserProfile } from '../app/userSlice';
 
@@ -17,7 +16,6 @@ export default function UserProvider({ children }) {
   const user = useSelector((state) => state.user.user);
   const [isLoading, setIsLoading] = useState(false);
   const [searchParams] = useSearchParams();
-  const { createTrash } = useTrash();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -31,7 +29,6 @@ export default function UserProvider({ children }) {
         { email: user.email, name: user.name, avatar: avatarUrl, accountID: newAccount.$id },
         newAccount.$id,
       );
-      await createTrash(user);
       return newAccount;
     } catch (err) {
       toast.error(getErrorMessage(err));
@@ -114,9 +111,10 @@ export default function UserProvider({ children }) {
       return true;
     }
     // Check if the user is authenticated using the appwrite session
-    const session = await account.get();
-    if (session) return true;
-
+    try {
+      const session = await account.get();
+      if (session) return true;
+    } catch (e) {console.log(null)}
     return false;
   }
 

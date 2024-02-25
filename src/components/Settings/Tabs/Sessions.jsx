@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useUser } from '../../../hooks';
+import { useUser } from '../../../hooks/useUser';
 import { Tab } from './Tab';
 import { useModal } from '../../../hooks/useModal';
 import { Button } from '../../Common/Button';

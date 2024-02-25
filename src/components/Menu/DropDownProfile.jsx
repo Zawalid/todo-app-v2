@@ -7,10 +7,12 @@ import {
   PiTrashLight,
 } from 'react-icons/pi';
 import { IoChevronDownOutline, IoSyncOutline } from 'react-icons/io5';
-import { useUser, useFetchAllElements, useModal } from '../../hooks';
+import { useUser } from '../../hooks/useUser';
+import { useModal } from '../../hooks/useModal';
 import { DropDown } from '../Common/DropDown';
 import { useDispatch, useSelector } from 'react-redux';
 import { changeThemeMode } from '../../app/settingsSlice';
+import { useIsFetching, useQueryClient } from '@tanstack/react-query';
 
 export function DropDownProfile({ setIsSettingsOpen, setIsTrashOpen }) {
   return (
@@ -91,12 +93,13 @@ function ThemeToggler() {
 }
 
 function SyncButton() {
-  const { handleFetchAllElements, isLoading } = useFetchAllElements();
+  const queryClient = useQueryClient();
+  const isFetching = useIsFetching();
 
   return (
-    <DropDown.Button onClick={handleFetchAllElements}>
-      <IoSyncOutline className={isLoading ? 'animate-spin' : ''} />
-      <span>{isLoading ? 'Syncing...' : 'Sync'}</span>
+    <DropDown.Button onClick={() => queryClient.invalidateQueries()}>
+      <IoSyncOutline className={isFetching ? 'animate-spin' : ''} />
+      <span>{isFetching ? 'Syncing...' : 'Sync'}</span>
     </DropDown.Button>
   );
 }

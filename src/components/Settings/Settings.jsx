@@ -3,7 +3,7 @@ import { Content } from './Content';
 import { Panel } from './Panel';
 import Modal from '../Common/Modal';
 import { PiArrowRight, PiX } from 'react-icons/pi';
-import { useUser } from '../../hooks';
+import { useUser } from '../../hooks/useUser';
 import { useSelector } from 'react-redux';
 
 export default function Settings({ isOpen, onClose }) {

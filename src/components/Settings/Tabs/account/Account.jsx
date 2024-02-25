@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { useUser } from '../../../../hooks';
+import { useUser } from '../../../../hooks/useUser';
 import { UploadImage } from './UploadImage';
 import { UserVerificationModal } from '../../UserVerificationModal';
 import { InputField } from '../../../Common/InputField';
