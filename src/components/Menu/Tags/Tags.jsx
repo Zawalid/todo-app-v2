@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { Tag } from './Tag';
 import { AddNewTag } from './AddNewTag';
-import { useTags } from '../../../hooks/useTags';
-import { TagsSkeleton } from '../../Skeletons';
 import { TABS } from '../TabsList';
 import { useAutoAnimate } from '../../../hooks/useAutoAnimate';
+import { TagsSkeleton } from '../../Skeletons';
+import { useTags } from '../../../lib/react-query/queries';
 
 export function Tags() {
-  const { tags, isTagsLoading } = useTags();
+  const { tags, isLoading } = useTags();
   const [isAddNewTagOpen, setIsAddNewTagOpen] = useState(false);
   const addNewTagContainer = useRef(null);
   const addNewTagToggler = useRef(null);
@@ -37,7 +37,7 @@ export function Tags() {
         <span className=' text-lg text-text-tertiary'>{TABS.tags.icon}</span>
         <h4 className='font-medium text-text-secondary'>Tags</h4>
       </div>{' '}
-      {isTagsLoading ? (
+      {isLoading ? (
         <TagsSkeleton />
       ) : (
         <>
@@ -56,7 +56,7 @@ export function Tags() {
               + Add Tag
             </li>
           </ul>
-          {isAddNewTagOpen && <AddNewTag reference={addNewTagContainer} isOpen={isAddNewTagOpen} />}
+          {isAddNewTagOpen && <AddNewTag reference={addNewTagContainer} onClose={() => setIsAddNewTagOpen(false)} />}
         </>
       )}
     </div>

@@ -1,17 +1,18 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useTasks, useStickyNotes } from '../../../hooks/';
 import { Task } from '../Tasks/Task Components/Task';
 import { StickyNote } from '../Sticky Wall/StickyNote';
 import { Tabs } from '../../Common/Tabs';
 import { Title } from '../Title';
 import noResults from '../../../assets/no_result.png';
 import { useAutoAnimate } from '../../../hooks/useAutoAnimate';
+import { useStickyNotes, useTasks, useUpcomingTasks } from '../../../lib/react-query/queries';
 
 export default function SearchResults() {
   const [currentTab, setCurrentTab] = useState('all');
   const { searchQuery } = useParams();
-  const { tasks, todayTasks, upcomingTasks } = useTasks();
+  const { tasks } = useTasks();
+  const { todayTasks, upcomingTasks } = useUpcomingTasks();
   const { stickyNotes } = useStickyNotes();
   const navigate = useNavigate();
 
@@ -31,7 +32,7 @@ export default function SearchResults() {
     stickyWall: stickyNotes,
   };
 
-  const searchResults = sections[currentTab].filter((result) =>
+  const searchResults = sections[currentTab]?.filter((result) =>
     `${result.title ?? ''} ${result[currentTab === 'sticky-wall' ? 'content' : 'note'] ?? ''}`
       .toLowerCase()
       .includes(searchQuery?.toLowerCase()),
@@ -44,7 +45,7 @@ export default function SearchResults() {
 
   return (
     <>
-      <Title title='Results' count={searchResults.length} />
+      <Title title='Results' count={searchResults?.length} />
       <div className='relative flex h-full flex-col overflow-auto p-4' ref={parent}>
         <Tabs
           tabs={['All', 'Today', 'Upcoming', 'Sticky Wall']}
@@ -52,10 +53,10 @@ export default function SearchResults() {
           setCurrentTab={setCurrentTab}
         />
 
-        {searchResults.length > 0 && (
+        {searchResults?.length > 0 && (
           <Results searchResults={searchResults} currentTab={currentTab} />
         )}
-        {searchResults.length === 0 && <NoResults />}
+        {searchResults?.length === 0 && <NoResults />}
       </div>
     </>
   );

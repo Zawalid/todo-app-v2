@@ -26,25 +26,25 @@ export default function TaskActions({
       <div>
         <button className='menu_element w-full justify-items-start' onClick={onCopy}>
           <IoCopyOutline />
-          <span className='font-semibold text-text-secondary'>Copy to clipboard</span>
+          <span className='font-medium text-text-secondary'>Copy to clipboard</span>
         </button>
         <button className='menu_element w-full justify-items-start' onClick={onDuplicate}>
           <IoDuplicateOutline />
-          <span className='font-semibold text-text-secondary'>Duplicate Task</span>
+          <span className='font-medium text-text-secondary'>Duplicate Task</span>
         </button>
         <button
           className='menu_element w-full justify-items-start'
           onClick={() => setListSelectionOpen(true)}
         >
-          <PiSignOut /> <span className='font-semibold text-text-secondary'>Move Task To</span>
+          <PiSignOut /> <span className='font-medium text-text-secondary'>Move Task To</span>
         </button>
         <button
           className='menu_element trash w-full justify-items-start text-red-500
-           hover:bg-red-500 hover:text-white'
+           hover:bg-red-500 hover:text-white group'
           onClick={onDelete}
         >
-          <PiTrash className='text-red-500' />
-          <span className='font-semibold '>Delete Task</span>
+          <PiTrash className='text-red-500 group-hover:text-white' />
+          <span className='font-medium '>Delete Task</span>
         </button>
       </div>
       <div className='mt-2 border-t-2 border-border pt-3'>
@@ -81,7 +81,7 @@ function SelectList({
         <button onClick={() => setListSelectionOpen(false)}>
           <IoChevronBack className='text-text-secondary' />
         </button>
-        <h3 className='flex-1 text-center text-lg font-semibold text-text-secondary'>
+        <h3 className='flex-1 text-center text-lg font-medium text-text-secondary'>
           Select List
         </h3>
         <button
@@ -94,7 +94,7 @@ function SelectList({
         </button>
       </div>
       <ul className='mt-3 h-[150px] space-y-2 overflow-auto overflow-x-hidden pr-2'>
-        {lists.map((list) => (
+        {lists?.map((list) => (
           <li
             className={`menu_element w-full justify-items-start ${
               currentListId === list.id
@@ -112,7 +112,7 @@ function SelectList({
               className='h-5 w-5 rounded-sm'
               style={{ backgroundColor: `var(${list.color})` }}
             ></span>
-            <span className='w-[90%] overflow-auto font-semibold text-text-primary'>
+            <span className='w-[90%] overflow-auto font-medium text-text-primary'>
               {list.title}
             </span>
             <span className='text-xs font-medium text-text-tertiary'>{list.tasksLength} Tasks</span>

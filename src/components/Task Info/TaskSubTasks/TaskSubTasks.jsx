@@ -13,6 +13,8 @@ export function TaskSubTasks({
     duration: 500,
   });
 
+  if(!taskSubtasks) return null;
+
   return (
     <div className='mt-7 flex-shrink-0 pb-5 '>
       <h2 className='mb-4 text-xl font-bold text-text-secondary'>Subtasks :</h2>
@@ -20,7 +22,7 @@ export function TaskSubTasks({
       <AddTask onAdd={handleAddSubTask} className='' />
 
       <ul
-        className='mt-3 max-h-[300px] space-y-2 overflow-auto overflow-x-hidden px-3'
+        className='mt-3 max-h-[100px] space-y-2 overflow-auto overflow-x-hidden px-3'
         ref={parent}
       >
         {taskSubtasks?.map((subtask) => (

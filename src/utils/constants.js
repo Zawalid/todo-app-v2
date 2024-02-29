@@ -1,6 +1,5 @@
 import { appWriteConfig } from '../lib/appwrite/config';
 
-
 export const DEFAULT_FONT_FAMILY = `'Lexend Deca', sans-serif`;
 export const TRASH_CLEANUP_INTERVAL = 30 * 24 * 60 * 60 * 1000; //(30 days in milliseconds)
 
@@ -13,5 +12,3 @@ export const COLLECTIONS_IDS = {
   tags: tagsCollectionId,
   stickyNotes: stickyNotesCollectionId,
 };
-
-

@@ -2,6 +2,9 @@ import { useFormatDateAndTime } from '../../../../hooks/useFormatDateAndTime';
 
 export function TaskDates({ date }) {
   const format = useFormatDateAndTime();
+
+  if(!date.created || !date.updated) return null;
+  
   return (
     <>
       <p className='mb-1 text-xs font-medium text-text-tertiary '>

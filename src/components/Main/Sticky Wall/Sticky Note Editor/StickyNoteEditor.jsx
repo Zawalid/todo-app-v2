@@ -1,22 +1,18 @@
 import { useParams } from 'react-router-dom';
 import TipTap from './Tip Tap/TipTap';
-import { useStickyNotes } from '../../../../hooks';
-import { useEffect } from 'react';
 import { SpinnerLoader } from '../../../Common/SpinnerLoader';
+import { useStickyNoteById } from '../../../../lib/react-query/queries';
 
 export function StickyNoteEditor() {
   const { noteId } = useParams();
-  const { handleGetStickyNote, currentNote } = useStickyNotes();
+  const { stickyNote, isLoading, isError, error,refetch } = useStickyNoteById(noteId);
 
-  useEffect(() => {
-    handleGetStickyNote(noteId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  if (isLoading) return <SpinnerLoader />;
+  if (isError) return <div>Error: {error.message}</div>;
 
-  if (!currentNote) return <SpinnerLoader />;
   return (
     <div className='grid h-[calc(100vh-16px)] grid-rows-[40px_auto_42px] gap-5'>
-      <TipTap />
+      <TipTap currentNote={stickyNote} refetch={refetch} />
     </div>
   );
 }

@@ -13,6 +13,8 @@ Ido is a task management application designed to streamline your productivity an
 * Tailwind css
 * Saas
 * React Router
+* React Query
+* Redux Toolkit
 * TipTap for the text editor
 * Appwrite For the backend
 

@@ -1,4 +1,3 @@
-import { useStickyNotes } from '../../../hooks/useStickyNotes';
 import { useEffect, useState } from 'react';
 import StickyWallActions from './StickyWallActions/StickyWallActions';
 import useDeleteMultiple from '../useDeleteMultiple';
@@ -11,6 +10,8 @@ import { StickyWallSkeleton } from '../../Skeletons';
 import { NotesGroup } from './NotesGroup';
 import { PiPlusBold } from 'react-icons/pi';
 import CustomTippy from '../../Common/CustomTippy';
+import { useStickyNotes } from '../../../lib/react-query/queries';
+import { useDeleteStickyNotes } from '../../../lib/react-query/mutations';
 import { useAutoAnimate } from '../../../hooks/useAutoAnimate';
 
 const groups = {
@@ -51,23 +52,18 @@ const groups = {
 };
 
 export default function StickyWall() {
-  const {
-    stickyNotes,
-    handleDeleteAllNotes,
-    selectedNotes,
-    setSelectedNotes,
-    handleDeleteMultipleNotes,
-    isNotesLoading,
-  } = useStickyNotes();
+  const [selectedNotes, setSelectedNotes] = useState([]);
   const [view, setView] = useState(isTouchDevice() ? 'list' : 'grid');
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const { Pagination, currentPage, rowsPerPage } = usePagination(stickyNotes.length);
   const [searchParams, setSearchParams] = useSearchParams();
   const sortBy = searchParams.get('sortBy') || 'updatedAt';
   const direction = searchParams.get('direction') || 'desc';
   const groupBy = searchParams.get('groupBy') || 'default';
-  const { openModal: confirmDelete } = useModal();
 
+  const { stickyNotes, isLoading, isError, error } = useStickyNotes();
+  const { Pagination, currentPage, rowsPerPage } = usePagination(stickyNotes?.length);
+  const { openModal: confirmDelete } = useModal();
+  const { mutate: deleteAllStickyNotes } = useDeleteStickyNotes();
   const { isSelecting, setIsSelecting, Modal } = useDeleteMultiple({
     selectedItems: selectedNotes,
     setSelectedItems: setSelectedNotes,
@@ -81,13 +77,12 @@ export default function StickyWall() {
         title: `Delete Sticky Note${selectedNotes.length > 1 ? 's' : ''} `,
 
         onConfirm: (deletePermanently) => {
-          handleDeleteMultipleNotes(deletePermanently);
+          deleteAllStickyNotes({ deleted: selectedNotes.map((n) => n.$id), deletePermanently });
           setIsSelecting(false);
         },
       });
     },
   });
-
   const [parent] = useAutoAnimate({
     duration: 600,
   });
@@ -105,7 +100,7 @@ export default function StickyWall() {
 
   const render = () =>
     stickyNotes
-      .toSorted((a, b) => {
+      ?.toSorted((a, b) => {
         if (sortBy === 'updatedAt') {
           return direction === 'asc'
             ? new Date(a.$updatedAt) - new Date(b.$updatedAt)
@@ -170,12 +165,12 @@ export default function StickyWall() {
     isSelecting,
     setIsSelecting,
     selectAll() {
-      setSelectedNotes(stickyNotes.map((n) => ({ $id: n.$id, title: n.title })));
+      setSelectedNotes(stickyNotes?.map((n) => ({ $id: n.$id, title: n.title })));
     },
     unSelectAll() {
       setSelectedNotes([]);
     },
-    allSelected: selectedNotes.length === stickyNotes.length,
+    allSelected: selectedNotes.length === stickyNotes?.length,
     // Delete
     deleteAll() {
       confirmDelete({
@@ -183,20 +178,31 @@ export default function StickyWall() {
         title: 'Delete All Sticky Notes',
         confirmText: 'Delete All',
         onConfirm: (deletePermanently) => {
-          handleDeleteAllNotes(deletePermanently);
+          deleteAllStickyNotes({ deleted: stickyNotes?.map((n) => n.$id), deletePermanently });
           setIsSelecting(false);
         },
       });
     },
   };
 
+  const noteGroupProps = {
+    isSelecting,
+    isCollapsed,
+    selectedNotes,
+    setSelectedNotes,
+    view,
+    groupBy,
+  };
+
+  if (isError) return <div>{error?.message || 'Error'}</div>;
+
   return (
     <>
-      <Title title='Sticky Wall' count={stickyNotes.length} />
-      {isNotesLoading ? (
+      <Title title='Sticky Wall' count={stickyNotes?.length} />
+      {isLoading ? (
         <StickyWallSkeleton />
       ) : stickyNotes.length === 0 ? (
-        <div className='absolute flex h-full w-full flex-col items-center justify-center text-center'>
+        <div className=' flex h-full w-full flex-col items-center justify-center text-center'>
           <h3 className='mb-1 mt-5  text-xl font-semibold text-text-secondary sm:text-2xl'>
             You don&apos;t have any sticky notes yet
           </h3>
@@ -226,11 +232,8 @@ export default function StickyWall() {
                     key={group}
                     render={render}
                     group={group}
-                    view={view}
-                    isSelecting={isSelecting}
-                    isCollapsed={isCollapsed}
-                    parent={parent}
                     condition={condition}
+                    {...noteGroupProps}
                   />
                 ))
               : [...new Set(stickyNotes.map((n) => groups[groupBy].getSet(n)))]
@@ -240,31 +243,25 @@ export default function StickyWall() {
                       key={t}
                       render={render}
                       group={t}
-                      view={view}
-                      isSelecting={isSelecting}
-                      isCollapsed={isCollapsed}
-                      parent={parent}
                       condition={(note) => groups[groupBy].condition(note, t)}
-                      groupBy={groupBy}
+                      {...noteGroupProps}
                     />
                   ))}
           </div>
         </div>
       )}
-      {!isNotesLoading && stickyNotes.length !== 0 && (
+      {!isLoading && stickyNotes.length !== 0 && (
         <>
-          <AddNote isSelecting={isSelecting} />
           {Pagination}
           {Modal}
         </>
       )}
+      {!isSelecting && !isLoading && <AddNote />}
     </>
   );
 }
 
-function AddNote({ isSelecting }) {
-  if (isSelecting) return null;
-
+function AddNote() {
   return (
     <CustomTippy
       content={
@@ -276,7 +273,7 @@ function AddNote({ isSelecting }) {
         </span>
       }
     >
-      <NavLink to='new' className='fixed bottom-20 right-5 sm:right-8'>
+      <NavLink to='new' className='fixed bottom-16 right-5 sm:right-8'>
         <button className='grid h-12 w-12 place-content-center rounded-full bg-primary p-2 shadow-lg transition-colors duration-200  hover:bg-primary-hover'>
           <PiPlusBold color='white' size={20} />
         </button>

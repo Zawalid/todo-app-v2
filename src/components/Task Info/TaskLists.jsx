@@ -1,4 +1,4 @@
-import { useLists } from '../../hooks/useLists';
+import { useLists } from '../../lib/react-query/queries';
 import { isTouchDevice } from '../../utils/helpers';
 import { DropDown } from '../Common/DropDown';
 import { IoChevronDownOutline } from 'react-icons/io5';

@@ -7,6 +7,8 @@ const DEFAULT_SETTINGS = {
       deletionSound: true,
       animation: true,
       defaultHomeView: 'inbox',
+      deleteConfirmation: true,
+      deletePermanently: false,
     },
     dateAndTime: {
       dateFormat: 'MM/dd/yyyy',
@@ -19,6 +21,7 @@ const DEFAULT_SETTINGS = {
       weeklyDueDate: 'Sunday',
       autoDeleteCompletedTasks: false,
       deletePermanently: false,
+      deleteTasksWithList : false,
       taskDetailLevel: ['dueDate', 'list', 'priority', 'subtasks', 'tags'],
     },
     stickyNotes: {

@@ -1,21 +1,24 @@
 import { useEffect } from 'react';
-import { useTasks } from '../../../hooks';
 import { TasksSkeleton } from '../../Skeletons';
 import { Title } from '../Title';
 import TasksList from './TasksList';
+import { useCompletedTasks } from '../../../lib/react-query/queries';
 
 export default function CompletedTasks() {
-  const { tasks, isTasksLoading } = useTasks();
-  const completedTasks = tasks.filter((task) => task.isCompleted);
+  const { completedTasks, isLoading, isError, error } = useCompletedTasks();
 
   useEffect(() => {
     document.title = `I Do | Completed Tasks`;
   }, []);
 
+  if (isError) {
+    return <p>{error.message}</p>;
+  }
+
   return (
     <>
-      <Title title='Completed' count={completedTasks.length} />
-      {isTasksLoading ? (
+      <Title title='Completed' count={completedTasks?.length} />
+      {isLoading ? (
         <TasksSkeleton number={6} />
       ) : (
         <TasksList

@@ -56,6 +56,35 @@ export function Preferences({ control, setValue }) {
         </div>
         <div className='setting '>
           <div>
+            <h4>Confirm Deletion</h4>
+            <p className='mt-2 text-xs text-text-secondary'>
+              Ask for confirmation before deleting an element.
+            </p>
+          </div>
+
+          <Controller
+            name='preferences.deleteConfirmation'
+            control={control}
+            render={({ field }) => <Switch checked={field.value} {...field} />}
+          />
+           <div
+            className='sub-setting'
+          >
+            <h4>Delete Permanently</h4>
+            <Controller
+              control={control}
+              name='preferences.deletePermanently'
+              render={({ field }) => (
+                <Switch
+                  {...field}
+                  checked={field.value}
+                />
+              )}
+            />
+          </div>
+        </div>
+        <div className='setting '>
+          <div>
             <h4>Default Home View</h4>
             <p className='mt-2 text-xs text-text-secondary'>
               Choose what to show when you open the app.

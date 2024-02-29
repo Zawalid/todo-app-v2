@@ -8,25 +8,26 @@ import { DEFAULT_FONT_FAMILY } from '../../../../../utils/constants';
 import { ToolBar } from './ToolBar';
 import { ActionBar } from './ActionBar';
 import { CustomBubbleMenu } from './editor/CustomBubbleMenu';
-import { copyToClipBoard, exportDownload, isElementEmpty, isTouchDevice } from '../../../../../utils/helpers';
-import { useStickyNotes } from '../../../../../hooks';
+import {
+  copyToClipBoard,
+  exportDownload,
+  isElementEmpty,
+  isTouchDevice,
+} from '../../../../../utils/helpers';
 import { BackgroundColorPicker } from '../BackgroundColorPicker';
 import { TextColorPicker } from '../TextColorPicker';
 
 import '../../../../../styles/TipTap.scss';
 import { Actions } from './Actions';
 import { useFormatDateAndTime } from '../../../../../hooks/useFormatDateAndTime';
+import {
+  useAddStickyNote,
+  useDeleteStickyNote,
+  useUpdateStickyNote,
+} from '../../../../../lib/react-query/mutations';
+import { useNavigate } from 'react-router-dom';
 
-export default function TipTap() {
-  const {
-    currentNote,
-    handleAddStickyNote,
-    handleUpdateStickyNote,
-    handleDeleteStickyNote,
-    handleBack,
-  } = useStickyNotes();
-  const { $id, content, $updatedAt } = currentNote || {};
-
+export default function TipTap({ currentNote, refetch }) {
   const [title, setTitle] = useState(currentNote?.title);
   const [bgColor, setBgColor] = useState(currentNote?.bgColor || '#ff922b');
   const [textColor, setTextColor] = useState(currentNote?.textColor || '#fff');
@@ -34,13 +35,24 @@ export default function TipTap() {
   const [isActionsOpen, setIsActionsOpen] = useState(false);
   const [readonly, setReadonly] = useState(currentNote?.readonly || false);
   const [pinned, setPinned] = useState(currentNote?.pinned || false);
-  const [isSaving, setIsSaving] = useState(false);
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+  const navigate = useNavigate();
 
-  const onUpdate = (field, value) =>
-    currentNote?.[field] !== value && handleUpdateStickyNote($id, { [field]: value }, setIsSaving);
+  const { $id, content, $updatedAt } = currentNote || {};
+  const { mutate: addStickyNote } = useAddStickyNote();
+  const { mutate: duplicateStickyNote } = useAddStickyNote({ isDuplicate: true });
+  const { mutate: updateStickyNote, isLoading: isSaving } = useUpdateStickyNote();
+  const { mutate: deleteStickyNote } = useDeleteStickyNote();
 
-  const onBack = () => handleBack(currentNote.$id, title, content);
+  const onUpdate = (field, value) => {
+    if (currentNote?.[field] === value) return;
+    updateStickyNote({ id: $id, stickyNote: { [field]: value } });
+  };
+
+  const onBack = () => {
+    navigate('/app/sticky-wall');
+    refetch?.();
+  };
 
   const editor = useEditor({
     extensions: extensions,
@@ -54,53 +66,6 @@ export default function TipTap() {
     onFocus: () => isTouchDevice() && setIsKeyboardOpen(true),
     onBlur: () => isTouchDevice() && setIsKeyboardOpen(false),
   });
-
-  const actionsProps = {
-    currentNote,
-    isOpen: isActionsOpen,
-    readonly,
-    pinned,
-    fontFamily: fontFamily || DEFAULT_FONT_FAMILY,
-    disabled : !title && isElementEmpty(content),
-    handlers: {
-      onClose: () => setIsActionsOpen(false),
-      onCopy: () =>
-        copyToClipBoard(`
-        Note Title: ${title}
-        ------------------
-
-        Note Content:
-        ${editor?.getText()}
-        `),
-      onDelete(deletePermanently) {
-        $id && handleDeleteStickyNote($id, deletePermanently);
-      },
-      onBack,
-      onReadOnly: () => setReadonly(!readonly),
-      onPin() {
-        setPinned(!pinned);
-        onUpdate('pinned', !pinned);
-      },
-      onDuplicate() {
-        const note = {
-          title: title + ' (copy)',
-          content,
-          bgColor,
-          textColor,
-          fontFamily,
-          pinned,
-          readonly,
-        };
-        handleAddStickyNote(note, true);
-      },
-      onExport: (format) => exportAs(format, editor, title),
-      onChangeFontFamily(fontFamily) {
-        setFontFamily(fontFamily);
-        document.querySelector('.tiptap').style.fontFamily = fontFamily;
-        onUpdate('fontFamily', fontFamily);
-      },
-    },
-  };
 
   useEffect(() => {
     if (!editor) return;
@@ -118,9 +83,80 @@ export default function TipTap() {
     document.title = `I Do | ${title || 'Untitled'}`;
   }, [title]);
 
+  const actionsProps = {
+    currentNote,
+    isOpen: isActionsOpen,
+    readonly,
+    pinned,
+    fontFamily: fontFamily || DEFAULT_FONT_FAMILY,
+    disabled: !title && isElementEmpty(content),
+    handlers: {
+      onClose: () => setIsActionsOpen(false),
+      onCopy: () =>
+        copyToClipBoard(`
+        Note Title: ${title}
+        ------------------
+
+        Note Content:
+        ${editor?.getText()}
+        `),
+      onDelete(deletePermanently) {
+        $id && deleteStickyNote({ id: $id, deletePermanently });
+      },
+      onBack,
+      onReadOnly: () => setReadonly(!readonly),
+      onPin() {
+        setPinned(!pinned);
+        onUpdate('pinned', !pinned);
+      },
+      onDuplicate() {
+        const stickyNote = {
+          title: title + ' (copy)',
+          content,
+          bgColor,
+          textColor,
+          fontFamily,
+          pinned,
+          readonly,
+        };
+        duplicateStickyNote({ stickyNote });
+      },
+      onExport: (format) => exportAs(format, editor, title),
+      onChangeFontFamily(fontFamily) {
+        setFontFamily(fontFamily);
+        document.querySelector('.tiptap').style.fontFamily = fontFamily;
+        onUpdate('fontFamily', fontFamily);
+      },
+    },
+  };
+
   return (
     <>
-      <ActionBar editor={editor} onBack={onBack} onOpenActions={() => setIsActionsOpen(true)} />
+      <ActionBar
+        editor={editor}
+        onBack={onBack}
+        onOpenActions={() => setIsActionsOpen(true)}
+        onAdd={() => {
+          const stickyNote = {
+            title,
+            content,
+            bgColor,
+            textColor,
+            fontFamily,
+            pinned,
+            readonly,
+          };
+          addStickyNote(
+            { stickyNote },
+            {
+              onSuccess: (data) => {
+                console.log(data.$id);
+                navigate(`/app/sticky-wall/${data.$id}`);
+              },
+            },
+          );
+        }}
+      />
       <div className='tiptap grid grid-rows-[90px_auto] gap-1 overflow-auto'>
         <NoteInfo
           editor={editor}
@@ -176,7 +212,7 @@ export default function TipTap() {
 }
 
 function NoteInfo({ editor, updateDate, isSaving, title, setTitle }) {
-  const format = useFormatDateAndTime()
+  const format = useFormatDateAndTime();
 
   if (!editor) return null;
   return (
@@ -190,9 +226,7 @@ function NoteInfo({ editor, updateDate, isSaving, title, setTitle }) {
       />
 
       <p id='info' className='flex flex-wrap items-center gap-2 text-xs text-text-tertiary'>
-        <span>
-          {format(new Date(updateDate || Date.now()))}
-        </span>
+        <span>{format(new Date(updateDate || Date.now()))}</span>
         <span className='h-3 w-[1px] bg-text-tertiary '></span>
         <span>{editor.storage?.characterCount?.characters()} characters</span>
         <span className='h-3 w-[1px] bg-text-tertiary '></span>
@@ -203,7 +237,6 @@ function NoteInfo({ editor, updateDate, isSaving, title, setTitle }) {
     </div>
   );
 }
-
 
 // Export
 const turndownService = new TurndownService();

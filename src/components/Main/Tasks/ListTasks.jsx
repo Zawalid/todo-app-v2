@@ -1,28 +1,31 @@
 import { useParams } from 'react-router-dom';
-import { useLists, useTasks } from '../../../hooks';
 import { Title } from '../Title';
 import TasksList from './TasksList';
 import { TasksSkeleton } from '../../Skeletons';
 import { useEffect } from 'react';
+import { useListTasks, useLists } from '../../../lib/react-query/queries';
 
 export default function ListTasks() {
-  const { tasks, isTasksLoading } = useTasks();
   const { lists } = useLists();
   const { listName } = useParams();
-  const listId = lists?.find((list) => list.title === listName?.replace('%20', ' '))?.$id;
-  const listTasks = tasks.filter((task) => task.listId === listId);
+  const listId = lists?.find(
+    (list) => list.title.trim() === listName?.replace('%20', ' ').trim(),
+  )?.$id;
   const listTitle = listName?.replace('%20', ' ');
+  const { listTasks, isLoading, isError, error } = useListTasks(listId);
 
   useEffect(() => {
     document.title = `I Do | ${listTitle}`;
   }, [listTitle]);
 
-  if (!listId) return null;
+  if (isError || !listId) {
+    return <p>{error?.message || 'Error'}</p>;
+  }
 
   return (
     <>
-      <Title title={listTitle} count={listTasks.length} />
-      {isTasksLoading ? (
+      <Title title={listTitle} count={listTasks?.length} />
+      {isLoading ? (
         <TasksSkeleton number={6} />
       ) : (
         <TasksList

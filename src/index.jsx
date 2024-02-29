@@ -4,12 +4,7 @@ import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from './app/store.js';
 
-import TrashProvider from './contexts/Trash.jsx';
 import UserProvider from './contexts/User.jsx';
-import ListsProvider from './contexts/Lists.jsx';
-import TasksProvider from './contexts/Tasks.jsx';
-import StickyNotesProvider from './contexts/StickyNotes.jsx';
-import TagsProvider from './contexts/Tags.jsx';
 
 import App from './App.jsx';
 import { monitorNetwork } from './components/Common/MonitorNetwork.jsx';
@@ -22,21 +17,11 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <BrowserRouter>
-          <ModalProvider>
-              <TrashProvider>
-                <UserProvider>
-                  <ListsProvider>
-                    <TasksProvider>
-                      <StickyNotesProvider>
-                        <TagsProvider>
-                          <App />
-                        </TagsProvider>
-                      </StickyNotesProvider>
-                    </TasksProvider>
-                  </ListsProvider>
-                </UserProvider>
-              </TrashProvider>
-          </ModalProvider>
+          <UserProvider>
+            <ModalProvider>
+              <App />
+            </ModalProvider>
+          </UserProvider>
         </BrowserRouter>
       </PersistGate>
     </Provider>

@@ -32,6 +32,7 @@ export function useReactHookForm({ settingCategory, defaultValues, submit, mode 
   };
   const onCancel = (callback) => {
     reset(defValues);
+    console.log(defValues)
     callback?.(defValues);
   };
 

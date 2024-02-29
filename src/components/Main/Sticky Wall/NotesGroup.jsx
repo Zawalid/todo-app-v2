@@ -1,9 +1,10 @@
 import { StickyNote } from './StickyNote';
-import { useStickyNotes } from '../../../hooks/useStickyNotes';
 import { useEffect, useState } from 'react';
 import { GiPin } from 'react-icons/gi';
 import { RxCountdownTimer } from 'react-icons/rx';
 import { IoChevronUp, IoChevronDown } from 'react-icons/io5';
+import { useStickyNotes } from '../../../lib/react-query/queries';
+import { useAutoAnimate } from '../../../hooks/useAutoAnimate';
 
 export function NotesGroup({
   render,
@@ -11,12 +12,16 @@ export function NotesGroup({
   view,
   isSelecting,
   isCollapsed,
-  parent,
   condition,
   groupBy,
+  selectedNotes, setSelectedNotes 
 }) {
   const [isGroupOpen, setIsGroupOpen] = useState(true);
-  const { stickyNotes, selectedNotes, setSelectedNotes } = useStickyNotes();
+  const { stickyNotes } = useStickyNotes();
+  
+  const [parent] = useAutoAnimate({
+    duration: 600,
+  });
 
   useEffect(() => {
     setIsGroupOpen(!isCollapsed);
@@ -46,13 +51,9 @@ export function NotesGroup({
         {isGroupOpen ? <IoChevronUp /> : <IoChevronDown />}
       </button>
       <div
-        className={
-          'flex-1 overflow-auto ' +
-          (view === 'list'
-            ? 'space-y-3 '
-            : ' grid grid-cols-[repeat(auto-fill,minmax(270px,1fr))] gap-4 ') +
-          (isGroupOpen ? 'h-auto' : 'h-0')
-        }
+        className={`flex-1 gap-4 overflow-auto ${
+          view === 'list' ? 'space-y-3 ' : ' grid grid-cols-[repeat(auto-fill,minmax(270px,1fr))]'
+        } ${isGroupOpen ? 'h-auto' : 'h-0'}`}
         ref={parent}
       >
         {render()

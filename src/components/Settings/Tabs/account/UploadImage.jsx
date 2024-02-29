@@ -37,7 +37,7 @@ export function UploadImage({ control, onChange, disabled }) {
       });
     },
   });
-  const isInitialsAvatar = avatar?.src.includes('avatars/initials');
+  const isInitialsAvatar = avatar?.src?.includes('avatars/initials');
 
   return (
     <div className='flex items-center gap-5'>

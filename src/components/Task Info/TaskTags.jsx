@@ -1,11 +1,14 @@
 import { Tag } from '../Menu/Tags/Tag';
-import { useTags } from '../../hooks/useTags';
 import { DropDown } from '../Common/DropDown';
 import { PiPlusBold } from 'react-icons/pi';
+import { useTags } from '../../lib/react-query/queries';
 
 export function TaskTags({ taskTagsIds, handleAddTagToTask, handleDeleteTagFromTask }) {
   const { tags } = useTags();
-  const validTags = taskTagsIds.filter((id) => tags.find((tag) => tag.$id === id));
+  if (!taskTagsIds) return null;
+
+  const validTags = taskTagsIds.filter((id) => tags?.find((tag) => tag.$id === id));
+
   return (
     <>
       <label className='justify-self-start text-sm text-text-tertiary'>Tags</label>
@@ -26,7 +29,7 @@ export function TaskTags({ taskTagsIds, handleAddTagToTask, handleDeleteTagFromT
           shouldCloseOnClick: false,
         }}
       >
-        {tags.map((tag) => (
+        {tags?.map((tag) => (
           <div key={tag.$id} className='grid grid-cols-[1fr_auto] items-center'>
             <div role='button'>
               <Tag

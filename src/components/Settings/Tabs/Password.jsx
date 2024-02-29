@@ -1,5 +1,5 @@
 import { PasswordInput } from '../../Common/PasswordInput';
-import { useUser } from '../../../hooks';
+import { useUser } from '../../../hooks/useUser';
 import { Tab } from './Tab';
 import { useReactHookForm } from '../useReactHookForm';
 import { Controller } from 'react-hook-form';

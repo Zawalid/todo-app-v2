@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { useUser } from '../../../../hooks';
+import { useUser } from '../../../../hooks/useUser';
 import { UploadImage } from './UploadImage';
 import { UserVerificationModal } from '../../UserVerificationModal';
 import { InputField } from '../../../Common/InputField';
@@ -13,7 +13,7 @@ import { useSelector } from 'react-redux';
 export default function Account() {
   const { handleUpdateProfile } = useUser();
   const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
-  const user = useSelector((state) => state.user.user);
+  const user = useSelector((state) => state.user.user) || {};
   const {
     control,
     isUpdated,

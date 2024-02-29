@@ -5,7 +5,6 @@ import { TasksActions } from './TasksActions/TasksActions';
 import { useEffect, useState } from 'react';
 import { isTaskOverdue } from '../../../utils/Dates';
 import { useSearchParams } from 'react-router-dom';
-import { useTasks } from '../../../hooks/useTasks';
 import useDeleteMultiple from '../useDeleteMultiple';
 import { usePagination } from '../usePagination';
 import SelectionIcons from '../../Common/SelectionIcons';
@@ -13,6 +12,7 @@ import { useModal } from '../../../hooks/useModal';
 import { createPortal } from 'react-dom';
 import { PiDotsThreeOutlineVerticalFill } from 'react-icons/pi';
 import { useAutoAnimate } from '../../../hooks/useAutoAnimate';
+import { useDeleteTasks } from '../../../lib/react-query/mutations';
 
 const filtersConditions = {
   all: () => true,
@@ -25,12 +25,13 @@ const filtersConditions = {
 };
 
 export default function TasksList({ dueDate, listId, tasks, message, isOnlyCompletedTasks }) {
-  const { handleDeleteAllTasks, handleDeleteMultipleTasks, selectedTasks, setSelectedTasks } =
-    useTasks();
+  const [selectedTasks, setSelectedTasks] = useState([]);
   const [filteredTasks, setFilteredTasks] = useState([]);
   const [searchParams] = useSearchParams();
   const { Pagination, currentPage, rowsPerPage } = usePagination(filteredTasks.length);
   const { openModal: confirmDelete } = useModal();
+  const { mutate: deleteAllTasks } = useDeleteTasks();
+  
 
   const { isSelecting, setIsSelecting, setIsDeleteMultipleModalOpen, Modal } = useDeleteMultiple({
     selectedItems: selectedTasks,
@@ -45,7 +46,8 @@ export default function TasksList({ dueDate, listId, tasks, message, isOnlyCompl
         title: `Delete Task${selectedTasks.length > 1 ? 's' : ''} `,
 
         onConfirm: (deletePermanently) => {
-          handleDeleteMultipleTasks(deletePermanently);
+          const deletedTasks = selectedTasks.map((task) => task.$id);
+          deleteAllTasks({ deleted: deletedTasks, deletePermanently });
           setIsSelecting(false);
         },
       });
@@ -80,8 +82,10 @@ export default function TasksList({ dueDate, listId, tasks, message, isOnlyCompl
         message: `Are you sure you want to delete all tasks?`,
         title: `Delete All Tasks`,
         onConfirm: (deletePermanently) => {
-          const deletedTasks = tasks.filter((task) => filtersConditions[filter]?.(task));
-          handleDeleteAllTasks(deletedTasks, deletePermanently);
+          const deletedTasks = tasks
+            .filter((task) => filtersConditions[filter]?.(task))
+            .map((task) => task.$id);
+          deleteAllTasks({ deleted: deletedTasks, deletePermanently });
           setIsSelecting(false);
         },
       });
@@ -106,9 +110,11 @@ export default function TasksList({ dueDate, listId, tasks, message, isOnlyCompl
 
         <List
           filteredTasks={filteredTasks}
-          isSelecting={isSelecting}
           currentPage={currentPage}
           rowsPerPage={rowsPerPage}
+          isSelecting={isSelecting}
+          selectedTasks={selectedTasks}
+          setSelectedTasks={setSelectedTasks}
         />
 
         <NoFilteredTasksMessage
@@ -125,8 +131,14 @@ export default function TasksList({ dueDate, listId, tasks, message, isOnlyCompl
   );
 }
 
-function List({ filteredTasks, isSelecting, currentPage, rowsPerPage }) {
-  const { selectedTasks, setSelectedTasks } = useTasks();
+function List({
+  filteredTasks,
+  isSelecting,
+  currentPage,
+  rowsPerPage,
+  setSelectedTasks,
+  selectedTasks,
+}) {
   const [searchParams] = useSearchParams();
   const [parent] = useAutoAnimate({
     duration: 500,
@@ -136,7 +148,7 @@ function List({ filteredTasks, isSelecting, currentPage, rowsPerPage }) {
   const direction = searchParams.get('direction') || 'asc';
 
   return (
-    <ul className='h-full space-y-2  overflow-y-auto overflow-x-hidden' ref={parent}>
+    <div className='h-full space-y-2  overflow-y-auto overflow-x-hidden' ref={parent}>
       {filteredTasks
         .toSorted((a, b) => {
           if (sortBy === 'cDate') {
@@ -166,7 +178,7 @@ function List({ filteredTasks, isSelecting, currentPage, rowsPerPage }) {
             <Task
               key={task.$id}
               task={task}
-              onClick={() => {
+              onSelect={() => {
                 setSelectedTasks((prev) => {
                   if (isSelected) return prev.filter((t) => t.$id !== $id);
                   else return [...prev, { $id, title, listId }];
@@ -177,7 +189,7 @@ function List({ filteredTasks, isSelecting, currentPage, rowsPerPage }) {
             />
           );
         })}
-    </ul>
+    </div>
   );
 }
 
@@ -202,6 +214,7 @@ function Actions({
       }}
       onSelectAll={selectAll}
       onUnSelectAll={unSelectAll}
+      disabled={filteredTasks.length === 0}
     >
       <Tippy
         content={
@@ -221,8 +234,9 @@ function Actions({
         placement='bottom'
         maxWidth='auto'
       >
-        <button className='icon-button not-active'>
-        <PiDotsThreeOutlineVerticalFill />
+        <button className='icon-button not-active'       disabled={filteredTasks.length === 0}
+>
+          <PiDotsThreeOutlineVerticalFill />
         </button>
       </Tippy>
     </SelectionIcons>
@@ -250,7 +264,6 @@ function NoTasksMessage({ message, display }) {
       <h2 className='text-center text-xl font-semibold text-text-secondary sm:text-2xl'>
         {message.noTasks}
       </h2>
-
       <p className=' font-medium text-text-tertiary'>
         {message.description || 'Add a new task to get started'}
       </p>

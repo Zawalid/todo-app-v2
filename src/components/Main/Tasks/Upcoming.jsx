@@ -1,12 +1,12 @@
 import { useEffect, useState, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import { format, addDays, setDay } from 'date-fns';
 import { Title } from '../Title';
-import { useTasks } from '../../../hooks';
 import { Task } from './Task Components/Task';
 import { AddTask } from './Task Components/AddTask';
 import { UpcomingSkeleton } from '../../Skeletons';
 import { useAutoAnimate } from '../../../hooks/useAutoAnimate';
-import { useSelector } from 'react-redux';
+import { useUpcomingTasks } from '../../../lib/react-query/queries';
 
 const periods = [
   {
@@ -43,18 +43,22 @@ const dayMapping = {
 };
 
 export default function Upcoming() {
-  const { upcomingTasks, isTasksLoading } = useTasks();
+  const { upcomingTasks, isLoading, isError, error } = useUpcomingTasks();
   const wrapper = useRef(null);
 
   useEffect(() => {
     document.title = `I Do | Upcoming`;
   }, []);
 
+  if (isError) {
+    return <p>{error.message}</p>;
+  }
+
   return (
     <>
-      <Title title='Upcoming' count={upcomingTasks.length} />
+      <Title title='Upcoming' count={upcomingTasks?.length} />
 
-      {isTasksLoading ? (
+      {isLoading ? (
         <UpcomingSkeleton />
       ) : (
         <div className='relative flex  h-full flex-wrap gap-5 overflow-auto pr-2 ' ref={wrapper}>
@@ -75,7 +79,7 @@ export default function Upcoming() {
 
 function PeriodTasks({ title, period, parentRef, isToday }) {
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const { todayTasks, tomorrowTasks, thisWeekTasks } = useTasks();
+  const { todayTasks, tomorrowTasks, thisWeekTasks } = useUpcomingTasks();
   const [parent] = useAutoAnimate({
     duration: 500,
   });

@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { useTasks } from '../../../../hooks/useTasks';
 import { PiPlusBold } from 'react-icons/pi';
 import { useSelector } from 'react-redux';
+import { useAddTask } from '../../../../lib/react-query/mutations';
 
 export function AddTask({ dueDate, listId, className, disabled, onAdd }) {
   const [value, setValue] = useState('');
-  const { isAddingTask, handleAddTask } = useTasks();
   const { defaultDueDate, defaultPriority } = useSelector((state) => state.settings.general.tasks);
+  const { mutate: addTask, isLoading } = useAddTask();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -21,17 +21,19 @@ export function AddTask({ dueDate, listId, className, disabled, onAdd }) {
       tagsIds: [],
       priority: defaultPriority,
     };
-    onAdd ? onAdd(value) : handleAddTask(newTask);
+    onAdd ? onAdd(value) : addTask({ task: newTask });
     setValue('');
   };
 
   return (
     <div
       className={`${className} flex items-center gap-3 rounded-md px-5 transition-colors duration-200 ${
-        disabled ? 'bg-background-disabled ' : 'bg-background-secondary '
+        disabled || isLoading ? 'bg-background-disabled ' : 'bg-background-secondary '
       }`}
     >
-      <PiPlusBold className={`text-xl ${disabled ? 'text-text-disabled' : 'text-text-tertiary'}`} />
+      <PiPlusBold
+        className={`text-xl ${disabled || isLoading ? 'text-text-disabled' : 'text-text-tertiary'}`}
+      />
       <form className='w-full' onSubmit={handleSubmit}>
         <input
           type='text'
@@ -39,7 +41,7 @@ export function AddTask({ dueDate, listId, className, disabled, onAdd }) {
           placeholder='Add New Task'
           name='task'
           value={value}
-          disabled={isAddingTask || disabled}
+          disabled={isLoading || disabled}
           onChange={(e) => setValue(e.target.value)}
         />
       </form>

@@ -5,7 +5,7 @@ import { BiReset } from 'react-icons/bi';
 import { Button } from '../Common/Button';
 import { useDispatch } from 'react-redux';
 import { resetSettings } from '../../app/settingsSlice';
-import { useModal } from '../../hooks';
+import { useModal } from '../../hooks/useModal';
 
 export function Panel({ isOpen, onClose, currentTab, setCurrentTab }) {
   const dispatch = useDispatch();
@@ -66,6 +66,7 @@ export function Panel({ isOpen, onClose, currentTab, setCurrentTab }) {
               onConfirm: () => dispatch(resetSettings()),
               confirmText: 'Reset',
               showCheckbox: false,
+              notDeletion: true,
             })
           }
         >

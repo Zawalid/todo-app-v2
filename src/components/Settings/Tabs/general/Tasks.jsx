@@ -8,8 +8,8 @@ import { TaskPriority } from '../../../Task Info/TaskPriority';
 import { DropDown } from '../../../Common/DropDown';
 import Switch from '../../../Common/Switch';
 import { CheckBox } from '../../../Common/CheckBox';
-import { useLists, useTags, useTasks } from '../../../../hooks';
 import { exportDownload } from '../../../../utils/helpers';
+import { useTags, useTasks, useLists } from '../../../../lib/react-query/queries';
 
 export function Tasks({ control, setValue }) {
   const tasksSettings = useWatch({ control, name: 'tasks' });
@@ -119,6 +119,17 @@ export function Tasks({ control, setValue }) {
               )}
             />
           </div>
+        </div>
+        <div className='setting'>
+          <div>
+            <h4>Delete Associated Tasks</h4>
+            <p>Automatically delete all tasks associated with a list when the list is deleted.</p>
+          </div>
+          <Controller
+            control={control}
+            name='tasks.deleteTasksWithList'
+            render={({ field }) => <Switch {...field} checked={field.value} />}
+          />
         </div>
         <div className='setting'>
           <div>

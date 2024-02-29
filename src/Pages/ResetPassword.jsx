@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { PasswordInput } from '../components/Common/PasswordInput';
-import { useUser } from '../hooks';
+import { useUser } from '../hooks/useUser';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Button } from '../components/Common/Button';
 
