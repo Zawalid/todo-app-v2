@@ -61,7 +61,7 @@ export default function StickyWall() {
   const direction = searchParams.get('direction') || 'desc';
   const groupBy = searchParams.get('groupBy') || 'default';
 
-  const { stickyNotes, isLoading,  error } = useStickyNotes();
+  const { stickyNotes, isLoading, error } = useStickyNotes();
   const { Pagination, currentPage, rowsPerPage } = usePagination(stickyNotes?.length);
   const { openModal: confirmDelete } = useModal();
   const { mutate: deleteAllStickyNotes } = useDeleteStickyNotes();
@@ -99,7 +99,7 @@ export default function StickyWall() {
     );
   };
 
-  const render = () =>
+  const renderNotes = () =>
     stickyNotes
       ?.toSorted((a, b) => {
         if (sortBy === 'updatedAt') {
@@ -195,14 +195,11 @@ export default function StickyWall() {
     groupBy,
   };
 
-  if (error) return <Error message={error.message} />;
-
-  return (
-    <>
-      <Title title='Sticky Wall' count={stickyNotes?.length} />
-      {isLoading ? (
-        <StickyWallSkeleton />
-      ) : stickyNotes.length === 0 ? (
+  const render = () => {
+    if (error) return <Error message={error.message} />;
+    if (isLoading) return <StickyWallSkeleton />;
+    if (stickyNotes.length === 0) {
+      return (
         <div className=' flex h-full w-full flex-col items-center justify-center text-center'>
           <h3 className='mb-1 mt-5  text-xl font-semibold text-text-secondary sm:text-2xl'>
             You don&apos;t have any sticky notes yet
@@ -211,53 +208,61 @@ export default function StickyWall() {
             Click the plus icon below to add a new sticky note
           </p>
         </div>
-      ) : (
-        <div className='flex h-full flex-col gap-3 overflow-hidden'>
-          <StickyWallActions {...actionsProps} />
-          <div
-            className='flex-1 space-y-3 overflow-auto rounded-lg border border-border p-3   pr-3 sm:p-5'
-            ref={parent}
-          >
-            {groupBy === 'default'
-              ? [
-                  {
-                    group: 'Pinned',
-                    condition: (note) => note.pinned,
-                  },
-                  {
-                    group: 'Recent',
-                    condition: (note) => !note.pinned,
-                  },
-                ].map(({ group, condition }) => (
+      );
+    }
+    return (
+      <div className='flex h-full flex-col gap-3 overflow-hidden'>
+        <StickyWallActions {...actionsProps} />
+        <div
+          className='flex-1 space-y-3 overflow-auto rounded-lg border border-border p-3   pr-3 sm:p-5'
+          ref={parent}
+        >
+          {groupBy === 'default'
+            ? [
+                {
+                  group: 'Pinned',
+                  condition: (note) => note.pinned,
+                },
+                {
+                  group: 'Recent',
+                  condition: (note) => !note.pinned,
+                },
+              ].map(({ group, condition }) => (
+                <NotesGroup
+                  key={group}
+                  render={renderNotes}
+                  group={group}
+                  condition={condition}
+                  {...noteGroupProps}
+                />
+              ))
+            : [...new Set(stickyNotes.map((n) => groups[groupBy].getSet(n)))]
+                .toSorted((a, b) => groupBy === 'a-z' && a.localeCompare(b))
+                .map((t) => (
                   <NotesGroup
-                    key={group}
-                    render={render}
-                    group={group}
-                    condition={condition}
+                    key={t}
+                    render={renderNotes}
+                    group={t}
+                    condition={(note) => groups[groupBy].condition(note, t)}
                     {...noteGroupProps}
                   />
-                ))
-              : [...new Set(stickyNotes.map((n) => groups[groupBy].getSet(n)))]
-                  .toSorted((a, b) => groupBy === 'a-z' && a.localeCompare(b))
-                  .map((t) => (
-                    <NotesGroup
-                      key={t}
-                      render={render}
-                      group={t}
-                      condition={(note) => groups[groupBy].condition(note, t)}
-                      {...noteGroupProps}
-                    />
-                  ))}
-          </div>
+                ))}
         </div>
-      )}
-      {!isLoading && stickyNotes.length !== 0 && (
+      </div>
+    );
+  };
+
+  return (
+    <>
+      <Title title='Sticky Wall' count={stickyNotes?.length} />
+      {render()}
+      {!isLoading && stickyNotes.length !== 0 && !error && (
         <>
           {Pagination}
           {Modal}
         </>
       )}
-      {!isSelecting && !isLoading && <AddNote />}
+      {!isSelecting && !isLoading && !error && <AddNote />}
     </>
   );
 }

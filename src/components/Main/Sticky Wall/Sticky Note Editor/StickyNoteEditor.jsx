@@ -9,7 +9,17 @@ export function StickyNoteEditor() {
   const { stickyNote, isLoading, error, refetch } = useStickyNoteById(noteId);
 
   if (isLoading) return <SpinnerLoader />;
-  if (error) return <Error message={error.message} />;
+  if (error)
+    return (
+      <Error
+        title={error.type === 'document_not_found' && 'No note found with the given ID.'}
+        message={
+          error.type === 'document_not_found'
+            ? 'The note you are looking for does not exist or has been deleted.'
+            : error.message
+        }
+      />
+    );
 
   return (
     <div className='grid h-[calc(100vh-16px)] grid-rows-[40px_auto_42px] gap-5'>
