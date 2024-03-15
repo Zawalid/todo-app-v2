@@ -5,15 +5,11 @@ import TasksList from './TasksList';
 import { useCompletedTasks } from '../../../lib/react-query/queries';
 
 export default function CompletedTasks() {
-  const { completedTasks, isLoading, isError, error } = useCompletedTasks();
+  const { completedTasks, isLoading, error } = useCompletedTasks();
 
   useEffect(() => {
     document.title = `I Do | Completed Tasks`;
   }, []);
-
-  if (isError) {
-    return <p>{error.message}</p>;
-  }
 
   return (
     <>
@@ -28,6 +24,7 @@ export default function CompletedTasks() {
             description: 'You can view all your completed tasks here.',
           }}
           isOnlyCompletedTasks={true}
+          error={error}
         />
       )}
     </>

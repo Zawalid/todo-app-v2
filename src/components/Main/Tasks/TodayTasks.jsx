@@ -5,16 +5,11 @@ import TasksList from './TasksList';
 import { useTodayTasks } from '../../../lib/react-query/queries';
 
 export default function TodayTasks() {
-  const { todayTasks, isLoading, isError, error } = useTodayTasks();
+  const { todayTasks, isLoading, error } = useTodayTasks();
 
   useEffect(() => {
     document.title = `I Do | Today`;
   }, []);
-
-  if (isError) {
-    console.log(error)
-    return <p>{error.message}</p>;
-  }
 
   return (
     <>
@@ -29,6 +24,7 @@ export default function TodayTasks() {
             noFilterPart: 'scheduled for today',
           }}
           dueDate={new Date().toISOString().split('T')[0]}
+          error={error}
         />
       )}
     </>

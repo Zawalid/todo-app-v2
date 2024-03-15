@@ -5,7 +5,7 @@ import { useAddTask } from '../../../../lib/react-query/mutations';
 
 export function AddTask({ dueDate, listId, className, disabled, onAdd }) {
   const [value, setValue] = useState('');
-  const { defaultDueDate, defaultPriority } = useSelector((state) => state.settings.general.tasks);
+  const { defaultPriority } = useSelector((state) => state.settings.general.tasks);
   const { mutate: addTask, isLoading } = useAddTask();
 
   const handleSubmit = (e) => {
@@ -14,7 +14,7 @@ export function AddTask({ dueDate, listId, className, disabled, onAdd }) {
     const newTask = {
       title: value,
       note: '',
-      dueDate: dueDate || defaultDueDate,
+      dueDate: dueDate,
       listId: listId || 'none',
       subtasks: [],
       isCompleted: false,

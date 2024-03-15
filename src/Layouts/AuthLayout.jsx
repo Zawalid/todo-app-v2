@@ -12,7 +12,7 @@ function AuthLayout() {
         <Navigate to='/app' replace={true} />
       ) : (
         <div className='flex h-full  w-full p-5 '>
-          <section className='hidden flex-1 place-content-center rounded-xl bg-black md:grid'>
+          <section className='hidden flex-[1.2] place-content-center rounded-xl bg-black md:grid'>
             <img src={bgImage} alt='bg' className='w-[300px]' />
           </section>
           <section className='h-full flex-[1.5]'>

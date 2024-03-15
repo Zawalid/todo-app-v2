@@ -11,12 +11,12 @@ import {
 
 export function checkIfToday(date) {
   if (!date) return;
-  return isToday(new Date(date));
+  return isToday(new Date(date)) || date === 'Today';
 }
 
 export function checkIfTomorrow(date) {
   if (!date) return;
-  return isTomorrow(new Date(date));
+  return isTomorrow(new Date(date)) || date === 'Tomorrow';
 }
 
 export function checkIfYesterday(date) {

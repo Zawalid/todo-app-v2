@@ -14,11 +14,7 @@ import { Actions } from './Actions';
 import { Button } from '../Common/Button';
 import { PiCheckBold, PiXBold } from 'react-icons/pi';
 import { useTasks } from '../../lib/react-query/queries';
-import {
-  useDeleteTask,
-  useAddTask,
-  useUpdateTask,
-} from '../../lib/react-query/mutations';
+import { useDeleteTask, useAddTask, useUpdateTask } from '../../lib/react-query/mutations';
 import { TaskInfoSkeleton } from '../Skeletons/TaskInfoSkeleton';
 
 const emptyInfo = {
@@ -34,7 +30,7 @@ const emptyInfo = {
 export function TaskInfo() {
   const [taskInfo, setTaskInfo] = useState(emptyInfo);
   const [isChanged, setIsChanged] = useState(false);
-  const { tasks, isLoading, isError, error } = useTasks();
+  const { tasks, isLoading, error } = useTasks();
   const { taskId } = useParams();
   const navigate = useNavigate();
   const currentTask = tasks?.find((task) => task?.$id === taskId);
@@ -156,7 +152,7 @@ export function TaskInfo() {
     if (!taskId) return null;
     if (!currentTask) return <NoTask close={close} />;
     if (isLoading) return <TaskInfoSkeleton />;
-    if (isError) return <div>Error: {error.message}</div>;
+    if (error) return <NoTask error={error} close={close} />;
     return (
       <>
         <div className='grid grid-cols-[auto_min-content] items-center gap-5 pb-3'>
@@ -288,7 +284,7 @@ export function TaskInfo() {
   );
 }
 
-function NoTask({ close }) {
+function NoTask({ close, error }) {
   return (
     <div className='relative flex h-full min-h-[300px] w-full flex-col items-center justify-center gap-3 text-center'>
       {isTouchDevice() || (
@@ -300,9 +296,13 @@ function NoTask({ close }) {
           <PiXBold />
         </button>
       )}
-      <h2 className='text-xl font-bold text-text-secondary'>No task found with the given ID.</h2>
+      <h2 className='text-xl font-bold text-text-secondary'>
+        {error ? 'Something went wrong' : 'No task found with the given ID.'}
+      </h2>
       <p className='text-sm text-text-tertiary '>
-        The task you are looking for does not exist or has been deleted.
+        {error
+          ? 'There was an unexpected error. Please try again later.'
+          : 'The task you are looking for does not exist or has been deleted.'}
       </p>
     </div>
   );

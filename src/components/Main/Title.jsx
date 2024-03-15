@@ -5,9 +5,9 @@ export function Title({ title, count }) {
   const { isMenuOpen } = useSelector((state) => state.user);
 
   return (
-    <div className='mb-2 flex items-center  gap-5 overflow-x-auto'>
+    <div className='mb-2 flex justify-between items-center  gap-5 overflow-x-auto' id='title'>
       {isMenuOpen || <MenuToggler />}
-      <div className='flex items-center gap-5'>
+      <div className='flex flex-1 items-center gap-5'>
         <h1 className='truncate text-2xl font-bold text-text-primary sm:text-3xl md:text-4xl'>
           {title}
         </h1>

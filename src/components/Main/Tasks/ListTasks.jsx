@@ -12,15 +12,11 @@ export default function ListTasks() {
     (list) => list.title.trim() === listName?.replace('%20', ' ').trim(),
   )?.$id;
   const listTitle = listName?.replace('%20', ' ');
-  const { listTasks, isLoading, isError, error } = useListTasks(listId);
+  const { listTasks, isLoading, error } = useListTasks(listId);
 
   useEffect(() => {
     document.title = `I Do | ${listTitle}`;
   }, [listTitle]);
-
-  if (isError || !listId) {
-    return <p>{error?.message || 'Error'}</p>;
-  }
 
   return (
     <>
@@ -35,6 +31,14 @@ export default function ListTasks() {
             noFilterPart: 'in this list',
           }}
           listId={listId}
+          error={
+            !listId
+              ? {
+                  title: `No list found with the name "${listTitle}"`,
+                  message: 'The list you are looking for does not exist or has been deleted.',
+                }
+              : error
+          }
         />
       )}
     </>

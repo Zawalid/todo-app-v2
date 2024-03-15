@@ -32,7 +32,7 @@ export function Tag({ tag, showDeleteButton, customClassName, onDeleteTag, onSel
         )}
         <li
           className={
-            'menu_tag_element relative overflow-hidden truncate text-center ' + customClassName
+            'menu_tag_element list-none relative overflow-hidden truncate text-center ' + customClassName
           }
           style={{ backgroundColor: `var(${tag.bgColor})`, color: tag.textColor }}
           onClick={() => onSelectTag?.(tag.$id)}
