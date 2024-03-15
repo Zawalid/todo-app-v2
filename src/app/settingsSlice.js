@@ -16,7 +16,6 @@ const DEFAULT_SETTINGS = {
       weekStartsOn: 1,
     },
     tasks: {
-      defaultDueDate: '',
       defaultPriority: 0,
       weeklyDueDate: 'Sunday',
       autoDeleteCompletedTasks: false,

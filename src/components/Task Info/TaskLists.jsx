@@ -14,7 +14,6 @@ export function TaskLists({ taskListId, setTaskListId }) {
         toggler={
           <DropDown.Toggler>
             <span className='truncate'>
-              {' '}
               {lists?.find((list) => list.$id === taskListId)?.title || 'None'}{' '}
             </span>
             <IoChevronDownOutline />
@@ -23,11 +22,7 @@ export function TaskLists({ taskListId, setTaskListId }) {
       >
         <DropDown.Button
           onClick={() => setTaskListId('none')}
-          className={
-            taskListId === 'none'
-              ? 'bg-background-secondary text-text-primary'
-              : 'bg-background-primary text-text-secondary'
-          }
+          isCurrent={taskListId === 'none'}
         >
           <span>None</span>
         </DropDown.Button>

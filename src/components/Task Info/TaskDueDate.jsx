@@ -5,14 +5,13 @@ import { PiCalendarBold, PiX } from 'react-icons/pi';
 import { IoChevronDownOutline } from 'react-icons/io5';
 import { useFormatDateAndTime } from '../../hooks/useFormatDateAndTime';
 
-export function TaskDueDate({ taskDueDate, setTaskDueDate, inSettings }) {
+export function TaskDueDate({ taskDueDate, setTaskDueDate }) {
   const [date, setDate] = useState(taskDueDate);
-  const format = useFormatDateAndTime()
+  const format = useFormatDateAndTime();
   const today = new Date();
   const tomorrow = new Date(today);
   const isOverDue = isTaskOverdue(taskDueDate);
   tomorrow.setDate(today.getDate() + 1);
-
 
   const isPicked = ![
     today.toISOString().split('T')[0],
@@ -32,9 +31,8 @@ export function TaskDueDate({ taskDueDate, setTaskDueDate, inSettings }) {
 
   return (
     <>
-      {inSettings || (
-        <label className='justify-self-start text-sm text-text-tertiary'>Due date</label>
-      )}
+      <label className='justify-self-start text-sm text-text-tertiary'>Due date</label>
+
       <div className='flex items-center gap-2'>
         {taskDueDate && (
           <button
@@ -82,8 +80,10 @@ export function TaskDueDate({ taskDueDate, setTaskDueDate, inSettings }) {
           <DropDown.NestedMenu
             toggler={
               <DropDown.Button isCurrent={isPicked && taskDueDate}>
-                <span>{isPicked ? format(taskDueDate,false) : 'Pick a date'}</span>
-                  <IoChevronDownOutline className='absolute right-2' />
+                <span className='text-start'>
+                  {isPicked ? format(taskDueDate, false) : 'Pick a date'}
+                </span>
+                <IoChevronDownOutline className='absolute right-2' />
               </DropDown.Button>
             }
             options={{ className: 'w-52', placement: 'bottom', shouldCloseOnClick: false }}

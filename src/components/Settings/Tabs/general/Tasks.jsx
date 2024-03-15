@@ -3,7 +3,6 @@ import papaparse from 'papaparse';
 import { PiDownloadSimpleLight, PiListChecks } from 'react-icons/pi';
 import { IoChevronDownOutline } from 'react-icons/io5';
 import { BsBraces, BsFiletypeCsv } from 'react-icons/bs';
-import { TaskDueDate } from '../../../Task Info/TaskDueDate';
 import { TaskPriority } from '../../../Task Info/TaskPriority';
 import { DropDown } from '../../../Common/DropDown';
 import Switch from '../../../Common/Switch';
@@ -13,7 +12,7 @@ import { useTags, useTasks, useLists } from '../../../../lib/react-query/queries
 
 export function Tasks({ control, setValue }) {
   const tasksSettings = useWatch({ control, name: 'tasks' });
-  const { weeklyDueDate, defaultDueDate, defaultPriority } = tasksSettings;
+  const { weeklyDueDate,  defaultPriority } = tasksSettings;
 
   const setSetting = (name, value) => setValue(`tasks.${name}`, value, { shouldDirty: true });
 
@@ -23,25 +22,6 @@ export function Tasks({ control, setValue }) {
         <PiListChecks size={22} /> <h3 className='font-bold'>Tasks</h3>
       </div>
       <div className='space-y-5 md:pl-5'>
-        <div className='setting '>
-          <div>
-            <h4>Default Due Date</h4>
-            <p className='mt-2 text-xs text-text-secondary'>
-              Initial due date for all new tasks. You can modify this for each task later.
-            </p>
-          </div>
-          <TaskDueDate
-            taskDueDate={defaultDueDate || ''}
-            setTaskDueDate={(date) => setSetting('defaultDueDate', date)}
-            inSettings={true}
-          />
-
-          <Controller
-            control={control}
-            name='tasks.defaultDueDate'
-            render={({ field }) => <input {...field} type='hidden' />}
-          />
-        </div>
         <div className='setting '>
           <div>
             <h4>Default Priority</h4>
