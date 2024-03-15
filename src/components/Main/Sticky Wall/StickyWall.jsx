@@ -13,6 +13,7 @@ import CustomTippy from '../../Common/CustomTippy';
 import { useStickyNotes } from '../../../lib/react-query/queries';
 import { useDeleteStickyNotes } from '../../../lib/react-query/mutations';
 import { useAutoAnimate } from '../../../hooks/useAutoAnimate';
+import Error from '../../Common/Error';
 
 const groups = {
   year: {
@@ -60,7 +61,7 @@ export default function StickyWall() {
   const direction = searchParams.get('direction') || 'desc';
   const groupBy = searchParams.get('groupBy') || 'default';
 
-  const { stickyNotes, isLoading, isError, error } = useStickyNotes();
+  const { stickyNotes, isLoading,  error } = useStickyNotes();
   const { Pagination, currentPage, rowsPerPage } = usePagination(stickyNotes?.length);
   const { openModal: confirmDelete } = useModal();
   const { mutate: deleteAllStickyNotes } = useDeleteStickyNotes();
@@ -194,7 +195,7 @@ export default function StickyWall() {
     groupBy,
   };
 
-  if (isError) return <div>{error?.message || 'Error'}</div>;
+  if (error) return <Error message={error.message} />;
 
   return (
     <>

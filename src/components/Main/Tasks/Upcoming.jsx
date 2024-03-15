@@ -7,6 +7,7 @@ import { AddTask } from './Task Components/AddTask';
 import { UpcomingSkeleton } from '../../Skeletons';
 import { useAutoAnimate } from '../../../hooks/useAutoAnimate';
 import { useUpcomingTasks } from '../../../lib/react-query/queries';
+import Error from '../../Common/Error';
 
 const periods = [
   {
@@ -43,16 +44,14 @@ const dayMapping = {
 };
 
 export default function Upcoming() {
-  const { upcomingTasks, isLoading, isError, error } = useUpcomingTasks();
+  const { upcomingTasks, isLoading, error } = useUpcomingTasks();
   const wrapper = useRef(null);
 
   useEffect(() => {
     document.title = `I Do | Upcoming`;
   }, []);
 
-  if (isError) {
-    return <p>{error.message}</p>;
-  }
+  if (error) return <Error message={error.message} />;
 
   return (
     <>

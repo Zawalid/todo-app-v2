@@ -23,7 +23,7 @@ import {
 import { toast } from 'sonner';
 import { useEffect } from 'react';
 
-function Items({ items, isLoading, emptyMessage, onRestore, onDelete }) {
+function Items({ error, items, isLoading, emptyMessage, onRestore, onDelete }) {
   const [parent] = useAutoAnimate({ duration: 500 });
 
   if (items?.length === 0)
@@ -35,6 +35,14 @@ function Items({ items, isLoading, emptyMessage, onRestore, onDelete }) {
     );
 
   if (isLoading) return <Skeleton />;
+  if (error)
+    return (
+      <div className='grid h-full place-content-center justify-items-center '>
+        <span className='text-center text-sm font-bold text-text-tertiary'>
+          An error occurred. Please try again later.
+        </span>
+      </div>
+    );
 
   return (
     <ul className='flex flex-1 flex-col gap-2 overflow-auto overflow-x-hidden' ref={parent}>
@@ -46,7 +54,7 @@ function Items({ items, isLoading, emptyMessage, onRestore, onDelete }) {
 }
 
 export function TrashedTasks({ isOpen }) {
-  const { trashedTasks, isLoading, isError, refetch } = useTrashedTasks();
+  const { trashedTasks, isLoading, refetch, error } = useTrashedTasks();
   const { mutate: restoreTask } = useRestoreTask();
   const { mutate: deleteTask } = useDeleteTaskPermanently();
   const { openModal: confirmDelete } = useModal();
@@ -55,9 +63,9 @@ export function TrashedTasks({ isOpen }) {
     if (isOpen) refetch();
   }, [isOpen, refetch]);
 
-  if (isError) return <p>Something went wrong</p>;
   return (
     <Items
+      error={error}
       items={trashedTasks}
       isLoading={isLoading}
       emptyMessage='No trashed tasks'
@@ -75,7 +83,7 @@ export function TrashedTasks({ isOpen }) {
 }
 
 export function TrashedLists() {
-  const { trashedLists, isLoading, isError } = useTrashedLists();
+  const { trashedLists, isLoading, error } = useTrashedLists();
   const { mutate: restoreList } = useRestoreList();
   const { mutate: deleteList } = useDeleteListPermanently();
   const { openModal: confirmDelete } = useModal();
@@ -90,9 +98,9 @@ export function TrashedLists() {
     restoreList({ id });
   };
 
-  if (isError) return <p>Something went wrong</p>;
   return (
     <Items
+      error={error}
       type='lists'
       items={trashedLists}
       isLoading={isLoading}
@@ -111,14 +119,14 @@ export function TrashedLists() {
 }
 
 export function TrashedTags() {
-  const { trashedTags, isLoading, isError } = useTrashedTags();
+  const { trashedTags, isLoading, error } = useTrashedTags();
   const { mutate: restoreTag } = useRestoreTag();
   const { mutate: deleteTag } = useDeleteTagPermanently();
   const { openModal: confirmDelete } = useModal();
 
-  if (isError) return <p>Something went wrong</p>;
   return (
     <Items
+      error={error}
       type='tags'
       items={trashedTags}
       isLoading={isLoading}
@@ -137,14 +145,14 @@ export function TrashedTags() {
 }
 
 export function TrashedStickyNotes() {
-  const { trashedStickyNotes, isLoading, isError } = useTrashedStickyNotes();
+  const { trashedStickyNotes, isLoading, error } = useTrashedStickyNotes();
   const { mutate: restoreStickyNote } = useRestoreStickyNote();
   const { mutate: deleteStickyNote } = useDeleteStickyNotePermanently();
   const { openModal: confirmDelete } = useModal();
 
-  if (isError) return <p>Something went wrong</p>;
   return (
     <Items
+      error={error}
       type='stickyNotes'
       items={trashedStickyNotes}
       isLoading={isLoading}

@@ -5,16 +5,13 @@ import TasksList from './TasksList';
 import { useTasks } from '../../../lib/react-query/queries';
 
 export default function Inbox() {
-  const { tasks, isLoading, isError, error } = useTasks();
+  const { tasks, isLoading, error } = useTasks();
 
   useEffect(() => {
     document.title = `I Do | Inbox`;
   }, []);
 
-  if (isError) {
-    console.log(error)
-    return <p>{error.message}</p>;
-  }
+
 
   return (
     <>
@@ -28,6 +25,7 @@ export default function Inbox() {
             noTasks: `You don't have any tasks yet.`,
             noFilterPart: 'yet',
           }}
+          error={error}
         />
       )}
     </>
